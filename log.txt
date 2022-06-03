@@ -1,16 +1,244 @@
 Start Loading
 Pre Config load
 LOADED ASYNC
-Event cam_intro
-Event avatarEnter
-Event centerCamAvatar
-Event Stand_pennyWorried
-Event cam_intro
-Event centerCamAvatar
-Event godricsHollowHUB_defaultAnims
-Event godricsHollowHUB_stairsSeqA_1
-Event stMungosHUB_stairsSeqA_wait
-Event cam_intro
-Event avatarEnter
-Event centerCamAvatar
-Event Stand_pennyWorried
+Event cam_IntroTrack
+Event transfig_animatePreClass
+Event avatarEnterScene01
+Event MQ5C2P2_transfigStudents
+Event spawnTransfigCatdronTeacherDesk
+activated dialogue MQ5C2P2__IntroDialog_1
+Event ftb_Halfs
+Event mcgTeleCauldron
+Event ReparifargeDemoCam
+Event ffb_Halfs
+activated dialogue MQ5C2P2__IntroDialog_2
+activated dialogue MQ5C2P2__IntroDialog_3
+activated dialogue MQ5C2P2__IntroDialog_4
+activated dialogue MQ5C2P2__IntroDialog_5
+activated dialogue MQ5C2P2__IntroDialog_6
+Event transfiguration_lecture_mcGonagallCast
+Event script_transTeacherCatdronFX
+Event script_transTeacherCat
+Event despawnTransfigCatdronTeacherDesk
+Event spawnTransfigCatTeacherDesk
+Event catIdle
+activated dialogue MQ5C2P2__IntroDialog_7
+Event BackToTransfigTrackCam
+Event way_AvatarAtDesk
+Event animateCharmsStudents
+Event transfigR_animateSetDressing
+Event ftb_Halfs
+Event mcgMoveToMcgStation1
+Event avatarTeleToTFigStation1
+Event despawnTFIGprops
+Event cam_station1Start
+Event spawnMcgCat
+Event ffb_Halfs
+activated dialogue transfigReparifarge_demoStation_preDialog
+Event mcgCatdronIdle
+activated dialogue transfigReparifarge_demoStation_preDialog1
+Event Stand_AvatarNotetaking
+Event andreRowanTeleToStation1
+Event Stand_rowanConfused
+Event Stand_andrePensive
+Event cam_station1A
+Event Stand_mcgonagallCastNB
+Event wait5s
+Event mcgCatCauldron
+activated dialogue transfigReparifarge_demoStation_line1
+Event Stand_mcgonagallResetIdle
+Event Stand_AvatarResetIdle
+Event waitHalfs
+Event cam_dialog1B
+Event mcgMoveToDialog1B
+Event avatarMoveToDialog1A
+Event avatarLookAMcgonagallDialogue
+Event despawnMcgCat
+Event spawnMcgCat
+Event mcgCatdronIdle
+Event cam_station1A
+Event mcgMoveToMcgStation1
+Event Stand_mcgonagallCastNB
+Event mcgonagallLookAtReset
+Event mcgonagallLookAtReset
+Event cam_station1A
+Event mcgCatCauldron
+Event wait2s
+Event mcgMoveToDialog1B
+Event wait1s
+Event cam_dialog1A
+Event Stand_AvatarHappy
+Event wait2s
+Event Stand_mcgonagallResetIdle
+Event cam_dialog1B
+Event Stand_mcgonagallHappy
+Event wait2s
+Event ftb_Halfs
+Event mcgTeleToStation2
+Event avatarTeleToTFigStation2
+Event Stand_mcgonagallResetIdle
+Event andreTeleToTFigStudent9
+Event cam_station2_start
+Event despawnTFIGprops
+Event mcgonagallLookAtReset
+Event avatarLookAtReset
+Event ffb_Halfs
+activated dialogue transfigReparifarge_lectureStation_preDialog
+Event cam_station2A
+Event mcgonagallLecture
+Event andreRowanTeleToTransfigDesks1
+Event Sit_rowanNotetaking
+Event Sit_andreStudyAtTable
+Event Sit_AvatarResetIdle
+activated dialogue transfigReparifarge_lectureStation_line1
+Event Stand_mcgonagallResetIdle
+Event cam_station2_quiz
+Event cam_dialog2A
+Event Stand_mcgonagallHappy
+Event wait2s
+Event waitHalfs
+Event cam_dialog2B
+Event Sit_AvatarHappy
+Event wait1andHalfs
+Event ftb_Halfs
+Event mcgTeleToStation9
+Event avatarTeleToTFigStation9
+Event andreTeleToTFigStation9
+Event rowanTeleToTFigStation9
+Event cam_station9_startDialog
+Event Stand_andreSpellcastingIdleNoIntro
+Event rowanStudentPoseFeedback
+Event Stand_AvatarSpellPoseFeedback
+Event Stand_mcgonagallResetIdle
+Event despawnTFIGprops
+Event mcgonagallLookAtReset
+Event avatarLookAtReset
+Event ffb_Halfs
+activated dialogue transfigReparifarge_honeStation_preDialog
+Event cam_station9A
+Event Stand_andreSpellcastSide
+Not c3b config entry for fxSkin
+Event Stand_andreSpellcastSide
+Not c3b config entry for fxSkin
+Event rowanTfigMoveOffCam
+activated dialogue transfigReparifarge_honeStation_line1
+Event Stand_AvatarResetIdle
+Event Stand_AvatarSpellcastingIdleNoIntro
+Event Stand_AvatarSpellcast
+Event wait1andHalfs
+Not c3b config entry for fxSkin
+Event Stand_AvatarResetIdle
+Event cam_station9_start
+Event mcgonagallLookAtAvatar
+Event Stand_mcgonagallHappy
+Event wait2s
+Event ftb_Halfs
+Event cam_station5_startDialog
+Event mcgTeleToStation5
+Event avatarTeleToTFigStation5
+Event andreTeleToTFigStation5
+Event Sit_mcgonagallResetIdle
+Event Stand_andrePensive
+Event Stand_AvatarTakeNotes
+Event Stand_rowanConfused
+Event despawnTFIGprops
+Event mcgonagallLookAtReset
+Event avatarLookAtReset
+Event rowanLookAtReset
+Event ffb_Halfs
+activated dialogue transfigReparifarge_memorizeStation_preDialog
+Event cam_station5A
+Event rowanTeleToTFigStation5
+Event student1TeleToStation5
+Event Stand_AvatarResetIdle
+activated dialogue transfigReparifarge_memorizeStation_line1
+Event cam_dialog5A
+Event Stand_mcgonagallResetIdle
+Event mcgMoveToDialog5A
+Event wait1s
+Event avatarLookAMcgonagallDialogue
+Event Stand_AvatarResetIdle
+Event avatarMoveToDialog5B
+Event cam_dialog5A
+Event student1TeleToTfigDesk
+Event Stand_mcgonagallResetIdle
+Event avatarTeleToTFigStation5
+Event cam_dialog5C
+Event Stand_AvatarConfident
+Event wait2s
+Event cam_dialog5B
+Event Stand_mcgonagallHappy
+Event wait2s
+Event ftb_Halfs
+Event mcgTeleToStation10
+Event avatarTeleToTFigStation10
+Event Sit_AvatarSpellcastingIdle
+Event andreTeleToTFigStudent9
+Event cam_dialog10A
+Event Stand_mcgonagallResetIdle
+Event despawnTFIGprops
+Event spawnTFigAvatarCatdron
+Event spawnStudentCatdrons
+Event mcgonagallLookAtReset
+Event avatarLookAtReset
+Event ffb_Halfs
+activated dialogue transfigReparifarge_prepStation_preDialog
+Event cam_station10A
+Event rowanLookAtReset
+Event andreRowanTeleToTransfigDesks1
+Event Sit_rowanSurprised
+Event Sit_andrePensive
+Event swapRowanAndStudent12
+activated dialogue transfigReparifarge_prepStation_line1
+Event cam_station10B
+Event Sit_AvatarSpellcastingIdle
+Event Sit_AvatarSpellcast
+Event wait1andHalfs
+Event avaCauldronToCat
+Event Sit_AvatarResetIdle
+Event wait2and75s
+Event despawnTFigAvatarCauldron
+Event spawnTFigAvatarCat
+Event Sit_AvatarSuccess
+Event wait2s
+Event Sit_AvatarResetIdle
+Event avatarSittingIdle
+Event cam_IntroTrack
+Event MQ5C2P2_transfigStudentsPostClass
+Event MQ5C2P2_transfig_despawnStudentObjects
+Event MQ5C2P2post_transfig_spawnStudentObjects
+Event Sit_mcgonagallIdle
+activated dialogue MQ5C2P2__OutroDialog_1
+Event cam_D_PlayerCharacter
+Event spawnTransfigCatdronAvatarDesk
+Event QTE_reparifarge
+Event playerCastAtDeskQuicklyBlocking
+Event wait1s
+Event Sit_AvatarResetIdle
+Event AvatarCatdronToCat
+Event animateCatEnd
+Event MQ5C2P2_spawnTransfigCatAvatarDesk
+Event MQ5C2P2_teleMcG
+Event wait2s
+Event Sit_AvatarResetIdle
+activated dialogue MQ5C2P2__OutroDialog_2
+Event fadeToBlackHalfs
+Event MQ5C2P2_teleMcG
+Event cam_afterClassDialogueEst
+Event fadeFromBlackHalfs
+Event MQ5C2P2_moveMcG_1
+Event McGDialogueHappy
+activated dialogue MQ5C2P2__OutroDialog_3
+Event McGDialogueHappy
+Event MQ5C2P2_mateLeave1
+activated dialogue MQ5C2P2__OutroDialog_5
+Event Sit_AvatarHappy
+activated dialogue MQ5C2P2__OutroDialog_6
+Event McGDialogueHappy
+activated dialogue MQ5C2P2__OutroDialog_10
+Event McGDialogueHappy
+Event 10pointsTo
+activated dialogue MQ5C2P2__OutroDialog_11
+Event Sit_AvatarSerious
+Event MQ5C2P2_moveMcG_2
+Event BackToTransfigTrackCam

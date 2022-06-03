@@ -41,7 +41,16 @@ public class Sound : MonoBehaviour
     {
         if (Configs.playlist_dict.ContainsKey(bark_id))
         {
+            if (Configs.playlist_dict[bark_id].files == null)
+            {
+                Debug.LogError("bark " + bark_id + " defined no files.");
+                return;
+            }
             current.playAudioFile(Configs.playlist_dict[bark_id].files[0], "bark");
+        }
+        else
+        {
+            Debug.LogError("Couldn't find bark " + bark_id);
         }
     }
 
@@ -92,6 +101,7 @@ public class Sound : MonoBehaviour
 
     private void playAudioFile(string filename, string type)
     {
+        if (SoundEffectPlayer == null) return;
         if (File.Exists(GlobalEngineVariables.assets_folder + "\\sounds\\" + filename) || filename == "none")
         {
             StartCoroutine(PlayAudioFile(GlobalEngineVariables.assets_folder + "\\sounds\\" + filename, type));
@@ -104,8 +114,10 @@ public class Sound : MonoBehaviour
 
     public void playCustom(AudioClip audioClip)
     {
-        BGMusicPlayer.GetComponent<AudioSource>().clip = audioClip;
+        if (BGMusicPlayer.GetComponent<AudioSource>().clip == audioClip)
+            return;
 
+        BGMusicPlayer.GetComponent<AudioSource>().clip = audioClip;
         BGMusicPlayer.GetComponent<AudioSource>().Play();
     }
 

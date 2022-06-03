@@ -20,7 +20,7 @@ public class ActorAnimSequence : AnimationSequence
     {
         actor_controller.actor_animation.anim_sequence_idle = _anim_sequence;
 
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation_id, actor_controller.model, actor_controller.actor_info);
+        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation_id, actor_controller.model, actor_controller.actor_info, config_sequence.data.triggerReplacement);
         if (anim_clip == null) return 0.0f;
 
         animation_component.AddClip(anim_clip, animation_id);
@@ -57,9 +57,9 @@ public class ActorAnimSequence : AnimationSequence
         actor_controller.destroyProps();
     }
 
-    protected override void playPropAnim(string id, string target)
+    protected override void playPropAnim(string id, string target, Dictionary<string, string> triggerReplacement)
     {
-        actor_controller.playPropAnim(id, target);
+        actor_controller.playPropAnim(id, target, triggerReplacement);
     }
 
     protected override void stopPropAnim(string id)

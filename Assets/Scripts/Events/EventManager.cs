@@ -49,6 +49,12 @@ public class EventManager : MonoBehaviour
         sequential_event_player.notifyMoveComplete(character);
     }
 
+    public void notifyScriptTrigger(string trigger)
+    {
+        main_event_player.notifyScriptTrigger(trigger);
+        sequential_event_player.notifyScriptTrigger(trigger);
+    }
+
     public IEnumerator waitCameraAnimation(float start_time, float length, string animation)
     {
         main_event_player.last_finished_animation = "";

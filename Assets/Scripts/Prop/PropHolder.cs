@@ -9,11 +9,7 @@ public class PropHolder : MonoBehaviour
 
     protected Dictionary<string, Model> props = new Dictionary<string, Model>();
 
-    public void attachProp(string paramaters)
-    {
-        string[] split = paramaters.Split(':');
-        attachProp(split[0], split[1], split[2]);
-    }
+
 
     public void attachProp(string prop_model_id, string alias, string target)
     {
@@ -26,22 +22,28 @@ public class PropHolder : MonoBehaviour
         }
 
         Model prop = ModelManager.loadModel(prop_model_id);
-        if (prop == null)
-            Debug.LogError("Failed to attach prop " + prop_model_id + " due to invalid id");
 
+        if (prop == null)
+        {
+            Debug.LogError("Failed to attach prop " + prop_model_id + " due to invalid id");
+            return;
+        }
         prop.game_object.AddComponent<Animation>();
+        prop.game_object.AddComponent<Prop>().model = prop;
 
         if (alias != null)
         {
             if (props.ContainsKey(alias))
                 Destroy(props[alias].game_object);
 
+            Debug.Log("Adding prop " + alias);
             props[alias] = prop;
         }
         else
         {
             if (props.ContainsKey(prop_model_id))
                 Destroy(props[prop_model_id].game_object);
+            Debug.Log("Adding prop " + prop_model_id);
             props[prop_model_id] = prop;
         }
         //if (bone_to_attach.name == "jt_propCounterScale")
@@ -62,7 +64,16 @@ public class PropHolder : MonoBehaviour
         prop.game_object.transform.rotation = Quaternion.identity;
     }
 
-    public void playPropAnim(string id, string target)
+    public void removeProp(string id)
+    {
+        if (props.ContainsKey(id))
+        {
+            Destroy(props[id].game_object);
+            props.Remove(id);
+        }
+    }
+
+    public void playPropAnim(string id, string target, Dictionary<string, string> triggerReplacement)
     {
         if (!props.ContainsKey(id))
         {
@@ -70,7 +81,7 @@ public class PropHolder : MonoBehaviour
             return;
         }
 
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(target, props[id], null);
+        AnimationClip anim_clip = AnimationManager.loadAnimationClip(target, props[id], null, triggerReplacement);
         if (anim_clip == null) return;
 
         props[id].game_object.GetComponent<Animation>().AddClip(anim_clip, "default");
@@ -92,6 +103,21 @@ public class PropHolder : MonoBehaviour
             Destroy(g.game_object);
         }
         props.Clear();
+    }
+
+    //Animation Events
+    public void AttachProp(string paramaters)
+    {
+        string[] split = paramaters.Split(':');
+        attachProp(split[0], split[1], split[2]);
+    }
+
+
+
+    public void PlayPropAnim(string paramaters)
+    {
+        string[] split = paramaters.Split(':');
+        playPropAnim(split[0], split[1], null);
     }
 
 

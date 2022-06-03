@@ -92,13 +92,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
             }
             public node[] nodes;
 
-
-            [System.Serializable]
-            public class _triggerReplacement
-            {
-                public string fxSkin;
-            }
-            public _triggerReplacement triggerReplacement; //TODO
+            public Dictionary<string, string> triggerReplacement; //TODO
 
 
         }

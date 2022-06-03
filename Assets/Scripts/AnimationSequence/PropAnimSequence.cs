@@ -14,7 +14,7 @@ public class PropAnimSequence : AnimationSequence
 
     protected override float playAnimation(string animation_id, string _anim_sequence = "")
     {
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation_id, prop_controller.model, null);
+        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation_id, prop_controller.model, null , config_sequence.data.triggerReplacement);
         if (anim_clip == null) return 0.0f;
         animation_component.AddClip(anim_clip, animation_id);
 
@@ -41,9 +41,9 @@ public class PropAnimSequence : AnimationSequence
         prop_controller.destroyProps();
     }
 
-    protected override void playPropAnim(string id, string target)
+    protected override void playPropAnim(string id, string target, Dictionary<string, string> triggerReplacement)
     {
-        prop_controller.playPropAnim(id, target);
+        prop_controller.playPropAnim(id, target, triggerReplacement);
     }
 
     protected override void stopPropAnim(string id)

@@ -22,7 +22,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 break;
 
             case "PlayPropAnim":
-                playPropAnim(action.id, action.target);
+                playPropAnim(action.id, action.target, config_sequence.data.triggerReplacement);
                 break;
 
             case "StopPropAnim":
@@ -39,9 +39,9 @@ public abstract partial class AnimationSequence : MonoBehaviour
     protected abstract void attachBroom(string prop_model_id, string alias, string target);
     protected void playBroomAnim(string target)
     {
-        playPropAnim("broom", target);
+        playPropAnim("broom", target, config_sequence.data.triggerReplacement);
     }
-    protected abstract void playPropAnim(string id, string target);
+    protected abstract void playPropAnim(string id, string target, Dictionary<string, string> triggerReplacement);
 
     protected abstract void stopPropAnim(string id);
 }

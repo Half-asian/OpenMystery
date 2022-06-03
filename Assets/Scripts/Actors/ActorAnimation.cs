@@ -75,6 +75,13 @@ public class ActorAnimation : MonoBehaviour
     {
         actor_controller.actor_head.clearLookat();
         actor_controller.actor_head.clearTurnHeadAt();
+        actor_controller.destroyProps();
+        foreach(GameObject particle in actor_controller.particles)
+        {
+            GameObject.Destroy(particle);
+        }
+        actor_controller.particles = new List<GameObject>();
+
         updateAnimationState();
     }
 
@@ -114,7 +121,7 @@ public class ActorAnimation : MonoBehaviour
 
         ConfigAnimation._Animation3D animation = Configs.config_animation.Animation3D[anim_name];
 
-        animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, actor_controller, bone_mods);
+        animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, null, actor_controller, bone_mods);
         animation_component.AddClip(animation1_loop, "extra_animation");
         animation_component.Play("extra_animation");
         StartCoroutine(WaitForAnimateCharacterFinished(animation1_loop));
@@ -172,13 +179,13 @@ public class ActorAnimation : MonoBehaviour
         }
         ConfigAnimation._Animation3D animation = Configs.config_animation.Animation3D[anim_name];
 
-        animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, actor_controller, bone_mods);
+        animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, null, actor_controller, bone_mods);
         if (animation1_loop == null)
             Debug.LogError("Animation1_Loop was null somehow");
         if (animation.introAnim != null)
-            animation1_intro = AnimationManager.loadAnimationClip(animation.introAnim, actor_controller.model, actor_info, actor_controller, bone_mods);
+            animation1_intro = AnimationManager.loadAnimationClip(animation.introAnim, actor_controller.model, actor_info, null, actor_controller, bone_mods);
         if (animation.outroAnim != null)
-            animation1_exit = AnimationManager.loadAnimationClip(animation.outroAnim, actor_controller.model, actor_info, actor_controller, bone_mods);
+            animation1_exit = AnimationManager.loadAnimationClip(animation.outroAnim, actor_controller.model, actor_info, null, actor_controller, bone_mods);
 
         animation_component.AddClip(animation1_intro, "intro");
         animation_component.AddClip(animation1_loop, "loop");

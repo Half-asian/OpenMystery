@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 213.25, g: 213.25, b: 213.25, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -274,6 +274,18 @@ PrefabInstance:
       propertyPath: screen_fade
       value: 
       objectReference: {fileID: 298416746}
+    - target: {fileID: 3973814960898402204, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
+      propertyPath: model_inspector
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3973814960898402204, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
+      propertyPath: model_inspector_actor
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3973814960898402204, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
+      propertyPath: model_inspector_model
+      value: b_HogsmeadHedgeMaze_skin
+      objectReference: {fileID: 0}
     - target: {fileID: 3973814960898402206, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: ui_dialogue
       value: 
@@ -844,6 +856,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7339653516881549046, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 471b05a6dca8b3245a9dac0aecebd060, type: 3}
     - target: {fileID: 7339653517382173702, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_RootOrder
       value: 0

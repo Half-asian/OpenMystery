@@ -267,6 +267,14 @@ public class EventPlayer : MonoBehaviour
         }
     }
 
+    public void notifyScriptTrigger(string trigger)
+    {
+        if (blocking_message == "AnimationScriptTriggerHit" && blocking_key == trigger)
+        {
+            removeBlock();
+        }
+    }
+
     private void removeBlock()
     {
         total_block = false;

@@ -1,0 +1,15 @@
+NullReferenceException: Object reference not set to an instance of an object
+Sound.playBark (System.String bark_id) (at Assets/Scripts/Sound/Sound.cs:44)
+Project.startProject (System.String new_project) (at Assets/Scripts/Project/Project.cs:33)
+InteractionProject.activate () (at Assets/Scripts/Interaction/InteractionTypes/InteractionProject.cs:33)
+InteractionButton.Update () (at Assets/Scripts/Interaction/InteractionButton.cs:62)
+
+IndexOutOfRangeException: Index was outside the bounds of the array.
+AnimationManager.activateTriggerMap (System.Collections.Generic.Dictionary`2[TKey,TValue] triggerReplacement, ConfigAnimation+_Animation3D+TriggerMap trigger, UnityEngine.AnimationClip anim_clip) (at Assets/Scripts/Animation/AnimationManager.cs:557)
+AnimationManager.loadAnimationClip (System.String name, Model model, ConfigHPActorInfo+_HPActorInfo character, System.Collections.Generic.Dictionary`2[TKey,TValue] triggerReplacement, ActorController ac, System.Collections.Generic.Dictionary`2[TKey,TValue] bone_mods, System.Boolean is_camera) (at Assets/Scripts/Animation/AnimationManager.cs:695)
+ActorAnimSequence.playAnimation (System.String animation_id, System.String _anim_sequence) (at Assets/Scripts/AnimationSequence/ActorAnimSequence.cs:23)
+AnimationSequence.activateNode (System.Int32 node_index) (at Assets/Scripts/AnimationSequence/AnimationSequence.cs:104)
+AnimationSequence.advanceAnimSequence () (at Assets/Scripts/AnimationSequence/AnimationSequence.cs:78)
+AnimationSequence+<WaitForAnimation>d__11.MoveNext () (at Assets/Scripts/AnimationSequence/AnimationSequence.cs:133)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <adfa4b62400849189388df71c9e26e89>:0)
+

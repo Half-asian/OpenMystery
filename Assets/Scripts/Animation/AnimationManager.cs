@@ -526,34 +526,113 @@ public class AnimationManager : MonoBehaviour
 		public Vector3 scale;
 	}
 
-	static void activateTriggerMap(ConfigAnimation._Animation3D.TriggerMap trigger, AnimationClip anim_clip)
+	static void activateTriggerMap(Dictionary<string, string> triggerReplacement, ConfigAnimation._Animation3D.TriggerMap trigger, AnimationClip anim_clip)
     {
-		Debug.Log("ActivateTriggerMap");
 		AnimationEvent animationEvent = new AnimationEvent();
+		Debug.Log("activateTriggerMap " + trigger.id);
 		switch (trigger.id)
         {
 			case "playSound":
-				animationEvent.stringParameter = trigger.parameters[0];
+				if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
+					animationEvent.stringParameter = triggerReplacement[trigger.parameters[0]];
+				else
+					animationEvent.stringParameter = trigger.parameters[0];
 				animationEvent.functionName = "PlaySound";
 				animationEvent.time = trigger.time;
 				anim_clip.AddEvent(animationEvent);
 				break;
-			/*case "AttachProp":
-				animationEvent.stringParameter = trigger.parameters[0] + ":" + trigger.parameters[0]  + ":" + trigger.parameters[1];
-				animationEvent.functionName = "attachProp";
+
+			case "AttachProp":
+				if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
+					animationEvent.stringParameter = 
+						triggerReplacement[trigger.parameters[0]] + ":" + triggerReplacement[trigger.parameters[0]] + ":" + trigger.parameters[1];
+				else
+					animationEvent.stringParameter = trigger.parameters[0] + ":" + trigger.parameters[0] + ":" + trigger.parameters[1];
+				animationEvent.functionName = "AttachProp";
+				animationEvent.time = trigger.time;
+				anim_clip.AddEvent(animationEvent);
 				break;
+			case "RemoveProp":
+				if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
+					animationEvent.stringParameter =
+						triggerReplacement[trigger.parameters[0]];
+				else
+					animationEvent.stringParameter = trigger.parameters[0];
+				animationEvent.functionName = "removeProp";
+				animationEvent.time = trigger.time;
+				anim_clip.AddEvent(animationEvent);
+				break;
+			case "PlayPropAnim":
+
+				if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
+				{
+					animationEvent.stringParameter = triggerReplacement[trigger.parameters[0]] + ":" + trigger.parameters[1];
+				}
+				else
+					animationEvent.stringParameter = trigger.parameters[0] + ":" + trigger.parameters[1];
+				animationEvent.functionName = "PlayPropAnim";
+				animationEvent.time = trigger.time + 0.01f;
+				anim_clip.AddEvent(animationEvent);
+				break;
+			case "ScriptTrigger":
+				animationEvent.functionName = "ScriptTrigger";
+				animationEvent.stringParameter = trigger.parameters[0];
+				animationEvent.time = trigger.time + 0.01f;
+				anim_clip.AddEvent(animationEvent);
+				break;
+
+			/*case "AttachParticleSystem":
+
+				if (trigger.parameters.Length == 2)
+				{
+
+					if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
+						animationEvent.stringParameter = triggerReplacement[trigger.parameters[0]] + ":" + trigger.parameters[1];
+					else
+						animationEvent.stringParameter = trigger.parameters[0] + ":" + trigger.parameters[1];
+				}
+                else
+                {
+					string parameters = "";
+					if (triggerReplacement != null)
+					{
+						if (triggerReplacement.ContainsKey(trigger.parameters[0]))
+							parameters += triggerReplacement[trigger.parameters[0]] + ":";
+						else
+							parameters += trigger.parameters[0] + ":";
+
+						if (triggerReplacement.ContainsKey(trigger.parameters[1]))
+							parameters += triggerReplacement[trigger.parameters[1]] + ":";
+						else
+							parameters += trigger.parameters[1] + ":";
+
+						if (triggerReplacement.ContainsKey(trigger.parameters[2]))
+							parameters += triggerReplacement[trigger.parameters[2]];
+						else
+							parameters += trigger.parameters[2];
+					}
+
+					else
+						parameters = trigger.parameters[0] + ":" + trigger.parameters[1] + ":" + trigger.parameters[2];
+					animationEvent.stringParameter = parameters;
+				}
+
+				animationEvent.functionName = "AttachParticleSystem";
+				animationEvent.time = trigger.time;
+				anim_clip.AddEvent(animationEvent);
+				break;*/
 
 			default:
 				 Debug.LogError("Unknown trigger id " + trigger.id + " in animation " + anim_clip.name);
 				return;
-				break;*/
+				break;
 		}
 
 
 
 	}
 
-	public static AnimationClip loadAnimationClip(string name, Model model, ConfigHPActorInfo._HPActorInfo character, ActorController ac = null, Dictionary<string, BoneMod> bone_mods = null, bool is_camera = false)
+	public static AnimationClip loadAnimationClip(string name, Model model, ConfigHPActorInfo._HPActorInfo character, Dictionary<string, string> triggerReplacement = null, ActorController ac = null, Dictionary<string, BoneMod> bone_mods = null, bool is_camera = false)
 	{
 		if (string.IsNullOrEmpty(name))
 		{
@@ -613,7 +692,7 @@ public class AnimationManager : MonoBehaviour
         {
 			foreach (ConfigAnimation._Animation3D.TriggerMap trigger in animation_config.triggerMap)
             {
-				activateTriggerMap(trigger, anim_clip);
+				activateTriggerMap(triggerReplacement, trigger, anim_clip);
             }
         }
 

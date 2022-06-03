@@ -79,7 +79,7 @@ public class CameraManager : MonoBehaviour
             bone_mods["jt_cam_bind"] = new AnimationManager.BoneMod(false);
         }
 
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation, camera_model, null, null, bone_mods, true);
+        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, bone_mods, true);
 
 
         if (main_camera_holder.GetComponent<Animation>() == null)
@@ -105,7 +105,7 @@ public class CameraManager : MonoBehaviour
         camera_state = CameraState.StatePanCamOnTrack;
 
         
-        AnimationClip anim_clip_pancam = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, true);
+        AnimationClip anim_clip_pancam = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, null, true);
 
         if (main_camera_holder.GetComponent<Animation>() == null)
         {
@@ -137,7 +137,7 @@ public class CameraManager : MonoBehaviour
 
         if (camera.animation != null)
         {
-            AnimationClip anim_clip = AnimationManager.loadAnimationClip(camera.animation, camera_model, null, null, null, true);
+            AnimationClip anim_clip = AnimationManager.loadAnimationClip(camera.animation, camera_model, null, null, null, null, true);
             anim_clip.SampleAnimation(main_camera_holder.gameObject, 0.0f);
         }
 
