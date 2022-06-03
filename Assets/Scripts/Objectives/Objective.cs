@@ -121,6 +121,12 @@ public abstract class Objective
         }
 
         onObjectiveCompleted.Invoke(objective_config.objective_id);
+
+        if (objective_config.restartScenarioOnComplete)
+        {
+            Scenario.restartScenario();
+        }
+
     }
 
     public virtual void activateScenarioIfValid()

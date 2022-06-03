@@ -24,6 +24,7 @@ public class InteractionExit : Interaction
 
     protected override void onFinishedEnterEvents()
     {
+        if (destroyed == true) return;
         base.onFinishedEnterEvents();
         interaction_gameobject.SetActive(true);
     }

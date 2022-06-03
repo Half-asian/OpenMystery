@@ -27,7 +27,7 @@ public class InteractionMatch : Interaction
 
     public override void activate()
     {
-        GameObject.Destroy(interaction_gameobject);
+        GameObject.DestroyImmediate(interaction_gameobject);
 
         GameStart.quidditch_manager.startMatch(config_interaction.matchId, this); //Finished is called from a callback at the end of a match
     }

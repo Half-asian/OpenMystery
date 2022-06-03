@@ -43,7 +43,6 @@ public class PropHolder : MonoBehaviour
         {
             if (props.ContainsKey(prop_model_id))
                 Destroy(props[prop_model_id].game_object);
-            Debug.Log("Adding prop " + prop_model_id);
             props[prop_model_id] = prop;
         }
         //if (bone_to_attach.name == "jt_propCounterScale")

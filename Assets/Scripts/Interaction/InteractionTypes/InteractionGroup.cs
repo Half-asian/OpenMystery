@@ -28,7 +28,7 @@ public class InteractionGroup : Interaction
 
         if (member_interactions.Count == 0)
         {
-            GameObject.Destroy(interaction_gameobject);
+            GameObject.DestroyImmediate(interaction_gameobject);
         }
     }
 
@@ -112,9 +112,12 @@ public class InteractionGroup : Interaction
 
     public override void destroy()
     {
-        foreach (string i in member_interactions.Keys)
+        if (member_interactions != null && member_interactions.Keys != null)
         {
-            member_interactions[i].destroy();
+            foreach (string i in member_interactions.Keys)
+            {
+                member_interactions[i].destroy();
+            }
         }
         base.destroy();
     }

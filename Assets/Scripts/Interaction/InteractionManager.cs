@@ -59,9 +59,12 @@ public class InteractionManager : MonoBehaviour {
 
         //If the interaction is already active, destroy the old one.
         List<Interaction> to_destroy = new List<Interaction>();
-        foreach(Interaction active in active_interactions)
+        foreach (Interaction active in active_interactions)
+        {
             if (active.config_interaction != null && active.config_interaction.id == interaction_name)
                 to_destroy.Add(active);
+        }
+
         foreach(Interaction active in to_destroy)
             active.destroy();
 

@@ -238,6 +238,14 @@ public class Scenario
         }
     }
 
+    public static void restartScenario()
+    {
+        if (current == null || current.scenario_config == null) return;
+        string scenario_id = current.scenario_config.scenarioId;
+        current = null;
+        Activate(scenario_id);
+        Load(scenario_id);
+    }
     public static void ExitSave() {
         SerializedScenario serialized_scenario = new SerializedScenario();
         serialized_scenario.interactions = GameStart.interaction_manager.serializeInteractions();
