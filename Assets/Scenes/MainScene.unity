@@ -658,7 +658,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1522223766385573582, guid: 4cc97aae6f06b91409483faa05f3db42, type: 3}
       propertyPath: m_Text
-      value: BUILD 6.8.2
+      value: BUILD 6.8.3
       objectReference: {fileID: 0}
     - target: {fileID: 1522223766817238258, guid: 4cc97aae6f06b91409483faa05f3db42, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -670,7 +670,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1522223766859018053, guid: 4cc97aae6f06b91409483faa05f3db42, type: 3}
       propertyPath: m_Text
-      value: BUILD 6.8.2
+      value: BUILD 6.8.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4cc97aae6f06b91409483faa05f3db42, type: 3}
@@ -856,6 +856,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5197045317790843043, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_Intensity
+      value: 5000
+      objectReference: {fileID: 0}
     - target: {fileID: 7339653516881549046, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_audioClip
       value: 
@@ -907,6 +911,10 @@ PrefabInstance:
     - target: {fileID: 7339653517382173703, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_Name
       value: Camera Holder
+      objectReference: {fileID: 0}
+    - target: {fileID: 9181388647301115274, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_Intensity
+      value: 802.7802
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}

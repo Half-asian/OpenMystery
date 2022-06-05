@@ -115,6 +115,8 @@ public abstract class Interaction : MonoBehaviour
     {
         GameStart.event_manager.all_script_events_finished_event -= onFinishedExitEvents;
 
+        Scenario.completeInteraction(config_interaction.id);
+
         if (config_interaction.leadsTo != null)
         {
             spawnLeadsTo();
@@ -190,8 +192,6 @@ public abstract class Interaction : MonoBehaviour
     public void finish()
     {
         if (config_interaction == null) return;
-
-        Scenario.completeInteraction(config_interaction.id);
 
         if (config_interaction.successReward != null)
         {
