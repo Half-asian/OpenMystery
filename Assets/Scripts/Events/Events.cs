@@ -395,7 +395,10 @@ public static class Events
                 {
                     if (Prop.spawned_props.ContainsKey(action_params[0]))
                     {
-                        Prop.spawned_props[action_params[0]].model.game_object.GetComponent<PropAnimSequence>().advanceAnimSequence();
+                        if (Prop.spawned_props[action_params[0]].model.game_object.GetComponent<PropAnimSequence>() != null)
+                            Prop.spawned_props[action_params[0]].model.game_object.GetComponent<PropAnimSequence>().advanceAnimSequence();
+                        else
+                            Debug.LogWarning("Prop " + action_params[0] + " did not have an anim sequence");
                     }
                     else
                     {
