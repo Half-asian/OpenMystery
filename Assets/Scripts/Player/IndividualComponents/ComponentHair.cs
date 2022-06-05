@@ -23,7 +23,7 @@ namespace IndividualComponents
             if (string.IsNullOrEmpty(model_id))
                 return null;
             if (component_model != null)
-                GameObject.Destroy(component_model.game_object);
+                removeComponent();
             component_model = ModelManager.loadModel(model_id, avatar_components.base_model.pose_bones);
             component_model.game_object.transform.parent = avatar_components.base_model.game_object.transform;
             setModifiers();

@@ -25,7 +25,7 @@ namespace IndividualComponents
             if (component_id == "LongPants" || component_id == null)
             {
                 if (component_model != null)
-                    GameObject.Destroy(component_model.game_object);
+                    removeComponent();
                 return null;
             }
 
@@ -38,7 +38,7 @@ namespace IndividualComponents
                 model_id = patch.femaleModelId;
 
             if (component_model != null)
-                GameObject.Destroy(component_model.game_object); ;
+                removeComponent();
             component_model = ModelManager.loadModel(model_id, avatar_components.base_model.pose_bones);
             component_model.game_object.transform.parent = avatar_components.base_model.game_object.transform;
             setModifiers();

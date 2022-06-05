@@ -294,6 +294,7 @@ public abstract class AvatarComponentWithModel : AvatarComponent
     public override void removeComponent()
     {
         GameObject.Destroy(component_model.game_object);
+        component_model = null;
     }
     public override void hideComponent()
     {

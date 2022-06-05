@@ -23,9 +23,7 @@ namespace IndividualComponents
                 return null;
             string model_id = Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].modelid;
             if (component_model != null)
-            {
-                GameObject.Destroy(component_model.game_object);
-            }
+                removeComponent();
             component_model = ModelManager.loadModel(model_id, avatar_components.base_model.pose_bones);
             component_model.game_object.transform.parent = avatar_components.base_model.game_object.transform;
 
