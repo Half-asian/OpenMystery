@@ -127,14 +127,22 @@ public class DialogueManager : MonoBehaviour
         {
             foreach (ConfigHPDialogueLine.HPDialogueLine i in Configs.dialogue_dict[dialogue])
             {
+
+
                 if (i.initialTurn == true)
                 {
                     dialogue_line = i.id;
                     break; //There can be multiple. Take the first one.
                 }
+
+                if (i.id.ToLower().EndsWith("line1")) //This is our second best bet 
+                    dialogue_line = i.id;
+
             }
             if (dialogue_line == null)
             {
+
+
                 dialogue_line = Configs.dialogue_dict[dialogue][0].id; //No initial turn? Thats fine. Take the first match.
             }
         }
