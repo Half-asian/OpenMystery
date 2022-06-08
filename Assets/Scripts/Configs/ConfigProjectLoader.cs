@@ -19,6 +19,7 @@ public class ConfigProject : Config<ConfigProject>
         public string progressType;
         public string projectNameToken;
         public string scenarioId;
+        public string skillId;
         public int starsToPass;
         public int[][] progressForStars;
         public string[] passPlaylistIds;

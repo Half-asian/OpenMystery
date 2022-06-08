@@ -84,6 +84,10 @@ public class Project
                 Reward.getReward(r[1]);
             }
         }
+        if (project_config.skillId != null)
+        {
+            Reward.getSkill(project_config.skillId);
+        }
 
         Scenario.Activate(project_config.outroScenarioId, Scenario.current.objective);
         Scenario.Load(project_config.outroScenarioId);

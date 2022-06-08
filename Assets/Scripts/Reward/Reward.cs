@@ -27,4 +27,15 @@ public class Reward
 
 
     }
+
+    public static void getSkill(string skill_id)
+    {
+        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\skills_unlocked.txt").Contains("skillUnlocked(\"" + skill_id + "\")"))
+        {
+            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\skills_unlocked.txt", true);
+            writer.WriteLine("skillUnlocked(\"" + skill_id + "\")");
+            writer.Close();
+            Debug.Log("Unlocked new skill " + skill_id);
+        }
+    }
 }
