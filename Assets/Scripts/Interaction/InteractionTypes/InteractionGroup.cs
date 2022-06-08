@@ -63,7 +63,8 @@ public class InteractionGroup : Interaction
                 {
                     new_interaction.parent_group_interaction = this;
                     new_interaction.parent_group_id = id;
-                    new_interaction.interaction_gameobject.transform.parent = interaction_gameobject.transform;
+                    if (interaction_gameobject != null)
+                        new_interaction.interaction_gameobject.transform.parent = interaction_gameobject.transform;
                     member_interactions[member_interaction] = new_interaction;
                 }
             }
