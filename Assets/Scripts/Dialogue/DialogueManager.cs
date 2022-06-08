@@ -174,7 +174,6 @@ public class DialogueManager : MonoBehaviour
         }
         
         Debug.Log("activated dialogue " + dialogue_name);
-        Log.writeFull("activated dialogue " + dialogue_name);
         
         dialogue_status = DialogueStatus.WaitingEnterEvents;
 
@@ -210,7 +209,6 @@ public class DialogueManager : MonoBehaviour
                 if (override_line.companionId == companionId)
                 {
                     Debug.Log("Overriding dialogue " + dialogue.id + " with " + override_line.id);
-                    Log.writeFull("Overriding dialogue " + dialogue.id + " with " + override_line.id);
                     override_line.overrideLine(dialogue);
                 }
             }
@@ -390,7 +388,6 @@ public class DialogueManager : MonoBehaviour
                     if (override_choice.companionId == companionId)
                     {
                         Debug.Log("Overriding choice " + dialogue.dialogueChoiceIds[0] + " with " + override_choice.id);
-                        Log.writeFull("Overriding choice " + dialogue.dialogueChoiceIds[0] + " with " + override_choice.id);
                         override_choice.overrideChoice(Configs.config_dialogue_choices.DialogueChoice[dialogue.dialogueChoiceIds[0]]);
                     }
                 }
@@ -403,7 +400,6 @@ public class DialogueManager : MonoBehaviour
                     if (override_choice.companionId == companionId)
                     {
                         Debug.Log("Overriding choice " + dialogue.dialogueChoiceIds[1] + " with " + override_choice.id);
-                        Log.writeFull("Overriding choice " + dialogue.dialogueChoiceIds[1] + " with " + override_choice.id);
                         override_choice.overrideChoice(Configs.config_dialogue_choices.DialogueChoice[dialogue.dialogueChoiceIds[1]]);
                     }
                 }
@@ -418,7 +414,6 @@ public class DialogueManager : MonoBehaviour
                         if (override_choice.companionId == companionId)
                         {
                             Debug.Log("Overriding choice " + dialogue.dialogueChoiceIds[2] + " with " + override_choice.id);
-                            Log.writeFull("Overriding choice " + dialogue.dialogueChoiceIds[2] + " with " + override_choice.id);
                             override_choice.overrideChoice(Configs.config_dialogue_choices.DialogueChoice[dialogue.dialogueChoiceIds[2]]);
                         }
                     }

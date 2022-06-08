@@ -417,7 +417,6 @@ public class C3B
 			return readC3B(root_folder + file_name);
 		}
 		Debug.LogError("Couldn't find " + root_folder + file_name);
-		Log.write("Couldn't find " + root_folder + file_name, "error");
 		return null;
 	}
 }

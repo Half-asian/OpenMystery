@@ -82,19 +82,6 @@ public class MainMenu : MonoBehaviour
             crash.SetActive(true);
             crash.transform.Find("Error").GetComponent<Text>().text = logString;
             crash.transform.Find("Trace").GetComponent<Text>().text = stackTrace;
-
-            System.IO.FileStream oFileStream = null;
-
-            if (!File.Exists("error_log.txt"))
-            {
-                oFileStream = new System.IO.FileStream("error_log.txt", System.IO.FileMode.Create);
-                oFileStream.Close();
-            }
-
-            StreamWriter writer = new StreamWriter("error_log.txt", true);
-            writer.WriteLine(logString);
-            writer.WriteLine(stackTrace);
-            writer.Close();
         }
     }
 
@@ -103,19 +90,6 @@ public class MainMenu : MonoBehaviour
         crash.SetActive(true);
         crash.transform.Find("Error").GetComponent<Text>().text = logString;
         crash.transform.Find("Trace").GetComponent<Text>().text = stackTrace;
-
-        System.IO.FileStream oFileStream = null;
-
-        if (!File.Exists("error_log.txt"))
-        {
-            oFileStream = new System.IO.FileStream("error_log.txt", System.IO.FileMode.Create);
-            oFileStream.Close();
-        }
-
-        StreamWriter writer = new StreamWriter("error_log.txt", true);
-        writer.WriteLine(logString);
-        writer.WriteLine(stackTrace);
-        writer.Close();
     }
 
     public void quitGame()

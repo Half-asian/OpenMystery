@@ -38,7 +38,6 @@ public class EventPlayer : MonoBehaviour
         }
 
         Debug.Log("Event " + event_name);
-        Log.write("Event " + event_name);
 
         float event_time = 0.0f;
         if (!Configs.config_script_events.ScriptEvents.ContainsKey(event_name))

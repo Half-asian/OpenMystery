@@ -93,7 +93,6 @@ public class TextureManager
         else
         {
 			Debug.LogError("Couldn't find tex " + GlobalEngineVariables.assets_folder + "\\textures\\" + name);
-			Log.write("Couldn't find tex" + GlobalEngineVariables.assets_folder + "\\textures\\" + name, "error");
 			return null;
         }
 	}

@@ -202,7 +202,6 @@ public class GameStart : MonoBehaviour
 
     public async Task StartLoading()
     {
-        Log.write("Start Loading");
         //anything thats a getcomponent, makes use of coroutines or needs references to game objects
 
         dialogue_manager = GetComponent<DialogueManager>();
@@ -257,11 +256,9 @@ public class GameStart : MonoBehaviour
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 144;
 
-        Log.write("Pre Config load");
         ui_manager.setup();
 
         await Configs.loadConfigsAsync();
-        Log.write("LOADED ASYNC");
         CameraManager.current.initialise();
         //Sound.playBGMusic("BGM");
         Sound.current.playCustom(music);
@@ -318,7 +315,6 @@ public class GameStart : MonoBehaviour
 
         main_menu = GameObject.Find("MainMenuCanvas").GetComponent<MainMenu>();
         //Are we in model view or game mode?
-        Log.initLog();
         if (!File.Exists("..\\engine_variables.json"))
             throw new System.Exception("Please launch the game using the launcher.");
         GlobalEngineVariables.CreateFromJSON("..\\engine_variables.json");

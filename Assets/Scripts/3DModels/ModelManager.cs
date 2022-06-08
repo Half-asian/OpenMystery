@@ -172,12 +172,12 @@ public class ModelManager
 		}
 		else
 		{
-			Log.write("invalid load c3b " + name);
+			Debug.LogError("invalid load c3b " + name);
 			return null;
 		}
 		if (name == "")
 		{
-			Log.write("c3b no name");
+			Debug.LogError("c3b no name");
 			return null;
 		}
 		if (name == "o_Female_ForestFormal_FULL1_skin")
@@ -186,7 +186,7 @@ public class ModelManager
 		}
 		if (!c3m.ModelConfig.ContainsKey(name))
 		{
-			Log.write("Not c3b config entry for " + name);
+			Debug.LogError("Not c3b config entry for " + name);
 			return null;
 		}
 
@@ -196,7 +196,6 @@ public class ModelManager
 		if (model == null)
 		{
 			Debug.LogError("Model loaded null " + name);
-			Log.write("Model loaded null " + name, "error");
 			return null;
 		}
 

@@ -12,7 +12,6 @@ public class C3T
 			return CocosModel.CreateFromJSON(root_folder + file_name);
 		}
 		Debug.LogError("Couldn't find " + root_folder + file_name);
-		Log.write("Couldn't find " + root_folder + file_name, "error");
 		return null;
 	}
 }

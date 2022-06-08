@@ -152,8 +152,7 @@ public class Sound : MonoBehaviour
         yield return www.SendWebRequest();
         if (www.result == UnityWebRequest.Result.ConnectionError)
         {
-            Debug.Log(www.error);
-            Log.writeFull(www.error, "error");
+            Debug.LogError(www.error);
             throw new System.Exception(www.error);
         }
         else
