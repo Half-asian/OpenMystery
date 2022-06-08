@@ -27,7 +27,6 @@ public class Scene
 
     public static void setCurrentScene(string scene_id)
     {
-        destroyScenePrefab();
         if (!Configs.config_scene.Scene.ContainsKey(scene_id))
             throw new System.Exception("Set Scene - invalid scene name.");
 
@@ -45,6 +44,8 @@ public class Scene
 
         if (scene_has_changed)
         {
+            destroyScenePrefab();
+
             Scene.checkAddScenePrefab(current.layoutId);
             Scene.checkAddScenePrefab(current.masterSceneId);
 
@@ -249,6 +250,7 @@ public class Scene
             else
             {
                 Debug.LogError("Scene " + Scene.current.envId + " does not define hotspot " + hotspot_id);
+                go.transform.position = Vector3.zero;
             }
         }
         else

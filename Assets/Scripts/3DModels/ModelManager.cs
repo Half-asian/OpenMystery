@@ -718,20 +718,27 @@ public class ModelManager
 
 								if (material.CastShadow == 0)
                                 {
+
 									if (name[0] != 'b')
 										node_go.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 									else
 										node_go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 								}
 								if (material.shaderName == "glow_vfx")
-                                {
-									if (name[0] != 'b')
-										node_go.GetComponent<SkinnedMeshRenderer>().receiveShadows = false;
-									else
-										node_go.GetComponent<MeshRenderer>().receiveShadows = false;
-								}
+								{
 
-							#endregion
+									if (name[0] != 'b')
+									{
+										node_go.GetComponent<SkinnedMeshRenderer>().receiveShadows = false;
+										node_go.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+									}
+									else
+									{
+										node_go.GetComponent<MeshRenderer>().receiveShadows = false;
+										node_go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+									}
+								}
+									#endregion
 							}
 						}
 					}
