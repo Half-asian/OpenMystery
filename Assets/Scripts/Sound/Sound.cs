@@ -112,14 +112,12 @@ public class Sound : MonoBehaviour
         }
     }
 
-    public void playCustom(AudioClip audioClip)
+    public void playCustom(string filename)
     {
-        if (BGMusicPlayer.GetComponent<AudioSource>().clip == audioClip)
-            return;
-
-        BGMusicPlayer.GetComponent<AudioSource>().clip = audioClip;
-        BGMusicPlayer.GetComponent<AudioSource>().Play();
+        Debug.Log("load custom: " + Path.Combine(Path.GetDirectoryName(Application.dataPath), filename));
+        StartCoroutine(PlayAudioFile(Path.Combine(Path.GetDirectoryName(Application.dataPath), filename), "custom"));
     }
+
 
     IEnumerator PlayAudioFile(string filename, string type)
     {
@@ -130,6 +128,17 @@ public class Sound : MonoBehaviour
         }
 
         if (type == "bgaudio")
+        {
+            if (BGMusicPlayer.GetComponent<AudioSource>().clip != null)
+            {
+                if (BGMusicPlayer.GetComponent<AudioSource>().clip.name == filename)
+                {
+                    yield break;
+                }
+            }
+        }
+
+        if (type == "custom")
         {
             if (BGMusicPlayer.GetComponent<AudioSource>().clip != null)
             {
@@ -168,7 +177,7 @@ public class Sound : MonoBehaviour
                 SoundEffectPlayer.GetComponent<AudioSource>().Stop();
                 SoundEffectPlayer.GetComponent<AudioSource>().PlayOneShot(myClip);
             }
-            else if (type == "bgaudio")
+            else if (type == "bgaudio" || type == "custom")
             {
                 myClip.name = filename;
                 BGMusicPlayer.GetComponent<AudioSource>().clip = myClip;

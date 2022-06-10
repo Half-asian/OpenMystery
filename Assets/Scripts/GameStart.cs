@@ -261,7 +261,8 @@ public class GameStart : MonoBehaviour
         await Configs.loadConfigsAsync();
         CameraManager.current.initialise();
         //Sound.playBGMusic("BGM");
-        Sound.current.playCustom(music);
+
+        Sound.current.playCustom("theblueghost.mp3");
 
         if (GlobalEngineVariables.launch_mode == "character")
         {
