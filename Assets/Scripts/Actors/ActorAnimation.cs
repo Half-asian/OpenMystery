@@ -11,7 +11,7 @@ public class ActorAnimation : MonoBehaviour
 
     AnimationClip default_anim;
 
-    private event Action onBlockedFinish = delegate { };
+    private event Action onBlockedFinish;
 
     public AnimationClip animation1_intro;
     public AnimationClip animation1_loop;
@@ -182,6 +182,9 @@ public class ActorAnimation : MonoBehaviour
         animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, null, actor_controller, bone_mods);
         if (animation1_loop == null)
             Debug.LogError("Animation1_Loop was null somehow");
+
+        animation1_loop.wrapMode = WrapMode.Loop; //Always loop even if the animation config says clamp
+
         if (animation.introAnim != null)
             animation1_intro = AnimationManager.loadAnimationClip(animation.introAnim, actor_controller.model, actor_info, null, actor_controller, bone_mods);
         if (animation.outroAnim != null)
@@ -217,18 +220,16 @@ public class ActorAnimation : MonoBehaviour
             waitForAnimation = WaitForAnimation(animation2_exit, "outro");
             actor_controller.StartCoroutine(waitForAnimation);
         }
-        else
-        {
-            waitForAnimation = WaitForAnimation(animation1_loop, "loop");
-            actor_controller.StartCoroutine(waitForAnimation);
-        }
     }
 
     private IEnumerator WaitForAnimation(AnimationClip clip, string current)
     {
+        //The 0.01f fixes a T-pose
+        //I have no idea why
+        //There seems to be no other way around this
         float start_time = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup <= clip.length + start_time - 0.1f) //The 0.1f fixes a spaz between switching animations if we leave the transition a bit long.
-            yield return new WaitForEndOfFrame();
+        while (Time.realtimeSinceStartup <= clip.length + start_time - 0.01f) 
+           yield return new WaitForEndOfFrame();
 
         GameStart.event_manager.notifyCharacterAnimationComplete(actor_controller.name, animId_idle);
 
@@ -241,6 +242,11 @@ public class ActorAnimation : MonoBehaviour
         {
             anim_state = "intro";
             updateAnimationState();
+        }
+        else
+        {
+            if (clip.wrapMode == WrapMode.ClampForever)
+                updateAnimationState();
         }
     }
 
@@ -261,7 +267,10 @@ public class ActorAnimation : MonoBehaviour
     public void unblock()
     {
         blocked = false;
-        onBlockedFinish.Invoke();
-        onBlockedFinish = delegate { };
+        if (onBlockedFinish == null)
+            replaceCharacterIdle(actor_info.animId_idle);
+
+        onBlockedFinish?.Invoke();
+        onBlockedFinish = null;
     }
 }

@@ -529,7 +529,6 @@ public class AnimationManager : MonoBehaviour
 	static void activateTriggerMap(Dictionary<string, string> triggerReplacement, ConfigAnimation._Animation3D.TriggerMap trigger, AnimationClip anim_clip)
     {
 		AnimationEvent animationEvent = new AnimationEvent();
-		Debug.Log("activateTriggerMap " + trigger.id);
 		switch (trigger.id)
         {
 			case "playSound":
