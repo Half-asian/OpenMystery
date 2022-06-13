@@ -215,10 +215,16 @@ public class CameraManager : MonoBehaviour
         if (action_params.Length > 1)
         {
             if (action_params.Length > 2)
-                Debug.Log("Camera what the fuck? why do you have more than 2 params?");
-
-            if (action_params[1] == "0")
+            {
                 last_camera = focusCam(action_params[0]);
+                Debug.LogError("Camera what the fuck? why do you have more than 2 params?");
+                simple_camera_controller.enabled = true;
+            }
+            if (action_params[1] == "0")
+            {
+                last_camera = focusCam(action_params[0]);
+                simple_camera_controller.enabled = true;
+            }
             else
             {
                 if (float.TryParse(action_params[1], out float time))

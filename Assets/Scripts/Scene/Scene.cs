@@ -40,14 +40,17 @@ public class Scene
 
         current = Configs.config_scene.Scene[scene_id];
 
-        addMasterSceneItems(current);
+        List<string> related_scenes = addMasterSceneItems(current);
 
         if (scene_has_changed)
         {
             destroyScenePrefab();
 
-            Scene.checkAddScenePrefab(current.layoutId);
-            Scene.checkAddScenePrefab(current.masterSceneId);
+            foreach(string related_scene_id in related_scenes)
+            {
+                Debug.Log("CHECKING SCENE ID PREFAB " + related_scene_id);
+                Scene.checkAddScenePrefab(related_scene_id);
+            }
 
             if (scene_model != null)
                 GameObject.Destroy(scene_model.game_object);
@@ -145,16 +148,27 @@ public class Scene
         scene_postprocessing_and_lighting = null;
     }
 
-    public static void addMasterSceneItems(ConfigScene._Scene current_scene)
+    public static List<string> addMasterSceneItems(ConfigScene._Scene current_scene, List<string> master_scenes = null)
     {
-        if (current_scene.masterSceneId == null)
-            return;
-        if (!Configs.config_scene.Scene.ContainsKey(current_scene.masterSceneId))
-            return;
 
+        if (master_scenes == null)
+            master_scenes = new List<string>();
+        if (!master_scenes.Contains(current_scene.layoutId))
+            master_scenes.Add(current_scene.layoutId);
+        if (current_scene.masterSceneId != null && !master_scenes.Contains(current_scene.masterSceneId))
+            master_scenes.Add(current_scene.masterSceneId);
+
+        if (current_scene.masterSceneId == null)
+        {
+            return master_scenes;
+        }
+        if (!Configs.config_scene.Scene.ContainsKey(current_scene.masterSceneId))
+        {
+            return master_scenes;
+        }
         if (Configs.config_scene.Scene[current_scene.masterSceneId].masterSceneId != null)
         {
-            addMasterSceneItems(Configs.config_scene.Scene[current_scene.masterSceneId]);
+            master_scenes = addMasterSceneItems(Configs.config_scene.Scene[current_scene.masterSceneId], master_scenes);
         }
 
         if (Configs.config_scene.Scene[current_scene.masterSceneId].camera_dict != null)
@@ -233,6 +247,7 @@ public class Scene
                 }
             }
         }
+        return master_scenes;
 
     }
 
