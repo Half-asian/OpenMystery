@@ -113,7 +113,7 @@ public class InteractionManager : MonoBehaviour {
 
             case "ScenarioTransition":
 
-                interaction_gameobject = new GameObject();
+                interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
                 active_interactions.Add(interaction_gameobject.AddComponent<InteractionScenarioTransition>().setup(ref new_interaction, run_entry_events));               
                 break;
 
