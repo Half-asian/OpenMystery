@@ -61,7 +61,7 @@ public class EventPlayer : MonoBehaviour
                 else
                     action_params = new string[0];
 
-                event_time += Events.doEventAction(event_name, event_index, action_params, this);
+                Events.doEventAction(event_name, event_index, action_params, this);
             }
         }
 

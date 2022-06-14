@@ -5,10 +5,8 @@ using UnityEngine.UI;
 public static class Events
 {
 
-    public static float doEventAction(string event_name, int event_index, string[] action_params, EventPlayer event_player)
+    public static void doEventAction(string event_name, int event_index, string[] action_params, EventPlayer event_player)
     {
-        float event_action_time = 0.0f;
-
         switch (Configs.config_script_events.ScriptEvents[event_name].action[event_index])
         {
             case "animateCharacter":
@@ -346,7 +344,7 @@ public static class Events
                 GameStart.event_manager.screen_fade.GetComponent<Image>().color = new Color(r / 255.0f, g / 255.0f, b / 255.0f);
                 GameStart.event_manager.screen_fade.SetActive(true);
                 GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_to_black");
-                event_action_time = 1.0f;
+                //event_action_time = 1.0f;
                 break;
 
 
@@ -354,7 +352,7 @@ public static class Events
                 GameStart.event_manager.screen_fade.GetComponent<Image>().color = new Color(0, 0, 0);
                 GameStart.event_manager.screen_fade.SetActive(true);
                 GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_to_black");
-                event_action_time = 1.0f;
+                //event_action_time = 1.0f;
                 break;
 
             case "screenFadeFrom":
@@ -579,8 +577,6 @@ public static class Events
                 Debug.LogWarning("Unknown event type " + Configs.config_script_events.ScriptEvents[event_name].action[event_index]);
                 break;
         }
-
-        return event_action_time;
     }
 
     public static List<string> carvePath(List<string> visited, string destination)
