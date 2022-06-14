@@ -39,7 +39,9 @@ public class ConfigInteraction : Config<ConfigInteraction>
         public string[] enterEvents;
         public string[] exitEvents;
         public string[] qteSuccessEvents;
+        public string[] qteFailEvents;
         public string[] successEvents;
+        public string[] failEvents; //unknown how these are triggered. possibly a mistake
     }
 
     public Dictionary<string, Interaction> Interactions;

@@ -23,6 +23,12 @@ public class InteractionFocus : Interaction
 
     public override void activate()
     {
-        interactionComplete();
+        FocusUI.onFocusGameFinished += onFocusGameFinished;
+        FocusUI.startFocusGame();
+    }
+
+    public void onFocusGameFinished(bool focus_success)
+    {
+        interactionComplete(focus_success);
     }
 }

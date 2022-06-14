@@ -154,6 +154,7 @@ public class Configs{
     public static Dictionary<string, ConfigSound._Ambient> ambient_dict;
     public static Dictionary<string, ConfigSound._Playlist> playlist_dict;
     public static Dictionary<string, ConfigSound._Sound> sounds_dict;
+    public static Dictionary<string, ConfigSound._SFX> sfx_dict;
 
     public static Dictionary<string, List<ConfigHPDialogueLine.HPDialogueLine>> dialogue_dict;
     public static Dictionary<string, List<ConfigHPDialogueOverride._HPDialogueOverride>> dialogue_line_override_dict;

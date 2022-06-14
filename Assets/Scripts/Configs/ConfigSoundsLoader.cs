@@ -115,6 +115,7 @@ class ConfigSoundsLoader
         Configs.ambient_dict = new Dictionary<string, ConfigSound._Ambient>();
         Configs.playlist_dict = new Dictionary<string, ConfigSound._Playlist>();
         Configs.sounds_dict = new Dictionary<string, ConfigSound._Sound>();
+        Configs.sfx_dict = new Dictionary<string, ConfigSound._SFX>();
 
         foreach (ConfigSound._Ambient p in Configs.config_sound.Ambient)
         {
@@ -128,6 +129,12 @@ class ConfigSoundsLoader
         {
             Configs.sounds_dict[p.soundId] = p;
         }
+        foreach (ConfigSound._SFX p in Configs.config_sound.SFX)
+        {
+            if (p.objectId != null)
+                Configs.sfx_dict[p.objectId] = p;
+        }
+
     }
 
 }

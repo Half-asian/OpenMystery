@@ -37,6 +37,14 @@ public class Sound : MonoBehaviour
         }
     }
 
+    public static void playSFX(string sfx)
+    {
+        if (Configs.sfx_dict.ContainsKey(sfx))
+        {
+            current.playAudioFile(Configs.sfx_dict[sfx].file, "soundeffect");
+        }
+    }
+
     public static void playBark(string bark_id)
     {
         if (Configs.playlist_dict.ContainsKey(bark_id))

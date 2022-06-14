@@ -83,31 +83,35 @@ public abstract class Interaction : MonoBehaviour
     }
 
     public abstract void activate();
-    public void interactionComplete()
+    public void interactionComplete(bool success = true)
     {
         if (!destroyed)
-            addExitEvents();
+            addExitEvents(success);
     }
-    protected void addExitEvents()
+    protected void addExitEvents(bool success)
     {
         Assert.IsNotNull(config_interaction, "finished interaction was null");
 
         Debug.Log("Finished interaction " + config_interaction.id);
 
         if (config_interaction.exitEvents != null)
-        {
             GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.exitEvents);
+
+        if (success == true)
+        {
+            if (config_interaction.successEvents != null)
+                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.successEvents);
+            if (config_interaction.qteSuccessEvents != null)
+                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.qteSuccessEvents);
+        }
+        else
+        {
+            if (config_interaction.failEvents != null)
+                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.failEvents);
+            if (config_interaction.qteFailEvents != null)
+                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.qteFailEvents);
         }
 
-        if (config_interaction.successEvents != null) //I guess we can fail some stuff. Not for now though.
-        {
-            GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.successEvents);
-        }
-
-        if (config_interaction.qteSuccessEvents != null) //I guess we can fail some stuff. Not for now though.
-        {
-            GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.qteSuccessEvents);
-        }
         GameStart.event_manager.all_script_events_finished_event += onFinishedExitEvents;
 
     }
