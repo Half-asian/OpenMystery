@@ -461,7 +461,7 @@ public class ModelManager
 								node_go.AddComponent<MeshRenderer>();
 								node_go.AddComponent<MeshFilter>();
 								node_go.GetComponent<MeshFilter>().mesh = mesh;
-								if ((!node_go.name.Contains("sky") && !node_go.name.Contains("dome")) || node_go.name.Contains("skye"))
+								if ((!node_go.name.ToLower().Contains("sky") && !node_go.name.ToLower().Contains("dome")) || node_go.name.ToLower().Contains("skye"))
 									node_go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
 								node_go.GetComponent<MeshRenderer>().material = mat;
 							}
@@ -471,7 +471,7 @@ public class ModelManager
 								node_go.AddComponent<SkinnedMeshRenderer>();
 								node_go.GetComponent<SkinnedMeshRenderer>().sharedMesh = mesh;
 								node_go.GetComponent<SkinnedMeshRenderer>().material = mat;
-								if ((!node_go.name.Contains("sky") && !node_go.name.Contains("dome")) || node_go.name.Contains("skye"))
+								if ((!node_go.name.ToLower().Contains("sky") && !node_go.name.ToLower().Contains("dome")) || node_go.name.ToLower().Contains("skye"))
 									node_go.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
 								node_go.GetComponent<SkinnedMeshRenderer>().updateWhenOffscreen = true;
 							}
