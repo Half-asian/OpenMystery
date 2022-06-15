@@ -146,35 +146,11 @@ public class ModelManager
         }
 
 		Model return_model = new Model();
-		Config3DModel c3m = null;
+		Config3DModel c3m = Configs.config_3dmodel;
 
 		name = getPatchedName(name);
 
-		if (name[0] == 'c')
-		{
-			c3m = Configs.config_character_model;
-		}
-		else if (name[0] == 'p')
-		{
-			c3m = Configs.config_prop_model;
-		}
-		else if (name[0] == 'b')
-		{
-			c3m = Configs.config_environment_model;
-		}
-		else if (name[0] == 'o')
-		{
-			c3m = Configs.config_outfit_model;
-		}
-		else if (name[0] == 'f')
-		{
-			c3m = Configs.config_fx;
-		}
-		else
-		{
-			Debug.LogError("invalid load c3b " + name);
-			return null;
-		}
+
 		if (name == "")
 		{
 			Debug.LogError("c3b no name");
@@ -782,48 +758,11 @@ public class ModelManager
 
 	public static void loadModelsTextures(string model_name)
 	{
-		if (model_name[0] == 'c')
+		foreach (string texture in Configs.config_3dmodel.ModelConfig[model_name].jsonData[0].neededTextureKeys)
 		{
-			foreach (string texture in Configs.config_character_model.ModelConfig[model_name].jsonData[0].neededTextureKeys)
+			if (!TextureManager.loaded_textures.ContainsKey(texture))
 			{
-				if (!TextureManager.loaded_textures.ContainsKey(texture))
-				{
-					//GameStart.game_state.loaded_textures[texture] = TextureManager.loadTexturePng(texture, "models//" + model_name);
-					TextureManager.loaded_textures[texture] = TextureManager.loadTextureDDS(texture);
-				}
-			}
-		}
-		else if (model_name[0] == 'p')
-		{
-			foreach (string texture in Configs.config_prop_model.ModelConfig[model_name].jsonData[0].neededTextureKeys)
-			{
-				if (!TextureManager.loaded_textures.ContainsKey(texture))
-				{
-					//GameStart.game_state.loaded_textures[texture] = TextureManager.loadTexturePng(texture, "models//" + model_name);
-					TextureManager.loaded_textures[texture] = TextureManager.loadTextureDDS(texture);
-				}
-			}
-		}
-		else if (model_name[0] == 'f')
-		{
-			foreach (string texture in Configs.config_fx.ModelConfig[model_name].jsonData[0].neededTextureKeys)
-			{
-				if (!TextureManager.loaded_textures.ContainsKey(texture))
-				{
-					//GameStart.game_state.loaded_textures[texture] = TextureManager.loadTexturePng(texture, "models//" + model_name);
-					TextureManager.loaded_textures[texture] = TextureManager.loadTextureDDS(texture);
-				}
-			}
-		}
-		else if (model_name[0] == 'o')
-		{
-			foreach (string texture in Configs.config_outfit_model.ModelConfig[model_name].jsonData[0].neededTextureKeys)
-			{
-				if (!TextureManager.loaded_textures.ContainsKey(texture))
-				{
-					//GameStart.game_state.loaded_textures[texture] = TextureManager.loadTexturePng(texture, "models//" + model_name);
-					TextureManager.loaded_textures[texture] = TextureManager.loadTextureDDS(texture);
-				}
+				TextureManager.loaded_textures[texture] = TextureManager.loadTextureDDS(texture);
 			}
 		}
 	}
