@@ -172,6 +172,11 @@ public class Configs{
     public static ConfigScenario config_scenario;
     public static ConfigTexture config_texture;
     public static Config3DModel config_3dmodel;
+    public static Config3DModel config_character_model => config_3dmodel;
+    public static Config3DModel config_prop_model => config_3dmodel;
+    public static Config3DModel config_environment_model => config_3dmodel;
+    public static Config3DModel config_outfit_model => config_3dmodel;
+    public static Config3DModel config_fx => config_3dmodel;
     public static ConfigAnimation config_animation;
     public static ConfigCharAnimSequence config_char_anim_sequence;
     public static ConfigHPActorInfo config_hp_actor_info;

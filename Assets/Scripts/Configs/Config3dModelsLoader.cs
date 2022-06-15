@@ -88,16 +88,8 @@ class Config3dModelsLoader
 {
     public static async Task loadConfigsAsync()
     {
-        Configs.config_texture = await ConfigTexture.CreateFromJSONAsync(Common.getConfigPath("TextureConfig-"));
-        Configs.config_character_model = await Config3DModel.CreateFromJSONAsync(Common.getConfigPath("3DModelConfig_Characters-"));
-        Configs.config_character_model.createMaterialDict();
-        Configs.config_environment_model = await Config3DModel.CreateFromJSONAsync(Common.getConfigPath("3DModelConfig_Environment-"));
-        Configs.config_environment_model.createMaterialDict();
-        Configs.config_fx = await Config3DModel.CreateFromJSONAsync(Common.getConfigPath("3DModelConfig_FX-"));
-        Configs.config_fx.createMaterialDict();
-        Configs.config_outfit_model = await Config3DModel.CreateFromJSONAsync(Common.getConfigPath("3DModelConfig_Outfit-"));
-        Configs.config_outfit_model.createMaterialDict();
-        Configs.config_prop_model = await Config3DModel.CreateFromJSONAsync(Common.getConfigPath("3DModelConfig_Props-"));
-        Configs.config_prop_model.createMaterialDict();
+        Configs.config_texture = await ConfigTexture.getJObjectsConfigsList("TextureConfig");
+        Configs.config_3dmodel = await Config3DModel.getJObjectsConfigsList("3DModelConfig", Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
+        Configs.config_3dmodel.createMaterialDict();
     }
 }
