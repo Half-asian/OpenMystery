@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 public class ConfigLocalData : Config<ConfigLocalData>
 {
@@ -49,9 +49,7 @@ class ConfigLocalDataLoader
 {
     public static async Task loadConfigsAsync()
     {
-        List<ConfigLocalData> list_local_data = await ConfigLocalData.getDeserializedConfigsList("LocalData");
-        Configs.config_local_data = list_local_data[0];
-        Configs.config_local_data.combine(list_local_data);
+        Configs.config_local_data = await ConfigLocalData.getJObjectsConfigsList("LocalData");
 
         foreach (ConfigLocalData._LocalData l in Configs.config_local_data.LocalData.Values)
         {

@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Text;
 using System;
+using Newtonsoft.Json.Linq;
 
 public abstract class Config<T>
 {
@@ -24,6 +25,25 @@ public abstract class Config<T>
                 return JsonConvert.DeserializeObject<T>(content);
             }
         );
+    }
+
+    public static async Task<JObject> CreateJObjectAsync(string file)
+    {
+        return await Task.Run(
+        () =>
+        {
+            byte[] byte_array = File.ReadAllBytes(file);
+
+            if ((char)byte_array[0] != '{')
+            {
+                ConfigDecrypt.decrypt(byte_array, file);
+            }
+
+            string content = Encoding.UTF8.GetString(byte_array);
+
+            return JObject.Parse(content);
+        }
+    );
     }
 
     public static async Task<List<T>> getDeserializedConfigsList(string type)
@@ -50,6 +70,50 @@ public abstract class Config<T>
                     }
                 }
                 return list_configs;
+            }
+        );
+    }
+
+    public static async Task<T> getJObjectsConfigsList(string type, MergeArrayHandling mergeType = MergeArrayHandling.Union)
+    {
+        return await Task.Run(
+            () =>
+            {
+                List<JObject> list_configs = new List<JObject>();
+                byte[] byte_array;
+                string content;
+                foreach (string config_name in Configs.config_contents.Contents[type])
+                {
+                    string path = null;
+                    if (config_name.Contains("\\mods\\"))
+                        path = config_name;
+                    else
+                        path = Common.getConfigPath(config_name);
+                    if (path != null)
+                    {
+                        byte_array = File.ReadAllBytes(path);
+
+                        if ((char)byte_array[0] != '{')
+                        {
+                            ConfigDecrypt.decrypt(byte_array, Common.getConfigPath(config_name));
+                        }
+                        content = Encoding.UTF8.GetString(byte_array);
+                        list_configs.Add(JObject.Parse(content));
+                    }
+                    else
+                    {
+                        GameStart.logWrite("Could not find config " + config_name);
+                    }
+                }
+                for (int i = 1; i < list_configs.Count; i++)
+                {
+                    list_configs[0].Merge(list_configs[i], new JsonMergeSettings
+                    {
+                        MergeArrayHandling = mergeType
+                    });
+                }
+
+                return list_configs[0].ToObject<T>();
             }
         );
     }
@@ -88,7 +152,7 @@ public abstract void combine(List<T> other_list);
 
 public class ConfigContents
 {
-    public Dictionary<string, string[]> Contents;
+    public Dictionary<string, List<string>> Contents;
     public static ConfigContents loadFromJSON(string file)
     {
         return JsonConvert.DeserializeObject<ConfigContents>(File.ReadAllText(file));
@@ -107,11 +171,7 @@ public class Configs{
     public static ConfigObjective config_objective;
     public static ConfigScenario config_scenario;
     public static ConfigTexture config_texture;
-    public static Config3DModel config_fx;
-    public static Config3DModel config_character_model;
-    public static Config3DModel config_environment_model;
-    public static Config3DModel config_prop_model;
-    public static Config3DModel config_outfit_model;
+    public static Config3DModel config_3dmodel;
     public static ConfigAnimation config_animation;
     public static ConfigCharAnimSequence config_char_anim_sequence;
     public static ConfigHPActorInfo config_hp_actor_info;
@@ -163,6 +223,8 @@ public class Configs{
     public static async Task loadConfigsAsync()
     {
         config_contents = ConfigContents.loadFromJSON(GlobalEngineVariables.configs_content_file);
+        ModLoader.addModConfigsToContents(config_contents);
+
 
         var config_dialogues_task = ConfigDialoguesLoader.loadConfigsAsync();
         var config_encounters_task = ConfigEncounterLoader.loadConfigsAsync();

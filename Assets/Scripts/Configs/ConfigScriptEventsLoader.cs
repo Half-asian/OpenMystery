@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json;
-
+using Newtonsoft.Json.Linq;
+using UnityEngine;
 public class ConfigScriptEvents : Config<ConfigScriptEvents>
 {
     [System.Serializable]
@@ -40,9 +40,7 @@ class ConfigScriptEventsLoader
 
     public static async Task loadConfigsAsync()
     {
-        List<ConfigScriptEvents> list_script_events = await ConfigScriptEvents.getDeserializedConfigsList("ScriptEvents");
-        Configs.config_script_events = list_script_events[0];
-        Configs.config_script_events.combine(list_script_events);
+        Configs.config_script_events = await ConfigScriptEvents.getJObjectsConfigsList("ScriptEvents");
     }
 
 }

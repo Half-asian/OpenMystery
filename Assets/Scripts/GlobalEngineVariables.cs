@@ -8,6 +8,7 @@ public class GlobalEngineVariables
 {
     public static string configs_content_file = "contents.json";
 
+
     [JsonProperty("configs_folder")]
     public static string configs_folder;
     [JsonProperty("assets_folder")]
@@ -22,6 +23,10 @@ public class GlobalEngineVariables
     public static string launch_mode;
     [JsonProperty("player_year")]
     public static int player_year;
+    [JsonProperty("mods_folder")]
+    public static string mods_folder;
+    [JsonProperty("active_mods")]
+    public static string[] active_mods;
     [JsonProperty("goal_chains")]
 
     public static Dictionary<string, string> goal_chains;
