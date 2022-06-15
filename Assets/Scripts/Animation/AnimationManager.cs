@@ -11,9 +11,17 @@ public class AnimationManager : MonoBehaviour
 
 		anim_clip.legacy = true;
 
-		//if (name != "Armature/jt_all_bind")
-		if (true)
+		string new_name = node.id;
+
+		foreach (string old in bone_fixes.Keys)
 		{
+			new_name = new_name.Replace(old, bone_fixes[old]);
+		}
+
+		//if (name != "Armature/jt_all_bind")
+		if (bone_fullname_dict.ContainsKey(new_name))
+		{
+			new_name = bone_fullname_dict[new_name];
 
 			bool first = true;
 			float prev_w = 0;
@@ -193,7 +201,7 @@ public class AnimationManager : MonoBehaviour
 				{
 
 
-					if (name == "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind")
+					if (Path.GetFileName(new_name) == "head1_neck_bind")
 					{
 						if (head_animation_scale != 0.0f)
 						{
@@ -212,7 +220,7 @@ public class AnimationManager : MonoBehaviour
 						}
 					}
 
-					if (name == "Armature/jt_all_bind") //AnimationScale takes the place of jt_all_bind
+					if (Path.GetFileName(new_name) == "jt_all_bind") //AnimationScale takes the place of jt_all_bind
 					{
 						/*if (animationScale != 0.0f)
 						{
@@ -249,12 +257,7 @@ public class AnimationManager : MonoBehaviour
 
 			//string new_name = name;
 
-			string new_name = node.id;
 
-			foreach (string old in bone_fixes.Keys)
-			{
-				new_name = new_name.Replace(old, bone_fixes[old]);
-			}
 
 
 
@@ -265,103 +268,98 @@ public class AnimationManager : MonoBehaviour
 					new_name = standard_bone_to_avatar_bone[name];
 				}
 			}*/
-			if (bone_fullname_dict.ContainsKey(new_name))
+
+
+
+			if (Path.GetFileName(new_name) != "jt_all_bind")
 			{
-				new_name = bone_fullname_dict[new_name];
+				AnimationCurve curve_pos_x = new AnimationCurve(key_frames_pos_x.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.x", curve_pos_x);
 
-				if (new_name != "Armature/jt_all_bind")
-				{
+				AnimationCurve curve_pos_y = new AnimationCurve(key_frames_pos_y.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.y", curve_pos_y);
 
+				AnimationCurve curve_pos_z = new AnimationCurve(key_frames_pos_z.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.z", curve_pos_z);
 
+				AnimationCurve curve_rot_w = new AnimationCurve(key_frames_rot_w.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.w", curve_rot_w);
 
-					AnimationCurve curve_pos_x = new AnimationCurve(key_frames_pos_x.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.x", curve_pos_x);
+				AnimationCurve curve_rot_y = new AnimationCurve(key_frames_rot_y.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.y", curve_rot_y);
 
-					AnimationCurve curve_pos_y = new AnimationCurve(key_frames_pos_y.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.y", curve_pos_y);
+				AnimationCurve curve_rot_z = new AnimationCurve(key_frames_rot_z.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.z", curve_rot_z);
 
-					AnimationCurve curve_pos_z = new AnimationCurve(key_frames_pos_z.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.z", curve_pos_z);
+				AnimationCurve curve_rot_x = new AnimationCurve(key_frames_rot_x.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.x", curve_rot_x);
 
-					AnimationCurve curve_rot_w = new AnimationCurve(key_frames_rot_w.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.w", curve_rot_w);
+				AnimationCurve curve_scale_x = new AnimationCurve(key_frames_scale_x.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localScale.x", curve_scale_x);
 
-					AnimationCurve curve_rot_y = new AnimationCurve(key_frames_rot_y.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.y", curve_rot_y);
+				AnimationCurve curve_scale_y = new AnimationCurve(key_frames_scale_y.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localScale.y", curve_scale_y);
 
-					AnimationCurve curve_rot_z = new AnimationCurve(key_frames_rot_z.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.z", curve_rot_z);
+				AnimationCurve curve_scale_z = new AnimationCurve(key_frames_scale_z.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localScale.z", curve_scale_z);
+			}
 
-					AnimationCurve curve_rot_x = new AnimationCurve(key_frames_rot_x.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.x", curve_rot_x);
+			else
+			{
+				//Used for root motion
+				/*if (ac != null) {
+					Vector3 previous_movement = Vector3.zero;
+					float previous_time = 0;
+					for (int key_frame = 0; key_frame < key_frames_pos_x.Count; key_frame++)
+					{
+						AnimationEvent ae = new AnimationEvent();
+						ae.time = key_frames_pos_x[key_frame].time;
+						ae.functionName = "rootMotionMove";
 
-					AnimationCurve curve_scale_x = new AnimationCurve(key_frames_scale_x.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localScale.x", curve_scale_x);
+						Vector3 new_movement = new Vector3(key_frames_pos_x[key_frame].value,
+								key_frames_pos_y[key_frame].value,
+								key_frames_pos_z[key_frame].value);
 
-					AnimationCurve curve_scale_y = new AnimationCurve(key_frames_scale_y.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localScale.y", curve_scale_y);
+						Vector3 result = new_movement - previous_movement;
+						float result_time = key_frames_pos_x[key_frame].time - previous_time;
+						ae.stringParameter = result.x + "," + result.y + "," + result.z + "," + result_time;
+						previous_movement = new_movement;
+						previous_time = key_frames_pos_x[key_frame].time;
 
-					AnimationCurve curve_scale_z = new AnimationCurve(key_frames_scale_z.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localScale.z", curve_scale_z);
-				}
+						ae.objectReferenceParameter = ac;
+						anim_clip.AddEvent(ae);
+					}
+				}*/
 
-				else
-				{
-					//Used for root motion
-					/*if (ac != null) {
-						Vector3 previous_movement = Vector3.zero;
-						float previous_time = 0;
-						for (int key_frame = 0; key_frame < key_frames_pos_x.Count; key_frame++)
-						{
-							AnimationEvent ae = new AnimationEvent();
-							ae.time = key_frames_pos_x[key_frame].time;
-							ae.functionName = "rootMotionMove";
+				/*AnimationCurve curve_pos_x = new AnimationCurve(key_frames_pos_x.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.x", curve_pos_x);
 
-							Vector3 new_movement = new Vector3(key_frames_pos_x[key_frame].value,
-								 key_frames_pos_y[key_frame].value,
-								 key_frames_pos_z[key_frame].value);
+				AnimationCurve curve_pos_y = new AnimationCurve(key_frames_pos_y.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.y", curve_pos_y);
 
-							Vector3 result = new_movement - previous_movement;
-							float result_time = key_frames_pos_x[key_frame].time - previous_time;
-							ae.stringParameter = result.x + "," + result.y + "," + result.z + "," + result_time;
-							previous_movement = new_movement;
-							previous_time = key_frames_pos_x[key_frame].time;
+				AnimationCurve curve_pos_z = new AnimationCurve(key_frames_pos_z.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.z", curve_pos_z);
 
-							ae.objectReferenceParameter = ac;
-							anim_clip.AddEvent(ae);
-						}
-					}*/
+				AnimationCurve curve_rot_w = new AnimationCurve(key_frames_rot_w.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.w", curve_rot_w);
 
-					/*AnimationCurve curve_pos_x = new AnimationCurve(key_frames_pos_x.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.x", curve_pos_x);
+				AnimationCurve curve_rot_y = new AnimationCurve(key_frames_rot_y.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.y", curve_rot_y);
 
-					AnimationCurve curve_pos_y = new AnimationCurve(key_frames_pos_y.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.y", curve_pos_y);
+				AnimationCurve curve_rot_z = new AnimationCurve(key_frames_rot_z.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.z", curve_rot_z);
 
-					AnimationCurve curve_pos_z = new AnimationCurve(key_frames_pos_z.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localPosition.z", curve_pos_z);
+				AnimationCurve curve_rot_x = new AnimationCurve(key_frames_rot_x.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.x", curve_rot_x);*/
 
-					AnimationCurve curve_rot_w = new AnimationCurve(key_frames_rot_w.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.w", curve_rot_w);
+				AnimationCurve curve_scale_x = new AnimationCurve(key_frames_scale_x.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localScale.x", curve_scale_x);
 
-					AnimationCurve curve_rot_y = new AnimationCurve(key_frames_rot_y.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.y", curve_rot_y);
+				AnimationCurve curve_scale_y = new AnimationCurve(key_frames_scale_y.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localScale.y", curve_scale_y);
 
-					AnimationCurve curve_rot_z = new AnimationCurve(key_frames_rot_z.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.z", curve_rot_z);
-
-					AnimationCurve curve_rot_x = new AnimationCurve(key_frames_rot_x.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localRotation.x", curve_rot_x);*/
-
-					AnimationCurve curve_scale_x = new AnimationCurve(key_frames_scale_x.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localScale.x", curve_scale_x);
-
-					AnimationCurve curve_scale_y = new AnimationCurve(key_frames_scale_y.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localScale.y", curve_scale_y);
-
-					AnimationCurve curve_scale_z = new AnimationCurve(key_frames_scale_z.ToArray());
-					anim_clip.SetCurve(new_name, typeof(Transform), "localScale.z", curve_scale_z);
-				}
+				AnimationCurve curve_scale_z = new AnimationCurve(key_frames_scale_z.ToArray());
+				anim_clip.SetCurve(new_name, typeof(Transform), "localScale.z", curve_scale_z);
 			}
 		}
 
