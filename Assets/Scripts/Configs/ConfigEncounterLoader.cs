@@ -41,7 +41,7 @@ public class ConfigEncounter : Config<ConfigEncounter>
     }
 
     public Dictionary<string, _Encounter> Encounter;
-    public override void combine(List<ConfigEncounter> other_list)
+    public override ConfigEncounter combine(List<ConfigEncounter> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -50,6 +50,11 @@ public class ConfigEncounter : Config<ConfigEncounter>
                 Encounter[key] = other_list[i].Encounter[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_encounter = getJObjectsConfigsListST("Encounter");
     }
 }
 
@@ -81,7 +86,7 @@ public class ConfigCompanion : Config<ConfigCompanion>
 
     public Dictionary<string, _Companion> Companion;
 
-    public override void combine(List<ConfigCompanion> other_list)
+    public override ConfigCompanion combine(List<ConfigCompanion> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -90,6 +95,15 @@ public class ConfigCompanion : Config<ConfigCompanion>
                 Companion[key] = other_list[i].Companion[key];
             }
         }
+        return this;
+    }
+    public static async Task getConfig()
+    {
+        Configs.config_companion = await getJObjectsConfigsListAsync("Companion");
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_companion = await loadConfigType();
     }
 }
 
@@ -107,7 +121,7 @@ public class ConfigDatePrompt : Config<ConfigDatePrompt>
 
     public Dictionary<string, _DatePrompt> DatePrompt;
 
-    public override void combine(List<ConfigDatePrompt> other_list)
+    public override ConfigDatePrompt combine(List<ConfigDatePrompt> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -116,20 +130,10 @@ public class ConfigDatePrompt : Config<ConfigDatePrompt>
                 DatePrompt[key] = other_list[i].DatePrompt[key];
             }
         }
+        return this;
     }
-}
-
-
-
-class ConfigEncounterLoader
-{
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        Configs.config_companion = await ConfigCompanion.CreateFromJSONAsync(Common.getConfigPath("Companion-"));
-        Configs.config_date_prompt = await ConfigDatePrompt.CreateFromJSONAsync(Common.getConfigPath("Romance_DatePrompt-"));
-
-        List<ConfigEncounter> list_encounter = await ConfigEncounter.getDeserializedConfigsList("Encounter");
-        Configs.config_encounter = list_encounter[0];
-        Configs.config_encounter.combine(list_encounter);
+        Configs.config_date_prompt = getJObjectsConfigsListST("DatePrompt");
     }
 }

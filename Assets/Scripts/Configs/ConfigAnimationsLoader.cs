@@ -33,9 +33,17 @@ public class ConfigAnimation : Config<ConfigAnimation>
     }
     public Dictionary<string, _Animation3D> Animation3D;
 
-    public override void combine(List<ConfigAnimation> other_list)
+    public override ConfigAnimation combine(List<ConfigAnimation> other_list)
     {
         throw new NotImplementedException();
+    }
+    public static async Task getConfig()
+    {
+        Configs.config_animation = await getJObjectsConfigsListAsync("Animation3D");
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_animation = await loadConfigType();
     }
 }
 
@@ -105,7 +113,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
 
     public Dictionary<string, _CharAnimSequence> CharAnimSequence;
 
-    public override void combine(List<ConfigCharAnimSequence> other_list)
+    public override ConfigCharAnimSequence combine(List<ConfigCharAnimSequence> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -114,40 +122,11 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
                 CharAnimSequence[key] = other_list[i].CharAnimSequence[key];
             }
         }
+        return this;
     }
-
-}
-
-
-
-
-class ConfigAnimationsLoader
-{
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        await Task.Run(
-        () =>
-        {
-            var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
-
-            byte[] byte_array = File.ReadAllBytes(Common.getConfigPath("3DAnimationConfig-"));
-
-            if ((char)byte_array[0] != '{')
-            {
-                ConfigDecrypt.decrypt(byte_array, Common.getConfigPath("3DAnimationConfig-"));
-            }
-
-            string content = Encoding.UTF8.GetString(byte_array);
-
-            Configs.config_animation = JsonConvert.DeserializeObject<ConfigAnimation>(content, settings);
-        }
-        );
-
-        List<ConfigCharAnimSequence> list_char_anim_sequence = await ConfigCharAnimSequence.getDeserializedConfigsList("CharAnimSequence");
-        Configs.config_char_anim_sequence = list_char_anim_sequence[0];
-        Configs.config_char_anim_sequence.combine(list_char_anim_sequence);
-
-
+        Configs.config_char_anim_sequence = getJObjectsConfigsListST("CharAnimSequence");
     }
-
 }
+

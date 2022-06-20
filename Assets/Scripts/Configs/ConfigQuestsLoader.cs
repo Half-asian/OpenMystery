@@ -34,9 +34,17 @@ public class ConfigTimeLimitedSideQuest : Config<ConfigTimeLimitedSideQuest>
     }
     public Dictionary<string, _TimeLimitedSideQuest> TimeLimitedSideQuest;
 
-    public override void combine(List<ConfigTimeLimitedSideQuest> other_list)
+    public override ConfigTimeLimitedSideQuest combine(List<ConfigTimeLimitedSideQuest> other_list)
     {
         throw new NotImplementedException();
+    }
+    public static async Task getConfig()
+    {
+        Configs.config_time_limited_side_quest = await getJObjectsConfigsListAsync("TimeLimitedSideQuest");
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_time_limited_side_quest = await loadConfigType();
     }
 }
 
@@ -49,18 +57,12 @@ public class ConfigYears : Config<ConfigYears>
     }
     public Dictionary<string, Year> Years;
 
-    public override void combine(List<ConfigYears> other_list)
+    public override ConfigYears combine(List<ConfigYears> other_list)
     {
         throw new NotImplementedException();
     }
-}
-
-class ConfigQuestsLoader
-{
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        Configs.config_years = await ConfigYears.CreateFromJSONAsync(Common.getConfigPath("Levels-"));
-        Configs.config_time_limited_side_quest = await ConfigTimeLimitedSideQuest.CreateFromJSONAsync(Common.getConfigPath("TLSQ-"));
+        Configs.config_years = getJObjectsConfigsListST("Years");
     }
 }
-

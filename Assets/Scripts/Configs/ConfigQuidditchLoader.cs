@@ -39,7 +39,7 @@ public class ConfigMatch : Config<ConfigMatch>
     }
     public Dictionary<string, _Match> Match;
 
-    public override void combine(List<ConfigMatch> other_list)
+    public override ConfigMatch combine(List<ConfigMatch> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -48,8 +48,12 @@ public class ConfigMatch : Config<ConfigMatch>
                 Match[key] = other_list[i].Match[key];
             }
         }
+        return this;
     }
-
+    public static void getConfig()
+    {
+        Configs.config_match = getJObjectsConfigsListST("Match");
+    }
 }
 
 public class ConfigPlayPhase : Config<ConfigPlayPhase>
@@ -64,7 +68,7 @@ public class ConfigPlayPhase : Config<ConfigPlayPhase>
     }
     public Dictionary<string, _PlayPhase> PlayPhase;
 
-    public override void combine(List<ConfigPlayPhase> other_list)
+    public override ConfigPlayPhase combine(List<ConfigPlayPhase> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -73,6 +77,11 @@ public class ConfigPlayPhase : Config<ConfigPlayPhase>
                 PlayPhase[key] = other_list[i].PlayPhase[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_play_phase = getJObjectsConfigsListST("PlayPhase");
     }
 }
 
@@ -90,7 +99,7 @@ public class ConfigPivotalPlay : Config<ConfigPivotalPlay>
         public int maxScore;
     }
     public Dictionary<string, _PivotalPlay> PivotalPlay;
-    public override void combine(List<ConfigPivotalPlay> other_list)
+    public override ConfigPivotalPlay combine(List<ConfigPivotalPlay> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -99,6 +108,11 @@ public class ConfigPivotalPlay : Config<ConfigPivotalPlay>
                 PivotalPlay[key] = other_list[i].PivotalPlay[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_pivotal_play = getJObjectsConfigsListST("PivotalPlay");
     }
 }
 
@@ -112,7 +126,7 @@ public class ConfigPivotalPlayBucket : Config<ConfigPivotalPlayBucket>
     }
     public Dictionary<string, _PivotalPlayBucket> PivotalPlayBucket;
 
-    public override void combine(List<ConfigPivotalPlayBucket> other_list)
+    public override ConfigPivotalPlayBucket combine(List<ConfigPivotalPlayBucket> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -121,6 +135,11 @@ public class ConfigPivotalPlayBucket : Config<ConfigPivotalPlayBucket>
                 PivotalPlayBucket[key] = other_list[i].PivotalPlayBucket[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_pivotal_play_bucket = getJObjectsConfigsListST("PivotalPlayBucket");
     }
 }
 
@@ -155,7 +174,7 @@ public class ConfigQuidditchTeam : Config<ConfigQuidditchTeam>
     }
     public Dictionary<string, _QuidditchTeam> QuidditchTeam;
 
-    public override void combine(List<ConfigQuidditchTeam> other_list)
+    public override ConfigQuidditchTeam combine(List<ConfigQuidditchTeam> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -164,8 +183,12 @@ public class ConfigQuidditchTeam : Config<ConfigQuidditchTeam>
                 QuidditchTeam[key] = other_list[i].QuidditchTeam[key];
             }
         }
+        return this;
     }
-
+    public static void getConfig()
+    {
+        Configs.config_quidditch_team = getJObjectsConfigsListST("QuidditchTeam");
+    }
 }
 
 public class ConfigQuidditchBroomInfo : Config<ConfigQuidditchBroomInfo>
@@ -180,7 +203,7 @@ public class ConfigQuidditchBroomInfo : Config<ConfigQuidditchBroomInfo>
 
     public Dictionary<string, _QuidditchBroomInfo> QuidditchBroomInfo;
 
-    public override void combine(List<ConfigQuidditchBroomInfo> other_list)
+    public override ConfigQuidditchBroomInfo combine(List<ConfigQuidditchBroomInfo> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -189,51 +212,10 @@ public class ConfigQuidditchBroomInfo : Config<ConfigQuidditchBroomInfo>
                 QuidditchBroomInfo[key] = other_list[i].QuidditchBroomInfo[key];
             }
         }
+        return this;
     }
-}
-
-
-class ConfigQuidditchLoader
-{
-    static readonly string[] match_config_names = {
-        "Quidditch_Matches-",
-        "QuidditchS2_Matches-",
-        "QuidditchS3_Matches-",
-    };
-
-    static readonly string[] playphase_config_names = {
-        "Quidditch_PlayPhases-",
-        "QuidditchS2_PlayPhases-",
-        "QuidditchS3_PlayPhases-",
-    };
-
-    static readonly string[] pivotal_play_config_names = {
-        "Quidditch_PivotalPlays-",
-        "QuidditchS2_PivotalPlays-",
-        "QuidditchS3_PivotalPlays-",
-    };
-
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        Configs.config_quidditch_team = await ConfigQuidditchTeam.CreateFromJSONAsync(Common.getConfigPath("Quidditch_Team-"));
-        Configs.config_quidditch_broom_info = await ConfigQuidditchBroomInfo.CreateFromJSONAsync(Common.getConfigPath("Quidditch_Broom-"));
-
-        List<ConfigMatch> list_match = await ConfigMatch.getDeserializedConfigsList("Match");
-        Configs.config_match = list_match[0];
-        Configs.config_match.combine(list_match);
-
-        List<ConfigPivotalPlayBucket> list_pivotal_play_bucket = await ConfigPivotalPlayBucket.getDeserializedConfigsList("PivotalPlayBucket");
-        Configs.config_pivotal_play_bucket = list_pivotal_play_bucket[0];
-        Configs.config_pivotal_play_bucket.combine(list_pivotal_play_bucket);
-
-        List<ConfigPlayPhase> list_play_phase = await ConfigPlayPhase.getDeserializedConfigsList("PlayPhase");
-        Configs.config_play_phase = list_play_phase[0];
-        Configs.config_play_phase.combine(list_play_phase);
-
-        List<ConfigPivotalPlay> list_pivotal_play = await ConfigPivotalPlay.getDeserializedConfigsList("PivotalPlay");
-        Configs.config_pivotal_play = list_pivotal_play[0];
-        Configs.config_pivotal_play.combine(list_pivotal_play);
+        Configs.config_quidditch_broom_info = getJObjectsConfigsListST("QuidditchBroomInfo");
     }
-
 }
-

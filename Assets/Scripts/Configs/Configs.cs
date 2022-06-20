@@ -5,149 +5,225 @@ using System.Threading.Tasks;
 using System.Text;
 using System;
 using Newtonsoft.Json.Linq;
-
+using UnityEngine;
+using System.Diagnostics;
 public abstract class Config<T>
 {
-    public static async Task<T> CreateFromJSONAsync(string file)
+    public static List<byte[]> loaded_configs;
+
+    public static async Task loadConfigBytes(string type)
     {
-        return await Task.Run(
-            () =>
+        loaded_configs = new List<byte[]>();
+        foreach (string config_name in Configs.config_contents.Contents[type])
+        {
+            string path = null;
+            if (config_name.Contains("\\mods\\"))
+                path = config_name;
+            else
+                path = Common.getConfigPath(config_name);
+            if (path != null)
             {
-                byte[] byte_array = File.ReadAllBytes(file);
+                byte[] bytes = await File.ReadAllBytesAsync(path);
+
+                if (bytes[0] != '{')
+                {
+                    ConfigDecrypt.decrypt(bytes, Common.getConfigPath(config_name));
+                }
+                loaded_configs.Add(bytes);
+            }
+            else
+            {
+                GameStart.logWrite("Could not find config " + config_name);
+            }
+        }
+    }
+
+    public static async Task<T> loadConfigType(MergeArrayHandling mergeType = MergeArrayHandling.Merge)
+    {
+        List<JObject> list_configs = new List<JObject>();
+
+        List<Task<JObject>> loadJobjectTasks = new List<Task<JObject>>();
+        foreach (byte[] bytes in loaded_configs)
+        {
+            MemoryStream memoryStream = new MemoryStream(bytes);
+            StreamReader streamReader = new StreamReader(memoryStream);
+            JsonTextReader jsonReader = new JsonTextReader(streamReader);
+            list_configs.Add(await JObject.LoadAsync(jsonReader));
+        }
+
+        for (int i = 1; i < list_configs.Count; i++)
+        {
+            list_configs[0].Merge(list_configs[i], new JsonMergeSettings
+            {
+                MergeArrayHandling = mergeType
+            });
+        }
+        var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
+        var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
+        return result;
+    }
+
+
+    public static T getJObjectsConfigsListST(string type, MergeArrayHandling mergeType = MergeArrayHandling.Union)
+    {
+        List<JObject> list_configs = new List<JObject>();
+        byte[] byte_array;
+        string content;
+        foreach (string config_name in Configs.config_contents.Contents[type])
+        {
+            string path = null;
+            if (config_name.Contains("\\mods\\"))
+                path = config_name;
+            else
+                path = Common.getConfigPath(config_name);
+            if (path != null)
+            {
+                byte_array = File.ReadAllBytes(path);
 
                 if ((char)byte_array[0] != '{')
                 {
-                    ConfigDecrypt.decrypt(byte_array, file);
+                    ConfigDecrypt.decrypt(byte_array, Common.getConfigPath(config_name));
                 }
-
-                string content = Encoding.UTF8.GetString(byte_array);
-
-                return JsonConvert.DeserializeObject<T>(content);
+                content = Encoding.UTF8.GetString(byte_array);
+                list_configs.Add(JObject.Parse(content));
             }
-        );
-    }
-
-    public static async Task<JObject> CreateJObjectAsync(string file)
-    {
-        return await Task.Run(
-        () =>
-        {
-            byte[] byte_array = File.ReadAllBytes(file);
-
-            if ((char)byte_array[0] != '{')
+            else
             {
-                ConfigDecrypt.decrypt(byte_array, file);
+                GameStart.logWrite("Could not find config " + config_name);
             }
-
-            string content = Encoding.UTF8.GetString(byte_array);
-
-            return JObject.Parse(content);
         }
-    );
-    }
-
-    public static async Task<List<T>> getDeserializedConfigsList(string type)
-    {
-        return await Task.Run(
-            () =>
+        //GameStart.logWrite(type + " loaded: " + st.Elapsed);
+        for (int i = 1; i < list_configs.Count; i++)
+        {
+            list_configs[0].Merge(list_configs[i], new JsonMergeSettings
             {
-                List<T> list_configs = new List<T>();
-                byte[] byte_array;
-                string content;
-                foreach (string config_name in Configs.config_contents.Contents[type])
-                {
-                    string path = Common.getConfigPath(config_name);
-                    if (path != null)
-                    {
-                        byte_array = File.ReadAllBytes(path);
-
-                        if ((char)byte_array[0] != '{')
-                        {
-                            ConfigDecrypt.decrypt(byte_array, Common.getConfigPath(config_name));
-                        }
-                        content = Encoding.UTF8.GetString(byte_array);
-                        list_configs.Add(JsonConvert.DeserializeObject<T>(content));
-                    }
-                }
-                return list_configs;
-            }
-        );
+                MergeArrayHandling = mergeType
+            });
+        }
+        var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
+        var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
+        return result;
     }
 
-    public static async Task<T> getJObjectsConfigsList(string type, MergeArrayHandling mergeType = MergeArrayHandling.Union)
+    public static async Task<JObject> loadJObject(string config_name)
     {
-        return await Task.Run(
-            () =>
+        string path = null;
+        if (config_name.Contains("\\mods\\"))
+            path = config_name;
+        else
+            path = Common.getConfigPath(config_name);
+        if (path != null)
+        {
+            
+            byte[] bytes = await File.ReadAllBytesAsync(path);
+            
+            if ((char)bytes[0] != '{')
             {
-                List<JObject> list_configs = new List<JObject>();
-                byte[] byte_array;
-                string content;
-                foreach (string config_name in Configs.config_contents.Contents[type])
-                {
-                    string path = null;
-                    if (config_name.Contains("\\mods\\"))
-                        path = config_name;
-                    else
-                        path = Common.getConfigPath(config_name);
-                    if (path != null)
-                    {
-                        byte_array = File.ReadAllBytes(path);
-
-                        if ((char)byte_array[0] != '{')
-                        {
-                            ConfigDecrypt.decrypt(byte_array, Common.getConfigPath(config_name));
-                        }
-                        content = Encoding.UTF8.GetString(byte_array);
-                        list_configs.Add(JObject.Parse(content));
-                    }
-                    else
-                    {
-                        GameStart.logWrite("Could not find config " + config_name);
-                    }
-                }
-                for (int i = 1; i < list_configs.Count; i++)
-                {
-                    list_configs[0].Merge(list_configs[i], new JsonMergeSettings
-                    {
-                        MergeArrayHandling = mergeType
-                    });
-                }
-
-                return list_configs[0].ToObject<T>();
+                ConfigDecrypt.decrypt(bytes, Common.getConfigPath(config_name));
             }
-        );
+            MemoryStream memoryStream = new MemoryStream(bytes);
+            StreamReader streamReader = new StreamReader(memoryStream);
+            JsonTextReader jsonReader = new JsonTextReader(streamReader);
+            return JObject.Parse(Encoding.UTF8.GetString(bytes));
+            //return await JObject.LoadAsync(jsonReader);
+        }
+        else
+        {
+            GameStart.logWrite("ERROR: Could not find config " + config_name);
+            return null;
+        }
     }
 
-    public static async Task<List<string>> getDecryptedConfigsList(string type)
+
+    public static async Task<T> getJObjectsConfigsListAsyncV2(string type, MergeArrayHandling mergeType = MergeArrayHandling.Merge)
     {
-        return await Task.Run(
-            () =>
+        List<JObject> list_configs = new List<JObject>();
+
+        List<Task<JObject>> loadJobjectTasks = new List<Task<JObject>>();
+        foreach (string config_name in Configs.config_contents.Contents[type])
+        {
+            loadJobjectTasks.Add(loadJObject(config_name));
+        }
+
+        await Task.WhenAll(loadJobjectTasks);
+
+        foreach (Task<JObject> t in loadJobjectTasks)
+        {
+            list_configs.Add(t.Result);
+        }
+
+        for (int i = 1; i < list_configs.Count; i++)
+        {
+            list_configs[0].Merge(list_configs[i], new JsonMergeSettings
             {
-                List<string> list_configs = new List<string>();
-                byte[] byte_array;
-                string content;
-                foreach (string config_name in Configs.config_contents.Contents[type])
-                {
-
-                    string path = Common.getConfigPath(config_name);
-                    if (path != null)
-                    {
-                        byte_array = File.ReadAllBytes(path);
-
-                        if ((char)byte_array[0] != '{')
-                        {
-                            ConfigDecrypt.decrypt(byte_array, Common.getConfigPath(config_name));
-                        }
-                        content = Encoding.UTF8.GetString(byte_array);
-                        list_configs.Add(content);
-                    }
-                }
-                return list_configs;
-            }
-        );
+                MergeArrayHandling = mergeType
+            });
+        }
+        var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
+        var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
+        return result;
     }
 
-public abstract void combine(List<T> other_list);
+
+    public static async Task<T> getJObjectsConfigsListAsync(string type, MergeArrayHandling mergeType = MergeArrayHandling.Merge)
+    {
+        List<JObject> list_configs = new List<JObject>();
+
+        List<Task<byte[]>> file_load_tasks = new List<Task<byte[]>>();
+        foreach (string config_name in Configs.config_contents.Contents[type])
+        {
+            string path = null;
+            if (config_name.Contains("\\mods\\"))
+                path = config_name;
+            else
+                path = Common.getConfigPath(config_name);
+            if (path != null)
+            {
+                file_load_tasks.Add(Task.Run(() => File.ReadAllBytesAsync(path)));
+            }
+            else
+            {
+                GameStart.logWrite("ERROR: Could not find config " + config_name);
+            }
+        }
+
+        await Task.WhenAll(file_load_tasks);
+
+        List<Task<JObject>> load_tasks = new List<Task<JObject>>();
+        for (int i = 0; i < file_load_tasks.Count; i++) {
+
+            byte[] bytes = file_load_tasks[i].Result;
+            if ((char)bytes[0] != '{')
+            {
+                ConfigDecrypt.decrypt(bytes, Common.getConfigPath(Configs.config_contents.Contents[type][i]));
+            }
+            MemoryStream memoryStream = new MemoryStream(bytes);
+            StreamReader streamReader = new StreamReader(memoryStream);
+            JsonTextReader jsonReader = new JsonTextReader(streamReader);
+            load_tasks.Add(Task.Run(() => JObject.LoadAsync(jsonReader)));
+        }
+
+        await Task.WhenAll(load_tasks);
+
+        foreach(Task<JObject> t in load_tasks)
+        {
+            list_configs.Add(t.Result);
+        }
+
+        for (int i = 1; i < list_configs.Count; i++)
+        {
+            list_configs[0].Merge(list_configs[i], new JsonMergeSettings
+            {
+                MergeArrayHandling = mergeType
+            });
+        }
+        var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
+        var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
+        return result;
+    }
+
+    public abstract T combine(List<T> other_list);
+
 }
 
 public class ConfigContents
@@ -160,9 +236,6 @@ public class ConfigContents
 }
 
 public class Configs{
-
-    public static event Action onConfigsLoaded = delegate { };
-
 
     public static ConfigContents config_contents;
 
@@ -220,50 +293,263 @@ public class Configs{
     public static Dictionary<string, List<ConfigHPDialogueOverride._HPDialogueOverride>> dialogue_line_override_dict;
     public static Dictionary<string, List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>> dialogue_choice_override_dict;
     public static Dictionary<string, ConfigPredicateAlias._PredicateAlias> predicate_alias_dict;
-    public static async Task loadConfigsAsync()
+    
+    public static void preload()
     {
         config_contents = ConfigContents.loadFromJSON(GlobalEngineVariables.configs_content_file);
         ModLoader.addModConfigsToContents(config_contents);
+    }
+
+    public static void postload()
+    {
+        AvatarComponents.avatar_components_hair = new List<string>();
+        foreach (string key in config_avatar_components.AvatarComponents.Keys)
+        {
+            if (config_avatar_components.AvatarComponents[key].category == "hair")
+                AvatarComponents.avatar_components_hair.Add(key);
+        }
+
+        AvatarComponents.avatar_components_tops = new List<string>();
+        foreach (string key in config_avatar_components.AvatarComponents.Keys)
+        {
+            if (config_avatar_components.AvatarComponents[key].category == "tops")
+                AvatarComponents.avatar_components_tops.Add(key);
+        }
+
+        AvatarComponents.avatar_components_one_piece = new List<string>();
+        foreach (string key in config_avatar_components.AvatarComponents.Keys)
+        {
+            if (config_avatar_components.AvatarComponents[key].category == "one-piece")
+                AvatarComponents.avatar_components_one_piece.Add(key);
+        }
+
+        AvatarComponents.avatar_components_bottoms = new List<string>();
+        foreach (string key in config_avatar_components.AvatarComponents.Keys)
+        {
+            if (config_avatar_components.AvatarComponents[key].category == "bottoms")
+                AvatarComponents.avatar_components_bottoms.Add(key);
+        }
 
 
-        var config_dialogues_task = ConfigDialoguesLoader.loadConfigsAsync();
-        var config_encounters_task = ConfigEncounterLoader.loadConfigsAsync();
-        var config_characters_task = ConfigCharactersLoader.loadConfigsAsync();
-        var config_animations_task = ConfigAnimationsLoader.loadConfigsAsync();
-        var config_3dmodels_task = Config3dModelsLoader.loadConfigsAsync();
-        var config_sounds_task = ConfigSoundsLoader.loadConfigsAsync();
-        var config_quidditch_task = ConfigQuidditchLoader.loadConfigsAsync();
-        var config_goals_task = ConfigGoalsLoader.loadConfigsAsync();
-        var config_locations_task = ConfigLocationsLoader.loadConfigsAsync();
-        var config_quests_task = ConfigQuestsLoader.loadConfigsAsync();
-        var config_localdata_task = ConfigLocalDataLoader.loadConfigsAsync();
-        var config_scenario_task = ConfigScenarioLoader.loadConfigsAsync();
-        var config_scene_task = ConfigSceneLoader.loadConfigsAsync();
-        var config_interaction_task = ConfigInteractionLoader.loadConfigsAsync();
-        var config_script_events_task = ConfigScriptEventsLoader.loadConfigsAsync();
-        var config_project_task = ConfigProjectLoader.loadConfigsAsync();
-        var config_avatar_task = ConfigsAvatarLoader.loadConfigsAsync();
-        var config_rewards_task = ConfigRewardsLoader.loadConfigsAsync();
+        if (config_hp_dialogue_line is not null)
+        {
+            dialogue_dict = new Dictionary<string, List<ConfigHPDialogueLine.HPDialogueLine>>();
+            foreach (ConfigHPDialogueLine.HPDialogueLine dialogue_line in config_hp_dialogue_line.HPDialogueLines.Values)
+            {
+                if (dialogue_line.dialogue != null)
+                {
+                    if (!dialogue_dict.ContainsKey(dialogue_line.dialogue))
+                    {
+                        dialogue_dict[dialogue_line.dialogue] = new List<ConfigHPDialogueLine.HPDialogueLine>();
+                    }
+                    dialogue_dict[dialogue_line.dialogue].Add(dialogue_line);
+                }
+            }
+            foreach (ConfigHPDialogueLine.HPDialogueLine hpdl in config_hp_dialogue_line.HPDialogueLines.Values)
+            {
+                if (hpdl.headOnly != null)
+                {
+                    try
+                    {
+                        hpdl._headOnly = (string[])hpdl.headOnly;
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
 
-        await config_dialogues_task;
-        await config_encounters_task;
-        await config_characters_task;
-        await config_animations_task;
-        await config_3dmodels_task;
-        await config_sounds_task;
-        await config_quidditch_task;
-        await config_goals_task;
-        await config_locations_task;
-        await config_quests_task;
-        await config_localdata_task;
-        await config_scenario_task;
-        await config_scene_task;
-        await config_interaction_task;
-        await config_script_events_task;
-        await config_project_task;
-        await config_avatar_task;
-        await config_rewards_task;
 
-        onConfigsLoaded.Invoke();
+        Configs.dialogue_line_override_dict = new Dictionary<string, List<ConfigHPDialogueOverride._HPDialogueOverride>>();
+        foreach (ConfigHPDialogueOverride._HPDialogueOverride dialogue_override_line in Configs.config_hp_dialogue_override.HPDialogueOverride.Values)
+        {
+            if (!Configs.dialogue_line_override_dict.ContainsKey(dialogue_override_line.overridesId))
+            {
+                Configs.dialogue_line_override_dict[dialogue_override_line.overridesId] = new List<ConfigHPDialogueOverride._HPDialogueOverride>();
+            }
+            Configs.dialogue_line_override_dict[dialogue_override_line.overridesId].Add(dialogue_override_line);
+        }
+
+        Configs.dialogue_choice_override_dict = new Dictionary<string, List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>>();
+        foreach (ConfigDialogueChoiceOverride._DialogueChoiceOverride dialogue_override_choice in Configs.config_dialogue_choice_override.DialogueChoiceOverride.Values)
+        {
+            if (!Configs.dialogue_choice_override_dict.ContainsKey(dialogue_override_choice.overridesId))
+            {
+                Configs.dialogue_choice_override_dict[dialogue_override_choice.overridesId] = new List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>();
+            }
+            Configs.dialogue_choice_override_dict[dialogue_override_choice.overridesId].Add(dialogue_override_choice);
+        }
+
+        //This goal is for the avatar to change clothes. Not worth programming in the logic for this.
+        //Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.RemoveAt(3);
+        //Configs.config_goal.Goals["Y1_C3_P6_v2"].dependencies = null;
+
+        Configs.config_goal_chain.GoalChain["C2_v2"].classGoalIds.Insert(1, "Y1_C2_P4_hub"); //Tutorial triggers this class in between goals
+
+        //Insert broom flying class within the rest of the goals. It needs to be done in order.
+        Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.Insert(5, new List<string> { "Y1_C3_SummonBroom_v2" });
+        Configs.config_goal_chain.GoalChain["C3_v2"].classGoalIds = null;
+
+        Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true"; //Remove check to see if player has completed part of Y2
+
+        //Configs.config_objective.Objectives["Y1_C9_P2aObj1"].objectiveScenario = "MQ4C5P2a";
+
+        foreach (ConfigLocalData._LocalData l in Configs.config_local_data.LocalData.Values)
+        {
+            if (l.es != null)
+                l.en_US = l.es;
+            else if (l.pt != null)
+                l.en_US = l.pt;
+        }
+
+
+        Configs.predicate_alias_dict = new Dictionary<string, ConfigPredicateAlias._PredicateAlias>();
+        foreach (ConfigPredicateAlias._PredicateAlias p in Configs.config_predicate_alias.PredicateAlias)
+        {
+            Configs.predicate_alias_dict[p.aliasId] = p;
+        }
+
+        foreach (ConfigScenario._Scenario s in Configs.config_scenario.Scenario.Values)
+        {
+            if (s._mapLocationOverrides != null)
+            {
+                try { s.mapLocationOverrides = (Dictionary<string, string>)s._mapLocationOverrides; }
+                catch { }
+            }
+        }
+
+        foreach (ConfigScene._Scene scene in Configs.config_scene.Scene.Values)
+        {
+            if (scene.waypoints != null)
+            {
+                scene.waypoint_dict = new Dictionary<string, ConfigScene._Scene.WayPoint>();
+                foreach (ConfigScene._Scene.WayPoint waypoint in scene.waypoints)
+                {
+                    scene.waypoint_dict[waypoint.name] = waypoint;
+                }
+            }
+            if (scene.proplocators != null)
+            {
+                scene.proplocator_dict = new Dictionary<string, ConfigScene._Scene.PropLocator>();
+                foreach (ConfigScene._Scene.PropLocator prop_locator in scene.proplocators)
+                {
+                    scene.proplocator_dict[prop_locator.name] = prop_locator;
+                }
+            }
+            if (scene.cameras != null)
+            {
+                scene.camera_dict = new Dictionary<string, ConfigScene._Scene.Camera>();
+                foreach (ConfigScene._Scene.Camera camera in scene.cameras)
+                {
+                    scene.camera_dict[camera.name] = camera;
+                }
+            }
+            if (scene.hotspots != null)
+            {
+                scene.hotspot_dict = new Dictionary<string, ConfigScene._Scene.HotSpot>();
+                foreach (ConfigScene._Scene.HotSpot hotspot in scene.hotspots)
+                {
+                    scene.hotspot_dict[hotspot.name] = hotspot;
+                }
+            }
+        }
+
+        Configs.ambient_dict = new Dictionary<string, ConfigSound._Ambient>();
+        Configs.playlist_dict = new Dictionary<string, ConfigSound._Playlist>();
+        Configs.sounds_dict = new Dictionary<string, ConfigSound._Sound>();
+        Configs.sfx_dict = new Dictionary<string, ConfigSound._SFX>();
+
+        foreach (ConfigSound._Ambient p in Configs.config_sound.Ambient)
+        {
+            Configs.ambient_dict[p.trigger] = p;
+        }
+        foreach (ConfigSound._Playlist p in Configs.config_sound.Playlist)
+        {
+            Configs.playlist_dict[p.playlistId] = p;
+        }
+        foreach (ConfigSound._Sound p in Configs.config_sound.Sounds)
+        {
+            Configs.sounds_dict[p.soundId] = p;
+        }
+        foreach (ConfigSound._SFX p in Configs.config_sound.SFX)
+        {
+            if (p.objectId != null)
+                Configs.sfx_dict[p.objectId] = p;
+        }
+
+        Configs.config_scene.Scene["s_MQ5C5P1_rig"].hotspot_dict["hot_project"].position = new float[] { 507.067952f, 98.075569f, 428.769708f };
+        
+    }
+
+    public static void loadConfigModelInspector()
+    {
+        config_texture = ConfigTexture.getJObjectsConfigsListST("TextureConfig");
+        config_3dmodel = Config3DModel.getJObjectsConfigsListST("3DModelConfig", Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
+        config_animation = ConfigAnimation.getJObjectsConfigsListST("Animation3D");
+        config_char_anim_sequence = ConfigCharAnimSequence.getJObjectsConfigsListST("CharAnimSequence");
+        config_avatar_components = ConfigAvatarComponents.getJObjectsConfigsListST("AvatarComponents");
+        config_avatar_attribute_colors = ConfigAvatarAttributeColors.getJObjectsConfigsListST("AvatarAttributeColors");
+        config_avatar_outfit_data = ConfigAvatarOutfitData.getJObjectsConfigsListST("AvatarOutfitData");
+        config_avatar_patch_config = ConfigAvatarPatchConfig.getJObjectsConfigsListST("AvatarPatchConfig");
+        config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
+        config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
+        config_house = ConfigHouse.getJObjectsConfigsListST("House");
+        config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
+
+        Configs.config_3dmodel.createMaterialDict();
+        GameStart.logWrite("FINISHED ALL");
+    }
+
+    public static void loadConfigAll()
+    {
+        config_texture = ConfigTexture.getJObjectsConfigsListST("TextureConfig");
+        config_3dmodel = Config3DModel.getJObjectsConfigsListST("3DModelConfig", Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
+        config_animation = ConfigAnimation.getJObjectsConfigsListST("Animation3D");
+        config_char_anim_sequence = ConfigCharAnimSequence.getJObjectsConfigsListST("CharAnimSequence");
+        config_avatar_components = ConfigAvatarComponents.getJObjectsConfigsListST("AvatarComponents");
+        config_avatar_attribute_colors = ConfigAvatarAttributeColors.getJObjectsConfigsListST("AvatarAttributeColors");
+        config_avatar_outfit_data = ConfigAvatarOutfitData.getJObjectsConfigsListST("AvatarOutfitData");
+        config_avatar_patch_config = ConfigAvatarPatchConfig.getJObjectsConfigsListST("AvatarPatchConfig");
+        config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
+        config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
+        config_house = ConfigHouse.getJObjectsConfigsListST("House");
+        config_hp_dialogue_line = ConfigHPDialogueLine.getJObjectsConfigsListST("HPDialogueLines");
+        config_dialogue_choices = ConfigDialogueChoice.getJObjectsConfigsListST("DialogueChoice");
+        config_hp_dialogue_override = ConfigHPDialogueOverride.getJObjectsConfigsListST("HPDialogueOverride");
+        config_dialogue_choice_override = ConfigDialogueChoiceOverride.getJObjectsConfigsListST("DialogueChoiceOverride");
+        config_dialogue_speakers = ConfigDialogueSpeakers.getJObjectsConfigsListST("DialogueSpeaker");
+        config_dialogue_speaker_mapping = ConfigDialogueSpeakerMapping.getJObjectsConfigsListST("DialogueSpeakerMapping");
+        config_companion = ConfigCompanion.getJObjectsConfigsListST("Companion");
+        config_date_prompt = ConfigDatePrompt.getJObjectsConfigsListST("DatePrompt");
+        config_encounter = ConfigEncounter.getJObjectsConfigsListST("Encounter");
+        config_objective = ConfigObjective.getJObjectsConfigsListST("Objectives");
+        config_goal_chain = ConfigGoalChain.getJObjectsConfigsListST("GoalChain");
+        config_goal = ConfigGoal.getJObjectsConfigsListST("Goals");
+        config_interaction = ConfigInteraction.getJObjectsConfigsListST("Interactions");
+        config_local_data = ConfigLocalData.getJObjectsConfigsListST("LocalData");
+        config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
+        config_location = ConfigLocation.getJObjectsConfigsListST("Location");
+        config_location_hub = ConfigLocationHub.getJObjectsConfigsListST("LocationHub");
+        config_hub_npc = ConfigHubNPC.getJObjectsConfigsListST("HubNpc");
+        config_npc_waypoint_spawn = ConfigNpcWaypointSpawn.getJObjectsConfigsListST("NpcWaypointSpawn");
+        config_project = ConfigProject.getJObjectsConfigsListST("Project");
+        config_years = ConfigYears.getJObjectsConfigsListST("Years");
+        config_time_limited_side_quest = ConfigTimeLimitedSideQuest.getJObjectsConfigsListST("TimeLimitedSideQuest");
+        config_quidditch_team = ConfigQuidditchTeam.getJObjectsConfigsListST("QuidditchTeam");
+        config_quidditch_broom_info = ConfigQuidditchBroomInfo.getJObjectsConfigsListST("QuidditchBroomInfo");
+        config_match = ConfigMatch.getJObjectsConfigsListST("Match");
+        config_pivotal_play_bucket = ConfigPivotalPlayBucket.getJObjectsConfigsListST("PivotalPlayBucket");
+        config_play_phase = ConfigPlayPhase.getJObjectsConfigsListST("PlayPhase");
+        config_pivotal_play = ConfigPivotalPlay.getJObjectsConfigsListST("PivotalPlay");
+        config_reward = ConfigReward.getJObjectsConfigsListST("Reward");
+        config_scenario = ConfigScenario.getJObjectsConfigsListST("Scenario");
+        config_scene = ConfigScene.getJObjectsConfigsListST("Scene");
+        config_script_events = ConfigScriptEvents.getJObjectsConfigsListST("ScriptEvents");
+        config_sound = ConfigSound.getJObjectsConfigsListST("Playlist");
+
+        Configs.config_3dmodel.createMaterialDict();
+        GameStart.logWrite("FINISHED ALL");
     }
 }

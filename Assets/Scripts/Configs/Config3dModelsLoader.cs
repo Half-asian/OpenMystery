@@ -19,9 +19,17 @@ public class ConfigTexture : Config<ConfigTexture>
     }
     public Dictionary<string, _TextureConfig> TextureConfig;
 
-    public override void combine(List<ConfigTexture> other_list)
+    public override ConfigTexture combine(List<ConfigTexture> other_list)
     {
         throw new NotImplementedException();
+    }
+    public static async Task getConfig()
+    {
+        Configs.config_texture = await getJObjectsConfigsListAsync("TextureConfig");
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_texture = await loadConfigType();
     }
 }
 public class Config3DModel : Config<Config3DModel>
@@ -78,18 +86,18 @@ public class Config3DModel : Config<Config3DModel>
         }
     }
 
-    public override void combine(List<Config3DModel> other_list)
+    public override Config3DModel combine(List<Config3DModel> other_list)
     {
         throw new NotImplementedException();
     }
-}
 
-class Config3dModelsLoader
-{
-    public static async Task loadConfigsAsync()
+    public static async Task getConfig()
     {
-        Configs.config_texture = await ConfigTexture.getJObjectsConfigsList("TextureConfig");
-        Configs.config_3dmodel = await Config3DModel.getJObjectsConfigsList("3DModelConfig", Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
-        Configs.config_3dmodel.createMaterialDict();
+        Configs.config_3dmodel = await getJObjectsConfigsListAsync ("3DModelConfig", Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
+    }
+
+    public static async Task loadJ()
+    {
+        Configs.config_3dmodel = await loadConfigType(Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
     }
 }

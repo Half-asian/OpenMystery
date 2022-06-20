@@ -28,9 +28,13 @@ public class ConfigLocation : Config<ConfigLocation>
 
     public Dictionary<string, _Location> Location;
 
-    public override void combine(List<ConfigLocation> other_list)
+    public override ConfigLocation combine(List<ConfigLocation> other_list)
     {
         throw new NotImplementedException();
+    }
+    public static void getConfig()
+    {
+        Configs.config_location = getJObjectsConfigsListST("Location");
     }
 }
 
@@ -49,11 +53,14 @@ public class ConfigLocationHub : Config<ConfigLocationHub>
 
     public Dictionary<string, _LocationHub> LocationHub;
 
-    public override void combine(List<ConfigLocationHub> other_list)
+    public override ConfigLocationHub combine(List<ConfigLocationHub> other_list)
     {
         throw new NotImplementedException();
     }
-
+    public static async Task getConfig()
+    {
+        Configs.config_location_hub = await getJObjectsConfigsListAsync("LocationHub");
+    }
 }
 
 public class ConfigHubNPC : Config<ConfigHubNPC>
@@ -72,11 +79,14 @@ public class ConfigHubNPC : Config<ConfigHubNPC>
 
     public Dictionary<string, _HubNPC> HubNPC;
 
-    public override void combine(List<ConfigHubNPC> other_list)
+    public override ConfigHubNPC combine(List<ConfigHubNPC> other_list)
     {
         throw new NotImplementedException();
     }
-
+    public static void getConfig()
+    {
+        Configs.config_hub_npc = getJObjectsConfigsListST("HubNpc");
+    }
 }
 
 public class ConfigNpcWaypointSpawn : Config<ConfigNpcWaypointSpawn>
@@ -91,20 +101,13 @@ public class ConfigNpcWaypointSpawn : Config<ConfigNpcWaypointSpawn>
 
     public Dictionary<string, _NpcWaypointSpawn> NpcWaypointSpawn;
 
-    public override void combine(List<ConfigNpcWaypointSpawn> other_list)
+    public override ConfigNpcWaypointSpawn combine(List<ConfigNpcWaypointSpawn> other_list)
     {
         throw new NotImplementedException();
     }
-}
-
-class ConfigLocationsLoader
-{
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        Configs.config_location = await ConfigLocation.CreateFromJSONAsync(Common.getConfigPath("Locations-"));
-        Configs.config_location_hub = await ConfigLocationHub.CreateFromJSONAsync(Common.getConfigPath("Locations-"));
-        Configs.config_hub_npc = await ConfigHubNPC.CreateFromJSONAsync(Common.getConfigPath("HubNpcs-"));
-        Configs.config_npc_waypoint_spawn = await ConfigNpcWaypointSpawn.CreateFromJSONAsync(Common.getConfigPath("NpcWaypointSpawn-"));
+        Configs.config_npc_waypoint_spawn = getJObjectsConfigsListST("NpcWaypointSpawn");
     }
 }
 

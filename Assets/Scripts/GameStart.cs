@@ -257,77 +257,51 @@ public class GameStart : MonoBehaviour
         Application.targetFrameRate = 144;
 
         ui_manager.setup();
-
-        await Configs.loadConfigsAsync();
+        Debug.Log("StartLoading");
+        //await Task.Run(() => Configs.loadConfigs());
+        Configs.preload();
+        System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+        List<Task> tasks = new List<Task>();
+        //tasks.Add(Task.Run(() => Configs.loadConfigsa()));
+        //tasks.Add(Task.Run(() => Configs.loadConfigsb()));
+        //tasks.Add(Task.Run(() => Configs.loadConfigsc()));
+        //await Task.WhenAll(tasks);
+        if (GlobalEngineVariables.launch_mode == "character")
+        {
+            await Task.Run(() => Configs.loadConfigModelInspector());
+        }
+        else if (!model_inspector)
+        {
+            await Task.Run(() => Configs.loadConfigAll());
+            Configs.postload();
+        }
+        else
+            await Task.Run(() => Configs.loadConfigModelInspector());
         CameraManager.current.initialise();
+        stopwatch.Stop();
+        Debug.Log("Time to load configs: " + stopwatch.Elapsed);
         //Sound.playBGMusic("BGM");
 
         Sound.current.playCustom("theblueghost.mp3");
 
-        if (GlobalEngineVariables.launch_mode == "character")
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("CharacterCreator");
-        }
-        else if (Application.isEditor && model_inspector)
+        if (Application.isEditor && model_inspector)
         {
             _model_inspector_model = model_inspector_model;
             _model_inspector_actor = model_inspector_actor;
             UnityEngine.SceneManagement.SceneManager.LoadScene("ModelInspector");
         }
+        else if (GlobalEngineVariables.launch_mode == "character")
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("CharacterCreator");
+        }
+
         else
         {
             ui_manager.setMenu();
             menu_background = GetComponent<IMenuBackground>();
             menu_background.spawnMenuBackground();
         }
-    }
-
-
-
-
-    public static void logWrite(string message)
-    {
-        //StreamWriter writer = new StreamWriter("log.txt", true);
-        Debug.Log(message);
-        //writer.WriteLine(message);
-        //writer.Close();
-    }
-
-
-    public async void Start()
-    {
-        onReturnToMenu = delegate { };
-
-        Debug.Log("GameStart Start");
-
-        current = this;
-
-        //Initialize Managers
-        ModelManager.Initialize();
-        Actor.Initialize();
-        Prop.Initialize();
-        Scenario.Initialize();
-        Scene.Initialize();
-        Location.Initialize();
-        Goal.Initialize();
-        GoalChain.Initialize();
-        Objective.Initialize();
-        HubNPC.Initialize();
-
-        main_menu = GameObject.Find("MainMenuCanvas").GetComponent<MainMenu>();
-        //Are we in model view or game mode?
-        if (!File.Exists("..\\engine_variables.json"))
-            throw new System.Exception("Please launch the game using the launcher.");
-        GlobalEngineVariables.CreateFromJSON("..\\engine_variables.json");
-        if (!GlobalEngineVariables.checkIntegrity())
-            throw new System.Exception("Please launch the game using the launcher.");
-        PlayerManager.initialize();
-
-        if (!Application.isEditor)
-            File.Delete("..\\engine_variables.json");
-
-        main_menu.state = MainMenu.State.stateLoadingScreenLoading;
-        await StartLoading();
         main_menu.loading_spinner.enabled = false;
         ui_manager.please_wait_text.enabled = false;
         ui_manager.press_space_text.enabled = true;

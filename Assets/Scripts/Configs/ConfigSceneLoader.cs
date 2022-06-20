@@ -98,7 +98,7 @@ public class ConfigScene : Config<ConfigScene>
 
     public Dictionary<string, _Scene> Scene;
 
-    public override void combine(List<ConfigScene> other_list)
+    public override ConfigScene combine(List<ConfigScene> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -107,80 +107,28 @@ public class ConfigScene : Config<ConfigScene>
                 Scene[key] = other_list[i].Scene[key];
             }
         }
+        return this;
     }
-}
-
-
-class ConfigSceneLoader
-{
-    public static async Task loadConfigsAsync()
+    public static async Task getConfigAsyncv1()
     {
-        await Task.Run(
-        () =>
-        {
-            var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
-
-
-            List<ConfigScene> list_scene = new List<ConfigScene>();
-
-            foreach (string config_name in Configs.config_contents.Contents["Scene"])
-            {
-                byte[] byte_array = File.ReadAllBytes(Common.getConfigPath(config_name));
-
-                if ((char)byte_array[0] != '{')
-                {
-                    ConfigDecrypt.decrypt(byte_array, Common.getConfigPath(config_name));
-                }
-
-                string content = Encoding.UTF8.GetString(byte_array);
-
-                list_scene.Add(JsonConvert.DeserializeObject<ConfigScene>(content, settings));
-            }
-
-            Configs.config_scene = list_scene[0];
-            
-            Configs.config_scene.combine(list_scene);
-
-            foreach (ConfigScene._Scene scene in Configs.config_scene.Scene.Values)
-            {
-                if (scene.waypoints != null)
-                {
-                    scene.waypoint_dict = new Dictionary<string, ConfigScene._Scene.WayPoint>();
-                    foreach (ConfigScene._Scene.WayPoint waypoint in scene.waypoints)
-                    {
-                        scene.waypoint_dict[waypoint.name] = waypoint;
-                    }
-                }
-                if (scene.proplocators != null)
-                {
-                    scene.proplocator_dict = new Dictionary<string, ConfigScene._Scene.PropLocator>();
-                    foreach (ConfigScene._Scene.PropLocator prop_locator in scene.proplocators)
-                    {
-                        scene.proplocator_dict[prop_locator.name] = prop_locator;
-                    }
-                }
-                if (scene.cameras != null)
-                {
-                    scene.camera_dict = new Dictionary<string, ConfigScene._Scene.Camera>();
-                    foreach (ConfigScene._Scene.Camera camera in scene.cameras)
-                    {
-                        scene.camera_dict[camera.name] = camera;
-                    }
-                }
-                if (scene.hotspots != null)
-                {
-                    scene.hotspot_dict = new Dictionary<string, ConfigScene._Scene.HotSpot>();
-                    foreach (ConfigScene._Scene.HotSpot hotspot in scene.hotspots)
-                    {
-                        scene.hotspot_dict[hotspot.name] = hotspot;
-                    }
-                }
-            }
-
-            Configs.config_scene.Scene["s_MQ5C5P1_rig"].hotspot_dict["hot_project"].position = new float[] { 507.067952f, 98.075569f, 428.769708f };
+        await Task.Run(() => {
+            //Configs.config_scene = await getJObjectsConfigsListAsyncV2("Scene");
+            Configs.config_scene = getJObjectsConfigsListST("Scene");
         }
         );
     }
+    public static async Task getConfigAsyncv2()
+    {
+        Configs.config_scene = await getJObjectsConfigsListAsync("Scene");
+    }
 
+    public static void getConfig()
+    {
+        Configs.config_scene = getJObjectsConfigsListST("Scene");
+    }
+
+    public static async Task loadJ()
+    {
+        Configs.config_scene = await loadConfigType();
+    }
 }
-

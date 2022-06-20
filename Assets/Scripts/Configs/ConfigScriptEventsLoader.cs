@@ -22,7 +22,7 @@ public class ConfigScriptEvents : Config<ConfigScriptEvents>
     }
     public Dictionary<string, ScriptEvent> ScriptEvents;
 
-    public override void combine(List<ConfigScriptEvents> other_list)
+    public override ConfigScriptEvents combine(List<ConfigScriptEvents> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -31,17 +31,11 @@ public class ConfigScriptEvents : Config<ConfigScriptEvents>
                 ScriptEvents[key] = other_list[i].ScriptEvents[key];
             }
         }
+        return this;
     }
-}
-
-
-class ConfigScriptEventsLoader
-{
-
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        Configs.config_script_events = await ConfigScriptEvents.getJObjectsConfigsList("ScriptEvents");
+        Configs.config_script_events = getJObjectsConfigsListST("ScriptEvents");
     }
-
 }
 

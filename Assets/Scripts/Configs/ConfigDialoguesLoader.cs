@@ -35,7 +35,7 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
 
     public Dictionary<string, HPDialogueLine> HPDialogueLines;
 
-    public override void combine(List<ConfigHPDialogueLine> other_list)
+    public override ConfigHPDialogueLine combine(List<ConfigHPDialogueLine> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -44,6 +44,11 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
                 HPDialogueLines[key] = other_list[i].HPDialogueLines[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_hp_dialogue_line = getJObjectsConfigsListST("HPDialogueLines");
     }
 }
 
@@ -68,7 +73,7 @@ public class ConfigDialogueChoice : Config<ConfigDialogueChoice>
 
     public Dictionary<string, _DialogueChoice> DialogueChoice;
 
-    public override void combine(List<ConfigDialogueChoice> other_list)
+    public override ConfigDialogueChoice combine(List<ConfigDialogueChoice> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -77,6 +82,11 @@ public class ConfigDialogueChoice : Config<ConfigDialogueChoice>
                 DialogueChoice[key] = other_list[i].DialogueChoice[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_dialogue_choices = getJObjectsConfigsListST("DialogueChoice");
     }
 }
 
@@ -113,7 +123,7 @@ public class ConfigHPDialogueOverride : Config<ConfigHPDialogueOverride>        
 
     public Dictionary<string, _HPDialogueOverride> HPDialogueOverride;
 
-    public override void combine(List<ConfigHPDialogueOverride> other_list)
+    public override ConfigHPDialogueOverride combine(List<ConfigHPDialogueOverride> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -122,6 +132,11 @@ public class ConfigHPDialogueOverride : Config<ConfigHPDialogueOverride>        
                 HPDialogueOverride[key] = other_list[i].HPDialogueOverride[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_hp_dialogue_override = getJObjectsConfigsListST("HPDialogueOverride");
     }
 }
 
@@ -144,7 +159,7 @@ public class ConfigDialogueChoiceOverride : Config<ConfigDialogueChoiceOverride>
 
     public Dictionary<string, _DialogueChoiceOverride> DialogueChoiceOverride;
 
-    public override void combine(List<ConfigDialogueChoiceOverride> other_list)
+    public override ConfigDialogueChoiceOverride combine(List<ConfigDialogueChoiceOverride> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -153,6 +168,11 @@ public class ConfigDialogueChoiceOverride : Config<ConfigDialogueChoiceOverride>
                 DialogueChoiceOverride[key] = other_list[i].DialogueChoiceOverride[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_dialogue_choice_override = getJObjectsConfigsListST("DialogueChoiceOverride");
     }
 }
 
@@ -174,7 +194,7 @@ public class ConfigDialogueSpeakers : Config<ConfigDialogueSpeakers>
     public Dictionary<string, _DialogueSpeaker> DialogueSpeaker;
 
 
-    public override void combine(List<ConfigDialogueSpeakers> other_list)
+    public override ConfigDialogueSpeakers combine(List<ConfigDialogueSpeakers> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -183,6 +203,11 @@ public class ConfigDialogueSpeakers : Config<ConfigDialogueSpeakers>
                 DialogueSpeaker[key] = other_list[i].DialogueSpeaker[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_dialogue_speakers = getJObjectsConfigsListST("DialogueSpeaker");
     }
 }
 
@@ -198,97 +223,17 @@ public class ConfigDialogueSpeakerMapping : Config<ConfigDialogueSpeakerMapping>
 
     public List<_DialogueSpeakerMapping> DialogueSpeakerMapping;
     
-    public override void combine(List<ConfigDialogueSpeakerMapping> other_list)
+    public override ConfigDialogueSpeakerMapping combine(List<ConfigDialogueSpeakerMapping> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
              DialogueSpeakerMapping.AddRange(other_list[i].DialogueSpeakerMapping);
         }
+        return this;
     }
-}
-
-
-public class ConfigDialoguesLoader{
-
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        List<ConfigHPDialogueLine> list_config_hp_dialogue_line = await ConfigHPDialogueLine.getDeserializedConfigsList("HPDialogueLines");
-        Configs.config_hp_dialogue_line = list_config_hp_dialogue_line[0];
-        Configs.config_hp_dialogue_line.combine(list_config_hp_dialogue_line);
-
-        List<ConfigDialogueChoice> list_config_dialogue_choice = await ConfigDialogueChoice.getDeserializedConfigsList("DialogueChoice");
-        Configs.config_dialogue_choices = list_config_dialogue_choice[0];
-        Configs.config_dialogue_choices.combine(list_config_dialogue_choice);
-
-        List<ConfigHPDialogueOverride> dialogue_line_override_dict = await ConfigHPDialogueOverride.getDeserializedConfigsList("HPDialogueOverride");
-        Configs.config_hp_dialogue_override = dialogue_line_override_dict[0];
-        Configs.config_hp_dialogue_override.combine(dialogue_line_override_dict);
-
-        List<ConfigDialogueChoiceOverride> dialogue_choice_override_dict = await ConfigDialogueChoiceOverride.getDeserializedConfigsList("DialogueChoiceOverride");
-        Configs.config_dialogue_choice_override = dialogue_choice_override_dict[0];
-        Configs.config_dialogue_choice_override.combine(dialogue_choice_override_dict);
-
-        List<ConfigDialogueSpeakers> list_config_dialogue_speaker = await ConfigDialogueSpeakers.getDeserializedConfigsList("DialogueSpeaker");
-        Configs.config_dialogue_speakers = list_config_dialogue_speaker[0];
-        Configs.config_dialogue_speakers.combine(list_config_dialogue_speaker);
-
-        List<ConfigDialogueSpeakerMapping> list_config_dialogue_speaker_mapping = await ConfigDialogueSpeakerMapping.getDeserializedConfigsList("DialogueSpeakerMapping");
-        Configs.config_dialogue_speaker_mapping = list_config_dialogue_speaker_mapping[0];
-        Configs.config_dialogue_speaker_mapping.combine(list_config_dialogue_speaker_mapping);
-
-        await Task.Run(
-        () =>
-        {
-            Configs.dialogue_dict = new Dictionary<string, List<ConfigHPDialogueLine.HPDialogueLine>>();
-            foreach (ConfigHPDialogueLine.HPDialogueLine dialogue_line in Configs.config_hp_dialogue_line.HPDialogueLines.Values)
-            {
-                if (dialogue_line.dialogue != null)
-                {
-                    if (!Configs.dialogue_dict.ContainsKey(dialogue_line.dialogue))
-                    {
-                        Configs.dialogue_dict[dialogue_line.dialogue] = new List<ConfigHPDialogueLine.HPDialogueLine>();
-                    }
-                    Configs.dialogue_dict[dialogue_line.dialogue].Add(dialogue_line);
-                }
-            }
-
-            foreach(ConfigHPDialogueLine.HPDialogueLine hpdl in Configs.config_hp_dialogue_line.HPDialogueLines.Values)
-            {
-                if (hpdl.headOnly != null)
-                {
-                    try
-                    {
-                        hpdl._headOnly = (string[])hpdl.headOnly;
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-            }
-
-            Configs.dialogue_line_override_dict = new Dictionary<string, List<ConfigHPDialogueOverride._HPDialogueOverride>>();
-            foreach (ConfigHPDialogueOverride._HPDialogueOverride dialogue_override_line in Configs.config_hp_dialogue_override.HPDialogueOverride.Values)
-            {
-                if (!Configs.dialogue_line_override_dict.ContainsKey(dialogue_override_line.overridesId))
-                {
-                    Configs.dialogue_line_override_dict[dialogue_override_line.overridesId] = new List<ConfigHPDialogueOverride._HPDialogueOverride>();
-                }
-                Configs.dialogue_line_override_dict[dialogue_override_line.overridesId].Add(dialogue_override_line);
-            }
-
-            Configs.dialogue_choice_override_dict = new Dictionary<string, List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>>();
-            foreach (ConfigDialogueChoiceOverride._DialogueChoiceOverride dialogue_override_choice in Configs.config_dialogue_choice_override.DialogueChoiceOverride.Values)
-            {
-                if (!Configs.dialogue_choice_override_dict.ContainsKey(dialogue_override_choice.overridesId))
-                {
-                    Configs.dialogue_choice_override_dict[dialogue_override_choice.overridesId] = new List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>();
-                }
-                Configs.dialogue_choice_override_dict[dialogue_override_choice.overridesId].Add(dialogue_override_choice);
-            }
-
-        }
-        );
+        Configs.config_dialogue_speaker_mapping = getJObjectsConfigsListST("DialogueSpeakerMapping");
     }
 }
 

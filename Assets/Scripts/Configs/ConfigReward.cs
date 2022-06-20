@@ -14,7 +14,7 @@ public class ConfigReward : Config<ConfigReward>
     }
     public Dictionary<string, _Reward> Reward;
 
-    public override void combine(List<ConfigReward> other_list)
+    public override ConfigReward combine(List<ConfigReward> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -23,28 +23,10 @@ public class ConfigReward : Config<ConfigReward>
                 Reward[key] = other_list[i].Reward[key];
             }
         }
+        return this;
     }
-}
-public class ConfigRewardsLoader
-{
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        List<string> string_configs = await ConfigGoal.getDecryptedConfigsList("Reward");
-        await Task.Run(
-        () =>
-        {
-            List<ConfigReward> list_reward = new List<ConfigReward>();
-            foreach (string content in string_configs)
-            {
-                ConfigReward a = JsonConvert.DeserializeObject<ConfigReward>(content);
-                if (a.Reward != null)
-                    list_reward.Add(a);
-
-            }
-            Configs.config_reward = list_reward[0];
-            Configs.config_reward.combine(list_reward);
-        }
-    );
+        Configs.config_reward = getJObjectsConfigsListST("Reward");
     }
-
 }

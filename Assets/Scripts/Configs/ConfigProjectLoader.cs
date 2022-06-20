@@ -28,7 +28,7 @@ public class ConfigProject : Config<ConfigProject>
     }
     public Dictionary<string, _Project> Project;
 
-    public override void combine(List<ConfigProject> other_list)
+    public override ConfigProject combine(List<ConfigProject> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -37,18 +37,10 @@ public class ConfigProject : Config<ConfigProject>
                 Project[key] = other_list[i].Project[key];
             }
         }
+        return this;
     }
-
-}
-
-
-class ConfigProjectLoader
-{
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        List<ConfigProject> list_project = await ConfigProject.getDeserializedConfigsList("Project");
-        Configs.config_project = list_project[0];
-        Configs.config_project.combine(list_project);
+        Configs.config_project = getJObjectsConfigsListST("Project");
     }
 }
-

@@ -14,16 +14,16 @@ public class LocationHubMenu : MonoBehaviour
     [SerializeField]
     private Dropdown dropdown;
 
-    LocationHubMenu()
+    private void Start()
     {
         singleton = this;
-        Configs.onConfigsLoaded += loadButtons;
+        loadButtons();
     }
 
     public void loadButtons()
     {
         dropdown.ClearOptions();
-
+         
         List<string> options = new List<string>();
 
         foreach (ConfigLocationHub._LocationHub lh in Configs.config_location_hub.LocationHub.Values)

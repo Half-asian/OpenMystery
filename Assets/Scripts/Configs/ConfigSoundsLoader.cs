@@ -60,8 +60,7 @@ public class ConfigSound : Config<ConfigSound>
     public List<_Sound> Sounds;
     public List<_SFX> SFX;
 
-
-    public override void combine(List<ConfigSound> other_list)
+    public override ConfigSound combine(List<ConfigSound> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -96,45 +95,10 @@ public class ConfigSound : Config<ConfigSound>
                 SFX.Add(key);
             }
         }
+        return this;
     }
-
-}
-
-
-class ConfigSoundsLoader
-{
-
-
-
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        List<ConfigSound> list_playlist = await ConfigSound.getDeserializedConfigsList("Playlist"); //There is only one config that stores sounds. This is lazy code.
-        Configs.config_sound = list_playlist[0];
-        Configs.config_sound.combine(list_playlist);
-
-        Configs.ambient_dict = new Dictionary<string, ConfigSound._Ambient>();
-        Configs.playlist_dict = new Dictionary<string, ConfigSound._Playlist>();
-        Configs.sounds_dict = new Dictionary<string, ConfigSound._Sound>();
-        Configs.sfx_dict = new Dictionary<string, ConfigSound._SFX>();
-
-        foreach (ConfigSound._Ambient p in Configs.config_sound.Ambient)
-        {
-            Configs.ambient_dict[p.trigger] = p;
-        }
-        foreach (ConfigSound._Playlist p in Configs.config_sound.Playlist)
-        {
-            Configs.playlist_dict[p.playlistId] = p;
-        }
-        foreach (ConfigSound._Sound p in Configs.config_sound.Sounds)
-        {
-            Configs.sounds_dict[p.soundId] = p;
-        }
-        foreach (ConfigSound._SFX p in Configs.config_sound.SFX)
-        {
-            if (p.objectId != null)
-                Configs.sfx_dict[p.objectId] = p;
-        }
-
+        Configs.config_sound = getJObjectsConfigsListST("Playlist");
     }
-
 }

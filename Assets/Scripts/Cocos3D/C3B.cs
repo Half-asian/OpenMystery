@@ -412,6 +412,12 @@ public class C3B
 
 	public static CocosModel loadC3B(string file_name, string root_folder)
 	{
+		if (file_name.StartsWith("mods/") || file_name.StartsWith("mods\\")){
+			root_folder = GlobalEngineVariables.mods_folder;
+			file_name = file_name.Substring(5);
+        }
+
+
 		if (System.IO.File.Exists(root_folder + file_name))
 		{
 			return readC3B(root_folder + file_name);

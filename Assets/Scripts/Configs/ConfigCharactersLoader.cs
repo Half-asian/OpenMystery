@@ -46,7 +46,7 @@ public class ConfigHPActorInfo : Config<ConfigHPActorInfo>
 
     public Dictionary<string, _HPActorInfo> HPActorInfo;
 
-    public override void combine(List<ConfigHPActorInfo> other_list)
+    public override ConfigHPActorInfo combine(List<ConfigHPActorInfo> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -55,6 +55,15 @@ public class ConfigHPActorInfo : Config<ConfigHPActorInfo>
                 HPActorInfo[key] = other_list[i].HPActorInfo[key];
             }
         }
+        return this;
+    }
+    public static async Task getConfig()
+    {
+        Configs.config_hp_actor_info = await getJObjectsConfigsListAsync("HPActorInfo");
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_hp_actor_info = await loadConfigType();
     }
 }
 
@@ -104,9 +113,17 @@ public class ConfigActorMapping : Config<ConfigActorMapping>
         return actor_map_result;
     }
 
-    public override void combine(List<ConfigActorMapping> other_list)
+    public override ConfigActorMapping combine(List<ConfigActorMapping> other_list)
     {
         throw new NotImplementedException();
+    }
+    public static async Task getConfig()
+    {
+        Configs.config_actor_mapping = await getJObjectsConfigsListAsync("ActorMapping");
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_actor_mapping = await loadConfigType();
     }
 }
 
@@ -148,28 +165,20 @@ public class ConfigHouse : Config<ConfigHouse>
 
     public Dictionary<string, _House> House;
 
-    public override void combine(List<ConfigHouse> other_list)
+    public override ConfigHouse combine(List<ConfigHouse> other_list)
     {
         throw new NotImplementedException();
+    }
+    public static void getConfig()
+    {
+        Configs.config_house = getJObjectsConfigsListST("House");
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_house = await loadConfigType();
     }
 }
 
 
 //Genderered Actor Mapping Config - Only for Rowan and FemRowan, basically not needed
 
-
-
-
-class ConfigCharactersLoader
-{
-
-    public static async Task loadConfigsAsync()
-    {
-        List<ConfigHPActorInfo> list_hp_actor_info = await ConfigHPActorInfo.getDeserializedConfigsList("HPActorInfo");
-        Configs.config_hp_actor_info = list_hp_actor_info[0];
-        Configs.config_hp_actor_info.combine(list_hp_actor_info);
-
-        Configs.config_actor_mapping = await ConfigActorMapping.CreateFromJSONAsync(Common.getConfigPath("Character-"));
-        Configs.config_house = await ConfigHouse.CreateFromJSONAsync(Common.getConfigPath("House-"));
-    }
-}

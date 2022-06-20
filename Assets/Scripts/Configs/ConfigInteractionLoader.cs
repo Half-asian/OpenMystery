@@ -46,7 +46,7 @@ public class ConfigInteraction : Config<ConfigInteraction>
 
     public Dictionary<string, Interaction> Interactions;
 
-    public override void combine(List<ConfigInteraction> other_list)
+    public override ConfigInteraction combine(List<ConfigInteraction> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -55,16 +55,27 @@ public class ConfigInteraction : Config<ConfigInteraction>
                 Interactions[key] = other_list[i].Interactions[key];
             }
         }
+        return this;
     }
-}
-
-class ConfigInteractionLoader
-{
-
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        List<ConfigInteraction> list_interaction = await ConfigInteraction.getDeserializedConfigsList("Interactions");
-        Configs.config_interaction = list_interaction[0];
-        Configs.config_interaction.combine(list_interaction);
+        Configs.config_interaction = getJObjectsConfigsListST("Interactions");
+    }
+
+    public static async Task getConfigAsyncv2()
+    {
+        Configs.config_interaction = await getJObjectsConfigsListAsync("Interactions");
+    }
+
+    public static async Task getConfigAsync()
+    {
+        await Task.Run(() => {
+            Configs.config_interaction = getJObjectsConfigsListST("Interactions");
+        }
+        );
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_interaction = await loadConfigType();
     }
 }

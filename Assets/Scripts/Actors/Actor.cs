@@ -61,6 +61,9 @@ public class Actor
         {
             config_actor = Configs.config_hp_actor_info.HPActorInfo[actor_id];
             Model model = ModelManager.loadModel(config_actor.modelId);
+            if (model == null)
+                throw new System.Exception("Failed to load actor model " + config_actor.modelId);
+
             actor_controller = model.game_object.AddComponent<ActorController>();
             actor_controller.setup(model);
             actor_controller.actor_info = config_actor;

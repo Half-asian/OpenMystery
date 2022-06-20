@@ -1,0 +1,14 @@
+diff a/Assets/Scripts/Configs/Configs.cs b/Assets/Scripts/Configs/Configs.cs	(rejected hunks)
+@@ -171,11 +171,7 @@
+     public static ConfigObjective config_objective;
+     public static ConfigScenario config_scenario;
+     public static ConfigTexture config_texture;
+-    public static Config3DModel config_fx;
+-    public static Config3DModel config_character_model;
+-    public static Config3DModel config_environment_model;
+-    public static Config3DModel config_prop_model;
+-    public static Config3DModel config_outfit_model;
++    public static Config3DModel config_3dmodel;
+     public static ConfigAnimation config_animation;
+     public static ConfigCharAnimSequence config_char_anim_sequence;
+     public static ConfigHPActorInfo config_hp_actor_info;

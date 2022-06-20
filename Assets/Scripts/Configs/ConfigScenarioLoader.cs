@@ -41,7 +41,7 @@ public class ConfigScenario : Config<ConfigScenario>
 
     public Dictionary<string, _Scenario> Scenario;
 
-    public override void combine(List<ConfigScenario> other_list)
+    public override ConfigScenario combine(List<ConfigScenario> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -50,27 +50,21 @@ public class ConfigScenario : Config<ConfigScenario>
                 Scenario[key] = other_list[i].Scenario[key];
             }
         }
+        return this;
     }
 
-}
-
-
-class ConfigScenarioLoader
-{
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        List<ConfigScenario> list_scenario = await ConfigScenario.getDeserializedConfigsList("Scenario");
-        Configs.config_scenario = list_scenario[0];
-        Configs.config_scenario.combine(list_scenario);
-
-        foreach (ConfigScenario._Scenario s in Configs.config_scenario.Scenario.Values)
-        {
-            if (s._mapLocationOverrides != null)
-            {
-                try{s.mapLocationOverrides = (Dictionary<string, string>)s._mapLocationOverrides; }
-                catch{}
-            }
-        }
+        Configs.config_scenario = getJObjectsConfigsListST("3DModelConfig");
+    }
+    public static async Task getConfigAsyncv2()
+    {
+        Configs.config_scenario = await getJObjectsConfigsListAsync("3DModelConfig");
+    }
+    public static async Task loadJ()
+    {
+        Configs.config_scenario = await loadConfigType();
     }
 }
+
 

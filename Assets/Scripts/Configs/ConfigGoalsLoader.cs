@@ -26,7 +26,7 @@ public class ConfigGoalChain : Config<ConfigGoalChain>
     }
     public Dictionary<string, _GoalChain> GoalChain;
 
-    public override void combine(List<ConfigGoalChain> other_list)
+    public override ConfigGoalChain combine(List<ConfigGoalChain> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -35,6 +35,11 @@ public class ConfigGoalChain : Config<ConfigGoalChain>
                 GoalChain[key] = other_list[i].GoalChain[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_goal_chain = getJObjectsConfigsListST("GoalChain");
     }
 }
 
@@ -62,7 +67,7 @@ public class ConfigGoal : Config<ConfigGoal>
     }
     public Dictionary<string, Goal> Goals;
 
-    public override void combine(List<ConfigGoal> other_list)
+    public override ConfigGoal combine(List<ConfigGoal> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -71,6 +76,11 @@ public class ConfigGoal : Config<ConfigGoal>
                 Goals[key] = other_list[i].Goals[key];
             }
         }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_goal = getJObjectsConfigsListST("Goals");
     }
 }
 
@@ -101,7 +111,7 @@ public class ConfigObjective : Config<ConfigObjective>
     }
     public Dictionary<string, Objective> Objectives;
 
-    public override void combine(List<ConfigObjective> other_list)
+    public override ConfigObjective combine(List<ConfigObjective> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
@@ -110,69 +120,10 @@ public class ConfigObjective : Config<ConfigObjective>
                 Objectives[key] = other_list[i].Objectives[key];
             }
         }
+        return this;
     }
-}
-
-class ConfigGoalsLoader
-{
-    public static async Task loadConfigsAsync()
+    public static void getConfig()
     {
-        List<string> string_configs = await ConfigGoal.getDecryptedConfigsList("Objectives");
-        await Task.Run(
-        () =>
-        {
-            List<ConfigGoalChain> list_goal_chain = new List<ConfigGoalChain>();
-            List<ConfigGoal> list_goal = new List<ConfigGoal>();
-            List<ConfigObjective> list_objective = new List<ConfigObjective>();
-            foreach (string content in string_configs)
-            {
-                ConfigGoalChain a = JsonConvert.DeserializeObject<ConfigGoalChain>(content);
-                if (a.GoalChain != null)
-                    list_goal_chain.Add(a);
-
-                ConfigGoal b = JsonConvert.DeserializeObject<ConfigGoal>(content);
-                if (b.Goals != null)
-                    list_goal.Add(b);
-
-                ConfigObjective c = JsonConvert.DeserializeObject<ConfigObjective>(content);
-                if (c.Objectives != null)
-                    list_objective.Add(c);
-
-            }
-            Configs.config_goal_chain = list_goal_chain[0];
-            Configs.config_goal_chain.combine(list_goal_chain);
-
-
-
-
-
-
-            Configs.config_goal = list_goal[0];
-            Configs.config_goal.combine(list_goal);
-
-            Configs.config_objective = list_objective[0];
-            Configs.config_objective.combine(list_objective);
-
-            //This goal is for the avatar to change clothes. Not worth programming in the logic for this.
-            //Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.RemoveAt(3);
-            //Configs.config_goal.Goals["Y1_C3_P6_v2"].dependencies = null;
-
-
-            #region Patches
-
-            Configs.config_goal_chain.GoalChain["C2_v2"].classGoalIds.Insert(1, "Y1_C2_P4_hub"); //Tutorial triggers this class in between goals
-
-            //Insert broom flying class within the rest of the goals. It needs to be done in order.
-            Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.Insert(5, new List<string> { "Y1_C3_SummonBroom_v2" });
-            Configs.config_goal_chain.GoalChain["C3_v2"].classGoalIds = null;
-
-            Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true"; //Remove check to see if player has completed part of Y2
-
-            //Configs.config_objective.Objectives["Y1_C9_P2aObj1"].objectiveScenario = "MQ4C5P2a";
-            #endregion
-
-        }
-    );
+        Configs.config_objective = getJObjectsConfigsListST("Objectives");
     }
-
 }
