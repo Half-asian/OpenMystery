@@ -29,7 +29,7 @@ public class InteractionHubNPCDialog : Interaction
 
     public override void activate()
     {
-        GameStart.dialogue_manager.activateNewDialogue(dialogId);
+        GameStart.dialogue_manager.activateDialogue(dialogId);
         //Finished is called from a callback.
     }
 }

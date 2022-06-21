@@ -28,8 +28,8 @@ public class InteractionGoalDialog : Interaction
 
     public override void activate()
     {
-        GameStart.dialogue_manager.onDialogueFinishedEvent += dialogueFinishedListener;
-        GameStart.dialogue_manager.activateNewDialogue(config_interaction.dialogId);
+        DialogueManager.onDialogueFinishedEvent += dialogueFinishedListener;
+        GameStart.dialogue_manager.activateDialogue(config_interaction.dialogId);
     }
 
     public void dialogueFinishedListener(string dialogue)
@@ -37,7 +37,7 @@ public class InteractionGoalDialog : Interaction
         //if (dialogue == interaction.dialogId)
         //We probably don't need to care about what dialogue actually finishes. Just that dialogue did end. Dialogues can lead to new dialogues, which wouldn't match.
 
-        GameStart.dialogue_manager.onDialogueFinishedEvent -= dialogueFinishedListener;
+        DialogueManager.onDialogueFinishedEvent -= dialogueFinishedListener;
         interactionComplete();
     }
 }

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json.Linq;
-
+using System.Diagnostics;
 public class ConfigLocalData : Config<ConfigLocalData>
 {
     [System.Serializable]
@@ -18,6 +14,7 @@ public class ConfigLocalData : Config<ConfigLocalData>
 
     public Dictionary<string, _LocalData> LocalData;
 
+    //Hard overwrite
     public override ConfigLocalData combine(List<ConfigLocalData> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
@@ -29,26 +26,18 @@ public class ConfigLocalData : Config<ConfigLocalData>
         }
         return this;
     }
-    public static async Task getConfig()
+
+    public static ConfigLocalData getConfig()
     {
-        Configs.config_local_data = await getJObjectsConfigsListAsync("LocalData");
+        string type = "LocalData";
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        List<ConfigLocalData> configs = getConfigList(type);
+        configs[0].combine(configs);
+        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
+        return configs[0];
     }
 
-    public static async Task getConfigAsync()
-    {
-        await Task.Run(() => {
-            Configs.config_local_data = getJObjectsConfigsListST("LocalData");
-        }
-        );
-    }
-    public static async Task getConfigAsyncv2()
-    {
-        Configs.config_local_data = await getJObjectsConfigsListAsync("LocalData");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_local_data = await loadConfigType();
-    }
 }
 
 public class ConfigPredicateAlias : Config<ConfigPredicateAlias>

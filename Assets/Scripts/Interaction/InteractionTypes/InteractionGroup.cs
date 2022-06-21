@@ -75,7 +75,7 @@ public class InteractionGroup : Interaction
     {
 
         Debug.Log("member interaction finished " + member_interaction.config_interaction.id);
-        group_progress += member_interaction.config_interaction.groupProgress;
+        group_progress += member_interaction.config_interaction.GroupProgress;
 
         List<string> keys_to_remove = new List<string>();
         foreach (string key in member_interactions.Keys)
@@ -89,9 +89,9 @@ public class InteractionGroup : Interaction
             member_interactions.Remove(key);
         }
 
-        if (member_interaction.config_interaction.groupProgress != 0 || (config_interaction.groupProgress == 0 && member_interactions.Count == 0))
+        if (member_interaction.config_interaction.GroupProgress != 0 || (config_interaction.GroupProgress == 0 && member_interactions.Count == 0))
         {
-            if (group_progress >= config_interaction.progressRequired)
+            if (group_progress >= config_interaction.ProgressRequired)
             {
 
                 foreach (Interaction i in member_interactions.Values) //This seems sus?

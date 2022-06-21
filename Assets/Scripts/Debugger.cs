@@ -56,7 +56,7 @@ public class Debugger : MonoBehaviour
                     text += "\n Interaction: " + i.name + " " + i.gameObject.activeSelf;
                     if (i is InteractionGroup || i is InteractionAutotuneGroup)
                     {
-                        text += " " + i.group_progress + "/" + i.config_interaction.progressRequired;
+                        text += " " + i.group_progress + "/" + i.config_interaction.ProgressRequired;
                     }
                 }
             }

@@ -57,10 +57,6 @@ public class ConfigLocationHub : Config<ConfigLocationHub>
     {
         throw new NotImplementedException();
     }
-    public static async Task getConfig()
-    {
-        Configs.config_location_hub = await getJObjectsConfigsListAsync("LocationHub");
-    }
 }
 
 public class ConfigHubNPC : Config<ConfigHubNPC>

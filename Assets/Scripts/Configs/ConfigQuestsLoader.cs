@@ -38,14 +38,6 @@ public class ConfigTimeLimitedSideQuest : Config<ConfigTimeLimitedSideQuest>
     {
         throw new NotImplementedException();
     }
-    public static async Task getConfig()
-    {
-        Configs.config_time_limited_side_quest = await getJObjectsConfigsListAsync("TimeLimitedSideQuest");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_time_limited_side_quest = await loadConfigType();
-    }
 }
 
 public class ConfigYears : Config<ConfigYears>

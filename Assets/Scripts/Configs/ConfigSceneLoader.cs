@@ -117,18 +117,9 @@ public class ConfigScene : Config<ConfigScene>
         }
         );
     }
-    public static async Task getConfigAsyncv2()
-    {
-        Configs.config_scene = await getJObjectsConfigsListAsync("Scene");
-    }
 
     public static void getConfig()
     {
         Configs.config_scene = getJObjectsConfigsListST("Scene");
-    }
-
-    public static async Task loadJ()
-    {
-        Configs.config_scene = await loadConfigType();
     }
 }

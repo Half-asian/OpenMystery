@@ -45,7 +45,7 @@ public class Project
     private static void onInteractionFinished(string interaction_id)
     {
         Debug.Log("onInteractionFinished Called");
-        addProgress(Configs.config_interaction.Interactions[interaction_id].projectProgress);
+        addProgress(Configs.config_interaction.Interactions[interaction_id].ProjectProgress);
     }
 
     public static void addProgress(int progress)

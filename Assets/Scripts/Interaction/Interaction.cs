@@ -69,7 +69,7 @@ public abstract class Interaction : MonoBehaviour
                 GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.enterEvents);
             }
         }
-        GameStart.event_manager.all_script_events_finished_event += onFinishedEnterEvents;
+        EventManager.all_script_events_finished_event += onFinishedEnterEvents;
     }
 
     public void respawnEnterEvents()
@@ -79,7 +79,7 @@ public abstract class Interaction : MonoBehaviour
 
     protected virtual void onFinishedEnterEvents()
     {
-        GameStart.event_manager.all_script_events_finished_event -= onFinishedEnterEvents;
+        EventManager.all_script_events_finished_event -= onFinishedEnterEvents;
     }
 
     public abstract void activate();
@@ -112,12 +112,12 @@ public abstract class Interaction : MonoBehaviour
                 GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.qteFailEvents);
         }
 
-        GameStart.event_manager.all_script_events_finished_event += onFinishedExitEvents;
+        EventManager.all_script_events_finished_event += onFinishedExitEvents;
 
     }
     protected virtual void onFinishedExitEvents()
     {
-        GameStart.event_manager.all_script_events_finished_event -= onFinishedExitEvents;
+        EventManager.all_script_events_finished_event -= onFinishedExitEvents;
 
         Scenario.completeInteraction(config_interaction.id);
 

@@ -37,14 +37,6 @@ public class ConfigAnimation : Config<ConfigAnimation>
     {
         throw new NotImplementedException();
     }
-    public static async Task getConfig()
-    {
-        Configs.config_animation = await getJObjectsConfigsListAsync("Animation3D");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_animation = await loadConfigType();
-    }
 }
 
 public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>

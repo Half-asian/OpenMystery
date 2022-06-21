@@ -36,12 +36,12 @@ public class InteractionAutotuneGroup : Interaction
         Debug.Log("member Interaction Finished autotune ");
         if (member_interaction != null)
         {
-            Debug.Log("adding group progress " + member_interaction.groupProgress);
-            group_progress += member_interaction.groupProgress;
+            Debug.Log("adding group progress " + group_progress);
+            group_progress += member_interaction.GroupProgress;
 
-            if (member_interaction.groupProgress != 0)
+            if (member_interaction.GroupProgress != 0)
             {
-                if (group_progress >= config_interaction.progressRequired)
+                if (group_progress >= config_interaction.ProgressRequired)
                 {
                     GameStart.dialogue_manager.finishBubbleDialogue();
                     interactionComplete(); //We are done

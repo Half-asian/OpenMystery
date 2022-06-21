@@ -6,9 +6,6 @@ public class Quidditch
 {
     public List<ObjectiveMatchComplete> objective_callbacks = new List<ObjectiveMatchComplete>();
 
-    GameStart game_start = GameStart.current.GetComponent<GameStart>();
-    DialogueManager dialogue_manager = GameStart.current.GetComponent<DialogueManager>();
-    //Player player = Player;
 
     int match_pivotal_play_index;
 
@@ -87,15 +84,15 @@ public class Quidditch
         }
 
         current_match = Configs.config_match.Match[match_name];
-        if (DialogueManager.local_avatar_quidditch_position == null)
+        if (Player.local_avatar_quidditch_position == null)
         {
             if (current_match.practisePosition != null)
             {
-                DialogueManager.local_avatar_quidditch_position = current_match.practisePosition;
+                Player.local_avatar_quidditch_position = current_match.practisePosition;
             }
             else
             {
-                DialogueManager.local_avatar_quidditch_position = "chaser";
+                Player.local_avatar_quidditch_position = "chaser";
             }
         }
 
@@ -111,7 +108,7 @@ public class Quidditch
         string team_player = null;
         string opponent_player = null;
 
-        switch (DialogueManager.local_avatar_house) {
+        switch (Player.local_avatar_house) {
             case "gryffindor":
                 team_player = current_match.teamId_gPlayer;
                 opponent_player = current_match.teamId_gOpponent;
@@ -129,7 +126,7 @@ public class Quidditch
                 opponent_player = current_match.teamId_sOpponent;
                 break;
         }
-        switch (DialogueManager.local_avatar_quidditch_position)
+        switch (Player.local_avatar_quidditch_position)
         {
             case "chaser":
                 Actor.spawnActor("Avatar", "way_player_chaser1", "player_chaser1");
@@ -168,7 +165,7 @@ public class Quidditch
         Actor.spawnActor(teamIdToActorId(opponent_player, "beater1"), "way_opponent_beater1", "opponent_beater1");
         Actor.spawnActor(teamIdToActorId(opponent_player, "beater2"), "way_opponent_beater2", "opponent_beater2");
 
-        Player.changeClothes(DialogueManager.local_avatar_clothing_type, DialogueManager.local_avatar_secondary_clothing_option);
+        Player.changeClothes(Player.local_avatar_clothing_type, Player.local_avatar_secondary_clothing_option);
 
         nextMatchPivotalPlay();
     }
@@ -334,16 +331,16 @@ public class Quidditch
         {
             foreach (string enter_event in Configs.config_play_phase.PlayPhase[play_phase_name].enterEvents)
             {
-                game_start.GetComponent<EventManager>().main_event_player.event_stack.Add(enter_event);
+                GameStart.event_manager.main_event_player.event_stack.Add(enter_event);
             }
         }
         state = State.state_waiting_enter_events;
-        GameStart.event_manager.all_script_events_finished_event += enterEventsCallback;
+        EventManager.all_script_events_finished_event += enterEventsCallback;
     }
 
     public void enterEventsCallback()
     {
-        GameStart.event_manager.all_script_events_finished_event -= enterEventsCallback;
+        EventManager.all_script_events_finished_event -= enterEventsCallback;
 
         Debug.Log("enter events callback");
         if (state == State.state_waiting_enter_events)
@@ -362,14 +359,14 @@ public class Quidditch
             }
 
             Debug.Log("Activating dialogue " + Configs.config_play_phase.PlayPhase[play_phase_name].dialogueId);
-            dialogue_manager.onDialogueFinishedEvent += dialogueCallback;
-            dialogue_manager.activateNewDialogue(Configs.config_play_phase.PlayPhase[play_phase_name].dialogueId);
+            DialogueManager.onDialogueFinishedEvent += dialogueCallback;
+            GameStart.dialogue_manager.activateDialogue(Configs.config_play_phase.PlayPhase[play_phase_name].dialogueId);
         }
     }
 
     public void dialogueCallback(string dialogue_id)
     {
-        dialogue_manager.onDialogueFinishedEvent -= dialogueCallback;
+        DialogueManager.onDialogueFinishedEvent -= dialogueCallback;
 
         Debug.Log("DialogueCallback");
         if (Configs.config_play_phase.PlayPhase[play_phase_name].exitEvents != null)
@@ -380,7 +377,7 @@ public class Quidditch
             }
             state = State.state_waiting_exit_events;
 
-            GameStart.event_manager.all_script_events_finished_event += exitEventsCallback;
+            EventManager.all_script_events_finished_event += exitEventsCallback;
 
         }
         else
@@ -428,7 +425,7 @@ public class Quidditch
 
     public void exitEventsCallback()
     {
-        GameStart.event_manager.all_script_events_finished_event -= exitEventsCallback;
+        EventManager.all_script_events_finished_event -= exitEventsCallback;
 
         if (state == State.state_waiting_exit_events)
         {

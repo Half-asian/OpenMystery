@@ -9,63 +9,11 @@ using UnityEngine;
 using System.Diagnostics;
 public abstract class Config<T>
 {
-    public static List<byte[]> loaded_configs;
-
-    public static async Task loadConfigBytes(string type)
-    {
-        loaded_configs = new List<byte[]>();
-        foreach (string config_name in Configs.config_contents.Contents[type])
-        {
-            string path = null;
-            if (config_name.Contains("\\mods\\"))
-                path = config_name;
-            else
-                path = Common.getConfigPath(config_name);
-            if (path != null)
-            {
-                byte[] bytes = await File.ReadAllBytesAsync(path);
-
-                if (bytes[0] != '{')
-                {
-                    ConfigDecrypt.decrypt(bytes, Common.getConfigPath(config_name));
-                }
-                loaded_configs.Add(bytes);
-            }
-            else
-            {
-                GameStart.logWrite("Could not find config " + config_name);
-            }
-        }
-    }
-
-    public static async Task<T> loadConfigType(MergeArrayHandling mergeType = MergeArrayHandling.Merge)
-    {
-        List<JObject> list_configs = new List<JObject>();
-
-        List<Task<JObject>> loadJobjectTasks = new List<Task<JObject>>();
-        foreach (byte[] bytes in loaded_configs)
-        {
-            MemoryStream memoryStream = new MemoryStream(bytes);
-            StreamReader streamReader = new StreamReader(memoryStream);
-            JsonTextReader jsonReader = new JsonTextReader(streamReader);
-            list_configs.Add(await JObject.LoadAsync(jsonReader));
-        }
-
-        for (int i = 1; i < list_configs.Count; i++)
-        {
-            list_configs[0].Merge(list_configs[i], new JsonMergeSettings
-            {
-                MergeArrayHandling = mergeType
-            });
-        }
-        var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
-        var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
-        return result;
-    }
-
-
     public static T getJObjectsConfigsListST(string type, MergeArrayHandling mergeType = MergeArrayHandling.Union)
     {
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+
         List<JObject> list_configs = new List<JObject>();
         byte[] byte_array;
         string content;
@@ -102,74 +50,20 @@ public abstract class Config<T>
         }
         var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
         var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
+
+        stopwatch.Stop();
+        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
         return result;
     }
 
-    public static async Task<JObject> loadJObject(string config_name)
+    public static List<T> getConfigList(string type)
     {
-        string path = null;
-        if (config_name.Contains("\\mods\\"))
-            path = config_name;
-        else
-            path = Common.getConfigPath(config_name);
-        if (path != null)
-        {
-            
-            byte[] bytes = await File.ReadAllBytesAsync(path);
-            
-            if ((char)bytes[0] != '{')
-            {
-                ConfigDecrypt.decrypt(bytes, Common.getConfigPath(config_name));
-            }
-            MemoryStream memoryStream = new MemoryStream(bytes);
-            StreamReader streamReader = new StreamReader(memoryStream);
-            JsonTextReader jsonReader = new JsonTextReader(streamReader);
-            return JObject.Parse(Encoding.UTF8.GetString(bytes));
-            //return await JObject.LoadAsync(jsonReader);
-        }
-        else
-        {
-            GameStart.logWrite("ERROR: Could not find config " + config_name);
-            return null;
-        }
-    }
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
 
-
-    public static async Task<T> getJObjectsConfigsListAsyncV2(string type, MergeArrayHandling mergeType = MergeArrayHandling.Merge)
-    {
-        List<JObject> list_configs = new List<JObject>();
-
-        List<Task<JObject>> loadJobjectTasks = new List<Task<JObject>>();
-        foreach (string config_name in Configs.config_contents.Contents[type])
-        {
-            loadJobjectTasks.Add(loadJObject(config_name));
-        }
-
-        await Task.WhenAll(loadJobjectTasks);
-
-        foreach (Task<JObject> t in loadJobjectTasks)
-        {
-            list_configs.Add(t.Result);
-        }
-
-        for (int i = 1; i < list_configs.Count; i++)
-        {
-            list_configs[0].Merge(list_configs[i], new JsonMergeSettings
-            {
-                MergeArrayHandling = mergeType
-            });
-        }
-        var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
-        var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
-        return result;
-    }
-
-
-    public static async Task<T> getJObjectsConfigsListAsync(string type, MergeArrayHandling mergeType = MergeArrayHandling.Merge)
-    {
-        List<JObject> list_configs = new List<JObject>();
-
-        List<Task<byte[]>> file_load_tasks = new List<Task<byte[]>>();
+        List<T> list_configs = new List<T>();
+        byte[] byte_array;
+        string content;
         foreach (string config_name in Configs.config_contents.Contents[type])
         {
             string path = null;
@@ -179,47 +73,22 @@ public abstract class Config<T>
                 path = Common.getConfigPath(config_name);
             if (path != null)
             {
-                file_load_tasks.Add(Task.Run(() => File.ReadAllBytesAsync(path)));
+                byte_array = File.ReadAllBytes(path);
+
+                if ((char)byte_array[0] != '{')
+                {
+                    ConfigDecrypt.decrypt(byte_array, Common.getConfigPath(config_name));
+                }
+                content = Encoding.UTF8.GetString(byte_array);
+                
+                list_configs.Add(JsonConvert.DeserializeObject<T>(content));
             }
             else
             {
-                GameStart.logWrite("ERROR: Could not find config " + config_name);
+                GameStart.logWrite("Could not find config " + config_name);
             }
         }
-
-        await Task.WhenAll(file_load_tasks);
-
-        List<Task<JObject>> load_tasks = new List<Task<JObject>>();
-        for (int i = 0; i < file_load_tasks.Count; i++) {
-
-            byte[] bytes = file_load_tasks[i].Result;
-            if ((char)bytes[0] != '{')
-            {
-                ConfigDecrypt.decrypt(bytes, Common.getConfigPath(Configs.config_contents.Contents[type][i]));
-            }
-            MemoryStream memoryStream = new MemoryStream(bytes);
-            StreamReader streamReader = new StreamReader(memoryStream);
-            JsonTextReader jsonReader = new JsonTextReader(streamReader);
-            load_tasks.Add(Task.Run(() => JObject.LoadAsync(jsonReader)));
-        }
-
-        await Task.WhenAll(load_tasks);
-
-        foreach(Task<JObject> t in load_tasks)
-        {
-            list_configs.Add(t.Result);
-        }
-
-        for (int i = 1; i < list_configs.Count; i++)
-        {
-            list_configs[0].Merge(list_configs[i], new JsonMergeSettings
-            {
-                MergeArrayHandling = mergeType
-            });
-        }
-        var settings = new JsonSerializerSettings { Error = (se, ev) => { ev.ErrorContext.Handled = true; } };
-        var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
-        return result;
+        return list_configs;
     }
 
     public abstract T combine(List<T> other_list);
@@ -515,8 +384,8 @@ public class Configs{
         config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
         config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
         config_house = ConfigHouse.getJObjectsConfigsListST("House");
-        config_hp_dialogue_line = ConfigHPDialogueLine.getJObjectsConfigsListST("HPDialogueLines");
-        config_dialogue_choices = ConfigDialogueChoice.getJObjectsConfigsListST("DialogueChoice");
+        config_hp_dialogue_line = ConfigHPDialogueLine.getConfig();
+        config_dialogue_choices = ConfigDialogueChoice.getConfig();
         config_hp_dialogue_override = ConfigHPDialogueOverride.getJObjectsConfigsListST("HPDialogueOverride");
         config_dialogue_choice_override = ConfigDialogueChoiceOverride.getJObjectsConfigsListST("DialogueChoiceOverride");
         config_dialogue_speakers = ConfigDialogueSpeakers.getJObjectsConfigsListST("DialogueSpeaker");
@@ -527,8 +396,8 @@ public class Configs{
         config_objective = ConfigObjective.getJObjectsConfigsListST("Objectives");
         config_goal_chain = ConfigGoalChain.getJObjectsConfigsListST("GoalChain");
         config_goal = ConfigGoal.getJObjectsConfigsListST("Goals");
-        config_interaction = ConfigInteraction.getJObjectsConfigsListST("Interactions");
-        config_local_data = ConfigLocalData.getJObjectsConfigsListST("LocalData");
+        config_interaction = ConfigInteraction.getConfig();
+        config_local_data = ConfigLocalData.getConfig();
         config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
         config_location = ConfigLocation.getJObjectsConfigsListST("Location");
         config_location_hub = ConfigLocationHub.getJObjectsConfigsListST("LocationHub");
@@ -546,7 +415,7 @@ public class Configs{
         config_reward = ConfigReward.getJObjectsConfigsListST("Reward");
         config_scenario = ConfigScenario.getJObjectsConfigsListST("Scenario");
         config_scene = ConfigScene.getJObjectsConfigsListST("Scene");
-        config_script_events = ConfigScriptEvents.getJObjectsConfigsListST("ScriptEvents");
+        config_script_events = ConfigScriptEvents.getConfig();
         config_sound = ConfigSound.getJObjectsConfigsListST("Playlist");
 
         Configs.config_3dmodel.createMaterialDict();

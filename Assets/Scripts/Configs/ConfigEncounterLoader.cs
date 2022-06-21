@@ -97,14 +97,6 @@ public class ConfigCompanion : Config<ConfigCompanion>
         }
         return this;
     }
-    public static async Task getConfig()
-    {
-        Configs.config_companion = await getJObjectsConfigsListAsync("Companion");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_companion = await loadConfigType();
-    }
 }
 
 public class ConfigDatePrompt : Config<ConfigDatePrompt>

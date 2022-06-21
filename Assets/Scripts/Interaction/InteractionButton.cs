@@ -84,7 +84,7 @@ public class InteractionButton : MonoBehaviour
 
             if (interaction != null && interaction.config_interaction != null) //Real interaction
             {
-                if (interaction.config_interaction.autoSelect == true) //Autoselect
+                if (interaction.config_interaction.AutoSelect == true) //Autoselect
                 {
                     interaction.activate();
                     is_active = false;

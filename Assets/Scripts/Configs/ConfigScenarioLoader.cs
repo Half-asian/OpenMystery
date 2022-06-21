@@ -53,18 +53,6 @@ public class ConfigScenario : Config<ConfigScenario>
         return this;
     }
 
-    public static void getConfig()
-    {
-        Configs.config_scenario = getJObjectsConfigsListST("3DModelConfig");
-    }
-    public static async Task getConfigAsyncv2()
-    {
-        Configs.config_scenario = await getJObjectsConfigsListAsync("3DModelConfig");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_scenario = await loadConfigType();
-    }
 }
 
 

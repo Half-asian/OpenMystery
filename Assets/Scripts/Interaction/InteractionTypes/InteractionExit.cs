@@ -12,7 +12,6 @@ public class InteractionExit : Interaction
     public override Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
     {
         base.setup(ref _interaction, should_add_enter_events);
-        config_interaction.autoSelect = false;
 
         interaction_gameobject.AddComponent<InteractionButton>();
         interaction_gameobject.GetComponent<InteractionButton>().interaction = this;

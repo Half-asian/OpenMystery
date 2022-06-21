@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 public class ConfigScriptEvents : Config<ConfigScriptEvents>
 {
     [System.Serializable]
@@ -16,26 +10,48 @@ public class ConfigScriptEvents : Config<ConfigScriptEvents>
         public string[] action;
         public string[] param;
         public string[][] messageAndKeys;
-        public float duration;
+        public float? duration;
         public string shouldRun;
         public string[] sequenceIds;
+
+        public float Duration => duration ?? 0.0f;
     }
     public Dictionary<string, ScriptEvent> ScriptEvents;
-
+    ScriptEvent combineScriptEvents(ScriptEvent a, ScriptEvent b)
+    {
+        a.eventId = b.eventId ?? a.eventId;
+        a.type = b.type ?? a.type;
+        a.action = b.action ?? a.action;
+        a.param = b.param ?? a.param;
+        a.messageAndKeys = b.messageAndKeys ?? a.messageAndKeys;
+        a.duration = b.duration ?? a.duration;
+        a.shouldRun = b.shouldRun ?? a.shouldRun;
+        a.sequenceIds = b.sequenceIds ?? a.sequenceIds;
+        return a;
+    }
     public override ConfigScriptEvents combine(List<ConfigScriptEvents> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
             foreach (string key in other_list[i].ScriptEvents.Keys)
             {
-                ScriptEvents[key] = other_list[i].ScriptEvents[key];
+                if (ScriptEvents.ContainsKey(key))
+                    ScriptEvents[key] = combineScriptEvents(ScriptEvents[key], other_list[i].ScriptEvents[key]);
+                else
+                    ScriptEvents[key] = other_list[i].ScriptEvents[key];
             }
         }
         return this;
     }
-    public static void getConfig()
+    public static ConfigScriptEvents getConfig()
     {
-        Configs.config_script_events = getJObjectsConfigsListST("ScriptEvents");
+        string type = "ScriptEvents";
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        List<ConfigScriptEvents> configs = getConfigList(type);
+        configs[0].combine(configs);
+        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
+        return configs[0];
     }
 }
 

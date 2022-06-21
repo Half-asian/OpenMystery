@@ -1,11 +1,5 @@
-﻿using System;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
 {
@@ -13,12 +7,12 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
     public class HPDialogueLine
     {
         public string cameraShot;
-        public float cameraTransitionTime;
+        public float? cameraTransitionTime;
         public string dialogue;
         public string[] enterEvents;
         public string[] exitEvents;
         public string id;
-        public bool initialTurn; //No clue
+        public bool? initialTurn;
         public string[] barkPlaylistIds;
         public string[] barkPredicates;
         public string[] dialogueChoiceIds;
@@ -31,24 +25,58 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
         public string[] lookAt;
         public string[] _headOnly;
         public dynamic headOnly; //some fucker entered an integer
+
+        public float CameraTransitionTime => cameraTransitionTime ?? 0.0f;
     }
 
     public Dictionary<string, HPDialogueLine> HPDialogueLines;
+    HPDialogueLine combineDialogueLine(HPDialogueLine a, HPDialogueLine b)
+    {
+        a.cameraShot = b.cameraShot ?? a.cameraShot;
+        a.cameraTransitionTime = b.cameraTransitionTime ?? a.cameraTransitionTime;
+        a.dialogue = b.dialogue ?? a.dialogue;
+        a.enterEvents = b.enterEvents ?? a.enterEvents;
+        a.exitEvents = b.exitEvents ?? a.exitEvents;
+        a.id = b.id ?? a.id;
+        a.initialTurn = b.initialTurn ?? a.initialTurn;
+        a.barkPlaylistIds = b.barkPlaylistIds ?? a.barkPlaylistIds;
+        a.barkPredicates = b.barkPredicates ?? a.barkPredicates;
+        a.dialogueChoiceIds = b.dialogueChoiceIds ?? a.dialogueChoiceIds;
+        a.nextTurnIds = b.nextTurnIds ?? a.nextTurnIds;
+        a.nextTurnPredicates = b.nextTurnPredicates ?? a.nextTurnPredicates;
+        a.emoteEvents = b.emoteEvents ?? a.emoteEvents;
+        a.emoteResetEvents = b.emoteResetEvents ?? a.emoteResetEvents;
+        a.speakerId = b.speakerId ?? a.speakerId;
+        a.token = b.token ?? a.token;
+        a.lookAt = b.lookAt ?? a.lookAt;
+        a.headOnly = b.headOnly ?? a.headOnly;
 
+        return a;
+    }
     public override ConfigHPDialogueLine combine(List<ConfigHPDialogueLine> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
             foreach (string key in other_list[i].HPDialogueLines.Keys)
             {
-                HPDialogueLines[key] = other_list[i].HPDialogueLines[key];
+                if (HPDialogueLines.ContainsKey(key))
+                    HPDialogueLines[key] = combineDialogueLine(HPDialogueLines[key], other_list[i].HPDialogueLines[key]);
+                else
+                    HPDialogueLines[key] = other_list[i].HPDialogueLines[key];
             }
         }
         return this;
     }
-    public static void getConfig()
+
+    public static ConfigHPDialogueLine getConfig()
     {
-        Configs.config_hp_dialogue_line = getJObjectsConfigsListST("HPDialogueLines");
+        string type = "HPDialogueLines";
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        List<ConfigHPDialogueLine> configs = getConfigList(type);
+        configs[0].combine(configs);
+        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
+        return configs[0];
     }
 }
 
@@ -57,36 +85,56 @@ public class ConfigDialogueChoice : Config<ConfigDialogueChoice>
     [System.Serializable]
     public class _DialogueChoice
     {
-        public string availabalePredicate;
+        public string availablePredicate; //todo
         public string choiceId;
         public string choiceToken;
-        public bool persistChoice;
-        public string className;
+        public bool persistChoice; //unused
+        public string className; //unused
         public string noQteTurnId;
         public string preQteTurnId;
-        public string failTurnId;
-        public string qteGrade;
-        public string qteId;
+        public string failTurnId; //unused
+        public string qteGrade; //unused
+        public string qteId; //unused
         public string successTurnId;
-        public string reward;
+        public string reward; //todo
     }
 
     public Dictionary<string, _DialogueChoice> DialogueChoice;
 
+    _DialogueChoice combineDialogueChoice(_DialogueChoice a, _DialogueChoice b) {
+        a.availablePredicate = b.availablePredicate ?? a.availablePredicate;
+        a.choiceId = b.choiceId ?? a.choiceId;
+        a.choiceToken = b.choiceToken ?? a.choiceToken;
+        a.noQteTurnId = b.noQteTurnId ?? a.noQteTurnId;
+        a.preQteTurnId = b.preQteTurnId ?? a.preQteTurnId;
+        a.successTurnId = b.successTurnId ?? a.successTurnId;
+        a.reward = b.reward ?? a.reward;
+        return a;
+    }
     public override ConfigDialogueChoice combine(List<ConfigDialogueChoice> other_list)
     {
         for (int i = 1; i < other_list.Count; i++)
         {
             foreach (string key in other_list[i].DialogueChoice.Keys)
             {
-                DialogueChoice[key] = other_list[i].DialogueChoice[key];
+                if (DialogueChoice.ContainsKey(key))
+                    DialogueChoice[key] = combineDialogueChoice(DialogueChoice[key], other_list[i].DialogueChoice[key]);
+                else
+                    DialogueChoice[key] = other_list[i].DialogueChoice[key];
             }
         }
         return this;
     }
-    public static void getConfig()
+
+    public static ConfigDialogueChoice getConfig()
     {
-        Configs.config_dialogue_choices = getJObjectsConfigsListST("DialogueChoice");
+        string type = "DialogueChoice";
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        List<ConfigDialogueChoice> configs = getConfigList(type);
+        configs[0].combine(configs);
+        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
+        return configs[0];
     }
 }
 

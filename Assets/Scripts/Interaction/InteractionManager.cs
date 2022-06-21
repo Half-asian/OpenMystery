@@ -181,10 +181,8 @@ public class InteractionManager : MonoBehaviour {
                 interaction_gameobject = new GameObject();
                 active_interactions.Add(interaction_gameobject.AddComponent<InteractionOptional>().setup(ref new_interaction, run_entry_events));
                 break;
-
             default:
-                GameObject.Find("MainMenuCanvas").GetComponent<MainMenu>().fakeCrash("Unknown interaction type", new_interaction.type + " in " + new_interaction.id);
-                break;
+                throw new Exception("Unknown interaction type " + new_interaction.type + " in " + new_interaction.id);
         }
 
         return interaction_gameobject;

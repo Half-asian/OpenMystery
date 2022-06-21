@@ -23,14 +23,6 @@ public class ConfigTexture : Config<ConfigTexture>
     {
         throw new NotImplementedException();
     }
-    public static async Task getConfig()
-    {
-        Configs.config_texture = await getJObjectsConfigsListAsync("TextureConfig");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_texture = await loadConfigType();
-    }
 }
 public class Config3DModel : Config<Config3DModel>
 {
@@ -91,13 +83,5 @@ public class Config3DModel : Config<Config3DModel>
         throw new NotImplementedException();
     }
 
-    public static async Task getConfig()
-    {
-        Configs.config_3dmodel = await getJObjectsConfigsListAsync ("3DModelConfig", Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
-    }
 
-    public static async Task loadJ()
-    {
-        Configs.config_3dmodel = await loadConfigType(Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
-    }
 }

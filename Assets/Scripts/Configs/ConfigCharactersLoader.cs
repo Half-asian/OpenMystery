@@ -57,14 +57,6 @@ public class ConfigHPActorInfo : Config<ConfigHPActorInfo>
         }
         return this;
     }
-    public static async Task getConfig()
-    {
-        Configs.config_hp_actor_info = await getJObjectsConfigsListAsync("HPActorInfo");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_hp_actor_info = await loadConfigType();
-    }
 }
 
 public class ConfigActorMapping : Config<ConfigActorMapping>
@@ -107,7 +99,7 @@ public class ConfigActorMapping : Config<ConfigActorMapping>
 
         if (actor_map_result == "::prefectIdAlias::")
         {
-            actor_map_result = Configs.config_house.House[DialogueManager.local_avatar_house].snippets_prefectIdAlias;
+            actor_map_result = Configs.config_house.House[Player.local_avatar_house].snippets_prefectIdAlias;
         }
 
         return actor_map_result;
@@ -117,14 +109,8 @@ public class ConfigActorMapping : Config<ConfigActorMapping>
     {
         throw new NotImplementedException();
     }
-    public static async Task getConfig()
-    {
-        Configs.config_actor_mapping = await getJObjectsConfigsListAsync("ActorMapping");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_actor_mapping = await loadConfigType();
-    }
+
+
 }
 
 public class ConfigHouse : Config<ConfigHouse>
@@ -172,10 +158,6 @@ public class ConfigHouse : Config<ConfigHouse>
     public static void getConfig()
     {
         Configs.config_house = getJObjectsConfigsListST("House");
-    }
-    public static async Task loadJ()
-    {
-        Configs.config_house = await loadConfigType();
     }
 }
 
