@@ -21,12 +21,12 @@ public class EncounterDate : Encounter, DialogueCallback
     }
     public override void activate()
     {
-        if (!Configs.config_companion.Companion.ContainsKey(DialogueManager.companionId))
+        if (!Configs.config_companion.Companion.ContainsKey(Player.companionId))
         {
-            throw new System.Exception("Could not find companion " + DialogueManager.companionId);
+            throw new System.Exception("Could not find companion " + Player.companionId);
         }
 
-        ConfigCompanion._Companion companion = Configs.config_companion.Companion[DialogueManager.companionId];
+        ConfigCompanion._Companion companion = Configs.config_companion.Companion[Player.companionId];
         string companion_id = null;
         if (companion.specialActorIds != null)
             companion_id = companion.specialActorIds["date"];
@@ -47,16 +47,16 @@ public class EncounterDate : Encounter, DialogueCallback
 
         Actor.spawnActor(companion_id, date_prompt.dateSpawn, "opponent");
 
-        GameStart.dialogue_manager.onDialogueFinishedEvent += dialogueCallback;
+        DialogueManager.onDialogueFinishedEvent += dialogueCallback;
 
-        GameStart.dialogue_manager.activateDialogue(date_prompt.dialogue);
+        GameStart.dialogue_manager.activateDialogueLine(date_prompt.dialogue);
         
     }
     public void dialogueCallback(string dialogue)
     {
         if (dialogue == Configs.config_date_prompt.DatePrompt[encounter.datePromptIds[date_prompt_counter]].dialogue)
         {
-            GameStart.dialogue_manager.onDialogueFinishedEvent -= dialogueCallback;
+            DialogueManager.onDialogueFinishedEvent -= dialogueCallback;
             Debug.Log("SUCEESSEFUL DIALGOEUY CALLBASKC");
             date_prompt_counter++;
             if (date_prompt_counter > encounter.datePromptIds.Length)
@@ -73,15 +73,15 @@ public class EncounterDate : Encounter, DialogueCallback
 
                 Actor.actor_controllers["opponent"].actor_movement.teleportCharacter(new Vector3(waypoint.position[0], waypoint.position[1], waypoint.position[2]), new Vector3(waypoint.rotation[0], waypoint.rotation[1], waypoint.rotation[2]));
 
-                GameStart.dialogue_manager.onDialogueFinishedEvent += dialogueCallback;
+                DialogueManager.onDialogueFinishedEvent += dialogueCallback;
                 
-                GameStart.dialogue_manager.activateDialogue(date_prompt.dialogue);
+                GameStart.dialogue_manager.activateDialogueLine(date_prompt.dialogue);
             }
         }
     }
 
     void finished()
     {
-        GameStart.dialogue_manager.onDialogueFinishedEvent += dialogueCallback;
+        DialogueManager.onDialogueFinishedEvent += dialogueCallback;
     }
 }

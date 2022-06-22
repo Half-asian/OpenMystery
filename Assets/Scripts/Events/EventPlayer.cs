@@ -65,14 +65,14 @@ public class EventPlayer : MonoBehaviour
             }
         }
 
-        if (Configs.config_script_events.ScriptEvents[event_name].type == "Blocking" && Configs.config_script_events.ScriptEvents[event_name].duration == 0.0f && Configs.config_script_events.ScriptEvents[event_name].messageAndKeys != null) //There are some blocking events with no way to exit and no time. Just leftover junk maybe?
+        if (Configs.config_script_events.ScriptEvents[event_name].type == "Blocking" && Configs.config_script_events.ScriptEvents[event_name].Duration == 0.0f && Configs.config_script_events.ScriptEvents[event_name].messageAndKeys != null) //There are some blocking events with no way to exit and no time. Just leftover junk maybe?
         {
             total_block = true;
         }
 
         if (Configs.config_script_events.ScriptEvents[event_name].type == "Blocking")
         {
-            event_time = Configs.config_script_events.ScriptEvents[event_name].duration;
+            event_time = Configs.config_script_events.ScriptEvents[event_name].Duration;
 
             if (Configs.config_script_events.ScriptEvents[event_name].messageAndKeys != null)
             {
@@ -90,7 +90,7 @@ public class EventPlayer : MonoBehaviour
         }
         else
         {
-            if (Configs.config_script_events.ScriptEvents[event_name].duration != 0.0f)
+            if (Configs.config_script_events.ScriptEvents[event_name].Duration != 0.0f)
             {
                 //Debug.Log("Non-blocking event with non 0 duration " + event_name);
             }
@@ -120,17 +120,7 @@ public class EventPlayer : MonoBehaviour
 
         if (block_duration <= 0.0f)
         {
-            if (!is_sequential_player) GameStart.dialogue_manager.waiting_for_dialogue = true;
             block_duration = 0.0f;
-        }
-
-        if (block_duration > 0.0f && !is_sequential_player)
-        {
-            if (!GameStart.dialogue_manager.in_bubble)
-            {
-                GameStart.dialogue_manager.waiting_for_dialogue = false;
-                GameStart.dialogue_manager.ui_dialogue.SetActive(false);
-            }
         }
 
         if (block_duration > 1000 && !is_sequential_player) //Cast a spell
@@ -192,6 +182,8 @@ public class EventPlayer : MonoBehaviour
             }
 
         }
+
+        GameStart.event_manager.checkEventsActive();
     }
 
     public void reset()

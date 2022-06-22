@@ -37,7 +37,7 @@ public class Actor
         ActorController actor_controller = null;
         ConfigHPActorInfo._HPActorInfo config_actor = null;
 
-        actor_id = ConfigActorMapping.getActorMapping(actor_id, DialogueManager.local_avatar_gender);
+        actor_id = ConfigActorMapping.getActorMapping(actor_id, Player.local_avatar_gender);
 
         if (actor_id != "Avatar" && !Configs.config_hp_actor_info.HPActorInfo.ContainsKey(actor_id))
             throw new System.Exception("Error: Tried to spawn an actor with invalid id " + actor_id);
@@ -45,16 +45,16 @@ public class Actor
 
         if (actor_id == "Avatar")
         {
-            if (DialogueManager.local_avatar_gender == "female")
+            if (Player.local_avatar_gender == "female")
                 config_actor = Configs.config_hp_actor_info.HPActorInfo["c_avatar_female_base"]; //Upgrade later to match wands
             else
                 config_actor = Configs.config_hp_actor_info.HPActorInfo["c_avatar_male_base"]; //Upgrade later to match wands
 
-            DialogueManager.local_avatar_onscreen_name = character_name;
+            Player.local_avatar_onscreen_name = character_name;
             actor_controller = StaticAvatarSpawner.spawnStaticAvatar();
-            if (DialogueManager.local_avatar_clothing_type != null)
+            if (Player.local_avatar_clothing_type != null)
             {
-                Player.changeClothes(DialogueManager.local_avatar_clothing_type, DialogueManager.local_avatar_secondary_clothing_option);
+                Player.changeClothes(Player.local_avatar_clothing_type, Player.local_avatar_secondary_clothing_option);
             }
         }
         else
@@ -198,20 +198,20 @@ public class Actor
         string house;
         if (actor_info.quidditchMaterialOptions.houseId == "Avatar")
         {
-            house = DialogueManager.local_avatar_house;
+            house = Player.local_avatar_house;
         }
         else if (actor_info.quidditchMaterialOptions.houseId == "QuidditchRival")
         {
-            if (DialogueManager.local_avatar_house == "ravenclaw")
+            if (Player.local_avatar_house == "ravenclaw")
                 house = "slytherin";
             else
                 house = "ravenclaw";
         }
         else if (actor_info.quidditchMaterialOptions.houseId == "QuidditchOpponent")
         {
-            if (DialogueManager.local_avatar_opponent_house != null)
+            if (Player.local_avatar_opponent_house != null)
             {
-                house = DialogueManager.local_avatar_opponent_house;
+                house = Player.local_avatar_opponent_house;
             }
             else
             {
@@ -231,7 +231,7 @@ public class Actor
                 {
                     if (piece.GetComponent<SkinnedMeshRenderer>() != null)
                     {
-                        if (house == "ravenclaw" || (house == "Avatar" && DialogueManager.local_avatar_house == "ravenclaw"))
+                        if (house == "ravenclaw" || (house == "Avatar" && Player.local_avatar_house == "ravenclaw"))
                         {
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_ravenclaw", 1);
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_slytherin", 0);
@@ -239,21 +239,21 @@ public class Actor
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_gryffindor", 0);
 
                         }
-                        else if (house == "slytherin" || (house == "Avatar" && DialogueManager.local_avatar_house == "slytherin"))
+                        else if (house == "slytherin" || (house == "Avatar" && Player.local_avatar_house == "slytherin"))
                         {
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_ravenclaw", 0);
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_slytherin", 1);
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_hufflepuff", 0);
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_gryffindor", 0);
                         }
-                        else if (house == "hufflepuff" || (house == "Avatar" && DialogueManager.local_avatar_house == "hufflepuff"))
+                        else if (house == "hufflepuff" || (house == "Avatar" && Player.local_avatar_house == "hufflepuff"))
                         {
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_ravenclaw", 0);
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_slytherin", 0);
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_hufflepuff", 1);
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_gryffindor", 0);
                         }
-                        else if (house == "gryffindor" || (house == "Avatar" && DialogueManager.local_avatar_house == "gryffindor"))
+                        else if (house == "gryffindor" || (house == "Avatar" && Player.local_avatar_house == "gryffindor"))
                         {
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_ravenclaw", 0);
                             piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_slytherin", 0);

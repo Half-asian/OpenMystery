@@ -651,7 +651,7 @@ public class ModelManager
 								}
 								if (material.shaderName == "houserobeshader" || material.shaderName == "houseclothshader" || material.shaderName == "quidditchshader" || material.shaderName == "houseubershader")
 								{
-									switch (DialogueManager.local_avatar_house)
+									switch (Player.local_avatar_house)
                                     {
 										case "ravenclaw":
 											mat.SetInt("is_ravenclaw", 1);
@@ -670,7 +670,7 @@ public class ModelManager
 
 								if (material.shaderName == "avatarfaceshader")
                                 {
-									switch (DialogueManager.local_avatar_house)
+									switch (Player.local_avatar_house)
 									{
 										case "ravenclaw":
 											mat.SetVector("u_housePrimary", new Vector3(0.14f, 0.308f, 0.656f));

@@ -15,7 +15,7 @@ namespace IndividualComponents
             if (!avatar_components.customization_categories.ContainsKey("tops"))
             {
                 avatar_components.customization_categories["tops"] = new PlayerFile.CustomizationCategory();
-                if (DialogueManager.local_avatar_gender == "female")
+                if (Player.local_avatar_gender == "female")
                     avatar_components.customization_categories["tops"].component_id = "o_Female_PrepOutfit_TOP";
                 else
                     avatar_components.customization_categories["tops"].component_id = "o_Male_PrepOutfit_TOP";

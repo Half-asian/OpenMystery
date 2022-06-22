@@ -9,7 +9,7 @@ public class ObjectiveDialogueComplete : Objective, DialogueCallback
         objective_config = _objective;
         Assert.IsNotNull(objective_config.keys, "ObjectiveDialogueComplete(): objective.keys cannot be null.");
         keys = new List<string>(objective_config.keys);
-        GameStart.dialogue_manager.onDialogueFinishedEvent += dialogueCallback;
+        DialogueManager.onDialogueFinishedEvent += dialogueCallback;
     }
 
     public void dialogueCallback(string dialogue_id)
@@ -21,7 +21,7 @@ public class ObjectiveDialogueComplete : Objective, DialogueCallback
         }
         if (keys_completed >= objective_config.required_count)
         {
-            GameStart.dialogue_manager.onDialogueFinishedEvent -= dialogueCallback;
+            DialogueManager.onDialogueFinishedEvent -= dialogueCallback;
             objectiveCompleted();
         }
     }

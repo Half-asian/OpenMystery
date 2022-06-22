@@ -12,10 +12,10 @@ public class LocalData : MonoBehaviour
         }
 
         string text = Configs.config_local_data.LocalData[line].en_US;
-        text = text.Replace("::FirstName::", DialogueManager.local_avatar_first_name);
-        text = text.Replace("::LastName::", DialogueManager.local_avatar_last_name);
-        text = text.Replace("::FullName::", DialogueManager.local_avatar_full_name);
-        text = text.Replace("::Date::", Configs.config_companion.Companion[DialogueManager.companionId].speakerId);
+        text = text.Replace("::FirstName::", Player.local_avatar_first_name);
+        text = text.Replace("::LastName::", Player.local_avatar_last_name);
+        text = text.Replace("::FullName::", Player.local_avatar_full_name);
+        text = text.Replace("::Date::", Configs.config_companion.Companion[Player.companionId].speakerId);
         text = text.Replace("::pointsOfHouse(\"ravenclaw\")::", "9999");
         text = text.Replace("::pointsOfHouse(\"gryffindor\")::", "9999");
         text = text.Replace("::pointsOfHouse(\"hufflepuff\")::", "9999");
@@ -23,7 +23,7 @@ public class LocalData : MonoBehaviour
 
 
         //Technically this stuff should be found with the "House" config.
-        switch (DialogueManager.local_avatar_house) //House
+        switch (Player.local_avatar_house) //House
         {
             case "hufflepuff":
                 text = text.Replace("::House::", "Hufflepuff");
@@ -49,7 +49,7 @@ public class LocalData : MonoBehaviour
                 throw new System.Exception("Unknown Player House");
         }
 
-        switch (DialogueManager.local_avatar_opponent_house) //Opp House
+        switch (Player.local_avatar_opponent_house) //Opp House
         {
             case "hufflepuff":
                 text = text.Replace("::opponentHouse::", "Hufflepuff");
@@ -68,7 +68,7 @@ public class LocalData : MonoBehaviour
                 break;
         }
 
-        if (DialogueManager.local_avatar_gender == "male") //Gender
+        if (Player.local_avatar_gender == "male") //Gender
         {
             text = text.Replace("::Mx::", "Mr.");
             text = text.Replace("::HeadKid::", "Head Boy");

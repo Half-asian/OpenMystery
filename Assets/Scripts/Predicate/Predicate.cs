@@ -103,7 +103,7 @@ public class Predicate : MonoBehaviour
             Debug.Log(line);
             string substring = line.Substring(index);
             int closing_brace = substring.IndexOf(")");
-            line = line.Substring(0, index) + "\"" + DialogueManager.local_avatar_quidditch_position + "\"" + line.Substring(closing_brace + index + 1);
+            line = line.Substring(0, index) + "\"" + Player.local_avatar_quidditch_position + "\"" + line.Substring(closing_brace + index + 1);
             index = line.IndexOf("quidditchPosition(");
             Debug.Log(line);
         }
@@ -129,10 +129,10 @@ public class Predicate : MonoBehaviour
         {
             string substring = line.Substring(index);
             int closing_brace = substring.IndexOf(")");
-            if ((line.Substring(index, closing_brace + 1) == "isInHouse(\"ravenclaw\")" && DialogueManager.local_avatar_house == "ravenclaw") ||
-                (line.Substring(index, closing_brace + 1) == "isInHouse(\"slytherin\")" && DialogueManager.local_avatar_house == "slytherin") ||
-                (line.Substring(index, closing_brace + 1) == "isInHouse(\"hufflepuff\")" && DialogueManager.local_avatar_house == "hufflepuff") ||
-                (line.Substring(index, closing_brace + 1) == "isInHouse(\"gryffindor\")" && DialogueManager.local_avatar_house == "gryffindor"))
+            if ((line.Substring(index, closing_brace + 1) == "isInHouse(\"ravenclaw\")" && Player.local_avatar_house == "ravenclaw") ||
+                (line.Substring(index, closing_brace + 1) == "isInHouse(\"slytherin\")" && Player.local_avatar_house == "slytherin") ||
+                (line.Substring(index, closing_brace + 1) == "isInHouse(\"hufflepuff\")" && Player.local_avatar_house == "hufflepuff") ||
+                (line.Substring(index, closing_brace + 1) == "isInHouse(\"gryffindor\")" && Player.local_avatar_house == "gryffindor"))
             {
                 line = line.Substring(0, index) + " true " + line.Substring(closing_brace + index + 1);
             }
@@ -148,7 +148,7 @@ public class Predicate : MonoBehaviour
         {
             string substring = line.Substring(index);
             int closing_brace = substring.IndexOf(")");
-            if (DialogueManager.local_avatar_gender == "female")
+            if (Player.local_avatar_gender == "female")
             {
                 line = line.Substring(0, index) + " true " + line.Substring(closing_brace + index + 1);
             }
@@ -164,7 +164,7 @@ public class Predicate : MonoBehaviour
         {
             string substring = line.Substring(index);
             int closing_brace = substring.IndexOf(")");
-            if (DialogueManager.local_avatar_gender == "male")
+            if (Player.local_avatar_gender == "male")
             {
                 line = line.Substring(0, index) + " true " + line.Substring(closing_brace + index + 1);
             }
@@ -180,7 +180,7 @@ public class Predicate : MonoBehaviour
         {
             string substring = line.Substring(index);
             int closing_brace = substring.IndexOf(")");
-            line = line.Substring(0, index) + DialogueManager.local_avatar_year + line.Substring(closing_brace + index + 1);
+            line = line.Substring(0, index) + Player.local_avatar_year + line.Substring(closing_brace + index + 1);
             index = line.IndexOf("playerYear(");
         }
 
@@ -259,7 +259,7 @@ public class Predicate : MonoBehaviour
             string substring = line.Substring(index);
             int closing_brace = substring.IndexOf(")");
 
-            line = line.Substring(0, index) + " \"" + DialogueManager.local_avatar_opponent_house + "\" " + line.Substring(closing_brace + index + 1);
+            line = line.Substring(0, index) + " \"" + Player.local_avatar_opponent_house + "\" " + line.Substring(closing_brace + index + 1);
 
             index = line.IndexOf("opponentHouse(");
         }

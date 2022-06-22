@@ -96,7 +96,7 @@ public partial class NewPredicate
 
     static SymbolConstantString quidditchPosition()
     {
-        return new SymbolConstantString(DialogueManager.local_avatar_quidditch_position);
+        return new SymbolConstantString(Player.local_avatar_quidditch_position);
     }
 
     static SymbolConstantBool madeChoice(SymbolConstantString choice_id)
@@ -108,22 +108,22 @@ public partial class NewPredicate
 
     static SymbolConstantBool isInHouse(SymbolConstantString house)
     {
-        return new SymbolConstantBool(DialogueManager.local_avatar_house == house.value);
+        return new SymbolConstantBool(Player.local_avatar_house == house.value);
     }
 
     static SymbolConstantBool isAvatarFemale()
     {
-        return new SymbolConstantBool(DialogueManager.local_avatar_gender == "female");
+        return new SymbolConstantBool(Player.local_avatar_gender == "female");
     }
 
     static SymbolConstantBool isAvatarMale()
     {
-        return new SymbolConstantBool(DialogueManager.local_avatar_gender == "male");
+        return new SymbolConstantBool(Player.local_avatar_gender == "male");
     }
 
     static SymbolConstantInteger playerYear()
     {
-        return new SymbolConstantInteger(DialogueManager.local_avatar_year);
+        return new SymbolConstantInteger(Player.local_avatar_year);
     }
 
     static SymbolConstantString currentScenario()
@@ -160,7 +160,7 @@ public partial class NewPredicate
 
     static SymbolConstantString opponentHouse()
     {
-        return new SymbolConstantString(DialogueManager.local_avatar_opponent_house);
+        return new SymbolConstantString(Player.local_avatar_opponent_house);
     }
 
     static SymbolConstantBool isTLSQActive(SymbolConstantString tlsq_id)
@@ -197,7 +197,7 @@ public partial class NewPredicate
 
     static SymbolConstantInteger placeOfHouse(SymbolConstantString a)
     {
-        if (DialogueManager.local_avatar_house == "ravenclaw")
+        if (Player.local_avatar_house == "ravenclaw")
         {
             if (a.value == "ravenclaw")
                 return new SymbolConstantInteger(0);
@@ -207,7 +207,7 @@ public partial class NewPredicate
                 return new SymbolConstantInteger(2);
             return new SymbolConstantInteger(3);
         }
-        if (DialogueManager.local_avatar_house == "gryffindor")
+        if (Player.local_avatar_house == "gryffindor")
         {
             if (a.value == "gryffindor")
                 return new SymbolConstantInteger(0);
@@ -217,7 +217,7 @@ public partial class NewPredicate
                 return new SymbolConstantInteger(2);
             return new SymbolConstantInteger(3);
         }
-        if (DialogueManager.local_avatar_house == "slytherin")
+        if (Player.local_avatar_house == "slytherin")
         {
             if (a.value == "slytherin")
                 return new SymbolConstantInteger(0);

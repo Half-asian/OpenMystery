@@ -14,7 +14,7 @@ public class LocationHubMenu : MonoBehaviour
     [SerializeField]
     private Dropdown dropdown;
 
-    private void Start()
+    private void Awake()
     {
         singleton = this;
         loadButtons();

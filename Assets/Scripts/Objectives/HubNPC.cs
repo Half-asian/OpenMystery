@@ -81,7 +81,7 @@ public class HubNPC
     {
         if (config_hubnpc.autoStartDialogue == true)
         {
-            GameStart.dialogue_manager.activateNewDialogue(config_hubnpc.primaryDialogue);
+            GameStart.dialogue_manager.activateDialogue(config_hubnpc.primaryDialogue);
         }
         else
         {

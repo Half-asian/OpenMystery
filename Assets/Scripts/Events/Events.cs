@@ -287,7 +287,7 @@ public static class Events
                 if (Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
 
-                    if (action_params[0] == DialogueManager.local_avatar_onscreen_name)
+                    if (action_params[0] == Player.local_avatar_onscreen_name)
                     {
                         AvatarComponents a = Actor.actor_controllers["Avatar"].avatar_components;
                         foreach (SkinnedMeshRenderer smr in a.base_model.game_object.GetComponentsInChildren<SkinnedMeshRenderer>())
@@ -312,7 +312,7 @@ public static class Events
                 if (Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
 
-                    if (action_params[0] == DialogueManager.local_avatar_onscreen_name)
+                    if (action_params[0] == Player.local_avatar_onscreen_name)
                     {
                         AvatarComponents a = Actor.actor_controllers["Avatar"].avatar_components;
                         foreach (SkinnedMeshRenderer smr in a.base_model.game_object.GetComponentsInChildren<SkinnedMeshRenderer>())
@@ -536,8 +536,8 @@ public static class Events
                 break;
             case "wearClothingType":
                 Debug.Log("wearClothingType");
-                DialogueManager.local_avatar_clothing_type = action_params[0];
-                DialogueManager.local_avatar_secondary_clothing_option = action_params[1];
+                Player.local_avatar_clothing_type = action_params[0];
+                Player.local_avatar_secondary_clothing_option = action_params[1];
                 //GetComponent<Player>().changeClothes(action_params[0], action_params[1], DialogueManager.local_avatar_onscreen_name);
                 break;
             case "setQuidditchHelmetEquipped":
@@ -545,10 +545,10 @@ public static class Events
                 //GetComponent<Player>().setQuidditchHelmet();
                 break;
             case "setForcedQuidditchPosition":
-                DialogueManager.local_avatar_quidditch_position = action_params[0];
+                Player.local_avatar_quidditch_position = action_params[0];
                 break;
             case "setOpponentHouse":
-                DialogueManager.local_avatar_opponent_house = action_params[0];
+                Player.local_avatar_opponent_house = action_params[0];
                 break;
 
             case "playSound":

@@ -56,7 +56,6 @@ public class UiImageLoader : MonoBehaviour
         press_space_text.font = font_asset;
         please_wait_text.font = font_asset;*/
 
-
         yield return null;
         //loading screen backround
         loading_screen_background_image.sprite = loadSpriteFromApk("hp_loadingscreen_ex@4x.jpg");

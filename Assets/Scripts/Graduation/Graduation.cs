@@ -27,7 +27,7 @@ public class Graduation
         yield return new WaitForSeconds(1);
 
         GameStart.fakeCleanup();
-        GraduationUI.current.showGraduation("YEAR " + DialogueManager.local_avatar_year + " COMPLETE");
+        GraduationUI.current.showGraduation("YEAR " + Player.local_avatar_year + " COMPLETE");
         env = ModelManager.loadModel("b_GreatHall_Subdued_skin");
         avatar = Actor.spawnActor("Avatar", null, "Avatar");
         avatar.model.game_object.transform.position = new Vector3(-5.558f, 0.228f, 4.538f);
@@ -53,7 +53,7 @@ public class Graduation
         3);
         yield return new WaitForSeconds(3);
 
-        if (DialogueManager.local_avatar_gender == "male")
+        if (Player.local_avatar_gender == "male")
             avatar.actor_animation.replaceCharacterIdle("c_Stu_LevelUpMale01_maleLevelUp");
         else
             avatar.actor_animation.replaceCharacterIdle("c_Stu_LevelUpFemale01_femaleLevelUp");

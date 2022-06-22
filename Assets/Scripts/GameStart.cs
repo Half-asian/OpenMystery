@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections;
 using System.Threading.Tasks;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameStart : MonoBehaviour
 {
@@ -111,12 +112,7 @@ public class GameStart : MonoBehaviour
 
     public void cleanUp() {
         interaction_manager.destroyAllInteractions();
-
         Scene.destroyScenePrefab();
-        dialogue_manager.current_dialogue = null;
-        dialogue_manager.dialogue_status = DialogueStatus.Finished;
-        dialogue_manager.ui_dialogue.SetActive(false);
-
         CameraManager.current.resetCamera();
         CameraManager.current.simple_camera_controller.enabled = false;
 
@@ -135,74 +131,42 @@ public class GameStart : MonoBehaviour
         onReturnToMenu.Invoke();
     }
 
-    public void dialogueChoice1Callback()
+
+    public static void logWrite(string message)
     {
-        Debug.Log("dialogueChoice1Callback");
-        dialogue_manager.ui_dialogue_choice_1.SetActive(false);
-        dialogue_manager.ui_dialogue_choice_2.SetActive(false);
-        dialogue_manager.ui_dialogue_choice_3.SetActive(false);
-        dialogue_manager.next_dialogue = dialogue_manager.dialogue_choice_1_next_dialogue;
-
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Contains("madeChoice(\"" + dialogue_manager.choices[0] + "\")"))
-        {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\choices_made.txt", true);
-            writer.WriteLine("madeChoice(\"" + dialogue_manager.choices[0] + "\")");
-            writer.Close();
-        }
-
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + dialogue_manager.choices[1] + "\")", ""));
-        if (dialogue_manager.choices.Count > 2)        
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + dialogue_manager.choices[2] + "\")", ""));
-
-
-        dialogue_manager.waiting_for_dialogue = true;
-        dialogue_manager.activateDialogue(dialogue_manager.next_dialogue);
-    }
-    public void dialogueChoice2Callback()
-    {
-        Debug.Log("dialogueChoice2Callback");
-        dialogue_manager.ui_dialogue_choice_1.SetActive(false);
-        dialogue_manager.ui_dialogue_choice_2.SetActive(false);
-        dialogue_manager.ui_dialogue_choice_3.SetActive(false);
-        dialogue_manager.next_dialogue = dialogue_manager.dialogue_choice_2_next_dialogue;
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Contains("madeChoice(\"" + dialogue_manager.choices[1] + "\")"))
-        {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\choices_made.txt", true);
-            writer.WriteLine("madeChoice(\"" + dialogue_manager.choices[1] + "\")");
-            writer.Close();
-        }
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + dialogue_manager.choices[0] + "\")", ""));
-        if (dialogue_manager.choices.Count > 2)
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + dialogue_manager.choices[2] + "\")", ""));
-
-        dialogue_manager.waiting_for_dialogue = true;
-        dialogue_manager.activateDialogue(dialogue_manager.next_dialogue);
-    }
-    public void dialogueChoice3Callback()
-    {
-        Debug.Log("dialogueChoice3Callback");
-        dialogue_manager.ui_dialogue_choice_1.SetActive(false);
-        dialogue_manager.ui_dialogue_choice_2.SetActive(false);
-        dialogue_manager.ui_dialogue_choice_3.SetActive(false); 
-        dialogue_manager.next_dialogue = dialogue_manager.dialogue_choice_3_next_dialogue;
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Contains("madeChoice(\"" + dialogue_manager.choices[2] + "\")"))
-        {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\choices_made.txt", true);
-            writer.WriteLine("madeChoice(\"" + dialogue_manager.choices[2] + "\")");
-            writer.Close();
-        }
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + dialogue_manager.choices[0] + "\")", ""));
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + dialogue_manager.choices[1] + "\")", ""));
-        dialogue_manager.waiting_for_dialogue = true;
-        dialogue_manager.activateDialogue(dialogue_manager.next_dialogue);
+        //StreamWriter writer = new StreamWriter("log.txt", true);
+        Debug.Log(message);
+        //writer.WriteLine(message);
+        //writer.Close();
     }
 
-
-
-
-    public async Task StartLoading()
+    public async void Start()
     {
+        if (SceneManager.GetActiveScene().name == "MainScene")
+            MainMenu.current.menu_object.SetActive(true);
+
+
+        onReturnToMenu = delegate { };
+
+        Debug.Log("GameStart Start");
+
+        current = this;
+
+        //Initialize Managers
+        ModelManager.Initialize();
+        Actor.Initialize();
+        Prop.Initialize();
+        Scenario.Initialize();
+        Scene.Initialize();
+        Location.Initialize();
+        Goal.Initialize();
+        GoalChain.Initialize();
+        Objective.Initialize();
+        HubNPC.Initialize();
+
+
         //anything thats a getcomponent, makes use of coroutines or needs references to game objects
+        
 
         dialogue_manager = GetComponent<DialogueManager>();
         event_manager = GetComponent<EventManager>();
@@ -211,10 +175,23 @@ public class GameStart : MonoBehaviour
         encounter_manager = GetComponent<EncounterManager>();
         ui_manager = GameObject.Find("UI Handler").GetComponent<UiManager>();
         post_process_manager = GetComponent<PostProcess>();
-        dialogue_manager = GetComponent<DialogueManager>();
 
-        DialogueManager.local_avatar_clothing_type = null;
-        DialogueManager.local_avatar_secondary_clothing_option = null;
+        main_menu = GameObject.Find("MainMenuCanvas").GetComponent<MainMenu>();
+        //Are we in model view or game mode?
+        if (!File.Exists("..\\engine_variables.json"))
+            throw new System.Exception("Please launch the game using the launcher.");
+        GlobalEngineVariables.CreateFromJSON("..\\engine_variables.json");
+        if (!GlobalEngineVariables.checkIntegrity())
+            throw new System.Exception("Please launch the game using the launcher.");
+        PlayerManager.initialize();
+
+        if (!Application.isEditor)
+            File.Delete("..\\engine_variables.json");
+
+        main_menu.state = MainMenu.State.stateLoadingScreenLoading;
+
+        Player.local_avatar_clothing_type = null;
+        Player.local_avatar_secondary_clothing_option = null;
 
         System.IO.FileStream oFileStream = null;
 

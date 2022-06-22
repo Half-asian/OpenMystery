@@ -77,7 +77,7 @@ public class Location
 
         string mapId = Scenario.current.scenario_config.mapLocationId;
         if (Scenario.current.scenario_config.mapLocationOverrides != null)
-            if (Scenario.current.scenario_config.mapLocationOverrides.TryGetValue(DialogueManager.local_avatar_house, out mapId) == false)
+            if (Scenario.current.scenario_config.mapLocationOverrides.TryGetValue(Player.local_avatar_house, out mapId) == false)
                 mapId = Scenario.current.scenario_config.mapLocationId;
 
         current = Configs.config_location.Location[mapId];

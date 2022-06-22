@@ -119,7 +119,7 @@ public class Scenario
 
         string mapId = activated_scenario.mapLocationId;
         if (activated_scenario.mapLocationOverrides != null)
-            if (activated_scenario.mapLocationOverrides.TryGetValue(DialogueManager.local_avatar_house, out mapId) == false)
+            if (activated_scenario.mapLocationOverrides.TryGetValue(Player.local_avatar_house, out mapId) == false)
                 mapId = activated_scenario.mapLocationId;
 
         Scenario new_scenario = new Scenario();
@@ -186,7 +186,7 @@ public class Scenario
         string chosen_scene = current.scenario_config.scene;
         if (current.scenario_config.sceneOverrides != null)
         {
-            if (current.scenario_config.sceneOverrides.TryGetValue(DialogueManager.local_avatar_house, out chosen_scene) == false)
+            if (current.scenario_config.sceneOverrides.TryGetValue(Player.local_avatar_house, out chosen_scene) == false)
                 chosen_scene = current.scenario_config.scene;
         }
         Scene.setCurrentScene(chosen_scene);

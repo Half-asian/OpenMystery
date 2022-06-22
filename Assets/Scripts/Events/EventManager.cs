@@ -9,7 +9,7 @@ using System.IO;
 public class EventManager : MonoBehaviour
 {
 
-    public event Action all_script_events_finished_event = delegate {};
+    public static event Action all_script_events_finished_event = delegate {};
 
     //public List<string> event_stack = new List<string>();
     //public float block_duration = 0.0f;
@@ -227,6 +227,10 @@ public class EventManager : MonoBehaviour
     {
         main_event_player.runImmediateEvents();
         sequential_event_player.runImmediateEvents();
+    }
+
+    public void checkEventsActive()
+    {
         if (areEventsActive() == false)
             all_script_events_finished_event.Invoke();
     }
