@@ -622,7 +622,6 @@ public class AnimationManager : MonoBehaviour
 			default:
 				 Debug.LogError("Unknown trigger id " + trigger.id + " in animation " + anim_clip.name);
 				return;
-				break;
 		}
 
 

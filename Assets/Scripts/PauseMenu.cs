@@ -21,6 +21,7 @@ public class PauseMenu : MonoBehaviour
     public HDAdditionalCameraData camera_data;
 
     public Canvas main_canvas;
+    public Canvas dialogue_canvas;
 
     int width;
     int height;
@@ -84,6 +85,7 @@ public class PauseMenu : MonoBehaviour
         if (Input.GetKeyDown("f4"))
         {
             main_canvas.enabled = !main_canvas.enabled;
+            dialogue_canvas.enabled = !dialogue_canvas.enabled;
         }
 
     }
@@ -91,9 +93,6 @@ public class PauseMenu : MonoBehaviour
 
     public string output = "";
     public string stack = "";
-    public GameObject crash;
-
-
 
     public void quitGame()
     {

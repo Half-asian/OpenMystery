@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System.Collections;
 public class InteractionFocus : Interaction
 {
     public override Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
@@ -23,9 +24,17 @@ public class InteractionFocus : Interaction
 
     public override void activate()
     {
-        FocusUI.onFocusGameFinished += onFocusGameFinished;
-        FocusUI.startFocusGame();
+        //FocusUI.onFocusGameFinished += onFocusGameFinished;
+        //FocusUI.startFocusGame();
+        GameStart.current.StartCoroutine(waitFor1second());
     }
+
+    IEnumerator waitFor1second()
+    {
+        yield return new WaitForSeconds(1);
+        onFocusGameFinished(true);
+    }
+
 
     public void onFocusGameFinished(bool focus_success)
     {

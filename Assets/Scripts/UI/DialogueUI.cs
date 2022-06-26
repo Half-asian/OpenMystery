@@ -47,8 +47,8 @@ public class DialogueUI : MonoBehaviour
 
     void setDialogueText(string text)
     {
-        dialogue_text.maxVisibleCharacters = 0;
         finished_showing_text = false;
+        dialogue_text.maxVisibleCharacters = 0;
         dialogue_text.text = text;
     }
 
@@ -135,8 +135,10 @@ public class DialogueUI : MonoBehaviour
         finished_showing_text = true;
     }
 
+
     private void Update()
     {
+
 
         if (!dialogue_ui.activeSelf) return;
 
@@ -146,11 +148,11 @@ public class DialogueUI : MonoBehaviour
             return;
         }
 
-        int text_holder_index = Mathf.Min((int)((Time.realtimeSinceStartup - start_dialogue_time) / letter_seperator), dialogue_text.textInfo.characterCount);
+        int text_holder_index = Mathf.Min((int)((Time.realtimeSinceStartup - start_dialogue_time) / letter_seperator), dialogue_text.textInfo.characterCount + 1);
 
         dialogue_text.maxVisibleCharacters = text_holder_index;
 
-        if (dialogue_text.textInfo.characterCount <= text_holder_index)
+        if (dialogue_text.textInfo.characterCount < text_holder_index)
             finished_showing_text = true;
     }
 }

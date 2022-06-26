@@ -13,6 +13,7 @@ public class GameStart : MonoBehaviour
     public static event Action onReturnToMenu = delegate { };
     public static event Action<string> onChoiceMade = delegate { };
     public static event Action onUpdate = delegate { };
+    public static event Action onConfigsLoaded = delegate { };
 
     public InteractionProject project_callback;
 
@@ -142,10 +143,6 @@ public class GameStart : MonoBehaviour
 
     public async void Start()
     {
-        if (SceneManager.GetActiveScene().name == "MainScene")
-            MainMenu.current.menu_object.SetActive(true);
-
-
         onReturnToMenu = delegate { };
 
         Debug.Log("GameStart Start");
@@ -251,10 +248,11 @@ public class GameStart : MonoBehaviour
         else if (!model_inspector)
         {
             await Task.Run(() => Configs.loadConfigAll());
-            Configs.postload();
         }
         else
             await Task.Run(() => Configs.loadConfigModelInspector());
+        Configs.postload();
+        onConfigsLoaded.Invoke();
         CameraManager.current.initialise();
         stopwatch.Stop();
         Debug.Log("Time to load configs: " + stopwatch.Elapsed);

@@ -9,6 +9,8 @@ using TMPro;
 public class MainMenu : MonoBehaviour
 {
 
+    public static MainMenu current;
+
     public Image loading_image;
     public GameObject canvas;
     public GameObject menu_object;
@@ -18,6 +20,10 @@ public class MainMenu : MonoBehaviour
     public GameObject loading_screen;
     public Image loading_spinner;
 
+    void Start()
+    {
+        current = this;
+    }
 
 
     public enum State
