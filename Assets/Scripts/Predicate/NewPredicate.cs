@@ -513,8 +513,16 @@ public partial class NewPredicate
                             {
                                 if (sb.function_name == "isExclusive" && sb.children.Count == 0)
                                     sb.function_name = "isExclusiveEmpty";
-
-                                Symbol result = (Symbol)functions[sb.function_name].DynamicInvoke(bracketSetToFunctionParameters(sb));
+                                Symbol result;
+                                try
+                                {
+                                    result = (Symbol)functions[sb.function_name].DynamicInvoke(bracketSetToFunctionParameters(sb));
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.LogError(e.Message);
+                                    result = new SymbolConstantBool(true);
+                                }
                                 base_symbol.children[i] = result; 
                             }
                             else
