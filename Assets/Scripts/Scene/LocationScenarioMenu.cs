@@ -8,6 +8,8 @@ public class LocationScenarioMenu : MonoBehaviour
     static LocationScenarioMenu singleton;
 
     [SerializeField]
+    GameObject menu;
+    [SerializeField]
     private Button button_go;
     [SerializeField]
     private Button button_cancel;
@@ -43,19 +45,19 @@ public class LocationScenarioMenu : MonoBehaviour
 
     public static void showMenu(string location_id)
     {
-        singleton.gameObject.SetActive(true);
+        singleton.menu.SetActive(true);
         singleton.loadButtons(location_id);
     }
 
     public void goButtonClicked()
     {
-        gameObject.SetActive(false);
+        menu.SetActive(false);
         LocationHub.destroyLocationButtons();
         Scenario.Load(dropdown.options[dropdown.value].text); //Load the scenario. Default scenarios will create new temp scenarios, otherwise will load pre activated scenario.
     }
 
     public void closeMenu()
     {
-        gameObject.SetActive(false);
+        menu.SetActive(false);
     }
 }
