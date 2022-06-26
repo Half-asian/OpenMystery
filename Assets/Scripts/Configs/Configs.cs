@@ -171,35 +171,40 @@ public class Configs{
 
     public static void postload()
     {
-        AvatarComponents.avatar_components_hair = new List<string>();
-        foreach (string key in config_avatar_components.AvatarComponents.Keys)
+        //Avatar components
+        if (config_avatar_components is not null)
         {
-            if (config_avatar_components.AvatarComponents[key].category == "hair")
-                AvatarComponents.avatar_components_hair.Add(key);
+
+            AvatarComponents.avatar_components_hair = new List<string>();
+            foreach (string key in config_avatar_components.AvatarComponents.Keys)
+            {
+                if (config_avatar_components.AvatarComponents[key].category == "hair")
+                    AvatarComponents.avatar_components_hair.Add(key);
+            }
+
+            AvatarComponents.avatar_components_tops = new List<string>();
+            foreach (string key in config_avatar_components.AvatarComponents.Keys)
+            {
+                if (config_avatar_components.AvatarComponents[key].category == "tops")
+                    AvatarComponents.avatar_components_tops.Add(key);
+            }
+
+            AvatarComponents.avatar_components_one_piece = new List<string>();
+            foreach (string key in config_avatar_components.AvatarComponents.Keys)
+            {
+                if (config_avatar_components.AvatarComponents[key].category == "one-piece")
+                    AvatarComponents.avatar_components_one_piece.Add(key);
+            }
+
+            AvatarComponents.avatar_components_bottoms = new List<string>();
+            foreach (string key in config_avatar_components.AvatarComponents.Keys)
+            {
+                if (config_avatar_components.AvatarComponents[key].category == "bottoms")
+                    AvatarComponents.avatar_components_bottoms.Add(key);
+            }
         }
 
-        AvatarComponents.avatar_components_tops = new List<string>();
-        foreach (string key in config_avatar_components.AvatarComponents.Keys)
-        {
-            if (config_avatar_components.AvatarComponents[key].category == "tops")
-                AvatarComponents.avatar_components_tops.Add(key);
-        }
-
-        AvatarComponents.avatar_components_one_piece = new List<string>();
-        foreach (string key in config_avatar_components.AvatarComponents.Keys)
-        {
-            if (config_avatar_components.AvatarComponents[key].category == "one-piece")
-                AvatarComponents.avatar_components_one_piece.Add(key);
-        }
-
-        AvatarComponents.avatar_components_bottoms = new List<string>();
-        foreach (string key in config_avatar_components.AvatarComponents.Keys)
-        {
-            if (config_avatar_components.AvatarComponents[key].category == "bottoms")
-                AvatarComponents.avatar_components_bottoms.Add(key);
-        }
-
-
+        //Dialogues
         if (config_hp_dialogue_line is not null)
         {
             dialogue_dict = new Dictionary<string, List<ConfigHPDialogueLine.HPDialogueLine>>();
@@ -228,49 +233,39 @@ public class Configs{
                     }
                 }
             }
-        }
 
-
-        Configs.dialogue_line_override_dict = new Dictionary<string, List<ConfigHPDialogueOverride._HPDialogueOverride>>();
-        foreach (ConfigHPDialogueOverride._HPDialogueOverride dialogue_override_line in Configs.config_hp_dialogue_override.HPDialogueOverride.Values)
-        {
-            if (!Configs.dialogue_line_override_dict.ContainsKey(dialogue_override_line.overridesId))
+            Configs.dialogue_line_override_dict = new Dictionary<string, List<ConfigHPDialogueOverride._HPDialogueOverride>>();
+            foreach (ConfigHPDialogueOverride._HPDialogueOverride dialogue_override_line in Configs.config_hp_dialogue_override.HPDialogueOverride.Values)
             {
-                Configs.dialogue_line_override_dict[dialogue_override_line.overridesId] = new List<ConfigHPDialogueOverride._HPDialogueOverride>();
+                if (!Configs.dialogue_line_override_dict.ContainsKey(dialogue_override_line.overridesId))
+                {
+                    Configs.dialogue_line_override_dict[dialogue_override_line.overridesId] = new List<ConfigHPDialogueOverride._HPDialogueOverride>();
+                }
+                Configs.dialogue_line_override_dict[dialogue_override_line.overridesId].Add(dialogue_override_line);
             }
-            Configs.dialogue_line_override_dict[dialogue_override_line.overridesId].Add(dialogue_override_line);
-        }
 
-        Configs.dialogue_choice_override_dict = new Dictionary<string, List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>>();
-        foreach (ConfigDialogueChoiceOverride._DialogueChoiceOverride dialogue_override_choice in Configs.config_dialogue_choice_override.DialogueChoiceOverride.Values)
-        {
-            if (!Configs.dialogue_choice_override_dict.ContainsKey(dialogue_override_choice.overridesId))
+            Configs.dialogue_choice_override_dict = new Dictionary<string, List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>>();
+            foreach (ConfigDialogueChoiceOverride._DialogueChoiceOverride dialogue_override_choice in Configs.config_dialogue_choice_override.DialogueChoiceOverride.Values)
             {
-                Configs.dialogue_choice_override_dict[dialogue_override_choice.overridesId] = new List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>();
+                if (!Configs.dialogue_choice_override_dict.ContainsKey(dialogue_override_choice.overridesId))
+                {
+                    Configs.dialogue_choice_override_dict[dialogue_override_choice.overridesId] = new List<ConfigDialogueChoiceOverride._DialogueChoiceOverride>();
+                }
+                Configs.dialogue_choice_override_dict[dialogue_override_choice.overridesId].Add(dialogue_override_choice);
             }
-            Configs.dialogue_choice_override_dict[dialogue_override_choice.overridesId].Add(dialogue_override_choice);
+
         }
 
-        //This goal is for the avatar to change clothes. Not worth programming in the logic for this.
-        //Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.RemoveAt(3);
-        //Configs.config_goal.Goals["Y1_C3_P6_v2"].dependencies = null;
-
-        Configs.config_goal_chain.GoalChain["C2_v2"].classGoalIds.Insert(1, "Y1_C2_P4_hub"); //Tutorial triggers this class in between goals
-
-        //Insert broom flying class within the rest of the goals. It needs to be done in order.
-        Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.Insert(5, new List<string> { "Y1_C3_SummonBroom_v2" });
-        Configs.config_goal_chain.GoalChain["C3_v2"].classGoalIds = null;
-
-        Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true"; //Remove check to see if player has completed part of Y2
-
-        //Configs.config_objective.Objectives["Y1_C9_P2aObj1"].objectiveScenario = "MQ4C5P2a";
-
-        foreach (ConfigLocalData._LocalData l in Configs.config_local_data.LocalData.Values)
+        //Localdata
+        if (config_local_data is not null)
         {
-            if (l.es != null)
-                l.en_US = l.es;
-            else if (l.pt != null)
-                l.en_US = l.pt;
+            foreach (ConfigLocalData._LocalData l in Configs.config_local_data.LocalData.Values)
+            {
+                if (l.es != null)
+                    l.en_US = l.es;
+                else if (l.pt != null)
+                    l.en_US = l.pt;
+            }
         }
 
 
@@ -280,49 +275,58 @@ public class Configs{
             Configs.predicate_alias_dict[p.aliasId] = p;
         }
 
-        foreach (ConfigScenario._Scenario s in Configs.config_scenario.Scenario.Values)
+        if (config_scenario is not null)
         {
-            if (s._mapLocationOverrides != null)
+            foreach (ConfigScenario._Scenario s in Configs.config_scenario.Scenario.Values)
             {
-                try { s.mapLocationOverrides = (Dictionary<string, string>)s._mapLocationOverrides; }
-                catch { }
+                if (s._mapLocationOverrides != null)
+                {
+                    try { s.mapLocationOverrides = (Dictionary<string, string>)s._mapLocationOverrides; }
+                    catch { }
+                }
             }
         }
 
-        foreach (ConfigScene._Scene scene in Configs.config_scene.Scene.Values)
+        if (config_scene is not null)
         {
-            if (scene.waypoints != null)
+
+            foreach (ConfigScene._Scene scene in Configs.config_scene.Scene.Values)
             {
-                scene.waypoint_dict = new Dictionary<string, ConfigScene._Scene.WayPoint>();
-                foreach (ConfigScene._Scene.WayPoint waypoint in scene.waypoints)
+                if (scene.waypoints != null)
                 {
-                    scene.waypoint_dict[waypoint.name] = waypoint;
+                    scene.waypoint_dict = new Dictionary<string, ConfigScene._Scene.WayPoint>();
+                    foreach (ConfigScene._Scene.WayPoint waypoint in scene.waypoints)
+                    {
+                        scene.waypoint_dict[waypoint.name] = waypoint;
+                    }
+                }
+                if (scene.proplocators != null)
+                {
+                    scene.proplocator_dict = new Dictionary<string, ConfigScene._Scene.PropLocator>();
+                    foreach (ConfigScene._Scene.PropLocator prop_locator in scene.proplocators)
+                    {
+                        scene.proplocator_dict[prop_locator.name] = prop_locator;
+                    }
+                }
+                if (scene.cameras != null)
+                {
+                    scene.camera_dict = new Dictionary<string, ConfigScene._Scene.Camera>();
+                    foreach (ConfigScene._Scene.Camera camera in scene.cameras)
+                    {
+                        scene.camera_dict[camera.name] = camera;
+                    }
+                }
+                if (scene.hotspots != null)
+                {
+                    scene.hotspot_dict = new Dictionary<string, ConfigScene._Scene.HotSpot>();
+                    foreach (ConfigScene._Scene.HotSpot hotspot in scene.hotspots)
+                    {
+                        scene.hotspot_dict[hotspot.name] = hotspot;
+                    }
                 }
             }
-            if (scene.proplocators != null)
-            {
-                scene.proplocator_dict = new Dictionary<string, ConfigScene._Scene.PropLocator>();
-                foreach (ConfigScene._Scene.PropLocator prop_locator in scene.proplocators)
-                {
-                    scene.proplocator_dict[prop_locator.name] = prop_locator;
-                }
-            }
-            if (scene.cameras != null)
-            {
-                scene.camera_dict = new Dictionary<string, ConfigScene._Scene.Camera>();
-                foreach (ConfigScene._Scene.Camera camera in scene.cameras)
-                {
-                    scene.camera_dict[camera.name] = camera;
-                }
-            }
-            if (scene.hotspots != null)
-            {
-                scene.hotspot_dict = new Dictionary<string, ConfigScene._Scene.HotSpot>();
-                foreach (ConfigScene._Scene.HotSpot hotspot in scene.hotspots)
-                {
-                    scene.hotspot_dict[hotspot.name] = hotspot;
-                }
-            }
+            Configs.config_scene.Scene["s_MQ5C5P1_rig"].hotspot_dict["hot_project"].position = new float[] { 507.067952f, 98.075569f, 428.769708f };
+
         }
 
         Configs.ambient_dict = new Dictionary<string, ConfigSound._Ambient>();
@@ -330,26 +334,44 @@ public class Configs{
         Configs.sounds_dict = new Dictionary<string, ConfigSound._Sound>();
         Configs.sfx_dict = new Dictionary<string, ConfigSound._SFX>();
 
-        foreach (ConfigSound._Ambient p in Configs.config_sound.Ambient)
+        if (config_sound is not null)
         {
-            Configs.ambient_dict[p.trigger] = p;
-        }
-        foreach (ConfigSound._Playlist p in Configs.config_sound.Playlist)
-        {
-            Configs.playlist_dict[p.playlistId] = p;
-        }
-        foreach (ConfigSound._Sound p in Configs.config_sound.Sounds)
-        {
-            Configs.sounds_dict[p.soundId] = p;
-        }
-        foreach (ConfigSound._SFX p in Configs.config_sound.SFX)
-        {
-            if (p.objectId != null)
-                Configs.sfx_dict[p.objectId] = p;
+            foreach (ConfigSound._Ambient p in Configs.config_sound.Ambient)
+            {
+                Configs.ambient_dict[p.trigger] = p;
+            }
+            foreach (ConfigSound._Playlist p in Configs.config_sound.Playlist)
+            {
+                Configs.playlist_dict[p.playlistId] = p;
+            }
+            foreach (ConfigSound._Sound p in Configs.config_sound.Sounds)
+            {
+                Configs.sounds_dict[p.soundId] = p;
+            }
+            foreach (ConfigSound._SFX p in Configs.config_sound.SFX)
+            {
+                if (p.objectId != null)
+                    Configs.sfx_dict[p.objectId] = p;
+            }
         }
 
-        Configs.config_scene.Scene["s_MQ5C5P1_rig"].hotspot_dict["hot_project"].position = new float[] { 507.067952f, 98.075569f, 428.769708f };
-        
+        if (config_goal is not null)
+        {
+            //This goal is for the avatar to change clothes. Not worth programming in the logic for this.
+            //Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.RemoveAt(3);
+            //Configs.config_goal.Goals["Y1_C3_P6_v2"].dependencies = null;
+
+            Configs.config_goal_chain.GoalChain["C2_v2"].classGoalIds.Insert(1, "Y1_C2_P4_hub"); //Tutorial triggers this class in between goals
+
+            //Insert broom flying class within the rest of the goals. It needs to be done in order.
+            Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.Insert(5, new List<string> { "Y1_C3_SummonBroom_v2" });
+            Configs.config_goal_chain.GoalChain["C3_v2"].classGoalIds = null;
+
+            Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true"; //Remove check to see if player has completed part of Y2
+
+            //Configs.config_objective.Objectives["Y1_C9_P2aObj1"].objectiveScenario = "MQ4C5P2a";
+        }
+
     }
 
     public static void loadConfigModelInspector()
