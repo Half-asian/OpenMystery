@@ -318,16 +318,19 @@ public class ModelManager
 
 		Dictionary<string, Texture2D> all_textures = new Dictionary<string, Texture2D>();
 
-		foreach (string tex in c3m.ModelConfig[name].jsonData[0].neededTextureKeys)
+		if (c3m.ModelConfig[name].jsonData[0].neededTextureKeys != null)
 		{
-			if (TextureManager.loaded_textures.ContainsKey(tex))
+			foreach (string tex in c3m.ModelConfig[name].jsonData[0].neededTextureKeys)
 			{
-				all_textures[tex] = TextureManager.loaded_textures[tex];
-			}
-			else
-			{
-				all_textures[tex] = TextureManager.loadTextureDDS(tex);
-				TextureManager.loaded_textures[tex] = all_textures[tex];
+				if (TextureManager.loaded_textures.ContainsKey(tex))
+				{
+					all_textures[tex] = TextureManager.loaded_textures[tex];
+				}
+				else
+				{
+					all_textures[tex] = TextureManager.loadTextureDDS(tex);
+					TextureManager.loaded_textures[tex] = all_textures[tex];
+				}
 			}
 		}
 
@@ -431,14 +434,27 @@ public class ModelManager
 							}
 
 							Material mat = new Material(shader_dict["ubershader"]);
+							Config3DModel._Config3DModel.JsonData.Material material = c3m.ModelConfig[name].jsonData[0].material_dict[node.id];
+							mat.name = material.nodeName;
 
 							if (node_go.GetComponent<MeshRenderer>() == null && name[0] == 'b')
 							{
 								node_go.AddComponent<MeshRenderer>();
 								node_go.AddComponent<MeshFilter>();
 								node_go.GetComponent<MeshFilter>().mesh = mesh;
-								if ((!node_go.name.ToLower().Contains("sky") && !node_go.name.ToLower().Contains("dome")) || node_go.name.ToLower().Contains("skye"))
+
+								if (ShadowDecider.decideShadow(node_go.name.ToLower(), material.shaderName, name))
 									node_go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
+								else
+								{
+									node_go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+									node_go.GetComponent<MeshRenderer>().receiveShadows = false;
+								}
+								if (material.CastShadow == 0) {
+									node_go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+									node_go.GetComponent<MeshRenderer>().receiveShadows = false;
+								}
+
 								node_go.GetComponent<MeshRenderer>().material = mat;
 							}
 
@@ -447,8 +463,18 @@ public class ModelManager
 								node_go.AddComponent<SkinnedMeshRenderer>();
 								node_go.GetComponent<SkinnedMeshRenderer>().sharedMesh = mesh;
 								node_go.GetComponent<SkinnedMeshRenderer>().material = mat;
-								if ((!node_go.name.ToLower().Contains("sky") && !node_go.name.ToLower().Contains("dome")) || node_go.name.ToLower().Contains("skye"))
+								if (ShadowDecider.decideShadow(node_go.name.ToLower(), material.shaderName, name))
 									node_go.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
+								else
+								{
+									node_go.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+									node_go.GetComponent<SkinnedMeshRenderer>().receiveShadows = false;
+								}
+								if (material.CastShadow == 0)
+								{
+									node_go.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+									node_go.GetComponent<SkinnedMeshRenderer>().receiveShadows = false;
+								}
 								node_go.GetComponent<SkinnedMeshRenderer>().updateWhenOffscreen = true;
 							}
 
@@ -503,14 +529,6 @@ public class ModelManager
 								break;
 							}
 
-
-							Config3DModel._Config3DModel.JsonData.Material material = c3m.ModelConfig[name].jsonData[0].material_dict[node.id];
-							mat.name = material.nodeName;
-
-							/*if (material.shaderName == "glow_vfx") //Ugly ass shader
-                            {
-								node_go.gameObject.SetActive(false);
-							}*/
 
 
 							if (!known_shaders.Contains(material.shaderName))
@@ -688,29 +706,6 @@ public class ModelManager
 											mat.SetVector("u_housePrimary", new Vector3(0.833f, 0.72f, 0.239f));
 											mat.SetVector("u_houseSecondary", new Vector3(0.101f, 0.096f, 0.075f));
 											break;
-									}
-								}
-
-								if (material.CastShadow == 0)
-                                {
-
-									if (name[0] != 'b')
-										node_go.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-									else
-										node_go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-								}
-								if (material.shaderName == "glow_vfx")
-								{
-
-									if (name[0] != 'b')
-									{
-										node_go.GetComponent<SkinnedMeshRenderer>().receiveShadows = false;
-										node_go.GetComponent<SkinnedMeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-									}
-									else
-									{
-										node_go.GetComponent<MeshRenderer>().receiveShadows = false;
-										node_go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 									}
 								}
 									#endregion
