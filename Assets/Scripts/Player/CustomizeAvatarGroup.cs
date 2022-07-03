@@ -54,9 +54,10 @@ public class CustomizeAvatarGroup : MonoBehaviour
     public void renderComponents()
     {
         int i = current_group_index * 5 * 3;
+        Debug.Log(components_list.Count);
         foreach (GameObject g in preview_panels)
         {
-            if (i < AvatarComponents.avatar_components_hair.Count)
+            if (i < components_list.Count)
             {
                 GameObject avatar_image_go = g.transform.Find("AvatarImage").gameObject;
                 g.SetActive(true);
@@ -68,6 +69,14 @@ public class CustomizeAvatarGroup : MonoBehaviour
             {
                 g.SetActive(false);
             }
+        }
+    }
+
+    public void hidePreviews()
+    {
+        foreach (GameObject g in preview_panels)
+        {
+            g.SetActive(false);
         }
     }
 
@@ -111,6 +120,19 @@ public class CustomizeAvatarGroup : MonoBehaviour
         renderComponents();
     }
 
+    public void renderEyeComponents()
+    {
+        customize_avatar.avatar_components_preview.resetFromPlayerFile();
+        customize_avatar._camera_preview_depth.transform.position = new Vector3(0, -9.193f, 0.17f);
+        customize_avatar._camera_preview.transform.position = new Vector3(0, -9.193f, 0.17f);
+        components_list = AvatarComponents.avatar_components_eyes;
+        current_group_index = 0;
+        renderComponents();
+    }
+
+
+
+
     public void nextPanel()
     {
         current_group_index++;
@@ -143,6 +165,7 @@ public class CustomizeAvatarGroup : MonoBehaviour
                 GameObject new_panel = Instantiate(Resources.Load<GameObject>("PreviewPanel"));
                 new_panel.transform.SetParent(canvas.transform);
                 new_panel.transform.localPosition = new Vector3(x_start + x_offset * i, y_start + y_offset * j, 0);
+                new_panel.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 preview_panels.Add(new_panel);
                 new_panel.SetActive(false);
             }

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class CustomizeAvatar : MonoBehaviour
 {
+    public static CustomizeAvatar current;
+
     private ActorController customizable_avatar;
     private ActorController customizable_avatar_preview;
 
@@ -30,6 +32,7 @@ public class CustomizeAvatar : MonoBehaviour
 
     void Awake()
     {
+        current = this;
         _camera_preview.SetActive(false);
         _camera_preview_depth.SetActive(false);
 
@@ -44,16 +47,18 @@ public class CustomizeAvatar : MonoBehaviour
     {
         avatar_components = new AvatarComponents(GlobalEngineVariables.player_folder + "\\avatar.json");
 
-        _camera.transform.position = new Vector3(0, 0.773000002f, 0.338999987f);
-        _camera.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+        //_camera.transform.position = new Vector3(0, 0.773000002f, 0.338999987f);
+        //_camera.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
 
         customizable_avatar = CustomizableAvatarSpawner.spawnCustomizableAvatar(avatar_components.actor_id, "CustomizableAvatar");
         ConfigHPActorInfo._HPActorInfo reference_character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id]; //We use this as a base to apply transforms to
 
+        customizable_avatar.actor_animation.replaceCharacterIdle("c_Stu_DialogueIdle01");
+
         reference_model = ModelManager.loadModel(reference_character.modelId);
 
-        customizable_avatar.model.game_object.transform.position = Vector3.zero;
-        customizable_avatar.model.game_object.transform.rotation = Quaternion.identity;
+        reference_model.game_object.transform.position = new Vector3(-0.24f, 0.55f, 1.32f);
+        reference_model.game_object.transform.eulerAngles = new Vector3(0, 160f, 0);
         customizable_avatar_modified_bones = new Dictionary<string, Transform>();
 
         avatar_components.setCharacterManager(customizable_avatar);
@@ -79,10 +84,14 @@ public class CustomizeAvatar : MonoBehaviour
         _camera_preview_depth.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
         customizable_avatar_preview = CustomizableAvatarSpawner.spawnCustomizableAvatar(avatar_components_preview.actor_id, "CustomizableAvatar");
         ConfigHPActorInfo._HPActorInfo reference_character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id]; //We use this as a base to apply transforms to
+        customizable_avatar_preview.actor_animation.replaceCharacterIdle("c_Stu_DialogueIdle01");
 
         reference_model_preview = ModelManager.loadModel(reference_character.modelId);
-
-
+        customizable_avatar_preview.animation_component["loop"].time = 0.01f;
+        customizable_avatar_preview.animation_component["loop"].enabled = true;
+        customizable_avatar_preview.animation_component["loop"].weight = 1;
+        customizable_avatar_preview.animation_component.Sample();
+        customizable_avatar_preview.animation_component["loop"].enabled = false;
 
         reference_model_preview.game_object.transform.position = new Vector3(0, -10, 0);
         reference_model_preview.game_object.transform.rotation = Quaternion.identity;
@@ -100,11 +109,10 @@ public class CustomizeAvatar : MonoBehaviour
         }
     }
 
-
     private void Update()
     {
         //Resets bones to reference.
-        foreach(string bone in reference_model.pose_bones.Keys)
+        foreach (string bone in reference_model.pose_bones.Keys)
         {
             avatar_components.base_model.pose_bones[bone].transform.position = reference_model.pose_bones[bone].position;
             avatar_components.base_model.pose_bones[bone].transform.rotation = reference_model.pose_bones[bone].rotation;
@@ -149,6 +157,11 @@ public class CustomizeAvatar : MonoBehaviour
             }
         }
 
+        customizable_avatar_preview.animation_component["loop"].time = 0.01f;
+        customizable_avatar_preview.animation_component["loop"].enabled = true;
+        customizable_avatar_preview.animation_component["loop"].weight = 1;
+        customizable_avatar_preview.animation_component.Sample();
+        customizable_avatar_preview.animation_component["loop"].enabled = false;
     }
 
     public void saveAvatarButtonPressed()

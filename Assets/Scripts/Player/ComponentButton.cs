@@ -8,6 +8,6 @@ public class ComponentButton : MonoBehaviour
 
     public void setComponent()
     {
-        GameStart.current.GetComponent<CustomizeAvatar>().changeAvatarComponent(component_name);
+        CustomizeAvatar.current.changeAvatarComponent(component_name);
     }
 }

@@ -23,7 +23,7 @@ public class AvatarComponents
     public static List<string> avatar_components_one_piece;
     public static List<string> avatar_components_tops;
     public static List<string> avatar_components_bottoms;
-
+    public static List<string> avatar_components_eyes;
     public AvatarComponents(string filename)
     {
         components = new Dictionary<string, AvatarComponent>();
@@ -77,6 +77,7 @@ public class AvatarComponents
 
     public void equipAvatarComponent(string component_name)
     {
+        Debug.Log("equipAvatarComponent " + component_name);
         string category = Configs.config_avatar_components.AvatarComponents[component_name].category;
         if (!customization_categories.ContainsKey(category))
         {
@@ -105,7 +106,10 @@ public class AvatarComponents
                 components["brows"] = new IndividualComponents.ComponentBrows(this);
                 break;
             case "eyes":
-                components["eyes"] = new IndividualComponents.ComponentEyes(this);
+                if (components.ContainsKey("eyes"))
+                    components["eyes"].replaceComponent();
+                else
+                    components["eyes"] = new IndividualComponents.ComponentEyes(this);
                 break;
             case "faces":
                 components["faces"] = new IndividualComponents.ComponentFaces(this);
@@ -293,7 +297,7 @@ public abstract class AvatarComponentWithModel : AvatarComponent
     }
     public override void removeComponent()
     {
-        GameObject.Destroy(component_model.game_object);
+        GameObject.DestroyImmediate(component_model.game_object);
         component_model = null;
     }
     public override void hideComponent()

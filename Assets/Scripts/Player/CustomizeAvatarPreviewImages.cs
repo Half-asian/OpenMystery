@@ -23,12 +23,9 @@ public class CustomizeAvatarPreviewImages : MonoBehaviour
         while (render_queue.Count != 0)
         {
             customize_avatar.avatar_components_preview.equipAvatarComponent(render_queue[0].Item1);
-            yield return null;
-            yield return null;
             renderToImage(render_queue[0].Item2, customize_avatar._camera_preview.GetComponent<Camera>(), customize_avatar._camera_preview_depth.GetComponent<Camera>());
             render_queue.RemoveAt(0);
-            yield return null;
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
         render_queue_coroutine = null;
     }
