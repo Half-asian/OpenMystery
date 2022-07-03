@@ -264,13 +264,20 @@ public class Scene
             }
             else
             {
-                Debug.LogError("Scene " + Scene.current.envId + " does not define hotspot " + hotspot_id);
+                Debug.LogError("Scene " + current.layoutId + " does not define hotspot " + hotspot_id);
                 go.transform.position = Vector3.zero;
+                foreach (string key in current.hotspot_dict.Keys)
+                {
+                    if (key.Contains(hotspot_id)){
+                        ConfigScene._Scene.HotSpot hotspot = current.hotspot_dict[key];
+                        go.transform.position = new Vector3(hotspot.position[0] * -0.01f, hotspot.position[1] * 0.01f + 0.2f, hotspot.position[2] * 0.01f);
+                    }
+                }
             }
         }
         else
         {
-            Debug.LogError("Scene " + current.envId + " does not have any hotspots. Tried to find " + hotspot_id);
+            Debug.LogError("Scene " + current.layoutId + " does not have any hotspots. Tried to find " + hotspot_id);
         }
     }
 

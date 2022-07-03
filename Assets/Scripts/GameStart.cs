@@ -141,6 +141,17 @@ public class GameStart : MonoBehaviour
         //writer.Close();
     }
 
+    public void Awake()
+    {
+        //Are we in model view or game mode?
+        if (!File.Exists("..\\engine_variables.json"))
+            throw new System.Exception("Please launch the game using the launcher.");
+        GlobalEngineVariables.CreateFromJSON("..\\engine_variables.json");
+        if (!GlobalEngineVariables.checkIntegrity())
+            throw new System.Exception("Please launch the game using the launcher.");
+        PlayerManager.initialize();
+    }
+
     public async void Start()
     {
         onReturnToMenu = delegate { };
@@ -174,13 +185,7 @@ public class GameStart : MonoBehaviour
         post_process_manager = GetComponent<PostProcess>();
 
         main_menu = GameObject.Find("MainMenuCanvas").GetComponent<MainMenu>();
-        //Are we in model view or game mode?
-        if (!File.Exists("..\\engine_variables.json"))
-            throw new System.Exception("Please launch the game using the launcher.");
-        GlobalEngineVariables.CreateFromJSON("..\\engine_variables.json");
-        if (!GlobalEngineVariables.checkIntegrity())
-            throw new System.Exception("Please launch the game using the launcher.");
-        PlayerManager.initialize();
+
 
         if (!Application.isEditor)
             File.Delete("..\\engine_variables.json");

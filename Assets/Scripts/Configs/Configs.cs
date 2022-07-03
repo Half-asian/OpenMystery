@@ -202,6 +202,19 @@ public class Configs{
                 if (config_avatar_components.AvatarComponents[key].category == "bottoms")
                     AvatarComponents.avatar_components_bottoms.Add(key);
             }
+
+            AvatarComponents.avatar_components_eyes = new List<string>();
+            if (Player.local_avatar_gender == "male") {
+                AvatarComponents.avatar_components_eyes.Add(config_avatar_components.AvatarComponents["eyesM1a"].componentId);
+                AvatarComponents.avatar_components_eyes.Add(config_avatar_components.AvatarComponents["eyesM2a"].componentId);
+                AvatarComponents.avatar_components_eyes.Add(config_avatar_components.AvatarComponents["eyesM3a"].componentId);
+            }
+            else
+            {
+                AvatarComponents.avatar_components_eyes.Add(config_avatar_components.AvatarComponents["eyesF1a"].componentId);
+                AvatarComponents.avatar_components_eyes.Add(config_avatar_components.AvatarComponents["eyesF2a"].componentId);
+                AvatarComponents.avatar_components_eyes.Add(config_avatar_components.AvatarComponents["eyesF3a"].componentId);
+            }
         }
 
         //Dialogues

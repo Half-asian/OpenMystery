@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 270.0332, g: 206.97363, b: 252.37158, a: 1}
+  m_IndirectSpecularColor: {r: 213.25, g: 213.25, b: 213.25, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -133,6 +133,36 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 7339653516881549046, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
   m_PrefabInstance: {fileID: 1937005754}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &54308817 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5689586376058910727, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &54308819 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6284512895039327879, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54308817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &54308822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54308817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76aded7998ff6214c93a4573a11a2d01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image_target: {fileID: 54308819}
+  image_name: hp_button_dialogue@4x.png
 --- !u!1 &126153070
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,6 +291,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &158898601 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1698495663617890926, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &158898603 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4403293006851339157, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158898601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &158898606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158898601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76aded7998ff6214c93a4573a11a2d01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image_target: {fileID: 158898603}
+  image_name: hp_button_dialogue@4x.png
 --- !u!1001 &196640666
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -286,11 +346,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3973814960898402204, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: model_inspector_actor
-      value: 
+      value: c_Merula_skin
       objectReference: {fileID: 0}
     - target: {fileID: 3973814960898402204, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: model_inspector_model
-      value: p_bushRustle_skin
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3973814960898402206, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: ui_dialogue
@@ -453,6 +513,36 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7211659572932065246, guid: 2df9ac6b4aed91a45875d4af64081a22, type: 3}
   m_PrefabInstance: {fileID: 1194583458}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &446000383 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9183642018566400736, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &446000386 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3134640133652899415, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446000383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &446000388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446000383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76aded7998ff6214c93a4573a11a2d01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image_target: {fileID: 446000386}
+  image_name: hp_button_dialogue@4x.png
 --- !u!1001 &483665494
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -521,6 +611,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &574197967 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5400299104851947980, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &574197970 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 933592003945537230, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574197967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &574197972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574197967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76aded7998ff6214c93a4573a11a2d01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image_target: {fileID: 574197970}
+  image_name: hp_button_dialogue@4x.png
 --- !u!1 &579679042 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7339653518560060797, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
@@ -573,7 +693,7 @@ PrefabInstance:
       objectReference: {fileID: 1198126042}
     - target: {fileID: 5235073168471083382, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_Text
-      value: BUILD 7.1.0
+      value: BUILD 7.2.0
       objectReference: {fileID: 0}
     - target: {fileID: 5462153585912980752, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_Name
@@ -585,7 +705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7760846749486851940, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_Text
-      value: BUILD 7.1.0
+      value: BUILD 7.2.0
       objectReference: {fileID: 0}
     - target: {fileID: 8629994874688522103, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_Text
@@ -642,6 +762,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8718427246373761612, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
   m_PrefabInstance: {fileID: 965586127}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1095495387 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5989449614448471348, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1095495390 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4637282862932728459, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+  m_PrefabInstance: {fileID: 965586127}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095495387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1095495392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1095495387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76aded7998ff6214c93a4573a11a2d01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image_target: {fileID: 1095495390}
+  image_name: hp_button_dialogue@4x.png
 --- !u!1 &1123294454 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5636448754728245002, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}

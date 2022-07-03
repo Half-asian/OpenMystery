@@ -14,19 +14,6 @@ public class UiImageLoader : MonoBehaviour
     public Material hp_icon_tooltip_material;
     public Material hp_nav_exit_material;
 
-    public Image dialogue1; //hp_container_dialogue@4x.png
-    public Image dialogue2; //hp_bg_container_hud_name@4x.png
-    public Image dialogue3; //hp_bg_dialogue_name_gradient@4x.png
-    public Image dialogue_choice1; //hp_button_dialogue@4x.png
-    public Image dialogue_choice2; //hp_button_dialogue@4x.png
-    public Image dialogue_choice3; //hp_button_dialogue@4x.png
-
-    public Image menu_quit_game;
-    public Image menu_settings;
-    public Image menu_chapter_select;
-    public Image next_area;
-    public Image exit_to_menu;
-
     public Image menu_mq_1; //hp_bg_gradient_linear_blue@2x.png
     public Image menu_mq_2; //hp_bg_modal_divider_2@4x.png
     public Image menu_mq_3; //hp_bg_modal_divider_2@4x.png
@@ -73,22 +60,6 @@ public class UiImageLoader : MonoBehaviour
         hp_nav_exit_material.SetTexture("Icon", loadTextureFromApk("hp_nav_exit_sml@4x.png"));
         yield return null;
 
-        //Dialogue 
-        dialogue1.sprite = loadSpriteFromApk("hp_container_dialogue@4x.png");
-        yield return null;
-        dialogue2.sprite = loadSpriteFromApk("hp_bg_container_hud_name@4x.png");
-        yield return null;
-        dialogue3.sprite = loadSpriteFromApk("hp_bg_dialogue_name_gradient@4x.png");
-        yield return null;
-        dialogue_choice1.sprite = loadSpriteFromApk("hp_button_dialogue@4x.png");
-        dialogue_choice2.sprite = dialogue_choice1.sprite;
-        dialogue_choice3.sprite = dialogue_choice1.sprite;
-        //Menu
-        menu_quit_game.sprite = dialogue_choice1.sprite;
-        next_area.sprite = dialogue_choice1.sprite;
-        exit_to_menu.sprite = dialogue_choice1.sprite;
-        menu_settings.sprite = dialogue_choice1.sprite;
-        menu_chapter_select.sprite = dialogue_choice1.sprite;
         //Menu MQ
         yield return null;
         menu_mq_1.sprite = loadSpriteFromApk("hp_bg_gradient_linear_blue@2x.png");
