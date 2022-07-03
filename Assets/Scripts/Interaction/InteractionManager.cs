@@ -81,7 +81,8 @@ public class InteractionManager : MonoBehaviour {
                     { //Aka a bubble
                         could_be_project = true;
                     }
-                    else if (could_be_project == true) throw new System.Exception("Weird mix of null interaction and non null interaction " + new_interaction.id);
+                    else if (could_be_project == true)
+                        Debug.LogWarning("Weird mix of null interaction and non null interaction " + new_interaction.id);
                 }
                 if (could_be_project == false)
                 {
