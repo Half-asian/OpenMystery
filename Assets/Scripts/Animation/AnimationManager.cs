@@ -692,6 +692,13 @@ public class AnimationManager : MonoBehaviour
             }
         }
 
+		AnimationEvent endAnimationEvent = new AnimationEvent();
+		endAnimationEvent.time = anim_clip.length;
+		endAnimationEvent.functionName = "onAnimationFinished";
+		endAnimationEvent.stringParameter = name;
+		anim_clip.AddEvent(endAnimationEvent);
+
+
 		if (animation_config.wrapMode == "clamp")
 			anim_clip.wrapMode = WrapMode.ClampForever;
 		else

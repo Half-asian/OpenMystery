@@ -13,10 +13,6 @@ public static class Events
                 if (Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
                     Actor.actor_controllers[action_params[0]].actor_animation.animateCharacter(action_params[1]);
-
-                    float length = AnimationManager.loadAnimationClip(Configs.config_animation.Animation3D[action_params[1]].name, Actor.actor_controllers[action_params[0]].model, null).length;
-
-                    GameStart.event_manager.StartCoroutine(event_player.waitCharacterAnimation(Time.realtimeSinceStartup, length, action_params[0], action_params[1]));
                 }
 
                 break;
@@ -488,7 +484,6 @@ public static class Events
                     if (Configs.config_animation.Animation3D[action_params[1]].wrapMode == "clamp")
                     {
                         Prop.spawned_props[action_params[0]].model.game_object.GetComponent<Animation>().wrapMode = WrapMode.Clamp;
-                        GameStart.event_manager.StartCoroutine(event_player.waitPropAnimation(Time.realtimeSinceStartup, prop_anim_clip.length, action_params[0], action_params[1]));
                     }
                     else
                     {

@@ -45,6 +45,11 @@ public class ActorAnimation : MonoBehaviour
         set { actor_controller.actor_state = value; }
     }
 
+    public void onAnimationFinished(string animation_name)
+    {
+        GameStart.event_manager.notifyCharacterAnimationComplete(actor_controller.name, animation_name);
+    }
+
     public void replaceCharacterIdle(string anim_name)
     {
         if (animation1_name == actor_info.animId_idle || animation1_name == actor_info.animId_sitting_idle) //Default animation to another animation, play the intro
@@ -73,6 +78,7 @@ public class ActorAnimation : MonoBehaviour
 
     public void setCharacterIdle()
     {
+        actor_controller.destroyProps();
         actor_controller.actor_head.clearLookat();
         actor_controller.actor_head.clearTurnHeadAt();
         actor_controller.destroyProps();
@@ -87,6 +93,7 @@ public class ActorAnimation : MonoBehaviour
 
     public void setCharacterWalk(string _animation)
     {
+        actor_controller.destroyProps();
         if (actor_controller.GetComponent<ActorAnimSequence>() != null)
         {
             if (actor_controller.GetComponent<ActorAnimSequence>().walk != true)
@@ -230,8 +237,6 @@ public class ActorAnimation : MonoBehaviour
         float start_time = Time.realtimeSinceStartup;
         while (Time.realtimeSinceStartup <= clip.length + start_time - 0.01f) 
            yield return new WaitForEndOfFrame();
-
-        GameStart.event_manager.notifyCharacterAnimationComplete(actor_controller.name, animId_idle);
 
         if (current == "intro")
         {

@@ -43,6 +43,12 @@ public class EventManager : MonoBehaviour
         sequential_event_player.notifyCharacterAnimationComplete(character, animation);
     }
 
+    public void notifyCamAnimFinished(string animation)
+    {
+        main_event_player.notifyCamAnimFinished(animation);
+        sequential_event_player.notifyCamAnimFinished(animation);
+    }
+
     public void notifyMoveComplete(string character)
     {
         main_event_player.notifyMoveComplete(character);
@@ -55,6 +61,12 @@ public class EventManager : MonoBehaviour
         sequential_event_player.notifyScriptTrigger(trigger);
     }
 
+    public void notifyPropAnimationComplete(string prop, string animation)
+    {
+        main_event_player.notifyPropAnimationComplete(prop, animation);
+        sequential_event_player.notifyPropAnimationComplete(prop, animation);
+    }
+
     public IEnumerator waitCameraAnimation(float start_time, float length, string animation)
     {
         main_event_player.last_finished_animation = "";
@@ -65,8 +77,7 @@ public class EventManager : MonoBehaviour
             yield return null;
         }
         CameraManager.current.freeCamera();
-        main_event_player.notifyCamAnimFinished(animation);
-        sequential_event_player.notifyCamAnimFinished(animation);
+        GameStart.event_manager.notifyCamAnimFinished(animation);
 
         CameraManager.current.simple_camera_controller.enabled = true;
         main_event_player.last_finished_animation = animation;

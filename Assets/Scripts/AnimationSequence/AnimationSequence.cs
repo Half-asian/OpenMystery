@@ -113,7 +113,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     protected virtual void finishSequence()
     {
-        animation_component.Stop();
+        //animation_component.Stop();
         Destroy(this);
         return;
     }
@@ -124,8 +124,6 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
         // at this point, the animation has completed
         // so at this point, do whatever you wish...
-        if (GameStart.current.GetComponent<EventManager>() != null)
-            GameStart.current.GetComponent<EventManager>().notifyCharacterAnimationComplete(gameObject.name, animation_name);
 
         if (waiting == true)
         {
@@ -143,12 +141,6 @@ public abstract partial class AnimationSequence : MonoBehaviour
     }
 
     protected abstract void destroyProps();
-
-
-    public void OnDestroy()
-    {
-        destroyProps();
-    }
 
     protected static string getBroomSkinName(string actor_id)
     {

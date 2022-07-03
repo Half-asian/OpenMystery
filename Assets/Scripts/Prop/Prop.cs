@@ -23,6 +23,11 @@ public class Prop : PropHolder
         Event,
     }
 
+    public void onAnimationFinished(string animation_name)
+    {
+        GameStart.event_manager.notifyPropAnimationComplete(_name, animation_name);
+    }
+
     public List<GameObject> particles = new List<GameObject>();
 
     public void PlaySound(string sound) =>

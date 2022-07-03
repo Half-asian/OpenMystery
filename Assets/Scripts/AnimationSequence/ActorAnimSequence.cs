@@ -11,9 +11,6 @@ public class ActorAnimSequence : AnimationSequence
         actor_controller = GetComponent<ActorController>();
 
         base.initAnimSequence(_anim_sequence, _walk);
-
-        if (config_sequence.isOneShot == true)
-            actor_controller.actor_animation.blocked = true;   
     }
 
     protected override float playAnimation(string animation_id, string _anim_sequence)
@@ -42,8 +39,7 @@ public class ActorAnimSequence : AnimationSequence
     {
         base.finishSequence();
 
-        Debug.Log("UNBLOCK");
-        actor_controller.actor_animation.unblock();
+        //actor_controller.actor_animation.unblock();
     }
 
     protected override void attachBroom(string prop_model_id, string alias, string target)

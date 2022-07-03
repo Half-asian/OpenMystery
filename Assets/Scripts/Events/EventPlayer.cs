@@ -15,6 +15,8 @@ public class EventPlayer : MonoBehaviour
     public string blocking_key;
     public bool total_block = false;
 
+    private int missed_blocking_key_count = 0;
+
     [SerializeField] private bool is_sequential_player;
 
     public float activateEvent(string event_name)
@@ -85,6 +87,7 @@ public class EventPlayer : MonoBehaviour
                 {
                     blocking_key = blocking_message;
                 }
+                missed_blocking_key_count = 0;
             }
 
         }
@@ -195,24 +198,6 @@ public class EventPlayer : MonoBehaviour
         blocking_key = "";
     }
 
-    public IEnumerator waitPropAnimation(float start_time, float length, string prop, string animation)
-    {
-        while (Time.realtimeSinceStartup < length + start_time)
-        {
-            yield return null;
-        }
-        notifyPropAnimationComplete(prop, animation);
-    }
-
-    public IEnumerator waitCharacterAnimation(float start_time, float length, string character, string animation)
-    {
-        while (Time.realtimeSinceStartup < length + start_time)
-        {
-            yield return null;
-        }
-        notifyCharacterAnimationComplete(character, animation);
-    }
-
     public IEnumerator waitSafeAdvanceAnimSequenceToCoroutine(string destination) //This is a stub
     {
         yield return null;
@@ -234,11 +219,18 @@ public class EventPlayer : MonoBehaviour
             removeBlock();
         }
     }
-    public void notifyCharacterAnimationComplete(string character, string animation)
+    public void notifyCharacterAnimationComplete(string character, string animation) //The actual animation parameter appears to not matter
     {
         if (blocking_message == "CharAnimEnded" && blocking_key == character + ":" + animation)
         {
             removeBlock();
+        }
+        else
+        {
+            if (blocking_key.Split(':')[0] == character) //If the block is missed 3 times, we break out
+                missed_blocking_key_count++;
+            if (missed_blocking_key_count >= 3)
+                removeBlock();
         }
     }
 
