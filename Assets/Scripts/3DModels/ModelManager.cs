@@ -434,6 +434,19 @@ public class ModelManager
 							}
 
 							Material mat = new Material(shader_dict["ubershader"]);
+
+							if (c3m.ModelConfig[name].jsonData[0].materials.Length == 0)
+							{
+								Debug.Log("No material defined for " + node_go.name);
+							}
+
+							if (!c3m.ModelConfig[name].jsonData[0].material_dict.ContainsKey(node.id))
+							{
+								Debug.Log("No material defined for node id " + node.id);
+								//node_go.gameObject.SetActive(false);
+								break;
+							}
+
 							Config3DModel._Config3DModel.JsonData.Material material = c3m.ModelConfig[name].jsonData[0].material_dict[node.id];
 							mat.name = material.nodeName;
 
@@ -517,17 +530,7 @@ public class ModelManager
 
 
 
-							if (c3m.ModelConfig[name].jsonData[0].materials.Length == 0)
-							{
-								Debug.Log("No material defined for " + node_go.name);
-							}
 
-							if (!c3m.ModelConfig[name].jsonData[0].material_dict.ContainsKey(node.id))
-							{
-								Debug.Log("No material defined for node id " + node.id);
-								//node_go.gameObject.SetActive(false);
-								break;
-							}
 
 
 
@@ -625,6 +628,8 @@ public class ModelManager
 								if (material.shaderName == "avatarfaceshader")
 								{
 									mat.SetTexture("u_facePaintTexture", (Texture)Resources.Load("Shaders/transparent"));
+									mat.SetTexture("u_mask", (Texture)Resources.Load("Shaders/transparent"));
+
 								}
 
 								if (material.stringValueKeys != null)
@@ -707,7 +712,17 @@ public class ModelManager
 											mat.SetVector("u_houseSecondary", new Vector3(0.101f, 0.096f, 0.075f));
 											break;
 									}
+									int skin_color_id = PlayerManager.current.customization_categories["faces"].int_parameters["skinColor"];
+									int[] skin_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].codes;
+									Color c = new Color(skin_color_codes[0] / 255.0f, skin_color_codes[1] / 255.0f, skin_color_codes[2] / 255.0f, 1.0f);
+									mat.SetColor("u_skinColor", c);
+									int brow_color_id = PlayerManager.current.customization_categories["brows"].int_parameters["browColor"];
+									int[] brow_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["browColor"].colorConfigs[brow_color_id].codes;
+									Color b = new Color(brow_color_codes[0] / 255.0f, brow_color_codes[1] / 255.0f, brow_color_codes[2] / 255.0f, 1.0f);
+									mat.SetColor("u_browColor", b );
 								}
+
+
 									#endregion
 							}
 						}
