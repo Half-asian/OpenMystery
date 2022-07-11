@@ -68,6 +68,12 @@ public class Common
         }
     }
 
+    public static void setSceneTransform(ref GameObject obj, Vector3 position, Vector3 rotation)
+    {
+        obj.transform.position = new Vector3(position[0] * -0.01f, position[1] * 0.01f, position[2] * 0.01f);
+        obj.transform.eulerAngles = new Vector3(rotation[0], -rotation[1], -rotation[2]);
+    }
+
     public static string getConfigPath(string config_name)
     {
         if (!string.IsNullOrWhiteSpace(GlobalEngineVariables.configs_folder))

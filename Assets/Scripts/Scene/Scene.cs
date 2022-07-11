@@ -67,10 +67,12 @@ public class Scene
         if (current.Lighting == null || current.Lighting.lights == null)
             return;
 
+        Color ambient_color = Color.black;
+        float ambient_intensity = 0;
+
         foreach(ConfigScene._Scene._Lighting.Light light in current.Lighting.lights.Values)
         {
             Debug.Log("Spawning light type " + light.type + " with colour " + light.color[0]);
-            GameObject light_go = new GameObject();
 
             float average_r = 0;
             float average_g = 0;
@@ -82,6 +84,7 @@ public class Scene
             switch (light.type)
             {
                 case "directionalLight":
+                    GameObject light_go = new GameObject("sceneLight");
                     Light light_component = light_go.AddComponent<Light>();
                     light_component.type = LightType.Directional;
                     average_r += float.Parse(light.color[0]) / 255;
@@ -90,13 +93,34 @@ public class Scene
                     directional_light_counter++;
                     Debug.Log(light.intensity);
                     break;
-                case "ambientLight":
+                case "ambientLight": //Take the highest value
                     Color color = new Color(float.Parse(light.color[0]) / 255, float.Parse(light.color[1]) / 255, float.Parse(light.color[2]) / 255);
-                    GameStart.post_process_manager.changeFilter(color);
+                    float intensity = float.Parse(light.color[0]) + float.Parse(light.color[1]) + float.Parse(light.color[2]);
+                    if (intensity > ambient_intensity)
+                    {
+                        ambient_intensity = intensity;
+                        ambient_color = color;
+                    }
+
                     //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().color = color;
                     //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().intensity = 0.1f;
                     break;
+                /*case "spotLight":
+                    GameObject spotlight = new GameObject(light.name);
+                    spotlight.transform.position = new Vector3(float.Parse(light.position[0]) * -0.01f, float.Parse(light.position[1]) * 0.01f, float.Parse(light.position[2]) * 0.01f);
+                    spotlight.transform.rotation = Quaternion.Euler(new Vector3(float.Parse(light.rotation[0]), float.Parse(light.rotation[1]) * -1, float.Parse(light.rotation[2])));
+                    spotlight.transform.rotation = Quaternion.Inverse(spotlight.transform.rotation);
+
+                    Light spotlight_component = spotlight.AddComponent<Light>();
+                    spotlight_component.type = LightType.Spot;
+                    spotlight_component.color = new Color(float.Parse(light.color[0]), float.Parse(light.color[1]), float.Parse(light.color[2]));
+                    spotlight_component.intensity = light.intensity;
+
+                    break;*/
+
             }
+            GameStart.post_process_manager.changeFilter(ambient_color);
+
             GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().color = 
                 new Color(average_r / directional_light_counter, average_g / directional_light_counter, average_b / directional_light_counter);
             //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().intensity = 0.1f;
