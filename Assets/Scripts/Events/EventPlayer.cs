@@ -264,6 +264,5 @@ public class EventPlayer : MonoBehaviour
         blocking_message = "";
         blocking_key = "";
         block_duration = 0.00f;
-        runImmediateEvents();
     }
 }
