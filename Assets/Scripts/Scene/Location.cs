@@ -81,6 +81,11 @@ public class Location
                 mapId = Scenario.current.scenario_config.mapLocationId;
 
         current = Configs.config_location.Location[mapId];
+        if (current.musicPlaylistId != null)
+        {
+            Sound.playBGMusic(current.musicPlaylistId);
+        }
+
         LocationHub.exitLocationHub();
     }
 
