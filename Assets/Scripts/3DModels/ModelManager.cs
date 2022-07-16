@@ -285,19 +285,22 @@ public class ModelManager
 				GameObject amt = new GameObject("Armature");
 				amt.transform.parent = go.transform;
 
-				//Matrix4x4 jt_all_bind_matrix = new Matrix4x4(new Vector4(node.transform[0], node.transform[1], node.transform[2], node.transform[3]), new Vector4(node.transform[4], node.transform[5], node.transform[6], node.transform[7]), new Vector4(node.transform[8], node.transform[9], node.transform[10], node.transform[11]), new Vector4(node.transform[12], node.transform[13], node.transform[14], node.transform[15]));
+				
+				Matrix4x4 transform_matrix = new Matrix4x4(new Vector4(node.transform[0], node.transform[1], node.transform[2], node.transform[3]), new Vector4(node.transform[4], node.transform[5], node.transform[6], node.transform[7]), new Vector4(node.transform[8], node.transform[9], node.transform[10], node.transform[11]), new Vector4(node.transform[12], node.transform[13], node.transform[14], node.transform[15]));
 				//jt_all_bind is actually useless! Avoid!
 				//Preferably, we would apply jt_all_bind after loading model and in gameworld
 
-				Matrix4x4 transform_matrix = Matrix4x4.identity;
+				//Idk how old that last comment is but we need at least the scale component.
+
+				Matrix4x4 reference_matrix = Matrix4x4.identity;
+
 
 
 				pose_bones.Add(new GameObject(node.id).transform);
 				pose_bones[0].parent = amt.transform;
-				pose_bones[0].localRotation = ExtractRotationFromMatrix(ref transform_matrix);
-				pose_bones[0].localPosition = ExtractTranslationFromMatrix(ref transform_matrix);
+				pose_bones[0].localRotation = ExtractRotationFromMatrix(ref reference_matrix);
+				pose_bones[0].localPosition = ExtractTranslationFromMatrix(ref reference_matrix);
 				pose_bones[0].localScale = ExtractScaleFromMatrix(ref transform_matrix);
-
 
 
 				bindPoses.Add(pose_bones[0].worldToLocalMatrix);
