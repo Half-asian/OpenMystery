@@ -26,7 +26,7 @@ public class ActorAnimSequence : AnimationSequence
         {
             StartCoroutine(p_blackBoardEvidence_skin_transition(1.5f, Time.realtimeSinceStartup));
         }
-        animation_component.Play(animation_id);
+        actor_controller.actor_animation.playAnimationOnComponent(animation_id);
         return anim_clip.length;
     }
 

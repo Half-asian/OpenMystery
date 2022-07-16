@@ -39,15 +39,35 @@ public class ActorAnimation : MonoBehaviour
     private Animation animation_component => actor_controller.animation_component;
 
     private ConfigHPActorInfo._HPActorInfo actor_info { get { return actor_controller.actor_info; } }
-    private new GameObject gameObject { get { return actor_controller.gameObject; } }
     private ActorState actor_state { 
         get { return actor_controller.actor_state; } 
         set { actor_controller.actor_state = value; }
     }
 
-    public void onAnimationFinished(string animation_name)
+    IEnumerator currentAnimationAlerter;
+
+
+    public void playAnimationOnComponent(string id)
     {
-        GameStart.event_manager.notifyCharacterAnimationComplete(actor_controller.name, animation_name);
+        if (currentAnimationAlerter != null)
+            StopCoroutine(currentAnimationAlerter);
+        if (animation_component.clip != null)
+            animation_component.CrossFade(id, 0.4f);
+        else
+            animation_component.Play(id);
+        currentAnimationAlerter = animationAlert(animation_component.GetClip(id));
+        StartCoroutine(currentAnimationAlerter);
+    }
+
+    IEnumerator animationAlert(AnimationClip clip)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(clip.length);
+            GameStart.event_manager.notifyCharacterAnimationComplete(name, clip.name);
+            if (clip.wrapMode != WrapMode.Loop)
+                yield break;
+        }
     }
 
     public void replaceCharacterIdle(string anim_name)
@@ -111,7 +131,7 @@ public class ActorAnimation : MonoBehaviour
         loadAnimationSet(_animation);
         anim_state = "loop";
         updateAnimationState();
-        gameObject.GetComponent<Animation>().Play("loop");
+        playAnimationOnComponent("loop");
     }
 
     public void animateCharacter(string anim_name)
@@ -130,7 +150,7 @@ public class ActorAnimation : MonoBehaviour
 
         animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, null, actor_controller, bone_mods);
         animation_component.AddClip(animation1_loop, "extra_animation");
-        animation_component.Play("extra_animation");
+        playAnimationOnComponent("extra_animation");
         StartCoroutine(WaitForAnimateCharacterFinished(animation1_loop));
     }
 
@@ -215,7 +235,7 @@ public class ActorAnimation : MonoBehaviour
             }
         }
 
-        animation_component.Play(anim_state);
+        playAnimationOnComponent(anim_state);
 
         if (anim_state == "intro")
         {

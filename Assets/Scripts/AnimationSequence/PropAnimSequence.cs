@@ -22,7 +22,7 @@ public class PropAnimSequence : AnimationSequence
         {
             StartCoroutine(p_blackBoardEvidence_skin_transition(1.5f, Time.realtimeSinceStartup));
         }
-        animation_component.Play(animation_id);
+        prop_controller.playAnimationOnComponent(animation_id);
         return anim_clip.length;
     }
 

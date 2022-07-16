@@ -26,14 +26,16 @@ public class DialogueManager : MonoBehaviour
     public static event Action<string> setChoice2ActiveWithText = delegate { };
     public static event Action<string> setChoice3ActiveWithText = delegate { };
 
-    public static event Action<string> onDialogueFinishedEvent = delegate { };   
+    public static event Action<string> onDialogueFinishedEvent = delegate { };
+
+    public string dialogue_id;
 
     public string dialogue_choice_1_next_dialogue;
     public string dialogue_choice_2_next_dialogue;
     public string dialogue_choice_3_next_dialogue;
 
     public List<string> choices;
-    public ConfigHPDialogueLine.HPDialogueLine current_dialogue;
+    public ConfigHPDialogueLine.HPDialogueLine current_dialogue_line;
 
     public bool in_bubble;
 
@@ -77,6 +79,7 @@ public class DialogueManager : MonoBehaviour
     //When we only know the dialogue id
     public bool activateDialogue(string dialogue)
     {
+        dialogue_id = dialogue;
         InteractionManager.changeOptionInteractionsVisibility(false);
 
         string initial_dialogue_line = null;
@@ -132,7 +135,7 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        current_dialogue = dialogue_line;
+        current_dialogue_line = dialogue_line;
 
         dialogueLineStartActions(dialogue_line);
 
@@ -369,7 +372,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (dialogue_status == DialogueStatus.WaitingPlayerConfirm)
         {
-            if (Input.GetKeyDown("space") || (current_dialogue.speakerId == null && current_dialogue.token == null))
+            if (Input.GetKeyDown("space") || (current_dialogue_line.speakerId == null && current_dialogue_line.token == null))
             {
                 onPlayerConfirmed();
             }
@@ -398,9 +401,9 @@ public class DialogueManager : MonoBehaviour
             CameraManager.current.focusCam(ref camera_params);
             camera_params = null;
         }
-        if (current_dialogue.dialogueChoiceIds is not null)
+        if (current_dialogue_line.dialogueChoiceIds is not null)
         {
-            setDialogueLineChoices(current_dialogue);
+            setDialogueLineChoices(current_dialogue_line);
             dialogue_status = DialogueStatus.WaitingPlayerOptionSelect;
         }
 
@@ -425,29 +428,29 @@ public class DialogueManager : MonoBehaviour
     void onExitEventsFinished()
     {
         string next_turn_id = null;
-        if (current_dialogue.nextTurnIds != null)
+        if (current_dialogue_line.nextTurnIds != null)
         {
             //Check predicates
-            if (current_dialogue.nextTurnPredicates != null)
+            if (current_dialogue_line.nextTurnPredicates != null)
             {
-                for (int p = 0; p < current_dialogue.nextTurnPredicates.Length; p++)
+                for (int p = 0; p < current_dialogue_line.nextTurnPredicates.Length; p++)
                 {
-                    if (Predicate.parsePredicate(current_dialogue.nextTurnPredicates[p]))
+                    if (Predicate.parsePredicate(current_dialogue_line.nextTurnPredicates[p]))
                     {
-                        next_turn_id = current_dialogue.nextTurnIds[p];
+                        next_turn_id = current_dialogue_line.nextTurnIds[p];
                         break;
                     }
                     else
                     {
-                        if (current_dialogue.nextTurnIds.Length > p + 1)
-                            next_turn_id = current_dialogue.nextTurnIds[p + 1];
+                        if (current_dialogue_line.nextTurnIds.Length > p + 1)
+                            next_turn_id = current_dialogue_line.nextTurnIds[p + 1];
                         else
-                            next_turn_id = current_dialogue.nextTurnIds[p];
+                            next_turn_id = current_dialogue_line.nextTurnIds[p];
                     }
                 }
             }
             else
-                next_turn_id = current_dialogue.nextTurnIds[0];
+                next_turn_id = current_dialogue_line.nextTurnIds[0];
         }
 
         if (next_turn_id != null)
@@ -464,11 +467,11 @@ public class DialogueManager : MonoBehaviour
     
     void onDialogueFinished()
     {
-        Debug.Log("Dialogue finished " + current_dialogue.dialogue);
+        Debug.Log("Dialogue finished " + dialogue_id);
 
         setDialogueUIActive(false);
         InteractionManager.changeOptionInteractionsVisibility(true);
-        onDialogueFinishedEvent?.Invoke(current_dialogue.dialogue);
+        onDialogueFinishedEvent?.Invoke(dialogue_id);
         CameraManager.current.freeCamera();
 
         foreach (string character in Actor.actor_controllers.Keys)
@@ -476,6 +479,6 @@ public class DialogueManager : MonoBehaviour
             Actor.actor_controllers[character].actor_head.clearLookat();
             Actor.actor_controllers[character].actor_head.clearTurnHeadAt();
         }
-        current_dialogue = null;
+        current_dialogue_line = null;
     }
 }

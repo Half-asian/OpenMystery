@@ -468,29 +468,7 @@ public static class Events
             case "animateProp":
                 if (Prop.spawned_props.ContainsKey(action_params[0]))
                 {
-                    if (Prop.spawned_props[action_params[0]].model.game_object.GetComponent<PropAnimSequence>() != null)
-                    {
-                        GameObject.Destroy(Prop.spawned_props[action_params[0]].model.game_object.GetComponent<PropAnimSequence>());
-                    }
-                    if (Prop.spawned_props[action_params[0]].model.game_object.GetComponent<Animation>() == null)
-                    {
-                        Prop.spawned_props[action_params[0]].model.game_object.AddComponent<Animation>();
-                    }
-                    AnimationClip prop_anim_clip = AnimationManager.loadAnimationClip(action_params[1], Prop.spawned_props[action_params[0]].model, null);
-
-                    Prop.spawned_props[action_params[0]].model.game_object.GetComponent<Animation>().AddClip(prop_anim_clip, "default");
-
-
-                    if (Configs.config_animation.Animation3D[action_params[1]].wrapMode == "clamp")
-                    {
-                        Prop.spawned_props[action_params[0]].model.game_object.GetComponent<Animation>().wrapMode = WrapMode.Clamp;
-                    }
-                    else
-                    {
-                        Prop.spawned_props[action_params[0]].model.game_object.GetComponent<Animation>().wrapMode = WrapMode.Loop;
-                    }
-                    Prop.spawned_props[action_params[0]].model.game_object.GetComponent<Animation>().Play("default");
-
+                    Prop.spawned_props[action_params[0]].playAnimation(action_params[1]);
                 }
                 else
                 {
@@ -501,15 +479,7 @@ public static class Events
                 Debug.Log("playPromAnimSequence " + action_params[0] + " " + action_params[1]);
                 if (Prop.spawned_props.ContainsKey(action_params[0]))
                 {
-                    if (Prop.spawned_props[action_params[0]].model.game_object.GetComponent<Animation>() == null)
-                    {
-                        Prop.spawned_props[action_params[0]].model.game_object.AddComponent<Animation>();
-                    }
-                    if (Prop.spawned_props[action_params[0]].model.game_object.GetComponent<PropAnimSequence>() == null) 
-                    {
-                        Prop.spawned_props[action_params[0]].model.game_object.AddComponent<PropAnimSequence>();
-                    }
-                    Prop.spawned_props[action_params[0]].model.game_object.GetComponent<PropAnimSequence>().initAnimSequence(action_params[1], false);
+                    Prop.spawned_props[action_params[0]].playAnimSequence(action_params[1]);
                 }
                 else
                 {

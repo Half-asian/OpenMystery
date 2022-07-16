@@ -9,18 +9,66 @@ public class Prop : PropHolder
     public string _name;
     public string group;
     public spawner spawned_by;
+    private Animation animation_component;
     public void setup(string _name, Model _model, spawner _spawned_by, string _group)
     {
         this._name = _name;
         model = _model;
         spawned_by = _spawned_by;
         group = _group;
+        animation_component = gameObject.AddComponent<Animation>();
     }
 
     public enum spawner
     {
         Scene,
         Event,
+    }
+
+    IEnumerator currentAnimationAlerter;
+
+    public void playAnimationOnComponent(string id)
+    {
+        if (currentAnimationAlerter != null)
+            StopCoroutine(currentAnimationAlerter);
+        animation_component.Play(id);
+        //animation_component.CrossFade(id, 0.5f);
+        currentAnimationAlerter = animationAlert(animation_component.GetClip(id));
+        StartCoroutine(currentAnimationAlerter);
+    }
+
+    IEnumerator animationAlert(AnimationClip clip)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(clip.length);
+            GameStart.event_manager.notifyPropAnimationComplete(name, clip.name);
+            if (clip.wrapMode != WrapMode.Loop)
+                yield break;
+        }
+    }
+
+
+    public void playAnimation(string animation_name)
+    {
+
+        if (gameObject.GetComponent<PropAnimSequence>() != null)
+        {
+            Destroy(gameObject.GetComponent<PropAnimSequence>());
+        }
+        AnimationClip prop_anim_clip = AnimationManager.loadAnimationClip(animation_name, model, null);
+
+        animation_component.AddClip(prop_anim_clip, "default");
+        playAnimationOnComponent("default");
+    }
+
+    public void playAnimSequence(string sequence_name)
+    {
+        if (gameObject.GetComponent<PropAnimSequence>() == null)
+        {
+            gameObject.AddComponent<PropAnimSequence>();
+        }
+        gameObject.GetComponent<PropAnimSequence>().initAnimSequence(sequence_name, false);
     }
 
     public void onAnimationFinished(string animation_name)
@@ -110,7 +158,7 @@ public class Prop : PropHolder
             AnimationClip anim = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);
             prop_anim.AddClip(anim, "default");
             prop_anim.wrapMode = WrapMode.Loop;
-            prop_anim.Play("default");
+            model.game_object.GetComponent<Prop>().playAnimationOnComponent("default");
         }
 
         model.game_object.name = prop_locator.name;

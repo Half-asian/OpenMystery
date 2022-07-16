@@ -62,7 +62,7 @@ public class Goal
 
     public void startObjectiveFromActiveIndex()
     {
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\goals_complete.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\goals_complete.txt").Replace("isGoalComplete(\"" + goal_config.goal_id + "\")", ""));
+        //File.WriteAllText(GlobalEngineVariables.player_folder + "\\goals_complete.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\goals_complete.txt").Replace("isGoalComplete(\"" + goal_config.goal_id + "\")", ""));
         if (active_objective_index == goal_config.required_steps.Length)
         {
             goalCompleted();
