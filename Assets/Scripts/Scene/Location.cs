@@ -85,6 +85,18 @@ public class Location
         {
             Sound.playBGMusic(current.musicPlaylistId);
         }
+        else
+        {
+            Sound.playBGMusic("BGM");
+        }
+        if (current.ambientId != null && current.ambientId != "noSoundPL")
+        {
+            Sound.playAmbient(current.ambientId);
+        }
+        else
+        {
+            Sound.playAmbient("none");
+        }
 
         LocationHub.exitLocationHub();
     }

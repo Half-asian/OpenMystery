@@ -26,7 +26,14 @@ public class Sound : MonoBehaviour
 
     public static void playBGMusic(string BGMusic_id)
     {
-        current.playAudioFile(Configs.playlist_dict[BGMusic_id].files[0], "bgaudio");
+        if (Configs.playlist_dict.ContainsKey(BGMusic_id))
+            current.playAudioFile(Configs.playlist_dict[BGMusic_id].files[0], "bgaudio");
+    }
+
+    public static void playAmbient(string ambient_id)
+    {
+        if (Configs.ambient_dict.ContainsKey(ambient_id))
+            current.playAudioFile(Configs.ambient_dict[ambient_id].soundname, "amb");
     }
 
     public static void playSoundEffect(string sound_effect)
@@ -83,12 +90,13 @@ public class Sound : MonoBehaviour
     {
         if (Scenario.current.scenario_config.bgSoundPlaylistId != null)
         {
-            if (Configs.playlist_dict.ContainsKey(Scenario.current.scenario_config.bgSoundPlaylistId))
+            if (Scenario.current.scenario_config.bgSoundPlaylistId != "noSoundPL")
             {
-                if (Configs.playlist_dict[Scenario.current.scenario_config.bgSoundPlaylistId].files != null)
-                {
-                    playAudioFile(Configs.playlist_dict[Scenario.current.scenario_config.bgSoundPlaylistId].files[0], "bgaudio");
-                }
+                playAmbient(Scenario.current.scenario_config.bgSoundPlaylistId);
+            }
+            else
+            {
+                playAmbient("none");
             }
         }
     }
@@ -97,13 +105,7 @@ public class Sound : MonoBehaviour
     {
         if (Scenario.current.scenario_config.musicPlaylistId != null)
         {
-            if (Configs.playlist_dict.ContainsKey(Scenario.current.scenario_config.musicPlaylistId))
-            {
-                if (Configs.playlist_dict[Scenario.current.scenario_config.musicPlaylistId].files != null)
-                {
-                    playAudioFile(Configs.playlist_dict[Scenario.current.scenario_config.musicPlaylistId].files[0], "bgaudio");
-                }
-            }
+            playBGMusic(Scenario.current.scenario_config.musicPlaylistId);
         }
     }
 
