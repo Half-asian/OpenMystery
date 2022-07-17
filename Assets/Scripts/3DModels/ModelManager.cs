@@ -17,10 +17,10 @@ public class ModelManager
 
 	static string[] real_shaders = { "ubershader", "ubershader_transparent", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "SimpleTexture", "panningfalloff", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx"};
 
-	static string[] transparent_shaders_array = { "ocean_vfx", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "panningb_vfx", "panningfalloff", "fire02_vfx", "ubershader_transparent", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "SimpleColor", "panningbfresnel_vfx", "ghost_vfx", "ghostfade_vfx" };
+	static string[] transparent_shaders_array = { "ocean_vfx", "shadowplane_vfx", "vertecolor_vfx", "panningb_vfx", "panningfalloff", "fire02_vfx", "ubershader_transparent", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "SimpleColor", "panningbfresnel_vfx", "ghostfade_vfx" };
 	static List<string> transparent_shaders = new List<string>(transparent_shaders_array);
 
-	static string[] transparent_no_depth_write_shaders_array = { "glow_vfx", "ghost_vfx" };
+	static string[] transparent_no_depth_write_shaders_array = { "glow_vfx", "lightrays_vfx"};
 	static List<string> transparent_no_depth_write_shaders = new List<string>(transparent_no_depth_write_shaders_array);
 
 	static Material transparent_material;

@@ -151,6 +151,9 @@ public class Prop : PropHolder
 
         model.game_object.transform.parent = Scene.scene_model.game_object.transform;
         model.game_object.gameObject.name = prop_locator.name;
+        Prop prop = model.game_object.AddComponent<Prop>();
+        prop.setup(prop_locator.name, model, Prop.spawner.Scene, "");
+        spawned_props[prop_locator.name] = prop;
 
         if (prop_locator.animation != null)
         {
@@ -158,14 +161,8 @@ public class Prop : PropHolder
             AnimationClip anim = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);
             prop_anim.AddClip(anim, "default");
             prop_anim.wrapMode = WrapMode.Loop;
-            model.game_object.GetComponent<Prop>().playAnimationOnComponent("default");
+            prop.playAnimationOnComponent("default");
         }
-
-        model.game_object.name = prop_locator.name;
-        Prop prop = model.game_object.AddComponent<Prop>();
-        prop.setup(prop_locator.name, model, Prop.spawner.Scene, "");
-        spawned_props[prop_locator.name] = prop;
-
     }
 
     public static void spawnPropFromEvent(string model_id, ConfigScene._Scene.WayPoint waypoint, string name, string group)
