@@ -565,6 +565,7 @@ public partial class NewPredicate
         //weird quote symbols.
         predicate = predicate.Replace('“', '"');
         predicate = predicate.Replace('”', '"');
+        predicate = predicate.Replace('\'', '"');
 
         while (string_pointer < predicate.Length)
         {

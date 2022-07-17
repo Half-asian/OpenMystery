@@ -152,6 +152,7 @@ public class Configs{
     public static ConfigPredicateAlias config_predicate_alias;
     public static ConfigDialogueSpeakers config_dialogue_speakers;
     public static ConfigDialogueSpeakerMapping config_dialogue_speaker_mapping;
+    public static ConfigTappie config_tappie;
 
     public static Dictionary<string, ConfigSound._Ambient> ambient_dict;
     public static Dictionary<string, ConfigSound._Playlist> playlist_dict;
@@ -452,7 +453,7 @@ public class Configs{
         config_scene = ConfigScene.getJObjectsConfigsListST("Scene");
         config_script_events = ConfigScriptEvents.getConfig();
         config_sound = ConfigSound.getJObjectsConfigsListST("Playlist");
-
+        config_tappie = ConfigTappie.getJObjectsConfigsListST("Tappie");
         Configs.config_3dmodel.createMaterialDict();
         GameStart.logWrite("FINISHED ALL");
     }

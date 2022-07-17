@@ -204,7 +204,7 @@ public class Scenario
             current.contentVars = new Dictionary<string, Dictionary<string, int>>();
         }
         Prop.spawnScenarioProps();
-
+        Tappie.spawnTappies();
         //Events
 
         if (current.scenario_config.enterEvents != null)

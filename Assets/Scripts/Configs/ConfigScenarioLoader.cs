@@ -21,6 +21,7 @@ public class ConfigScenario : Config<ConfigScenario>
         public CharSpawn[] charSpawns;
         public List<string[]> randomSpawns;
         public string[] enterEvents;
+        public string[] tappies;
         public string firstAction;
         public string mapLocationId;
         [JsonProperty(PropertyName = "ignoreme")]
@@ -55,4 +56,33 @@ public class ConfigScenario : Config<ConfigScenario>
 
 }
 
+public class ConfigTappie : Config<ConfigTappie>
+{
+    [System.Serializable]
+    public class _Tappie
+    {
+        public string activeAnimation;
+        public string activeSequence;
+        public string activeModel;
+        public string activeWaypoint;
+        public string soundEvent;
+        public string tapAnimation;
+        public string tappieId;
+        public string showPredicate;
+    }
 
+    public Dictionary<string, _Tappie> Tappie;
+
+    public override ConfigTappie combine(List<ConfigTappie> other_list)
+    {
+        for (int i = 1; i < other_list.Count; i++)
+        {
+            foreach (string key in other_list[i].Tappie.Keys)
+            {
+                Tappie[key] = other_list[i].Tappie[key];
+            }
+        }
+        return this;
+    }
+
+}
