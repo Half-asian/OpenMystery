@@ -78,6 +78,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
                 {
                     public string destinationId;
                     public int weight;
+                    public action[] actions;
                 }
                 public edge[] edges;
                 public action[] entryActions;

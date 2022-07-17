@@ -75,6 +75,12 @@ public abstract partial class AnimationSequence : MonoBehaviour
             }
         }
 
+        if (config_sequence.data.nodes[node_index].edges[config_sequence.data.nodes[node_index].edges.Length - 1].actions != null) //activate the actions
+        {
+            foreach (ConfigCharAnimSequence._CharAnimSequence._data.action action in config_sequence.data.nodes[node_index].edges[config_sequence.data.nodes[node_index].edges.Length - 1].actions)
+                processAction(action);
+        }
+
         activateNode(new_node_index);
     }
 

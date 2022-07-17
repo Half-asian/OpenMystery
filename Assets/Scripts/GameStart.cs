@@ -171,7 +171,7 @@ public class GameStart : MonoBehaviour
         GoalChain.Initialize();
         Objective.Initialize();
         HubNPC.Initialize();
-
+        Tappie.Initialize();
 
         //anything thats a getcomponent, makes use of coroutines or needs references to game objects
         

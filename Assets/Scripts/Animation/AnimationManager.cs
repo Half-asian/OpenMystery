@@ -524,7 +524,7 @@ public class AnimationManager : MonoBehaviour
 		public Vector3 scale;
 	}
 
-	static void activateTriggerMap(Dictionary<string, string> triggerReplacement, ConfigAnimation._Animation3D.TriggerMap trigger, AnimationClip anim_clip)
+	static void activateTriggerMap(Dictionary<string, string> triggerReplacement, ConfigAnimation._Animation3D.TriggerMap trigger, AnimationClip anim_clip, float offset)
     {
 		AnimationEvent animationEvent = new AnimationEvent();
 		switch (trigger.id)
@@ -535,7 +535,7 @@ public class AnimationManager : MonoBehaviour
 				else
 					animationEvent.stringParameter = trigger.parameters[0];
 				animationEvent.functionName = "PlaySound";
-				animationEvent.time = trigger.time;
+				animationEvent.time = trigger.time + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
 
@@ -546,7 +546,7 @@ public class AnimationManager : MonoBehaviour
 				else
 					animationEvent.stringParameter = trigger.parameters[0] + ":" + trigger.parameters[0] + ":" + trigger.parameters[1];
 				animationEvent.functionName = "AttachProp";
-				animationEvent.time = trigger.time;
+				animationEvent.time = trigger.time + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
 			case "RemoveProp":
@@ -556,7 +556,7 @@ public class AnimationManager : MonoBehaviour
 				else
 					animationEvent.stringParameter = trigger.parameters[0];
 				animationEvent.functionName = "removeProp";
-				animationEvent.time = trigger.time;
+				animationEvent.time = trigger.time + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
 			case "PlayPropAnim":
@@ -568,17 +568,17 @@ public class AnimationManager : MonoBehaviour
 				else
 					animationEvent.stringParameter = trigger.parameters[0] + ":" + trigger.parameters[1];
 				animationEvent.functionName = "PlayPropAnim";
-				animationEvent.time = trigger.time + 0.01f;
+				animationEvent.time = trigger.time + 0.01f + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
 			case "ScriptTrigger":
 				animationEvent.functionName = "ScriptTrigger";
 				animationEvent.stringParameter = trigger.parameters[0];
-				animationEvent.time = trigger.time + 0.01f;
+				animationEvent.time = trigger.time + 0.01f + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
 
-			/*case "AttachParticleSystem":
+			case "AttachParticleSystem":
 
 				if (trigger.parameters.Length == 2)
 				{
@@ -615,9 +615,9 @@ public class AnimationManager : MonoBehaviour
 				}
 
 				animationEvent.functionName = "AttachParticleSystem";
-				animationEvent.time = trigger.time;
+				animationEvent.time = trigger.time + offset;
 				anim_clip.AddEvent(animationEvent);
-				break;*/
+				break;
 
 			default:
 				 Debug.LogError("Unknown trigger id " + trigger.id + " in animation " + anim_clip.name);
@@ -686,16 +686,18 @@ public class AnimationManager : MonoBehaviour
 
 		if (animation_config.triggerMap != null)
         {
+			float offset = 0.0f; //Ensures events activate in the right order
 			foreach (ConfigAnimation._Animation3D.TriggerMap trigger in animation_config.triggerMap)
             {
-				activateTriggerMap(triggerReplacement, trigger, anim_clip);
+				activateTriggerMap(triggerReplacement, trigger, anim_clip, offset);
+				offset += 0.001f;
             }
         }
 
-		if (animation_config.wrapMode == "clamp")
-			anim_clip.wrapMode = WrapMode.ClampForever;
-		else
+		if (animation_config.wrapMode == "loop")
 			anim_clip.wrapMode = WrapMode.Loop;
+		else
+			anim_clip.wrapMode = WrapMode.ClampForever;
 
 
 		return anim_clip;
