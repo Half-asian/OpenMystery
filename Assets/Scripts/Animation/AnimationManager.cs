@@ -24,11 +24,7 @@ public class AnimationManager : MonoBehaviour
 			new_name = bone_fullname_dict[new_name];
 
 			bool first = true;
-			float prev_w = 0;
-			float prev_x = 0;
-			float prev_y = 0;
-			float prev_z = 0;
-			float prev_kt = 0;
+			Quaternion previous_quaternion = Quaternion.identity;
 
 			List<Keyframe> key_frames_pos_x = new List<Keyframe>();
 			List<Keyframe> key_frames_pos_y = new List<Keyframe>();
@@ -59,8 +55,7 @@ public class AnimationManager : MonoBehaviour
 
 			foreach (CocosModel.Animation.Bone.Keyframe keyframe in bone_dict[node.id].keyframes)
 			{
-
-				if (first == false) //Spazzing fix
+				/*if (first == false) //Spazzing fix
 				{
 					if (keyframe.rotation != null)
 					{
@@ -70,7 +65,7 @@ public class AnimationManager : MonoBehaviour
 							keyframe.keytime = prev_kt + 0.00001f;
 						}
 					}
-				}
+				}*/
 
 				if (keyframe.translation != null)
 				{
@@ -125,40 +120,45 @@ public class AnimationManager : MonoBehaviour
 						if (bone_mods[bone_name].enabled)
 						{
 							Quaternion bone_quaternion_swizzle = Quaternion.Euler(new Vector3(bone_mods[bone_name].rotation.eulerAngles.y, bone_mods[bone_name].rotation.eulerAngles.x * -1, bone_mods[bone_name].rotation.eulerAngles.z));       //Swizzle X and Y for some reason and -y
-							Quaternion resulting_quaternion = new Quaternion(keyframe.rotation[0], keyframe.rotation[1] * -1, keyframe.rotation[2] * -1, keyframe.rotation[3]) * bone_quaternion_swizzle;
+							Quaternion current_quat = new Quaternion(keyframe.rotation[0], keyframe.rotation[1] * -1, keyframe.rotation[2] * -1, keyframe.rotation[3]) * bone_quaternion_swizzle;
 
-							key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, resulting_quaternion.y));
-							key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, resulting_quaternion.y));
-							key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, resulting_quaternion.z));
-							key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, resulting_quaternion.w));
+							if (first == false)
+							{
+								if (Quaternion.Dot(current_quat, previous_quaternion) < 0.0f)
+									current_quat = new Quaternion(-current_quat.x, -current_quat.y, -current_quat.z, -current_quat.w);
+							}
 
-							prev_x = resulting_quaternion.x;
-							prev_y = resulting_quaternion.y;
-							prev_z = resulting_quaternion.z;
-							prev_w = resulting_quaternion.w;
+							key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.y));
+							key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.y));
+							key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.z));
+							key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.w));
+
+							previous_quaternion = current_quat;
 							first = false;
-							prev_kt = keyframe.keytime;
 						}
 
-						else //jt fucking cam bind
+						else
 						{
 							Vector3 current_rotation = CameraManager.current.main_camera_jt_cam_bind.transform.localEulerAngles;
 							Quaternion cam_bind_anim_quaternion = new Quaternion(keyframe.rotation[0], keyframe.rotation[1], keyframe.rotation[2], keyframe.rotation[3]);
 							Vector3 cam_bind_anim_euler = cam_bind_anim_quaternion.eulerAngles;
 							Vector3 combined_euler = new Vector3(cam_bind_anim_euler.x, current_rotation.y, cam_bind_anim_euler.z);
-							Quaternion final_quaternion = Quaternion.Euler(combined_euler);
+							Quaternion current_quat = Quaternion.Euler(combined_euler);
 
-							key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, final_quaternion.x));
-							key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, final_quaternion.y));
-							key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, final_quaternion.z));
-							key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, final_quaternion.w));
+							if (first == false)
+							{
+								if (Quaternion.Dot(current_quat, previous_quaternion) < 0.0f)
+									current_quat = new Quaternion(-current_quat.x, -current_quat.y, -current_quat.z, -current_quat.w);
+							}
 
-							prev_x = keyframe.rotation[0];
-							prev_y = keyframe.rotation[1];
-							prev_z = keyframe.rotation[2];
-							prev_w = keyframe.rotation[3];
+							key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.x));
+							key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.y));
+							key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.z));
+							key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.w));
+
+							previous_quaternion = current_quat;
+
 							first = false;
-							prev_kt = keyframe.keytime;
 
 						}
 
@@ -166,35 +166,26 @@ public class AnimationManager : MonoBehaviour
 
 					else
 					{
+						Quaternion current_quat;
 						if (!is_camera)
+							current_quat = new Quaternion(keyframe.rotation[0], keyframe.rotation[1] * -1, keyframe.rotation[2] * -1, keyframe.rotation[3]);
+						else
+							current_quat = new Quaternion(keyframe.rotation[0], keyframe.rotation[1], keyframe.rotation[2], keyframe.rotation[3]);
+
+						if (first == false)
 						{
-							key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.rotation[0]));
-							key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.rotation[1] * -1));
-							key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.rotation[2] * -1));
-							key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.rotation[3]));
-
-							prev_x = keyframe.rotation[0];
-							prev_y = keyframe.rotation[1];
-							prev_z = keyframe.rotation[2];
-							prev_w = keyframe.rotation[3];
-							first = false;
-							prev_kt = keyframe.keytime;
+							if (Quaternion.Dot(current_quat, previous_quaternion) < 0.0f)
+								current_quat = new Quaternion(-current_quat.x, -current_quat.y, -current_quat.z, -current_quat.w);
 						}
-						else //jt_anim bind
-						{
-							key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.rotation[0]));
-							key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.rotation[1]));
-							key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.rotation[2]));
-							key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.rotation[3]));
 
-							prev_x = keyframe.rotation[0];
-							prev_y = keyframe.rotation[1];
-							prev_z = keyframe.rotation[2];
-							prev_w = keyframe.rotation[3];
+						key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.x));
+						key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.y));
+						key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.z));
+						key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.w));
 
-							first = false;
-							prev_kt = keyframe.keytime;
-						}
+						first = false;
+						previous_quaternion = current_quat;
+
 					}
 				}
 				if (keyframe.scale != null)
