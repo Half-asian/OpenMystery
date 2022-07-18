@@ -55,20 +55,12 @@ public class AnimationManager : MonoBehaviour
 
 			foreach (CocosModel.Animation.Bone.Keyframe keyframe in bone_dict[node.id].keyframes)
 			{
-				/*if (first == false) //Spazzing fix
-				{
-					if (keyframe.rotation != null)
-					{
-						float rotation_difference = Mathf.Abs(prev_x - keyframe.rotation[0]) + Mathf.Abs(prev_y - keyframe.rotation[1]) + Mathf.Abs(prev_z - keyframe.rotation[2]) + Mathf.Abs(prev_w - keyframe.rotation[3]);
-						if (rotation_difference > 2.5f)
-						{
-							keyframe.keytime = prev_kt + 0.00001f;
-						}
-					}
-				}*/
-
 				if (keyframe.translation != null)
 				{
+					Keyframe keyframe_pos_x;
+					Keyframe keyframe_pos_y;
+					Keyframe keyframe_pos_z;
+
 					if (use_bone_mod == true)
 					{
 						if (bone_mods[bone_name].enabled)
@@ -76,39 +68,48 @@ public class AnimationManager : MonoBehaviour
 
 							if (!is_camera)
 							{
-								key_frames_pos_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -1 + bone_mods[bone_name].translation.x));
-								key_frames_pos_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] + bone_mods[bone_name].translation.y));
-								key_frames_pos_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] + bone_mods[bone_name].translation.z));
+
+								keyframe_pos_x = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -1 + bone_mods[bone_name].translation.x);
+								keyframe_pos_y = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] + bone_mods[bone_name].translation.y);
+								keyframe_pos_z = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] + bone_mods[bone_name].translation.z);
 							}
 							else
 							{
-								key_frames_pos_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -0.01f + bone_mods[bone_name].translation.x));
-								key_frames_pos_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] * 0.01f + bone_mods[bone_name].translation.y));
-								key_frames_pos_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] * 0.01f + bone_mods[bone_name].translation.z));
+								keyframe_pos_x = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -0.01f + bone_mods[bone_name].translation.x);
+								keyframe_pos_y = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] * 0.01f + bone_mods[bone_name].translation.y);
+								keyframe_pos_z = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] + keyframe.translation[2] * 0.01f + bone_mods[bone_name].translation.z);
 							}
+							keyframe_pos_x.weightedMode = WeightedMode.Both;
+							keyframe_pos_y.weightedMode = WeightedMode.Both;
+							keyframe_pos_z.weightedMode = WeightedMode.Both;
+
+							key_frames_pos_x.Add(keyframe_pos_x);
+							key_frames_pos_y.Add(keyframe_pos_y);
+							key_frames_pos_z.Add(keyframe_pos_z);
 						}
-						/*else //jt fucking cam bind
-                        {
-							Debug.LogError("AAA");
-							key_frames_pos_x.Add(new Keyframe(keyframe.keytime * animation_length, CameraManager.main_camera_jt_cam_bind.transform.localPosition.x));
-							key_frames_pos_y.Add(new Keyframe(keyframe.keytime * animation_length, CameraManager.main_camera_jt_cam_bind.transform.localPosition.y));
-							key_frames_pos_z.Add(new Keyframe(keyframe.keytime * animation_length, CameraManager.main_camera_jt_cam_bind.transform.localPosition.z));
-						}*/
 					}
 					else
 					{
+
 						if (!is_camera)
 						{
-							key_frames_pos_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -1));
-							key_frames_pos_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1]));
-							key_frames_pos_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2]));
+							keyframe_pos_x = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -1);
+							keyframe_pos_y = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1]);
+							keyframe_pos_z = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2]);
 						}
-						else //jt_anim bind
+						else
 						{
-							key_frames_pos_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * 0.01f));
-							key_frames_pos_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] * 0.01f));
-							key_frames_pos_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] * 0.01f));
+							keyframe_pos_x = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * 0.01f);
+							keyframe_pos_y = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] * 0.01f);
+							keyframe_pos_z = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] * 0.01f);
 						}
+						keyframe_pos_x.weightedMode = WeightedMode.Both;
+						keyframe_pos_y.weightedMode = WeightedMode.Both;
+						keyframe_pos_z.weightedMode = WeightedMode.Both;
+
+						key_frames_pos_x.Add(keyframe_pos_x);
+						key_frames_pos_y.Add(keyframe_pos_y);
+						key_frames_pos_z.Add(keyframe_pos_z);
 					}
 				}
 
@@ -128,10 +129,20 @@ public class AnimationManager : MonoBehaviour
 									current_quat = new Quaternion(-current_quat.x, -current_quat.y, -current_quat.z, -current_quat.w);
 							}
 
-							key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.y));
-							key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.y));
-							key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.z));
-							key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.w));
+							Keyframe keyframe_rot_x = new Keyframe(keyframe.keytime * animation_length, current_quat.x);
+							Keyframe keyframe_rot_y = new Keyframe(keyframe.keytime * animation_length, current_quat.y);
+							Keyframe keyframe_rot_z = new Keyframe(keyframe.keytime * animation_length, current_quat.z);
+							Keyframe keyframe_rot_w = new Keyframe(keyframe.keytime * animation_length, current_quat.w);
+
+							keyframe_rot_x.weightedMode = WeightedMode.Both;
+							keyframe_rot_y.weightedMode = WeightedMode.Both;
+							keyframe_rot_z.weightedMode = WeightedMode.Both;
+							keyframe_rot_w.weightedMode = WeightedMode.Both;
+
+							key_frames_rot_x.Add(keyframe_rot_x);
+							key_frames_rot_y.Add(keyframe_rot_y);
+							key_frames_rot_z.Add(keyframe_rot_z);
+							key_frames_rot_w.Add(keyframe_rot_w);
 
 							previous_quaternion = current_quat;
 							first = false;
@@ -151,19 +162,26 @@ public class AnimationManager : MonoBehaviour
 									current_quat = new Quaternion(-current_quat.x, -current_quat.y, -current_quat.z, -current_quat.w);
 							}
 
-							key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.x));
-							key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.y));
-							key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.z));
-							key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.w));
+							Keyframe keyframe_rot_x = new Keyframe(keyframe.keytime * animation_length, current_quat.x);
+							Keyframe keyframe_rot_y = new Keyframe(keyframe.keytime * animation_length, current_quat.y);
+							Keyframe keyframe_rot_z = new Keyframe(keyframe.keytime * animation_length, current_quat.z);
+							Keyframe keyframe_rot_w = new Keyframe(keyframe.keytime * animation_length, current_quat.w);
+
+							keyframe_rot_x.weightedMode = WeightedMode.Both;
+							keyframe_rot_y.weightedMode = WeightedMode.Both;
+							keyframe_rot_z.weightedMode = WeightedMode.Both;
+							keyframe_rot_w.weightedMode = WeightedMode.Both;
+
+							key_frames_rot_x.Add(keyframe_rot_x);
+							key_frames_rot_y.Add(keyframe_rot_y);
+							key_frames_rot_z.Add(keyframe_rot_z);
+							key_frames_rot_w.Add(keyframe_rot_w);
 
 							previous_quaternion = current_quat;
 
 							first = false;
-
 						}
-
 					}
-
 					else
 					{
 						Quaternion current_quat;
@@ -177,11 +195,20 @@ public class AnimationManager : MonoBehaviour
 							if (Quaternion.Dot(current_quat, previous_quaternion) < 0.0f)
 								current_quat = new Quaternion(-current_quat.x, -current_quat.y, -current_quat.z, -current_quat.w);
 						}
+						Keyframe keyframe_rot_x = new Keyframe(keyframe.keytime * animation_length, current_quat.x);
+						Keyframe keyframe_rot_y = new Keyframe(keyframe.keytime * animation_length, current_quat.y);
+						Keyframe keyframe_rot_z = new Keyframe(keyframe.keytime * animation_length, current_quat.z);
+						Keyframe keyframe_rot_w = new Keyframe(keyframe.keytime * animation_length, current_quat.w);
 
-						key_frames_rot_x.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.x));
-						key_frames_rot_y.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.y));
-						key_frames_rot_z.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.z));
-						key_frames_rot_w.Add(new Keyframe(keyframe.keytime * animation_length, current_quat.w));
+						keyframe_rot_x.weightedMode = WeightedMode.Both;
+						keyframe_rot_y.weightedMode = WeightedMode.Both;
+						keyframe_rot_z.weightedMode = WeightedMode.Both;
+						keyframe_rot_w.weightedMode = WeightedMode.Both;
+
+						key_frames_rot_x.Add(keyframe_rot_x);
+						key_frames_rot_y.Add(keyframe_rot_y);
+						key_frames_rot_z.Add(keyframe_rot_z);
+						key_frames_rot_w.Add(keyframe_rot_w);
 
 						first = false;
 						previous_quaternion = current_quat;
@@ -190,8 +217,6 @@ public class AnimationManager : MonoBehaviour
 				}
 				if (keyframe.scale != null)
 				{
-
-
 					if (Path.GetFileName(new_name) == "head1_neck_bind")
 					{
 						if (head_animation_scale != 0.0f)
@@ -213,54 +238,39 @@ public class AnimationManager : MonoBehaviour
 
 					if (Path.GetFileName(new_name) == "jt_all_bind") //AnimationScale takes the place of jt_all_bind
 					{
-						/*if (animationScale != 0.0f)
-						{
-							key_frames_scale_x.Add(new Keyframe(keyframe.keytime * animation_length, animationScale));
-							key_frames_scale_y.Add(new Keyframe(keyframe.keytime * animation_length, animationScale));
-							key_frames_scale_z.Add(new Keyframe(keyframe.keytime * animation_length, animationScale));
-						}*/
-						//else
-						{
-							key_frames_scale_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[0] * animation_scale));
-							key_frames_scale_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[1] * animation_scale));
-							key_frames_scale_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[2] * animation_scale));
-						}
+
+						Keyframe keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[0] * animation_scale);
+						Keyframe keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[1] * animation_scale);
+						Keyframe keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[2] * animation_scale);
+
+						keyframe_sca_x.weightedMode = WeightedMode.Both;
+						keyframe_sca_y.weightedMode = WeightedMode.Both;
+						keyframe_sca_z.weightedMode = WeightedMode.Both;
+
+						key_frames_scale_x.Add(keyframe_sca_x);
+						key_frames_scale_y.Add(keyframe_sca_y);
+						key_frames_scale_z.Add(keyframe_sca_z);
+
 						jt_all_bind_scale_x = keyframe.scale[0];
 						jt_all_bind_scale_y = keyframe.scale[1];
 						jt_all_bind_scale_z = keyframe.scale[2];
 					}
-					/*else if (name == "Armature/jt_all_bind/jt_prop_bind")
-					{
-						key_frames_scale_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[0] * jt_all_bind_scale_x)); //why were these switched?
-						key_frames_scale_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[1] * jt_all_bind_scale_y));
-						key_frames_scale_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[2] * jt_all_bind_scale_z));
-					}*/
 					else
 					{
-						{
-							key_frames_scale_x.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[0])); //why were these switched?
-							key_frames_scale_y.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[1]));
-							key_frames_scale_z.Add(new Keyframe(keyframe.keytime * animation_length, keyframe.scale[2]));
-						}
+						Keyframe keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[0] * animation_scale);
+						Keyframe keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[1] * animation_scale);
+						Keyframe keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[2] * animation_scale);
+
+						keyframe_sca_x.weightedMode = WeightedMode.Both;
+						keyframe_sca_y.weightedMode = WeightedMode.Both;
+						keyframe_sca_z.weightedMode = WeightedMode.Both;
+
+						key_frames_scale_x.Add(keyframe_sca_x);
+						key_frames_scale_y.Add(keyframe_sca_y);
+						key_frames_scale_z.Add(keyframe_sca_z);
 					}
 				}
 			}
-
-			//string new_name = name;
-
-
-
-
-
-			/*if (bone_mods != null)
-			{
-				if (standard_bone_to_avatar_bone.ContainsKey(name))
-				{
-					new_name = standard_bone_to_avatar_bone[name];
-				}
-			}*/
-
-
 
 			if (Path.GetFileName(new_name) != "jt_all_bind")
 			{
