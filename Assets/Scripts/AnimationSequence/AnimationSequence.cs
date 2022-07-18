@@ -22,6 +22,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     public virtual void initAnimSequence(string _anim_sequence, bool _walk)
     {
+
         destroyProps();
         walk = _walk;
         //Find the animation sequence in the config
@@ -102,7 +103,8 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
 
         //Play the main animation
-        if (walk)
+        //if (walk)
+        if (config_sequence.data.nodes[this.node_index].walkAnimName != null)
             current_animation_name = config_sequence.data.nodes[this.node_index].walkAnimName;
         else
             current_animation_name = config_sequence.data.nodes[this.node_index].animName;

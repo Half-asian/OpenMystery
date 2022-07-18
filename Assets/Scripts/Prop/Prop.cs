@@ -157,10 +157,9 @@ public class Prop : PropHolder
 
         if (prop_locator.animation != null)
         {
-            Animation prop_anim = model.game_object.AddComponent<Animation>();
             AnimationClip anim = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);
-            prop_anim.AddClip(anim, "default");
-            prop_anim.wrapMode = WrapMode.Loop;
+            prop.animation_component.AddClip(anim, "default");
+            prop.animation_component.wrapMode = WrapMode.Loop;
             prop.playAnimationOnComponent("default");
         }
     }

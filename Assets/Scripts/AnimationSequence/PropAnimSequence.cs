@@ -9,6 +9,9 @@ public class PropAnimSequence : AnimationSequence
     public override void initAnimSequence(string _anim_sequence, bool _walk)
     {
         prop_controller = GetComponent<Prop>();
+
+        GameStart.logWrite("Activating animSequence " + _anim_sequence + " for actor " + prop_controller.name + " walk: " + _walk);
+
         base.initAnimSequence(_anim_sequence, _walk);
     }
 

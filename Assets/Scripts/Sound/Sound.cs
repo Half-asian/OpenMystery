@@ -34,6 +34,9 @@ public class Sound : MonoBehaviour
     {
         if (Configs.ambient_dict.ContainsKey(ambient_id))
             current.playAudioFile(Configs.ambient_dict[ambient_id].soundname, "amb");
+        else
+            current.AMBAudioPlayer.GetComponent<AudioSource>().Stop();
+
     }
 
     public static void playSoundEffect(string sound_effect)

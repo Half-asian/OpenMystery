@@ -10,15 +10,22 @@ public class ActorAnimSequence : AnimationSequence
     {
         actor_controller = GetComponent<ActorController>();
 
+        GameStart.logWrite("Activating animSequence " + _anim_sequence + " for actor " + actor_controller.name + " walk: " + _walk);
+
         base.initAnimSequence(_anim_sequence, _walk);
     }
 
     protected override float playAnimation(string animation_id, string _anim_sequence)
     {
-        actor_controller.actor_animation.anim_sequence_idle = _anim_sequence;
+        if (walk == false)
+            actor_controller.actor_animation.anim_sequence_idle = _anim_sequence;
 
         AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation_id, actor_controller.model, actor_controller.actor_info, config_sequence.data.triggerReplacement);
-        if (anim_clip == null) return 0.0f;
+        if (anim_clip == null)
+        {
+            Debug.LogError("Failed to load animation clip for " + actor_controller.name + " with sequence of " + config_sequence.sequenceId + " at node index " + node_index);
+            return 0.0f;
+        }
 
         animation_component.AddClip(anim_clip, animation_id);
 
@@ -37,6 +44,8 @@ public class ActorAnimSequence : AnimationSequence
 
     protected override void finishSequence()
     {
+        if (walk == false)
+            actor_controller.actor_animation.anim_sequence_idle = "";
         base.finishSequence();
 
         //actor_controller.actor_animation.unblock();
