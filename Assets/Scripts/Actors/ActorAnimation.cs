@@ -51,10 +51,10 @@ public class ActorAnimation : MonoBehaviour
     {
         if (currentAnimationAlerter != null)
             StopCoroutine(currentAnimationAlerter);
-        if (animation_component.clip != null)
-            animation_component.CrossFade(id, 0.4f);
-        else
+        if (Time.realtimeSinceStartup - actor_controller.creation_time < 0.5f) //First frame we can't let them T-pose
             animation_component.Play(id);
+        else
+            animation_component.CrossFade(id, 0.4f);
         currentAnimationAlerter = animationAlert(animation_component.GetClip(id));
         StartCoroutine(currentAnimationAlerter);
     }

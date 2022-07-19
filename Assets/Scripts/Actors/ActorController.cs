@@ -28,6 +28,14 @@ public class ActorController : PropHolder
     public ActorState actor_state = ActorState.Idle;
 
     public List<GameObject> particles = new List<GameObject>();
+
+    public float creation_time;
+
+    private void LateUpdate()
+    {
+        actor_head.ApplyHeadTurns();
+    }
+
     public void setup(Model _model)
     {
         model = _model;
@@ -38,6 +46,7 @@ public class ActorController : PropHolder
         actor_animation.actor_controller = this;
         actor_movement = new ActorMovement(this);
         patches = new List<Model>();
+        creation_time = Time.realtimeSinceStartup;
     }
 
     public void addPatch(string patch_model_id)
@@ -91,11 +100,6 @@ public class ActorController : PropHolder
         }
         if (particle != null)
             particles.Add(particle);
-    }
-
-    private void LateUpdate()
-    {
-        actor_head.ApplyHeadTurns();
     }
 
     //Not super advanced

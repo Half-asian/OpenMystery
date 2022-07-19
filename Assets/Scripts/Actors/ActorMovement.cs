@@ -228,6 +228,7 @@ public class ActorMovement
         gameObject.transform.Rotate(new Vector3(0, -destination_rotation[1], 0));
         gameObject.transform.Rotate(new Vector3(destination_rotation[0], 0, 0));
 
+        actor_manager.creation_time = Time.realtimeSinceStartup;
 
         actor_state = ActorState.Idle;
         actor_animation.loadAnimationSet();
