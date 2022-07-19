@@ -27,6 +27,14 @@ namespace IndividualComponents
         {
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["tops"];
             string outfit_id = Configs.config_avatar_components.AvatarComponents[category.component_id].outfitId;
+            if (Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles != null)
+            {
+                foreach (var style in Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles)
+                {
+                    if (Predicate.parsePredicate(style.appropriatePredicate))
+                        outfit_id = style.outfitId;
+                }
+            }
             string model_id = Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].modelid;
             if (component_model != null)
                 removeComponent();

@@ -18,6 +18,15 @@ public class ConfigAvatarComponents : Config<ConfigAvatarComponents>
         public string[] sliderId;
         public string[] sliderValue;
         public int sortOrder;
+
+        [System.Serializable]
+        public class ComponentStyle
+        {
+            public string appropriatePredicate;
+            public string outfitId;
+        }
+        public ComponentStyle[] componentStyles;
+
     }
     public Dictionary<string, AvatarComponent> AvatarComponents;
 

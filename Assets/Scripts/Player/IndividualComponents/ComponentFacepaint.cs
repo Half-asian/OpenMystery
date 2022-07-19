@@ -20,6 +20,15 @@ namespace IndividualComponents
         {
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["facePaint"];
             string outfit_id = Configs.config_avatar_components.AvatarComponents[category.component_id].outfitId;
+            if (Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles != null)
+            {
+                foreach (var style in Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles)
+                {
+                    if (Predicate.parsePredicate(style.appropriatePredicate))
+                        outfit_id = style.outfitId;
+                }
+            }
+
             SkinnedMeshRenderer smr = avatar_components.base_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>();
 
 

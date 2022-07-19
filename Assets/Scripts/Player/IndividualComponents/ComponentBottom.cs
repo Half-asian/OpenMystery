@@ -32,6 +32,15 @@ namespace IndividualComponents
                 return component_model;
             }
             string outfit_id = Configs.config_avatar_components.AvatarComponents[category.component_id].outfitId;
+            if (Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles != null)
+            {
+                foreach (var style in Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles)
+                {
+                    if (Predicate.parsePredicate(style.appropriatePredicate))
+                        outfit_id = style.outfitId;
+                }
+            }
+
             if (!Configs.config_avatar_outfit_data.AvatarOutfitData.ContainsKey(outfit_id))
             {
                 return component_model;
