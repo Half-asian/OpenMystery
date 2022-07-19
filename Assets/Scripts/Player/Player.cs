@@ -18,7 +18,6 @@ public class Player
     public static string local_avatar_opponent_house;
     public static string local_avatar_onscreen_name;
     public static int local_avatar_year => GlobalEngineVariables.player_year;
-    public static string companionId = "chiara";
 
 
 

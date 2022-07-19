@@ -21,7 +21,6 @@ public class ScreenFade : MonoBehaviour
 
     public static void fadeFrom(float time, Color color)
     {
-        Debug.Log("FADETO");
         current.image.color = color;
         AnimationClip anim_clip = new AnimationClip();
         anim_clip.legacy = true;
@@ -37,7 +36,6 @@ public class ScreenFade : MonoBehaviour
 
     public static void fadeTo(float time, Color color)
     {
-        Debug.Log("FADEFROM");
         current.image.color = color;
         AnimationClip anim_clip = new AnimationClip();
         anim_clip.legacy = true;

@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System;
 
 public class EncounterManager : MonoBehaviour
 {
+    public static event Action<string> onEncounterFinished = delegate { };
     public Encounter activateEncounter(string encounter_name)
     {
         Debug.Log("Activating Encounter: " + encounter_name);
@@ -43,5 +45,8 @@ public class EncounterManager : MonoBehaviour
         return result_encounter;
     }
 
-
+    public static void onEncounterComplete(string encounter_id)
+    {
+        onEncounterFinished.Invoke(encounter_id);
+    }
 }

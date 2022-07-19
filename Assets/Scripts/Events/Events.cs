@@ -427,7 +427,7 @@ public static class Events
                 {
                     if (Actor.actor_controllers[action_params[0]].actor_state == ActorState.Idle)
                     {
-                        GameStart.logWrite("CharacterIdleSequence " + action_params[0] + " " + action_params[1]);
+                        Debug.Log("CharacterIdleSequence " + action_params[0] + " " + action_params[1]);
 
                         if (Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>() != null)
                         {

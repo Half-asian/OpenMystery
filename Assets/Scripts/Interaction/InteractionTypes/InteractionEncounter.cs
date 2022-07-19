@@ -34,9 +34,20 @@ public class InteractionEncounter : Interaction
         }
         else
         {
+            EncounterManager.onEncounterFinished += encounterComplete;
             GameStart.encounter_manager.activateEncounter(config_interaction.encounterId);
         }
         //Interaction is called from a callback.
         //finished();
     }
+
+    public void encounterComplete(string encounter_id)
+    {
+        if (encounter_id == config_interaction.encounterId)
+        {
+            EncounterManager.onEncounterFinished -= encounterComplete;
+            interactionComplete();
+        }
+    }
+
 }

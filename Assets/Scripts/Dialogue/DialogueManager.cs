@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public interface DialogueCallback
-{
-    public abstract void dialogueCallback(string dialogue);
-}
-
 public enum DialogueStatus
 {
     WaitingEnterEvents,
@@ -127,7 +122,7 @@ public class DialogueManager : MonoBehaviour
         {
             foreach(ConfigHPDialogueOverride._HPDialogueOverride override_line in Configs.dialogue_line_override_dict[dialogue_line.id])
             {
-                if (override_line.companionId == Player.companionId)
+                if (override_line.companionId == EncounterDate.companion)
                 {
                     Debug.Log("Overriding dialogue " + dialogue_line.id + " with " + override_line.id);
                     override_line.overrideLine(dialogue_line);
@@ -262,7 +257,7 @@ public class DialogueManager : MonoBehaviour
         {
             foreach (ConfigDialogueChoiceOverride._DialogueChoiceOverride override_choice in Configs.dialogue_choice_override_dict[dialogue_line.dialogueChoiceIds[0]])
             {
-                if (override_choice.companionId == Player.companionId)
+                if (override_choice.companionId == EncounterDate.companion)
                 {
                     Debug.Log("Overriding choice " + dialogue_line.dialogueChoiceIds[0] + " with " + override_choice.id);
                     override_choice.overrideChoice(Configs.config_dialogue_choices.DialogueChoice[dialogue_line.dialogueChoiceIds[0]]);
@@ -274,7 +269,7 @@ public class DialogueManager : MonoBehaviour
         {
             foreach (ConfigDialogueChoiceOverride._DialogueChoiceOverride override_choice in Configs.dialogue_choice_override_dict[dialogue_line.dialogueChoiceIds[1]])
             {
-                if (override_choice.companionId == Player.companionId)
+                if (override_choice.companionId == EncounterDate.companion)
                 {
                     Debug.Log("Overriding choice " + dialogue_line.dialogueChoiceIds[1] + " with " + override_choice.id);
                     override_choice.overrideChoice(Configs.config_dialogue_choices.DialogueChoice[dialogue_line.dialogueChoiceIds[1]]);
@@ -288,7 +283,7 @@ public class DialogueManager : MonoBehaviour
             {
                 foreach (ConfigDialogueChoiceOverride._DialogueChoiceOverride override_choice in Configs.dialogue_choice_override_dict[dialogue_line.dialogueChoiceIds[2]])
                 {
-                    if (override_choice.companionId == Player.companionId)
+                    if (override_choice.companionId == EncounterDate.companion)
                     {
                         Debug.Log("Overriding choice " + dialogue_line.dialogueChoiceIds[2] + " with " + override_choice.id);
                         override_choice.overrideChoice(Configs.config_dialogue_choices.DialogueChoice[dialogue_line.dialogueChoiceIds[2]]);
@@ -336,7 +331,8 @@ public class DialogueManager : MonoBehaviour
 
     public string mapSpeakerName(string speaker)
     {
-        speaker = speaker.Replace("::Date::", Configs.config_companion.Companion[Player.companionId].speakerId);
+        if (EncounterDate.companion != null)
+            speaker = speaker.Replace("::Date::", Configs.config_companion.Companion[EncounterDate.companion].speakerId);
         foreach(ConfigDialogueSpeakerMapping._DialogueSpeakerMapping mapping in Configs.config_dialogue_speaker_mapping.DialogueSpeakerMapping)
         {
             if (mapping.mapId == speaker)
@@ -471,6 +467,7 @@ public class DialogueManager : MonoBehaviour
 
         setDialogueUIActive(false);
         InteractionManager.changeOptionInteractionsVisibility(true);
+        current_dialogue_line = null;
         onDialogueFinishedEvent?.Invoke(dialogue_id);
         CameraManager.current.freeCamera();
 
@@ -479,6 +476,5 @@ public class DialogueManager : MonoBehaviour
             Actor.actor_controllers[character].actor_head.clearLookat();
             Actor.actor_controllers[character].actor_head.clearTurnHeadAt();
         }
-        current_dialogue_line = null;
     }
 }

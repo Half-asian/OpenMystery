@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-public class ObjectiveDialogueComplete : Objective, DialogueCallback
+public class ObjectiveDialogueComplete : Objective
 {
     public ObjectiveDialogueComplete(ConfigObjective.Objective _objective)
     {

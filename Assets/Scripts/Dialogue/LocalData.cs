@@ -15,7 +15,8 @@ public class LocalData : MonoBehaviour
         text = text.Replace("::FirstName::", Player.local_avatar_first_name);
         text = text.Replace("::LastName::", Player.local_avatar_last_name);
         text = text.Replace("::FullName::", Player.local_avatar_full_name);
-        text = text.Replace("::Date::", Configs.config_companion.Companion[Player.companionId].speakerId);
+        if (EncounterDate.companion != null)
+            text = text.Replace("::Date::", Configs.config_companion.Companion[EncounterDate.companion].speakerId);
         text = text.Replace("::pointsOfHouse(\"ravenclaw\")::", "9999");
         text = text.Replace("::pointsOfHouse(\"gryffindor\")::", "9999");
         text = text.Replace("::pointsOfHouse(\"hufflepuff\")::", "9999");
