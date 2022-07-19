@@ -257,9 +257,9 @@ public class AnimationManager : MonoBehaviour
 					}
 					else
 					{
-						Keyframe keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[0] * animation_scale);
-						Keyframe keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[1] * animation_scale);
-						Keyframe keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[2] * animation_scale);
+						Keyframe keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[0]);
+						Keyframe keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[1]);
+						Keyframe keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[2]);
 
 						keyframe_sca_x.weightedMode = WeightedMode.Both;
 						keyframe_sca_y.weightedMode = WeightedMode.Both;
