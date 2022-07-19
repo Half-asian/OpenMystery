@@ -527,7 +527,7 @@ public partial class NewPredicate
                             }
                             else
                             {
-                                throw new Exception("Unknown function " + sb.function_name);
+                                throw new Exception("Unknown function \"" + sb.function_name + "\"");
                             }
                         }
                         else
@@ -566,6 +566,7 @@ public partial class NewPredicate
         predicate = predicate.Replace('“', '"');
         predicate = predicate.Replace('”', '"');
         predicate = predicate.Replace('\'', '"');
+        predicate = predicate.Replace("\n", "");
 
         while (string_pointer < predicate.Length)
         {
