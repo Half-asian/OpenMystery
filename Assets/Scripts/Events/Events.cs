@@ -331,29 +331,29 @@ public static class Events
                 break;
 
             case "screenFadeTo":
-                //action params 0 is the time to fade. Add this later.
-
-                string color_string = action_params[1]; //000000 - FFFFFF
+                float ffade_to_time = 1.0f;
+                if (action_params.Length >= 1)
+                    ffade_to_time = float.Parse(action_params[0]);
+                string color_string = action_params[1];
                 int r = int.Parse(color_string.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
                 int g = int.Parse(color_string.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
                 int b = int.Parse(color_string.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-                GameStart.event_manager.screen_fade.GetComponent<Image>().color = new Color(r / 255.0f, g / 255.0f, b / 255.0f);
-                GameStart.event_manager.screen_fade.SetActive(true);
-                GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_to_black");
-                //event_action_time = 1.0f;
+                ScreenFade.fadeTo(ffade_to_time, new Color(r / 255.0f, g / 255.0f, b / 255.0f));
                 break;
 
-
             case "fadeToBlack":
-                GameStart.event_manager.screen_fade.GetComponent<Image>().color = new Color(0, 0, 0);
-                GameStart.event_manager.screen_fade.SetActive(true);
-                GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_to_black");
-                //event_action_time = 1.0f;
+                float fade_to_time = 1.0f;
+                if (action_params.Length >= 1)
+                    fade_to_time = float.Parse(action_params[0]);
+                ScreenFade.fadeTo(fade_to_time, Color.black);
                 break;
 
             case "screenFadeFrom":
             case "fadeFromBlack":
-                GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_from_black");
+                float fade_from_time = 1.0f;
+                if (action_params.Length >= 1)
+                    fade_from_time = float.Parse(action_params[0]);
+                ScreenFade.fadeFrom(fade_from_time, Color.black);
                 break;
 
             case "safeAdvanceAnimSequenceTo": //This shit is used ONCE in the entire game
@@ -405,8 +405,6 @@ public static class Events
                 {
                     if (Actor.actor_controllers[action_params[0]].actor_state == ActorState.Idle)
                     {
-                        GameStart.logWrite("CharacterIdleSequence " + action_params[0] + " " + action_params[1]);
-
                         if (Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>() != null)
                         {
                             Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().enabled = true;

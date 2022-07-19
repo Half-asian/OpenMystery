@@ -17,9 +17,6 @@ public class EventManager : MonoBehaviour
     public EventPlayer main_event_player;
     public EventPlayer sequential_event_player;
 
-
-    public GameObject screen_fade;
-
     public GameObject main_camera;
 
     //public string blocking_message;

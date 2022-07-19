@@ -21,8 +21,7 @@ public class Graduation
 
     static IEnumerator GraduateCoroutine()
     {
-
-        GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_to_black");
+        ScreenFade.fadeTo(1.0f, Color.black);
 
         yield return new WaitForSeconds(1);
 
@@ -42,7 +41,8 @@ public class Graduation
 
         yield return new WaitForSeconds(1);
 
-        GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_from_black");
+        ScreenFade.fadeFrom(1.0f, Color.black);
+
         yield return new WaitForSeconds(2);
 
         CameraManager.current.startLerpCamera(

@@ -118,7 +118,7 @@ public class MainMenu : MonoBehaviour
     {
         float start_time = Time.realtimeSinceStartup;
 
-        GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_to_black");
+        ScreenFade.fadeTo(1.0f, Color.black);
 
         while (Time.realtimeSinceStartup < start_time + 1)
         {
@@ -131,7 +131,8 @@ public class MainMenu : MonoBehaviour
         {
             yield return null;
         }
-        GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_from_black");
+        ScreenFade.fadeFrom(1.0f, Color.black);
+
     }
 
 
@@ -140,7 +141,7 @@ public class MainMenu : MonoBehaviour
     {
         state = State.stateMenu;
         float start_time = Time.realtimeSinceStartup;
-        GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_to_black");
+        ScreenFade.fadeTo(1.0f, Color.black);
         while (Time.realtimeSinceStartup < start_time + 1)
         {
             yield return null;
@@ -150,7 +151,7 @@ public class MainMenu : MonoBehaviour
         {
             yield return null;
         }
-        GameStart.event_manager.screen_fade.GetComponent<Animator>().SetTrigger("fade_from_black");
+        ScreenFade.fadeFrom(1.0f, Color.black);
 
     }
 

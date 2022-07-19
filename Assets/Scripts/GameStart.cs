@@ -183,7 +183,6 @@ public class GameStart : MonoBehaviour
         encounter_manager = GetComponent<EncounterManager>();
         ui_manager = GameObject.Find("UI Handler").GetComponent<UiManager>();
         post_process_manager = GetComponent<PostProcess>();
-
         main_menu = GameObject.Find("MainMenuCanvas").GetComponent<MainMenu>();
 
 
@@ -191,6 +190,8 @@ public class GameStart : MonoBehaviour
             File.Delete("..\\engine_variables.json");
 
         main_menu.state = MainMenu.State.stateLoadingScreenLoading;
+
+        ScreenFade.fadeFrom(1.0f, Color.black);
 
         Player.local_avatar_clothing_type = null;
         Player.local_avatar_secondary_clothing_option = null;
@@ -246,6 +247,7 @@ public class GameStart : MonoBehaviour
         //tasks.Add(Task.Run(() => Configs.loadConfigsb()));
         //tasks.Add(Task.Run(() => Configs.loadConfigsc()));
         //await Task.WhenAll(tasks);
+
         if (GlobalEngineVariables.launch_mode == "character")
         {
             await Task.Run(() => Configs.loadConfigModelInspector());
