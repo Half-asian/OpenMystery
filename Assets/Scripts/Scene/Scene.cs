@@ -44,6 +44,8 @@ public class Scene
 
         if (scene_has_changed)
         {
+            Location.setLocation();
+
             destroyScenePrefab();
 
             foreach(string related_scene_id in related_scenes)

@@ -174,7 +174,6 @@ public class Scenario
             current.scenario_config = Configs.config_scenario.Scenario[scenario_id];
         }
 
-        Location.setLocation();
 
         GameStart.interaction_manager.destroyAllInteractions();
         GameStart.ui_manager.closePopup();
