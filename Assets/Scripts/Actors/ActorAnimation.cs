@@ -88,7 +88,7 @@ public class ActorAnimation : MonoBehaviour
             {
                 if (actor_controller.GetComponent<ActorAnimSequence>() != null)
                     DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
-                setCharacterIdle();
+                updateAnimationState();
 
             }
             else
@@ -144,12 +144,16 @@ public class ActorAnimation : MonoBehaviour
             Debug.LogError("Couldn't find animation " + anim_name);
             return;
         }
-        GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
-
-        ConfigAnimation._Animation3D animation = Configs.config_animation.Animation3D[anim_name];
-
         animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, null, actor_controller, bone_mods);
         animation_component.AddClip(animation1_loop, "extra_animation");
+        blocked = true;
+
+        if (actor_controller.actor_state == ActorState.Walk)
+        {
+            return;
+        }
+
+        GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
         playAnimationOnComponent("extra_animation");
         StartCoroutine(WaitForAnimateCharacterFinished(animation1_loop));
     }
@@ -275,9 +279,8 @@ public class ActorAnimation : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitForAnimateCharacterFinished(AnimationClip clip)
+    public IEnumerator WaitForAnimateCharacterFinished(AnimationClip clip)
     {
-        blocked = true;
         yield return new WaitForSeconds(clip.length);
         if (clip.wrapMode == WrapMode.Clamp)
         {

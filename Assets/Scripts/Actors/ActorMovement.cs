@@ -14,19 +14,19 @@ public class ActorMovement
     public List<string> path;
     const float RUN_SPEED = 1.3f;
 
-    ActorController actor_manager;
+    ActorController actor_controller;
 
     public ActorMovement(ActorController _actor_manager)
     {
-        actor_manager = _actor_manager;
+        actor_controller = _actor_manager;
     }
 
-    private Transform transform { get { return actor_manager.transform; } }
-    private GameObject gameObject { get { return actor_manager.gameObject; } }
-    private ActorAnimation actor_animation { get { return actor_manager.actor_animation; } }
-    private ActorState actor_state { get { return actor_manager.actor_state; } set { actor_manager.actor_state = value; } }
-    private ActorHead actor_head { get { return actor_manager.actor_head; } }
-    private ConfigHPActorInfo._HPActorInfo actor_info { get { return actor_manager.actor_info; } }
+    private Transform transform { get { return actor_controller.transform; } }
+    private GameObject gameObject { get { return actor_controller.gameObject; } }
+    private ActorAnimation actor_animation { get { return actor_controller.actor_animation; } }
+    private ActorState actor_state { get { return actor_controller.actor_state; } set { actor_controller.actor_state = value; } }
+    private ActorHead actor_head { get { return actor_controller.actor_head; } }
+    private ConfigHPActorInfo._HPActorInfo actor_info { get { return actor_controller.actor_info; } }
 
     public void setDestinationWaypoint(string _waypoint)
     {
@@ -111,17 +111,17 @@ public class ActorMovement
                 yield return null;
             }
         }
-        if (actor_manager.GetComponent<ActorAnimSequence>() != null)
+        if (actor_controller.GetComponent<ActorAnimSequence>() != null)
         {
-            if (actor_manager.GetComponent<ActorAnimSequence>().walk == true)
+            if (actor_controller.GetComponent<ActorAnimSequence>().walk == true)
             {
                 if (actor_animation.anim_sequence_idle != "")
                 {
-                    actor_manager.GetComponent<ActorAnimSequence>().initAnimSequence(actor_manager.actor_animation.anim_sequence_idle, false);
+                    actor_controller.GetComponent<ActorAnimSequence>().initAnimSequence(actor_controller.actor_animation.anim_sequence_idle, false);
                 }
                 else
                 {
-                    GameObject.DestroyImmediate(actor_manager.GetComponent<ActorAnimSequence>());
+                    GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
                 }
             }
         }
@@ -131,11 +131,18 @@ public class ActorMovement
         goal_rotation = destination_rotation;
 
         //gameObject.transform.rotation = destination_rotation;
-        actor_manager.StartCoroutine(RotateOverTime());
+        actor_controller.StartCoroutine(RotateOverTime());
 
+        if (actor_animation.blocked == true)
+        {
+            GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
+            actor_animation.playAnimationOnComponent("extra_animation");
+            actor_animation.StartCoroutine(actor_animation.WaitForAnimateCharacterFinished(actor_animation.animation1_loop));
+            yield break;
+        }
         actor_animation.anim_state = "outro";
 
-        if (actor_manager.GetComponent<ActorAnimSequence>() == null)
+        if (actor_controller.GetComponent<ActorAnimSequence>() == null)
         {
 
             actor_animation.replaceCharacterIdle(actor_info.animId_idle);
@@ -152,7 +159,7 @@ public class ActorMovement
         actor_state = ActorState.Walk;
         if (coroutine_walk != null)
         {
-            actor_manager.StopCoroutine(coroutine_walk);
+            actor_controller.StopCoroutine(coroutine_walk);
             if (path != null)
             {
                 if (path.Count != 0)
@@ -179,7 +186,7 @@ public class ActorMovement
             coroutine_walk = WaitForMove(0.0f);
         }
         actor_animation.setCharacterWalk(animation);
-        actor_manager.StartCoroutine(coroutine_walk);
+        actor_controller.StartCoroutine(coroutine_walk);
     }
 
     public void moveCharacterNoAnimation(List<string> _path, float speed)
@@ -190,7 +197,7 @@ public class ActorMovement
         actor_state = ActorState.Walk;
         if (coroutine_walk != null)
         {
-            actor_manager.StopCoroutine(coroutine_walk);
+            actor_controller.StopCoroutine(coroutine_walk);
             if (path != null)
             {
                 if (path.Count != 0)
@@ -210,14 +217,14 @@ public class ActorMovement
         path.RemoveAt(0);
 
         coroutine_walk = WaitForMove(speed);
-        actor_manager.StartCoroutine(coroutine_walk);
+        actor_controller.StartCoroutine(coroutine_walk);
     }
 
     public void teleportCharacter(Vector3 destination_position, Vector3 destination_rotation)
     {
         if (coroutine_walk != null)
         {
-            actor_manager.StopCoroutine(coroutine_walk);
+            actor_controller.StopCoroutine(coroutine_walk);
         }
         path = null;
         gameObject.transform.position = destination_position;
@@ -228,7 +235,7 @@ public class ActorMovement
         gameObject.transform.Rotate(new Vector3(0, -destination_rotation[1], 0));
         gameObject.transform.Rotate(new Vector3(destination_rotation[0], 0, 0));
 
-        actor_manager.creation_time = Time.realtimeSinceStartup;
+        actor_controller.creation_time = Time.realtimeSinceStartup;
 
         actor_state = ActorState.Idle;
         actor_animation.loadAnimationSet();
