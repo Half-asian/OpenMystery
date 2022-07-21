@@ -338,7 +338,7 @@ public partial class NewPredicate
         {
             char_buf = char_buf.Trim(); //Remove any whitespace.
 
-            if (char.IsNumber(char_buf[0]) && !char.IsNumber(char_buf[char_buf.Length - 1])) //we know an int is finished if the next char is not a digit. Therefore, we leave that last digit alone
+            if ((char.IsNumber(char_buf[0]) || char_buf[0] == '.') && !char.IsNumber(char_buf[char_buf.Length - 1])) //we know an int is finished if the next char is not a digit. Therefore, we leave that last digit alone
             {
                 string s = char_buf.Trim();
                 s = s.Substring(0, s.Length - 1);
@@ -346,7 +346,7 @@ public partial class NewPredicate
                 char_buf = "" + char_buf[char_buf.Length - 1];
                 char_buf = char_buf.TrimStart(); //dont return. Clean this shit up later
             }
-            else if (char.IsNumber(char_buf[0]))
+            else if (char.IsNumber(char_buf[0]) || char_buf[0] == '.')
             {
                 if (char_buf.Contains("."))
                     symbols.Add(new SymbolConstantFloat(float.Parse(char_buf.Trim())));
@@ -394,8 +394,9 @@ public partial class NewPredicate
 
         //INTEGER DETECTION
 
-        if (char.IsNumber(starting_char) && (!char.IsNumber(ending_char) && ending_char != '.') ) //we know an int is finished if the next char is not a digit. Therefore, we leave that last digit alone
+        if ((char.IsNumber(starting_char) || starting_char == '.') && (!char.IsNumber(ending_char) && ending_char != '.') ) //we know an int is finished if the next char is not a digit. Therefore, we leave that last digit alone
         {
+            Debug.Log("HEY");
             string s = char_buf.Substring(0, char_buf.Length - 1);
             if (s.Contains("."))
                 symbols.Add(new SymbolConstantFloat(float.Parse(s)));
@@ -644,10 +645,6 @@ public partial class NewPredicate
         Assert.AreEqual(
             parsePredicateNoOutput("multiplyStuff(5 * 2, 2 + 2)").toString(),
             new SymbolConstantInteger(40).toString()
-        );
-        Assert.AreEqual(
-            parsePredicateNoOutput("!((5 * 3) ~= (3 * 5)) ").toString(),
-            new SymbolConstantBool(true).toString()
         );
         Assert.AreEqual(
             parsePredicateNoOutput("   20    - 25 ==    -5 ").toString(),

@@ -6,10 +6,21 @@ public class PredTest : MonoBehaviour
 {
     void Start()
     {
-        NewPredicate.startupTest();
+        //NewPredicate.startupTest();
         //NewPredicate.parsePredicate("  -5     ==    10     -    15");
         //NewPredicate.parsePredicate("falseTrue()");
-        Predicate.parsePredicate("getContentVar(“scene”, “companionWaypoint”)~=2");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+        Predicate.parsePredicate("random() < .8");
+
     }
 
 }
