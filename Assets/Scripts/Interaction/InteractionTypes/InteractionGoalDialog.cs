@@ -7,27 +7,19 @@ using UnityEngine;
 using UnityEngine.Assertions;
 public class InteractionGoalDialog : Interaction
 {
-    public override Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
+    public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     {
+        base.setup(ref _interaction);
         Assert.IsNotNull(_interaction.dialogId, "InteractionGoalDialog(): interaction.dialogId can't be null");
-        base.setup(ref _interaction, should_add_enter_events);
         interaction_gameobject.AddComponent<InteractionButton>();
         interaction_gameobject.GetComponent<InteractionButton>().interaction = this;
         setHotspot();
-        interaction_gameobject.SetActive(false);
         return this;
     }
 
-    protected override void onFinishedEnterEvents()
+    public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
-        if (interaction_gameobject != null)
-            interaction_gameobject.SetActive(true);
-
-    }
-
-    public override void activate()
-    {
         DialogueManager.onDialogueFinishedEvent += dialogueFinishedListener;
         GameStart.dialogue_manager.activateDialogue(config_interaction.dialogId);
     }

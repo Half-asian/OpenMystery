@@ -78,7 +78,7 @@ public class InteractionButton : MonoBehaviour
                 if (interaction.config_interaction.type == "AutotuneGroup" || interaction.config_interaction.type == null)
                 {
                     is_active = false;
-                    interaction.activate();
+                    interaction.interactionComplete();
                 }
             }
 
@@ -86,7 +86,7 @@ public class InteractionButton : MonoBehaviour
             {
                 if (interaction.config_interaction.AutoSelect == true) //Autoselect
                 {
-                    interaction.activate();
+                    //interaction.activate();
                     is_active = false;
                     if (mesh_renderer) mesh_renderer.enabled = false;
                 }

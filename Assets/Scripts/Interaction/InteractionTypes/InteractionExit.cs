@@ -9,27 +9,21 @@ public class InteractionExit : Interaction
 {
     public static event Action InteractionExitCalled = delegate {};
 
-    public override Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
+    public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     {
-        base.setup(ref _interaction, should_add_enter_events);
+        base.setup(ref _interaction);
 
         interaction_gameobject.AddComponent<InteractionButton>();
         interaction_gameobject.GetComponent<InteractionButton>().interaction = this;
         setHotspot();
 
-        interaction_gameobject.SetActive(false);
+        interaction_gameobject.SetActive(true);
         return this;
     }
 
-    protected override void onFinishedEnterEvents()
+    public override void onFinishedEnterEvents()
     {
-        if (destroyed == true) return;
         base.onFinishedEnterEvents();
-        interaction_gameobject.SetActive(true);
-    }
-
-    public override void activate()
-    {
         shouldShow = true;
         if (Scenario.current.scenario_config.mapLocationId != null) //We're in a location
         {

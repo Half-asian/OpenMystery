@@ -10,21 +10,21 @@ public class InteractionAutotuneGroup : Interaction
     int member_counter;
     bool force_finish = false;
 
-    public override Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
+    public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     {
+        base.setup(ref _interaction);
         Assert.IsNotNull(_interaction.groupMembers, "InteractionAutotuneGroup(): interaction.groupMembers can't be null");
-        base.setup(ref _interaction, should_add_enter_events);
-        return this;
-    }
-
-
-    protected override void onFinishedEnterEvents()
-    {
-        base.onFinishedEnterEvents();
         member_counter = 0;
         GameStart.dialogue_manager.in_bubble = true;
 
         memberInteractionFinished(null);
+        return this;
+    }
+
+    public override void onFinishedEnterEvents()
+    {
+        base.onFinishedEnterEvents();
+        return;
     }
 
     //This whole thing is basically a big messy hack.
@@ -55,7 +55,7 @@ public class InteractionAutotuneGroup : Interaction
             Interaction new_bubble = null;
             while (new_bubble == null && member_counter < config_interaction.groupMembers.Length)
             {
-                GameObject new_bubble_gameobject = GameStart.interaction_manager.activateInteraction(config_interaction.groupMembers[member_counter]);
+                GameObject new_bubble_gameobject = GameStart.interaction_manager.spawnInteraction(config_interaction.groupMembers[member_counter]);
                 if (new_bubble_gameobject != null)
                 {
                     new_bubble = new_bubble_gameobject.GetComponent<Interaction>();
@@ -84,7 +84,7 @@ public class InteractionAutotuneGroup : Interaction
             interactionComplete(); //We are done
         }
     }
-    public override void activate() { return; }
+
 
 
     //This is basically a mod of original game logic.

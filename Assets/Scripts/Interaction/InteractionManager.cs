@@ -28,20 +28,20 @@ public class InteractionManager : MonoBehaviour {
         }
     }
 
-    public void activateHubNPCInteraction(ref string dialogue_id, ref Vector3 location)
+    public void spawnHubNPCInteraction(ref string dialogue_id, ref Vector3 location)
     {
         GameObject interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
         InteractionHubNPCDialog hub_npc_interaction = interaction_gameobject.AddComponent<InteractionHubNPCDialog>();
         hub_npc_interaction.hubNpcDialogSetup(ref dialogue_id, ref location);
     }
 
-    public GameObject activateInteraction(string interaction_name, bool run_entry_events = true) 
+    public GameObject spawnInteraction(string interaction_name) 
     {
-        Debug.Log("Activating Interaction: " + interaction_name);
+        Debug.Log("Spawning Interaction: " + interaction_name);
 
         if (!Configs.config_interaction.Interactions.ContainsKey(interaction_name)) //Does the interaction exist in configs?
         {
-            throw new System.Exception("Activate Interaction - Invalid Interaction " + interaction_name);
+            throw new System.Exception("Spawn Interaction - Invalid Interaction " + interaction_name);
         }
 
         ConfigInteraction.Interaction new_interaction = Configs.config_interaction.Interactions[interaction_name];
@@ -90,7 +90,7 @@ public class InteractionManager : MonoBehaviour {
                     if (interaction_group != null)
                         interaction_group.destroy();
                     interaction_gameobject = new GameObject();
-                    active_interactions.Add(interaction_gameobject.AddComponent<InteractionGroup>().setup(ref new_interaction, run_entry_events));
+                    active_interactions.Add(interaction_gameobject.AddComponent<InteractionGroup>().setup(ref new_interaction));
                     interaction_group = interaction_gameobject.GetComponent<InteractionGroup>();
 
                     break;
@@ -101,7 +101,7 @@ public class InteractionManager : MonoBehaviour {
 
             case "AutotuneGroup":
                 interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionAutotuneGroup>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionAutotuneGroup>().setup(ref new_interaction));
                 if (interaction_group != null)
                     interaction_group.destroy();
                 interaction_group = interaction_gameobject.GetComponent<InteractionAutotuneGroup>();
@@ -109,78 +109,78 @@ public class InteractionManager : MonoBehaviour {
 
             case "Dialog":
                 interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_dialog"), Vector3.zero, Quaternion.identity);
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionDialog>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionDialog>().setup(ref new_interaction));
                 break;
 
             case "ScenarioTransition":
 
                 interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionScenarioTransition>().setup(ref new_interaction, run_entry_events));               
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionScenarioTransition>().setup(ref new_interaction));               
                 break;
 
             case "GoalDialog":
                 interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionGoalDialog>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionGoalDialog>().setup(ref new_interaction));
                 break;
 
             case "Project":
                 interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionProject>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionProject>().setup(ref new_interaction));
                 break;
 
             case "Match":
                 interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionMatch>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionMatch>().setup(ref new_interaction));
                 break;
 
             case "Exit":
                 interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_exit"), Vector3.zero, Quaternion.identity);
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionExit>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionExit>().setup(ref new_interaction));
                 break;
 
             case null:
                 interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionBubble>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionBubble>().setup(ref new_interaction));
                 break;
 
             case "Encounter":
                 interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionEncounter>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionEncounter>().setup(ref new_interaction));
                 break;
 
             case "TitleCard":
                 interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionTitleCard>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionTitleCard>().setup(ref new_interaction));
                 break;
 
             case "ActivityComplete":
                 interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionActivityComplete>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionActivityComplete>().setup(ref new_interaction));
                 break;
 
             case "Focus":
                 interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionFocus>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionFocus>().setup(ref new_interaction));
                 break;
 
             case "InteractionQTE":
                 interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionQTE>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionQTE>().setup(ref new_interaction));
                 break;
 
             case "SwipeSortQTE":
                 interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionSwipeSortQTE>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionSwipeSortQTE>().setup(ref new_interaction));
                 break;
 
             case "Quiz":
                 interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionQuiz>().setup(ref new_interaction, run_entry_events));
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionQuiz>().setup(ref new_interaction));
                 break;
 
             case "Optional":
-                interaction_gameobject = new GameObject();
-                active_interactions.Add(interaction_gameobject.AddComponent<InteractionOptional>().setup(ref new_interaction, run_entry_events));
+                interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionOptional>().setup(ref new_interaction));
                 break;
             case "FirstPersonExploration":
                 break;
@@ -196,7 +196,14 @@ public class InteractionManager : MonoBehaviour {
     {
         interaction_finished_event?.Invoke(interaction.config_interaction.id);
 
-        if (active_interactions.Count == 0)
+        bool all_finished = true;
+        foreach(var i in active_interactions)
+        {
+            if (i.config_interaction.type != "Exit")
+                all_finished = false;
+        }
+
+        if (all_finished)
             all_interactions_finished_event?.Invoke();
     }
 
@@ -228,7 +235,7 @@ public class InteractionManager : MonoBehaviour {
 
         foreach (string[] interaction_s in serializedInteractions) //Spawn
         {
-            GameObject gameobject = activateInteraction(interaction_s[0], false);
+            GameObject gameobject = spawnInteraction(interaction_s[0]);
             Interaction interaction = gameobject.GetComponent<Interaction>();
             interaction.config_interaction = Configs.config_interaction.Interactions[interaction_s[0]];
             interaction.id = System.Guid.Parse(interaction_s[1]);

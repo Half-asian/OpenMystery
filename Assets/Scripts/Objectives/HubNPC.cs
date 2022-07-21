@@ -91,7 +91,7 @@ public class HubNPC
                 if (hotspot.name == config_hubnpc.hubWaypoint)
                     location = new Vector3(hotspot.position[0] * -0.01f, hotspot.position[1] * 0.01f + 1.1f, hotspot.position[2] * 0.01f);
             }
-            GameStart.interaction_manager.activateHubNPCInteraction(ref config_hubnpc.primaryDialogue, ref location);
+            GameStart.interaction_manager.spawnHubNPCInteraction(ref config_hubnpc.primaryDialogue, ref location);
         }
     }
 }

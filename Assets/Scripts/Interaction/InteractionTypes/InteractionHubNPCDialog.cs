@@ -8,7 +8,7 @@ using UnityEngine.Assertions;
 public class InteractionHubNPCDialog : Interaction
 {
     string dialogId;
-    public override Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
+    public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     { throw new System.NotImplementedException(); }
     public void hubNpcDialogSetup (ref string _dialogId, ref Vector3 location)
     {
@@ -25,11 +25,9 @@ public class InteractionHubNPCDialog : Interaction
         }
     }
 
-    protected override void onFinishedEnterEvents() { return; }
-
-    public override void activate()
-    {
+    public override void onFinishedEnterEvents() {
+        base.onFinishedEnterEvents();
         GameStart.dialogue_manager.activateDialogue(dialogId);
-        //Finished is called from a callback.
+        return; 
     }
 }

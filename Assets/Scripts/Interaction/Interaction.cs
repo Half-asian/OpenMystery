@@ -35,6 +35,19 @@ public abstract class Interaction : MonoBehaviour
     public bool destroyed = false;
     public bool should_onFinishedEnterEvents_when_respawned = true;
 
+    public bool activated = false;
+
+    private void Update()
+    {
+        if (config_interaction != null) //Real interaction
+        {
+            if (config_interaction.AutoSelect == true && activated == false) //Autoselect
+            {
+                activate();
+            }
+        }
+    }
+
     public string[] toStringArray()
     {
         return new string[] {
@@ -49,40 +62,34 @@ public abstract class Interaction : MonoBehaviour
         };
     }
 
-    public virtual Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
+    public virtual Interaction setup(ref ConfigInteraction.Interaction _interaction)
     {
         config_interaction = _interaction;
         interaction_gameobject = gameObject;
         interaction_gameobject.name = _interaction.id;
-        if (should_add_enter_events)
-        {
-            addEnterEvents();
-        }
+
         return this;
     }
-    protected void addEnterEvents()
-    {
-        if (config_interaction != null)
-        {
-            if (config_interaction.enterEvents != null)
-            {
-                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.enterEvents);
-            }
-        }
-        EventManager.all_script_events_finished_event += onFinishedEnterEvents;
-    }
 
-    public void respawnEnterEvents()
-    {
-        onFinishedEnterEvents();
-    }
-
-    protected virtual void onFinishedEnterEvents()
+    public virtual void onFinishedEnterEvents()
     {
         EventManager.all_script_events_finished_event -= onFinishedEnterEvents;
     }
 
-    public abstract void activate();
+    public void activate()
+    {
+        activated = true;
+        if (config_interaction != null)
+        {
+            Debug.Log("Activating interaction " + config_interaction.id);
+
+            if (config_interaction.enterEvents != null)
+            {
+                GameStart.event_manager.main_event_player.addEvent(config_interaction.enterEvents);
+            }
+        }
+        EventManager.all_script_events_finished_event += onFinishedEnterEvents;
+    }
     public void interactionComplete(bool success = true)
     {
         if (!destroyed)
@@ -95,21 +102,21 @@ public abstract class Interaction : MonoBehaviour
         Debug.Log("Finished interaction " + config_interaction.id);
 
         if (config_interaction.exitEvents != null)
-            GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.exitEvents);
+            GameStart.event_manager.main_event_player.addEvent(config_interaction.exitEvents);
 
         if (success == true)
         {
             if (config_interaction.successEvents != null)
-                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.successEvents);
+                GameStart.event_manager.main_event_player.addEvent(config_interaction.successEvents);
             if (config_interaction.qteSuccessEvents != null)
-                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.qteSuccessEvents);
+                GameStart.event_manager.main_event_player.addEvent(config_interaction.qteSuccessEvents);
         }
         else
         {
             if (config_interaction.failEvents != null)
-                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.failEvents);
+                GameStart.event_manager.main_event_player.addEvent(config_interaction.failEvents);
             if (config_interaction.qteFailEvents != null)
-                GameStart.event_manager.main_event_player.event_stack.AddRange(config_interaction.qteFailEvents);
+                GameStart.event_manager.main_event_player.addEvent(config_interaction.qteFailEvents);
         }
 
         EventManager.all_script_events_finished_event += onFinishedExitEvents;
@@ -153,7 +160,7 @@ public abstract class Interaction : MonoBehaviour
 
             Debug.Log("Activating a leads to " + config_interaction.leadsTo[best_match_leads_to]);
 
-            GameObject new_interaction = GameStart.interaction_manager.activateInteraction(config_interaction.leadsTo[best_match_leads_to]);
+            GameObject new_interaction = GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[best_match_leads_to]);
 
             if (new_interaction != null)
             {
@@ -172,7 +179,7 @@ public abstract class Interaction : MonoBehaviour
             {
                 Debug.Log("Activating leads to " + config_interaction.leadsTo[0]);
 
-                GameObject leads_to_gameobject = GameStart.interaction_manager.activateInteraction(config_interaction.leadsTo[0]);
+                GameObject leads_to_gameobject = GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[0]);
                 if (leads_to_gameobject == null)
                 {
                     Debug.LogError(config_interaction.leadsTo[0] + " spawned a null gameobject ");

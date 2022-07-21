@@ -9,17 +9,11 @@ public class InteractionGroup : Interaction
 {
     Dictionary<string, Interaction> member_interactions;
 
-    public override Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
+    public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     {
+        base.setup(ref _interaction);
         should_onFinishedEnterEvents_when_respawned = false;
         Assert.IsNotNull(_interaction.groupMembers, "InteractionGroup(): interaction.groupMembers can't be null");
-        base.setup(ref _interaction, should_add_enter_events);
-        return this;
-    }
-
-    protected override void onFinishedEnterEvents()
-    {
-        base.onFinishedEnterEvents();
         group_progress = 0;
         member_interactions = new Dictionary<string, Interaction>();
 
@@ -30,6 +24,13 @@ public class InteractionGroup : Interaction
         {
             GameObject.DestroyImmediate(interaction_gameobject);
         }
+        return this;
+    }
+
+    public override void onFinishedEnterEvents()
+    {
+        base.onFinishedEnterEvents();
+
     }
 
     public void onRespawnAddMemberInteraction(Interaction interaction)
@@ -55,7 +56,7 @@ public class InteractionGroup : Interaction
                 //Debug.Log("Activating member interaction " + member_interaction + " Interaction 169 of group " + interaction.id);
 
 
-                GameObject result = GameStart.interaction_manager.activateInteraction(member_interaction);
+                GameObject result = GameStart.interaction_manager.spawnInteraction(member_interaction);
                 Interaction new_interaction = null;
                 if (result != null)
                     new_interaction = result.GetComponent<Interaction>();
@@ -122,8 +123,5 @@ public class InteractionGroup : Interaction
         }
         base.destroy();
     }
-
-    public override void activate() { return; }
-
 }
 

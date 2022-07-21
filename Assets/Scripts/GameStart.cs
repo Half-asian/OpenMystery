@@ -267,7 +267,7 @@ public class GameStart : MonoBehaviour
 
         Sound.current.playCustom("theblueghost.mp3");
 
-        if (Application.isEditor && model_inspector)
+        if (model_inspector)
         {
             _model_inspector_model = model_inspector_model;
             _model_inspector_actor = model_inspector_actor;

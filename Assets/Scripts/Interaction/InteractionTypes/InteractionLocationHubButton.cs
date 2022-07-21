@@ -6,7 +6,7 @@ public class InteractionLocationHubButton : Interaction
 {
     string location_id;
 
-    public override Interaction setup(ref ConfigInteraction.Interaction _interaction, bool should_add_enter_events)
+    public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     { throw new System.NotImplementedException(); }
     public void interactionLocationHubButtonSetup(ref string _location_id, ref Vector3 location)
     {
@@ -21,10 +21,9 @@ public class InteractionLocationHubButton : Interaction
         shouldShow = true;
     }
 
-    protected override void onFinishedEnterEvents() { return; }
-
-    public override void activate()
-    {
+    public override void onFinishedEnterEvents() {
+        base.onFinishedEnterEvents();
         LocationScenarioMenu.showMenu(location_id);
+        return; 
     }
 }
