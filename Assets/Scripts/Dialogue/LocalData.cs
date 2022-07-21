@@ -90,8 +90,14 @@ public class LocalData : MonoBehaviour
 
     public static string replaceTextTags(string line)
     {
-        //line = line.Replace("{bold}", "<b>");
-        //line = line.Replace("{italic}", "<i>");
+
+        line = line.Replace("{italics}", "{italic}");
+        line = line.Replace("{i}", "{italic}");
+        line = line.Replace("{b}", "{bold}");
+        line = line.Replace("{/italic}", "{/}");
+        line = line.Replace("{/italics}", "{/}");
+        line = line.Replace("{/bold}", "{/}");
+
 
 
         int bold_index = line.IndexOf("{bold}");
