@@ -19,27 +19,32 @@ public class EventPlayer : MonoBehaviour
 
     [SerializeField] private bool is_sequential_player;
 
+    public void addEvent(string event_id)
+    {
+        Debug.Log("Adding event to stack " + event_id);
+        event_stack.Add(event_id);
+    }
+
+    public void addEvent(IEnumerable<string> events_ids)
+    {
+        foreach (string event_id in events_ids)
+            Debug.Log("Adding event to stack " + event_id);
+        event_stack.AddRange(events_ids);
+    }
+
+
     public float activateEvent(string event_name)
     {
 
-        if (Configs.config_script_events.ScriptEvents[event_name].shouldRun != null)
+        if (!string.IsNullOrEmpty( Configs.config_script_events.ScriptEvents[event_name].shouldRun))
         {
-            if (Configs.config_script_events.ScriptEvents[event_name].shouldRun != "")
+            if (Predicate.parsePredicate(Configs.config_script_events.ScriptEvents[event_name].shouldRun) == false)
             {
-                if (Predicate.parsePredicate(Configs.config_script_events.ScriptEvents[event_name].shouldRun) == false)
-                {
-                    //Debug.Log("predicate fail " + event_config.ScriptEvents[event_name].shouldRun);
-                    return 0.0f;
-                }
-                else
-                {
-                    //Debug.Log("predicate pass " + event_config.ScriptEvents[event_name].shouldRun);
-
-                }
+                return 0.0f;
             }
         }
 
-        Debug.Log("Event " + event_name);
+        Debug.Log("Event " + event_name + " is sequential player: " + is_sequential_player);
 
         float event_time = 0.0f;
         if (!Configs.config_script_events.ScriptEvents.ContainsKey(event_name))
@@ -91,13 +96,6 @@ public class EventPlayer : MonoBehaviour
             }
 
         }
-        else
-        {
-            if (Configs.config_script_events.ScriptEvents[event_name].Duration != 0.0f)
-            {
-                //Debug.Log("Non-blocking event with non 0 duration " + event_name);
-            }
-        }
 
 
         if (Configs.config_script_events.ScriptEvents[event_name].type == "Sequential")
@@ -111,7 +109,7 @@ public class EventPlayer : MonoBehaviour
                 GameStart.event_manager.sequential_event_player.event_stack = new List<string>();
                 GameStart.event_manager.sequential_event_player.block_duration = 0.0f;
                 GameStart.event_manager.sequential_event_player.blocking_message = "";
-                GameStart.event_manager.sequential_event_player.event_stack.AddRange(Configs.config_script_events.ScriptEvents[event_name].sequenceIds);
+                GameStart.event_manager.sequential_event_player.addEvent(Configs.config_script_events.ScriptEvents[event_name].sequenceIds);
             }
         }
         return event_time;
@@ -133,8 +131,9 @@ public class EventPlayer : MonoBehaviour
 
         while (event_stack.Count != 0 && block_duration == 0.0f && total_block == false)
         {
-            block_duration = activateEvent(event_stack[0]);
+            string event_id = event_stack[0];
             event_stack.RemoveAt(0);
+            block_duration = activateEvent(event_id);
 
         }
 

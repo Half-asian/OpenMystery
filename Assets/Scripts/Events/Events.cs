@@ -725,13 +725,14 @@ public static class Events
     }
     public class Looking
     {
-        public GameObject character;
+        public ActorController character;
         public float progress;
         public float destination_progress;
         public Vector3 looking_position;
     }
     public static void lookAt(string[] action_params) //Up to 4 parameters. Idk what 4 is for.
     {
+        Debug.Log("lookAt " + string.Join(",", action_params));
         if (action_params.Length < 2)
         {
             if (Actor.actor_controllers.ContainsKey(action_params[0]))
@@ -741,33 +742,41 @@ public static class Events
             return;
         }
 
-        if (Actor.actor_controllers.ContainsKey(action_params[0]))
+        if (!Actor.actor_controllers.ContainsKey(action_params[0]))
         {
-            if (Actor.actor_controllers.ContainsKey(action_params[1]))
+            Debug.LogError("Lookat could not find actor" + action_params[0]);
+            return;
+        }
+
+
+        if (!Actor.actor_controllers.ContainsKey(action_params[1]))
+        {
+            Debug.LogError("Lookat could not find actor" + action_params[1]);
+            Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
+            return;
+        }
+
+        Looking new_looking = new Looking();
+        new_looking.character = Actor.actor_controllers[action_params[1]];
+
+        new_looking.progress = 0.0f;
+        if (Actor.actor_controllers[action_params[0]].actor_head.looking != null)
+        {
+            if (!(Actor.actor_controllers[action_params[0]].actor_head.looking.character == new_looking.character)) //This line is risky
             {
-
-                Looking new_looking = new Looking();
-                new_looking.character = Actor.actor_controllers[action_params[1]].gameObject;
-
-                new_looking.progress = 0.0f;
-                if (Actor.actor_controllers[action_params[0]].actor_head.looking != null)
-                {
-                    if (!(Actor.actor_controllers[action_params[0]].actor_head.looking.character == new_looking.character)) //This line is risky
-                    {
-                        Actor.actor_controllers[action_params[0]].actor_head.setLookat(new_looking);
-                    }
-                }
-                else
-                {
-                    Actor.actor_controllers[action_params[0]].actor_head.setLookat(new_looking);
-                }
+                Actor.actor_controllers[action_params[0]].actor_head.setLookat(new_looking);
             }
             else
             {
-                Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
+                Debug.Log("Lookat already set");
             }
         }
+        else
+        {
+            Actor.actor_controllers[action_params[0]].actor_head.setLookat(new_looking);
+        }
 
+        
         if (action_params.Length > 2)
         {
             float.TryParse(action_params[2], out float action_params_2_float);
@@ -792,7 +801,7 @@ public static class Events
             {
 
                 Looking new_looking = new Looking();
-                new_looking.character = Actor.actor_controllers[action_params[1]].gameObject;
+                new_looking.character = Actor.actor_controllers[action_params[1]];
 
                 new_looking.progress = 0.0f;
                 if (Actor.actor_controllers[action_params[0]].actor_head.looking != null)

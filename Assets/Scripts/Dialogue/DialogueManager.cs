@@ -158,7 +158,7 @@ public class DialogueManager : MonoBehaviour
         {
             List<string> entry_stack = new List<string>();
             entry_stack.AddRange(dialogue_line.enterEvents);
-            GameStart.event_manager.main_event_player.event_stack.AddRange(entry_stack);
+            GameStart.event_manager.main_event_player.addEvent(entry_stack);
             GameStart.event_manager.main_event_player.runImmediateEvents();
         }
 
@@ -187,13 +187,13 @@ public class DialogueManager : MonoBehaviour
         if (dialogue_line.emoteResetEvents != null)
             foreach (string emote_reset_event in dialogue_line.emoteResetEvents)
             {
-                GameStart.event_manager.main_event_player.event_stack.Add(emote_reset_event);
+                GameStart.event_manager.main_event_player.addEvent(emote_reset_event);
             }
 
         if (dialogue_line.emoteEvents != null)
             foreach (string emote_event in dialogue_line.emoteEvents)
             {
-                GameStart.event_manager.main_event_player.event_stack.Add(emote_event);
+                GameStart.event_manager.main_event_player.addEvent(emote_event);
             }
 
         if (dialogue_line.barkPlaylistIds != null)
@@ -414,7 +414,7 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        GameStart.event_manager.main_event_player.event_stack.AddRange(exit_stack);
+        GameStart.event_manager.main_event_player.addEvent(exit_stack);
         exit_stack.Clear();
         setDialogueUIActive(false);
         dialogue_status = DialogueStatus.WaitingExitEvents;

@@ -210,7 +210,7 @@ public class Scenario
         {
             foreach (string event_string in current.scenario_config.enterEvents)
             {
-                GameStart.event_manager.main_event_player.event_stack.Add(event_string);
+                GameStart.event_manager.main_event_player.addEvent(event_string);
             }
         }
 
@@ -232,7 +232,7 @@ public class Scenario
         {
             if (current.scenario_config.firstAction != null)
             {
-                GameStart.interaction_manager.activateInteraction(current.scenario_config.firstAction);
+                GameStart.interaction_manager.spawnInteraction(current.scenario_config.firstAction);
             }
         }
     }

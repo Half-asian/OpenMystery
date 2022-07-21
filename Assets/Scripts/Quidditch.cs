@@ -331,7 +331,7 @@ public class Quidditch
         {
             foreach (string enter_event in Configs.config_play_phase.PlayPhase[play_phase_name].enterEvents)
             {
-                GameStart.event_manager.main_event_player.event_stack.Add(enter_event);
+                GameStart.event_manager.main_event_player.addEvent(enter_event);
             }
         }
         state = State.state_waiting_enter_events;
@@ -373,7 +373,7 @@ public class Quidditch
         {
             foreach (string enter_event in Configs.config_play_phase.PlayPhase[play_phase_name].exitEvents)
             {
-                GameStart.event_manager.main_event_player.event_stack.Add(enter_event);
+                GameStart.event_manager.main_event_player.addEvent(enter_event);
             }
             state = State.state_waiting_exit_events;
 
