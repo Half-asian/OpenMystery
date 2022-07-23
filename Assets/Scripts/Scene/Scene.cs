@@ -121,6 +121,9 @@ public class Scene
                     break;*/
 
             }
+            ambient_color += new Color(average_r, average_g, average_b);
+            ambient_color = ambient_color / 2;
+
             GameStart.post_process_manager.changeFilter(ambient_color);
 
             GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().color = 
