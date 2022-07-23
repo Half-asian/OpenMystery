@@ -92,9 +92,22 @@ public class DialogueManager : MonoBehaviour
                 initial_dialogue_line = i.id;
                 break; //There can be multiple. Take the first one.
             }
+        }
+        if (initial_dialogue_line is null) {
+            foreach (ConfigHPDialogueLine.HPDialogueLine i in Configs.dialogue_dict[dialogue])
+            {
+                if (i.id == dialogue + "1")
+                {
+                    initial_dialogue_line = i.id;
+                    break;
+                }
 
-            if (i.id.ToLower().EndsWith("line1")) //This is our second best bet 
-                initial_dialogue_line = i.id;
+                if (i.id.ToLower().EndsWith("line1"))
+                {//This is our second best bet 
+                    initial_dialogue_line = i.id;
+                    break;
+                }
+            }
         }
         if (initial_dialogue_line is null)
             initial_dialogue_line = Configs.dialogue_dict[dialogue][0].id; //No initial turn? Thats fine. Take the first match.
@@ -196,23 +209,34 @@ public class DialogueManager : MonoBehaviour
                 GameStart.event_manager.main_event_player.addEvent(emote_event);
             }
 
+
+
+
         if (dialogue_line.barkPlaylistIds != null)
         {
-            if (dialogue_line.barkPredicates != null)
+            for (int i = 0; i < dialogue_line.barkPlaylistIds.Length; i++)
             {
-                for (int i = 0; i < dialogue_line.barkPlaylistIds.Length; i++)
+                if (dialogue_line.barkPredicates != null)
                 {
-                    if (Predicate.parsePredicate(dialogue_line.barkPredicates[i]))
+                    if (dialogue_line.barkPredicates.Length > i)
+                    {
+                        if (Predicate.parsePredicate(dialogue_line.barkPredicates[i]))
+                        {
+                            Sound.playBark(dialogue_line.barkPlaylistIds[i]);
+                            break;
+                        }
+                    }
+                    else
                     {
                         Sound.playBark(dialogue_line.barkPlaylistIds[i]);
                         break;
                     }
-
                 }
-            }
-            else
-            {
-                Sound.playBark(dialogue_line.barkPlaylistIds[0]);
+                else
+                {
+                    Sound.playBark(dialogue_line.barkPlaylistIds[i]);
+                    break;
+                }
             }
         }
 
