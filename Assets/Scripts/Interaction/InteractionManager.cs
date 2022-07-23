@@ -178,6 +178,11 @@ public class InteractionManager : MonoBehaviour {
                 active_interactions.Add(interaction_gameobject.AddComponent<InteractionQuiz>().setup(ref new_interaction));
                 break;
 
+            case "FastTap":
+                interaction_gameobject = new GameObject();
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionFastTap>().setup(ref new_interaction));
+                break;
+
             case "Optional":
                 interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
                 active_interactions.Add(interaction_gameobject.AddComponent<InteractionOptional>().setup(ref new_interaction));
