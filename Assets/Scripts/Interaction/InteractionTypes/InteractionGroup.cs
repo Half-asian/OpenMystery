@@ -16,20 +16,19 @@ public class InteractionGroup : Interaction
         Assert.IsNotNull(_interaction.groupMembers, "InteractionGroup(): interaction.groupMembers can't be null");
         group_progress = 0;
         member_interactions = new Dictionary<string, Interaction>();
-
-
         spawnMemberInteractions();
 
-        if (member_interactions.Count == 0)
-        {
-            GameObject.DestroyImmediate(interaction_gameobject);
-        }
         return this;
     }
 
     public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
+
+        if (member_interactions.Count == 0)
+        {
+            GameObject.DestroyImmediate(interaction_gameobject);
+        }
 
     }
 

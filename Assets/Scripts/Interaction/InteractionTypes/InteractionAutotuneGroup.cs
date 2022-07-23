@@ -17,13 +17,14 @@ public class InteractionAutotuneGroup : Interaction
         member_counter = 0;
         GameStart.dialogue_manager.in_bubble = true;
 
-        memberInteractionFinished(null);
         return this;
     }
 
     public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
+        memberInteractionFinished(null);
+
         return;
     }
 
