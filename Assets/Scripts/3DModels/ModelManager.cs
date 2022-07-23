@@ -26,6 +26,7 @@ public class ModelManager
 	static Material transparent_material;
 	static Material transparent_no_depth_write_material;
 	static Material opaque_material;
+	static Material opaque_skin_material;
 	static Dictionary<string, Shader> shader_dict;// = new Dictionary<string, Shader>();
 
 	static string patch_text;
@@ -616,6 +617,11 @@ public class ModelManager
 									mat.CopyPropertiesFromMaterial(opaque_material);
 									mat.shader = shader_dict[material.shaderName];
 								}
+								else if (material.shaderName == "skinshader")
+                                {
+									mat.CopyPropertiesFromMaterial(opaque_skin_material);
+									mat.shader = shader_dict[material.shaderName];
+								}
 								else
 								{
 									if (shader_dict.ContainsKey(material.shaderName))
@@ -752,6 +758,7 @@ public class ModelManager
 		patch_text = File.ReadAllText("patches\\patch.txt");
 		transparent_material = (Material)Resources.Load("transparent_base", typeof(Material));
 		opaque_material = (Material)Resources.Load("opaque_base", typeof(Material));
+		opaque_skin_material = (Material)Resources.Load("opaque_skin_base", typeof(Material));
 		transparent_no_depth_write_material = (Material)Resources.Load("transparent_no_depth_base", typeof(Material));
 
 		shader_dict = new Dictionary<string, Shader>();
