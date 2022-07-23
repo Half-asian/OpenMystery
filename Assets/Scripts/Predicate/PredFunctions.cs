@@ -47,7 +47,7 @@ public partial class NewPredicate
         {"goalViewed"                   , new Func<SymbolConstantString, SymbolConstantBool>(goalViewed) },
         {"creatureAffinityLevel"        , new Func<SymbolConstantString, SymbolConstantInteger>(creatureAffinityLevel) },
         {"random"                       , new Func<SymbolConstantFloat>(random) },
-
+        {"isVersionAtLeast"             , new Func<SymbolConstantString, SymbolConstantBool>(isVersionAtLeast) },
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -283,4 +283,8 @@ public partial class NewPredicate
         return new SymbolConstantFloat((float)r.NextDouble());
     }
 
+    static SymbolConstantBool isVersionAtLeast(SymbolConstantString version)
+    {
+        return new SymbolConstantBool(true);
+    }
 }
