@@ -89,7 +89,12 @@ public class ActorAnimation : MonoBehaviour
                 if (actor_controller.GetComponent<ActorAnimSequence>() != null)
                     DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
                 updateAnimationState();
-
+                actor_controller.destroyProps();
+                foreach (GameObject particle in actor_controller.particles)
+                {
+                    GameObject.Destroy(particle);
+                }
+                actor_controller.particles = new List<GameObject>();
             }
             else
                 onBlockedFinish += setCharacterIdle;
@@ -101,7 +106,6 @@ public class ActorAnimation : MonoBehaviour
         actor_controller.destroyProps();
         actor_controller.actor_head.clearLookat();
         actor_controller.actor_head.clearTurnHeadAt();
-        actor_controller.destroyProps();
         foreach(GameObject particle in actor_controller.particles)
         {
             GameObject.Destroy(particle);
