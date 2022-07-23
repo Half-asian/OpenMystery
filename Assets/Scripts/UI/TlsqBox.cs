@@ -13,7 +13,7 @@ namespace UI
         [SerializeField]
         private Text _tlsq_name;
         [SerializeField]
-        private Text _tlsq_description;
+        private TMPro.TMP_Text _tlsq_description;
 
         public void setQuest(string goal_chain_id)
         {
@@ -22,6 +22,7 @@ namespace UI
             if (goal_chain_id == null)
             {
                 _tlsq_description.text = LocalData.getLine(tlsq.introDescription);
+                _tlsq_description.text = _tlsq_description.text.Replace("\\n", "\n");
             }
             else
             {
@@ -29,6 +30,7 @@ namespace UI
                 if (goal_chain.description != null)
                 {
                     _tlsq_description.text = LocalData.getLine(goal_chain.description);
+                    _tlsq_description.text = _tlsq_description.text.Replace("\\n", "\n");
                 }
             }
         }

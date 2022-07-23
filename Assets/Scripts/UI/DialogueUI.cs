@@ -8,21 +8,25 @@ public class DialogueUI : MonoBehaviour
     [SerializeField]
     GameObject dialogue_ui;
     [SerializeField]
-    Text name_text;
+    TMP_Text name_text;
     [SerializeField]
     TextMeshProUGUI dialogue_text;
     [SerializeField]
+    GameObject divider;
+    [SerializeField]
+    GameObject dialoguebg;
+    [SerializeField]
     GameObject choice_1_gameobject;
     [SerializeField]
-    Text choice_1_text;
+    TMP_Text choice_1_text;
     [SerializeField]
     GameObject choice_2_gameobject;
     [SerializeField]
-    Text choice_2_text;
+    TMP_Text choice_2_text;
     [SerializeField]
     GameObject choice_3_gameobject;
     [SerializeField]
-    Text choice_3_text;
+    TMP_Text choice_3_text;
 
     const float letter_seperator = 0.02f;
     float start_dialogue_time;
@@ -43,6 +47,7 @@ public class DialogueUI : MonoBehaviour
     {
         dialogue_ui.SetActive(active);
         start_dialogue_time = Time.realtimeSinceStartup;
+
     }
 
     void setDialogueText(string text)
@@ -50,11 +55,35 @@ public class DialogueUI : MonoBehaviour
         finished_showing_text = false;
         dialogue_text.maxVisibleCharacters = 0;
         dialogue_text.text = text;
+        dialogue_text.ForceMeshUpdate();
+        if (dialogue_text.isTextOverflowing)
+            moveUIUp();
+        else
+            moveUIDefault();
     }
+
+    void moveUIUp()
+    {
+        dialogue_text.gameObject.transform.localPosition = new Vector3(0, -160.5f, 0);
+        name_text.gameObject.transform.localPosition = new Vector3(0, -124.5f, 0);
+        divider.transform.localPosition = new Vector3(0, -139.1f, 0);
+        dialoguebg.transform.localPosition = new Vector3(0, -170.3f, 0);
+    }
+
+    void moveUIDefault()
+    {
+        dialogue_text.gameObject.transform.localPosition = new Vector3(0, -185.5f, 0);
+        name_text.gameObject.transform.localPosition = new Vector3(0, -144.5f, 0);
+        divider.transform.localPosition = new Vector3(0, -164.1f, 0);
+        dialoguebg.transform.localPosition = new Vector3(0, -195.3f, 0);
+
+    }
+
 
     void setNameText(string text)
     {
         name_text.text = text;
+        name_text.ForceMeshUpdate();
     }
 
     void setChoice1Text(string text)
