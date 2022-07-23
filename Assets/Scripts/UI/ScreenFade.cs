@@ -13,14 +13,24 @@ public class ScreenFade : MonoBehaviour
     [SerializeField]
     private Image image;
 
+    static Coroutine fallback;
+
     public void Awake()
     {
         current = this;
         fade_object.SetActive(true);
     }
 
+    static IEnumerator fadeFallback()
+    {
+        yield return new WaitForSeconds(2);
+        fadeFrom(0.01f, Color.black);
+    }
+
     public static void fadeFrom(float time, Color color)
     {
+        if (fallback != null)
+            current.StopCoroutine(fallback);
         current.image.color = color;
         AnimationClip anim_clip = new AnimationClip();
         anim_clip.legacy = true;
@@ -47,6 +57,8 @@ public class ScreenFade : MonoBehaviour
         anim_clip.wrapMode = WrapMode.ClampForever;
         current.animation_component.AddClip(anim_clip, "default");
         current.animation_component.Play("default");
+
+        fallback = current.StartCoroutine(fadeFallback());
     }
 
 }
