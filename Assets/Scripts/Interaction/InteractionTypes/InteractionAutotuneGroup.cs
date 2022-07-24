@@ -16,16 +16,15 @@ public class InteractionAutotuneGroup : Interaction
         Assert.IsNotNull(_interaction.groupMembers, "InteractionAutotuneGroup(): interaction.groupMembers can't be null");
         member_counter = 0;
         GameStart.dialogue_manager.in_bubble = true;
-
+        _interaction.autoSelect = true;
         return this;
     }
 
-    public override void onFinishedEnterEvents()
+    public override void onFinishedEnterEvents() //Not really accurate. What would normally happen is all the children spawn on parent spawn, but are not visible because of active event actions.
     {
         base.onFinishedEnterEvents();
         memberInteractionFinished(null);
-
-        return;
+        return; 
     }
 
     //This whole thing is basically a big messy hack.

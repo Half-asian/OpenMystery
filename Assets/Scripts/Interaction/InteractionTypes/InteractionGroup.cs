@@ -17,7 +17,7 @@ public class InteractionGroup : Interaction
         group_progress = 0;
         member_interactions = new Dictionary<string, Interaction>();
         spawnMemberInteractions();
-
+        _interaction.autoSelect = true;
         return this;
     }
 
