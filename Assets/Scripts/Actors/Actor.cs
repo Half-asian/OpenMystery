@@ -45,13 +45,13 @@ public class Actor
 
         if (actor_id == "Avatar")
         {
-            if (Player.local_avatar_gender == "female")
-                config_actor = Configs.config_hp_actor_info.HPActorInfo["c_avatar_female_base"]; //Upgrade later to match wands
+            if (Player.local_avatar_gender == "female")                
+                config_actor = Configs.config_hp_actor_info.HPActorInfo[ConfigActorMapping.getActorMapping("c_avatar_female_base", "female")];
             else
-                config_actor = Configs.config_hp_actor_info.HPActorInfo["c_avatar_male_base"]; //Upgrade later to match wands
+                config_actor = Configs.config_hp_actor_info.HPActorInfo[ConfigActorMapping.getActorMapping("c_avatar_male_base", "male")];
 
             Player.local_avatar_onscreen_name = character_name;
-            actor_controller = StaticAvatarSpawner.spawnStaticAvatar();
+            actor_controller = StaticAvatarSpawner.spawnStaticAvatar(config_actor);
             if (Player.local_avatar_clothing_type != null)
             {
                 Player.changeClothes(Player.local_avatar_clothing_type, Player.local_avatar_secondary_clothing_option);

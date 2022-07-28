@@ -7,16 +7,25 @@ using UnityEngine;
 
 class StaticAvatarSpawner
 {
-    public static ActorController spawnStaticAvatar()
+    public static ActorController spawnStaticAvatar(ConfigHPActorInfo._HPActorInfo actor = null)
     {
         //Get the Avatar components
         AvatarComponents avatar_components = new AvatarComponents(GlobalEngineVariables.player_folder + "\\avatar.json");
+        ConfigHPActorInfo._HPActorInfo character;
+        if (actor == null)
+        {
+            //Get the character. Spawn the animator.
+            character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id];
 
-        //Get the character. Spawn the animator.
-        ConfigHPActorInfo._HPActorInfo character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id];
+        }
+        else
+        {
+            character = actor;
+        }
 
         Debug.Log(character.modelId);
         Model parent_model;
+
         if (PlayerManager.current.gender == "male")
         {
             parent_model = ModelManager.loadModel("c_Avatar_Male_headNoseless_skin");
