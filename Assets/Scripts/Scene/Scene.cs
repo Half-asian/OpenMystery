@@ -57,10 +57,12 @@ public class Scene
             if (scene_model != null)
                 GameObject.Destroy(scene_model.game_object);
             scene_model = ModelManager.loadModel(current.envId);
+            Debug.Log("applySceneMaterials");
+            applySceneMaterials();
+            setMainCamera();
             onSceneChanged.Invoke();
 
             spawnLights();
-
         }
     }
 
@@ -121,8 +123,12 @@ public class Scene
                     break;*/
 
             }
+            Color old_ambient = new Color(ambient_color.r, ambient_color.g, ambient_color.b);
+
             ambient_color += new Color(average_r, average_g, average_b);
             ambient_color = ambient_color / 2;
+            if (old_ambient.r + old_ambient.g + old_ambient.b > ambient_color.r + ambient_color.g + ambient_color.b)
+                ambient_color = old_ambient;
 
             GameStart.post_process_manager.changeFilter(ambient_color);
 
@@ -136,6 +142,7 @@ public class Scene
 
     public static void setMainCamera()
     {
+        Debug.Log("setMainCamera");
         if (current.camera_dict == null) return;
         ConfigScene._Scene.Camera c = null;
 
@@ -156,6 +163,59 @@ public class Scene
         CameraManager.current.focusCam(ref a);
     }
 
+
+    private static void applySceneMaterials()
+    {
+        if (current.material_dict == null)
+            return;
+
+        for(int c = 0; c < scene_model.game_object.transform.childCount; c++)
+        {
+            Transform child = scene_model.game_object.transform.GetChild(c);
+            if (!current.material_dict.ContainsKey(child.name))
+                continue;
+            Material mat = child.GetComponent<MeshRenderer>().material;
+            var material = current.material_dict[child.name];
+
+            if (material.stringValueKeys != null)
+            {
+                for (int i = 0; i < material.stringValueKeys.Length; i++) {
+                    mat.SetTexture(material.stringIds[i], TextureManager.loadTextureDDS(material.stringValueKeys[i]));
+                }
+            }
+            if (material.floatIds != null)
+            {
+                for (int i = 0; i < material.floatIds.Length; i++)
+                {
+                    mat.SetFloat(material.floatIds[i], material.floatValues[i]);
+                }
+            }
+            if (material.vec3Ids != null)
+            {
+                for (int i = 0; i < material.vec3Ids.Length; i++)
+                {
+                    mat.SetVector(material.vec3Ids[i], new Vector3(material.vec3Values[i][0], material.vec3Values[i][1], material.vec3Values[i][2]));
+                }
+            }
+            if (material.vec4Ids != null)
+            {
+
+                for (int i = 0; i < material.vec4Ids.Length; i++)
+                {
+                    mat.SetVector(material.vec4Ids[i], new Vector4(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]));
+                }
+            }
+            if (material.intSettingIds != null)
+            {
+                for (int i = 0; i < material.intSettingIds.Length; i++)
+                {
+                    mat.SetFloat(material.intSettingIds[i], material.intSettingValues[i]);
+
+                }
+            }
+
+        }
+    }
 
     public static void checkAddScenePrefab(string scene_id)
     {
@@ -276,6 +336,24 @@ public class Scene
                 }
             }
         }
+
+        if (Configs.config_scene.Scene[current_scene.masterSceneId].material_dict != null)
+        {
+            Debug.Log("Found some env materials for " + current_scene.masterSceneId);
+            if (current_scene.material_dict == null)
+                current_scene.material_dict = new Dictionary<string, ConfigScene._Scene.Material>();
+
+            foreach (string material_name in Configs.config_scene.Scene[current_scene.masterSceneId].material_dict.Keys)
+            {
+                Debug.Log("old scene has " + material_name);
+                if (!current_scene.material_dict.ContainsKey(material_name))
+                {
+                    Debug.Log("adding that material to the new scene");
+                    current_scene.material_dict[material_name] = Configs.config_scene.Scene[current_scene.masterSceneId].material_dict[material_name];
+                }
+            }
+        }
+
         return master_scenes;
 
     }

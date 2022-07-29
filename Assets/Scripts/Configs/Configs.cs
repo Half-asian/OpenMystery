@@ -153,6 +153,7 @@ public class Configs{
     public static ConfigDialogueSpeakers config_dialogue_speakers;
     public static ConfigDialogueSpeakerMapping config_dialogue_speaker_mapping;
     public static ConfigTappie config_tappie;
+    public static ConfigShaderAnimation config_shader_animation;
 
     public static Dictionary<string, ConfigSound._Ambient> ambient_dict;
     public static Dictionary<string, ConfigSound._Playlist> playlist_dict;
@@ -172,6 +173,9 @@ public class Configs{
 
     public static void postload()
     {
+
+        //GameStart.logWrite(config_shader_animation.ShaderAnimation["peevesInvisible"].data["c_body_mesh"].floatData.flt["u_opacity"].start.ToString());
+
         //Avatar components
         if (config_avatar_components is not null)
         {
@@ -303,7 +307,6 @@ public class Configs{
 
         if (config_scene is not null)
         {
-
             foreach (ConfigScene._Scene scene in Configs.config_scene.Scene.Values)
             {
                 if (scene.waypoints != null)
@@ -336,6 +339,14 @@ public class Configs{
                     foreach (ConfigScene._Scene.HotSpot hotspot in scene.hotspots)
                     {
                         scene.hotspot_dict[hotspot.name] = hotspot;
+                    }
+                }
+                if (scene.envmaterials != null && scene.envmaterials.materials != null)
+                {
+                    scene.material_dict = new Dictionary<string, ConfigScene._Scene.Material>();
+                    foreach(ConfigScene._Scene.Material mat in scene.envmaterials.materials)
+                    {
+                        scene.material_dict[mat.nodeName] = mat;
                     }
                 }
             }
@@ -402,7 +413,7 @@ public class Configs{
         config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
         config_house = ConfigHouse.getJObjectsConfigsListST("House");
         config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
-
+        config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
         Configs.config_3dmodel.createMaterialDict();
         GameStart.logWrite("FINISHED ALL");
     }
@@ -454,6 +465,7 @@ public class Configs{
         config_script_events = ConfigScriptEvents.getConfig();
         config_sound = ConfigSound.getJObjectsConfigsListST("Playlist");
         config_tappie = ConfigTappie.getJObjectsConfigsListST("Tappie");
+        config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
         Configs.config_3dmodel.createMaterialDict();
         GameStart.logWrite("FINISHED ALL");
     }
