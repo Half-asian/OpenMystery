@@ -11,13 +11,13 @@ public class ModelManager
 {
 	//public static Dictionary<string, ModelManager.C3T> loaded_models = new Dictionary<string, ModelManager.C3T>();
 
-	static string[] known_shaders_array = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "simpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "panningfalloff", "eyeballshader", "SimpleTexture", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "eyeshader", "dustmotes_vfx", "houseubershader", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx" };
+	static string[] known_shaders_array = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "simpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "panningfalloff", "eyeballshader", "SimpleTexture", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "eyeshader", "dustmotes_vfx", "houseubershader", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
 
 	static List<string> known_shaders = new List<string>(known_shaders_array);
 
-	static string[] real_shaders = { "ubershader", "ubershader_transparent", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "SimpleTexture", "panningfalloff", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx" };
+	static string[] real_shaders = { "ubershader", "ubershader_transparent", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "SimpleTexture", "panningfalloff", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx"};
 
-	static string[] transparent_shaders_array = { "ocean_vfx", "shadowplane_vfx", "vertecolor_vfx", "panningb_vfx", "panningfalloff", "fire02_vfx", "ubershader_transparent", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "SimpleColor", "panningbfresnel_vfx", "ghost_vfx", "ghostfade_vfx", "warp2_vfx", "scaleuv_vfx"};
+	static string[] transparent_shaders_array = { "ocean_vfx", "shadowplane_vfx", "vertecolor_vfx", "panningb_vfx", "panningfalloff", "fire02_vfx", "ubershader_transparent", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "SimpleColor", "panningbfresnel_vfx", "ghost_vfx", "ghostfade_vfx", "warp2_vfx", "scaleuv_vfx", "SimpleTexture", "foammiddle_vfx", "foamedge_vfx" };
 	static List<string> transparent_shaders = new List<string>(transparent_shaders_array);
 
 	static string[] transparent_no_depth_write_shaders_array = { "glow_vfx", "lightrays_vfx"};
@@ -28,8 +28,6 @@ public class ModelManager
 	static Material opaque_material;
 	static Material opaque_skin_material;
 	static Dictionary<string, Shader> shader_dict;// = new Dictionary<string, Shader>();
-
-	static string patch_text;
 
 	public static Vector3 ExtractTranslationFromMatrix(ref Matrix4x4 matrix)
 	{
@@ -94,26 +92,6 @@ public class ModelManager
     }
 
 
-	public static string getPatchedName(string name){
-
-		if (name == "o_Female_ForestFormal_FULL1")
-		{
-			name = "o_Female_ForestFormal_FULL";
-
-		}
-		if (patch_text.Contains("patch:" + name))
-		{
-
-			int patch_index = patch_text.IndexOf("patch:" + name) + ("patch:" + name).Length + 1;
-			Debug.Log("patch_index " + patch_index);
-
-			Debug.Log("semicolon_index " + patch_text.IndexOf(';', patch_index));
-			name = patch_text.Substring(patch_index, patch_text.IndexOf(';', patch_index) - patch_index);
-			Debug.LogWarning("patched " + name);
-		}
-		return name;
-	}
-
 	public static void applyBoneTransforms(Transform base_transform, Dictionary<string, BoneTransform> bone_transform_modifiers = null)
     {
 		Debug.Log("applyBoneTransforms");
@@ -149,17 +127,10 @@ public class ModelManager
 		Model return_model = new Model();
 		Config3DModel c3m = Configs.config_3dmodel;
 
-		name = getPatchedName(name);
-
-
 		if (name == "")
 		{
 			Debug.LogError("c3b no name");
 			return null;
-		}
-		if (name == "o_Female_ForestFormal_FULL1_skin")
-		{
-			name = "o_Female_ForestFormal_FULL_skin";
 		}
 		if (!c3m.ModelConfig.ContainsKey(name))
 		{
@@ -607,11 +578,6 @@ public class ModelManager
 									mat.shader = shader_dict["SimpleColor"];
 								}
 
-								else if (material.shaderName == "SimpleTexture")
-                                {
-									mat.CopyPropertiesFromMaterial(opaque_material);
-									mat.shader = shader_dict["SimpleTexture"];
-								}
 								else if (material.shaderName == "crowd_vfx")
                                 {
 									mat.CopyPropertiesFromMaterial(opaque_material);
@@ -760,7 +726,6 @@ public class ModelManager
 
     public static void Initialize()
     {
-		patch_text = File.ReadAllText("patches\\patch.txt");
 		transparent_material = (Material)Resources.Load("transparent_base", typeof(Material));
 		opaque_material = (Material)Resources.Load("opaque_base", typeof(Material));
 		opaque_skin_material = (Material)Resources.Load("opaque_skin_base", typeof(Material));

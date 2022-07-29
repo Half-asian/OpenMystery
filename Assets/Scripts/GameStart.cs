@@ -80,14 +80,6 @@ public class GameStart : MonoBehaviour
     public Model addPatchToCharacter(string character_name, string patch_name, Dictionary<string, Transform> parent_bones)
     {
         Debug.Log("add patch " + patch_name + " to " + character_name );
-        if (patch_name == "o_Male_ForestFormal_FULL3_skin")
-        {
-            patch_name = "o_Male_ForestFormal_FULL_skin"; //WHY THE FUCK IS THIS NAMED WRONG
-        }
-        if (patch_name == "o_Male_ForestFormal_FULL1_skin")
-        {
-            patch_name = "o_Male_ForestFormal_FULL_skin"; //WHY THE FUCK IS THIS NAMED WRONG
-        }
         
         if (parent_bones == null)
         {
