@@ -23,6 +23,8 @@ public class ActorAnimation : MonoBehaviour
     public AnimationClip animation2_exit;
     public string animation2_name;
 
+    AnimationClip lastclip;
+
     public string anim_state = "loop";
     public string animId_idle = "";
     public string queued_anim = "";
@@ -49,13 +51,23 @@ public class ActorAnimation : MonoBehaviour
 
     public void playAnimationOnComponent(string id)
     {
+
+
         if (currentAnimationAlerter != null)
             StopCoroutine(currentAnimationAlerter);
         if (Time.realtimeSinceStartup - actor_controller.creation_time < 0.5f) //First frame we can't let them T-pose
             animation_component.Play(id);
         else
-            animation_component.CrossFade(id, 0.4f);
+        {
+            //This check prevents a small spaz in lookats for looping anims
+            if (lastclip != null && lastclip.name == animation_component.GetClip(id).name)
+                animation_component.Play(id);
+            else
+                animation_component.CrossFade(id, 0.4f);
+        }
+        lastclip = animation_component.GetClip(id);
         currentAnimationAlerter = animationAlert(animation_component.GetClip(id));
+
         StartCoroutine(currentAnimationAlerter);
     }
 
@@ -104,8 +116,8 @@ public class ActorAnimation : MonoBehaviour
     public void setCharacterIdle()
     {
         actor_controller.destroyProps();
-        actor_controller.actor_head.clearLookat();
-        actor_controller.actor_head.clearTurnHeadAt();
+        //actor_controller.actor_head.clearLookat();
+        //actor_controller.actor_head.clearTurnHeadAt();
         foreach(GameObject particle in actor_controller.particles)
         {
             GameObject.Destroy(particle);

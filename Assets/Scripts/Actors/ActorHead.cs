@@ -21,9 +21,11 @@ public class ActorHead
     public void setLookat(Events.Looking _looking)
     {
         Debug.Log(actor_controller.name + " is now looking at " + _looking.character);
+        if (looking != null && looking.character == _looking.character)
+            return;
+
         looking = _looking;
         looking.destination_progress = 1.0f;
-
 
         if (!_looking.character.model.pose_bones.ContainsKey("jt_head_bind"))
         {
@@ -31,12 +33,18 @@ public class ActorHead
             clearLookat();
             return;
         }
+
+        clearTurnHeadAt();
         looking.looking_position = _looking.character.model.pose_bones["jt_head_bind"].position - transform.position;
 
     }
 
     public void setTurnHeadAt(Events.Looking _turnHeadAt)
     {
+        Debug.Log(actor_controller.name + " is now turning head at at " + _turnHeadAt.character);
+        if (turning != null && turning.character == _turnHeadAt.character)
+            return;
+        
         turning = _turnHeadAt;
         turning.destination_progress = 1.0f;
 
@@ -46,19 +54,19 @@ public class ActorHead
             clearTurnHeadAt();
             return;
         }
+
+        clearLookat();
         turning.looking_position = turning.character.model.pose_bones["jt_head_bind"].position - transform.position;
 
     }
 
     public void clearLookat()
     {
-        Debug.Log("clearLookAt " + actor_controller.name);
         looking = null;
     }
 
     public void clearTurnHeadAt()
     {
-        Debug.Log("clearTurnHeadAt " + actor_controller.name);
         turning = null;
     }
 
@@ -73,6 +81,12 @@ public class ActorHead
             return;
 
         if (looking.character == null)
+        {
+            clearLookat();
+            return;
+        }
+
+        if (looking.character.actor_state == ActorState.Walk || actor_controller.actor_state == ActorState.Walk)
         {
             clearLookat();
             return;
@@ -296,11 +310,17 @@ public class ActorHead
             clearTurnHeadAt();
             return;
         }
-        Transform head_bind_pos;// = turning.character.transform.Find("Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind");
 
-        if (actor_controller.model.pose_bones.ContainsKey("jt_head_bind"))
+        if (turning.character.actor_state == ActorState.Walk || actor_controller.actor_state == ActorState.Walk)
         {
-            head_bind_pos = actor_controller.model.pose_bones["jt_head_bind"];
+            clearTurnHeadAt();
+            return;
+        }
+
+        Transform head_bind_pos;
+        if (turning.character.model.pose_bones.ContainsKey("head1_neck_bind"))
+        {
+            head_bind_pos = turning.character.model.pose_bones["head1_neck_bind"];
         }
         else
         {
@@ -362,10 +382,10 @@ public class ActorHead
 
         target_neck_direction = Quaternion.Euler(target_neck_direction.eulerAngles + new Vector3(20, 0, -90));
 
-        target_neck_direction = Quaternion.LerpUnclamped(char_a.rotation, target_neck_direction, turning.progress * 0.7f);
+        target_neck_direction = Quaternion.LerpUnclamped(char_a.rotation, target_neck_direction, turning.progress * 0.5f);
 
         char_a.eulerAngles = target_neck_direction.eulerAngles;
-        char_a.localPosition = char_a.localPosition + new Vector3(0, 0, Mathf.Abs(target_neck_direction.eulerAngles.y * 0.008f));
+        //char_a.localPosition = char_a.localPosition + new Vector3(0, 0, Mathf.Abs(target_neck_direction.eulerAngles.y * 0.008f));
 
         for (int i = 0; i < gameObject.transform.childCount; i++)
         {
@@ -375,7 +395,7 @@ public class ActorHead
                 if (char_a != null)
                 {
                     char_a.eulerAngles = target_neck_direction.eulerAngles;
-                    char_a.localPosition = char_a.localPosition + new Vector3(0, 0, target_neck_direction.eulerAngles.y * 0.008f);
+                    //char_a.localPosition = char_a.localPosition + new Vector3(0, 0, target_neck_direction.eulerAngles.y * 0.008f);
                 }
             }
         }
