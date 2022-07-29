@@ -81,6 +81,8 @@ public static class Events
                 lookAt(action_params);
                 break;
             case "teleportCharacter":
+                if (action_params.Length < 2)
+                    break;
                 if (!Scene.current.waypoint_dict.ContainsKey(action_params[1]))
                 {
                     Debug.LogWarning("COULDN'T FIND WAYPOINT " + action_params[1] + " IN CURRENT SCENE!");
@@ -147,7 +149,10 @@ public static class Events
                 break;
 
             case "spawnCharacter":
-                Actor.spawnActor(action_params[0], action_params[1], action_params[2]);
+                if (action_params.Length > 2)
+                    Actor.spawnActor(action_params[0], action_params[1], action_params[2]);
+                else
+                    Actor.spawnActor(action_params[0], action_params[1], action_params[0]);
                 break;
 
             case "despawnCharacter":
@@ -344,7 +349,13 @@ public static class Events
             case "fadeToBlack":
                 float fade_to_time = 1.0f;
                 if (action_params.Length >= 1)
-                    fade_to_time = float.Parse(action_params[0]);
+                {
+                    bool success = float.TryParse(action_params[0], out float result);
+                    if (success == false)
+                        throw new System.Exception("fadeToBlack: Failed to parse " + action_params[0] + " as a float.");
+                    else
+                        fade_to_time = result;
+                }
                 ScreenFade.fadeTo(fade_to_time, Color.black);
                 break;
 
@@ -352,7 +363,13 @@ public static class Events
             case "fadeFromBlack":
                 float fade_from_time = 1.0f;
                 if (action_params.Length >= 1)
-                    fade_from_time = float.Parse(action_params[0]);
+                {
+                    bool success = float.TryParse(action_params[0], out float result);
+                    if (success == false)
+                        throw new System.Exception("fadeFromBlack: Failed to parse " + action_params[0] + " as a float.");
+                    else
+                        fade_from_time = result;
+                }
                 ScreenFade.fadeFrom(fade_from_time, Color.black);
                 break;
 
@@ -760,21 +777,8 @@ public static class Events
         new_looking.character = Actor.actor_controllers[action_params[1]];
 
         new_looking.progress = 0.0f;
-        if (Actor.actor_controllers[action_params[0]].actor_head.looking != null)
-        {
-            if (!(Actor.actor_controllers[action_params[0]].actor_head.looking.character == new_looking.character)) //This line is risky
-            {
-                Actor.actor_controllers[action_params[0]].actor_head.setLookat(new_looking);
-            }
-            else
-            {
-                Debug.Log("Lookat already set");
-            }
-        }
-        else
-        {
-            Actor.actor_controllers[action_params[0]].actor_head.setLookat(new_looking);
-        }
+
+        Actor.actor_controllers[action_params[0]].actor_head.setLookat(new_looking);
 
         
         if (action_params.Length > 2)
@@ -804,17 +808,7 @@ public static class Events
                 new_looking.character = Actor.actor_controllers[action_params[1]];
 
                 new_looking.progress = 0.0f;
-                if (Actor.actor_controllers[action_params[0]].actor_head.looking != null)
-                {
-                    if (!(Actor.actor_controllers[action_params[0]].actor_head.looking.character == new_looking.character)) //This line is risky
-                    {
-                        Actor.actor_controllers[action_params[0]].actor_head.setTurnHeadAt(new_looking);
-                    }
-                }
-                else
-                {
-                    Actor.actor_controllers[action_params[0]].actor_head.setTurnHeadAt(new_looking);
-                }
+                Actor.actor_controllers[action_params[0]].actor_head.setTurnHeadAt(new_looking);
             }
             else
             {
