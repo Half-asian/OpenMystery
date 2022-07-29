@@ -12,9 +12,6 @@ public class ShadowDecider
         if (name.Contains("dome") && modelname != "b_PotionsClassroom_skin")
             return false;
 
-        if (name.Contains("b19") && modelname == "b_GreatHall_skin")
-            return false;
-
         if (shader == "lightrays_vfx" || shader == "glow_vfx")
             return false;
 

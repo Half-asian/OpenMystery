@@ -156,6 +156,7 @@
     <Compile Include="Assets\Scripts\Prop\PropHolder.cs" />
     <Compile Include="Assets\Scripts\Actors\ActorHead.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerManager.cs" />
+    <Compile Include="Assets\Scripts\Camera\CameraAutoDOF.cs" />
     <Compile Include="Assets\Scripts\3DModels\BoneTransform.cs" />
     <Compile Include="Assets\Scripts\Predicate\PredOperators.cs" />
     <Compile Include="Assets\Scripts\UI\FocusUI.cs" />
@@ -220,10 +221,10 @@
     <Compile Include="Assets\Scripts\Objectives\ObjectiveProjectSuccess.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveY1C1P6Complete.cs" />
     <Compile Include="Assets\Scripts\Camera\SimpleCameraController.cs" />
+    <Compile Include="Assets\Scripts\Console.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
-    <Compile Include="Assets\Scripts\Console.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
