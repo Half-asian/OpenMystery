@@ -151,10 +151,29 @@ public class DialogueManager : MonoBehaviour
         string text = "";
 
 
+
+
         if (!Configs.config_local_data.LocalData.ContainsKey(dialogue_line.token))
         {
-            Debug.LogError("Couldn't find dialogue " + dialogue_line.token);
-            text = dialogue_line.token;
+            if (dialogue_line.token.EndsWith("_gendered"))
+            {
+                dialogue_line.token = dialogue_line.token.Substring(0, dialogue_line.token.Length - 8);
+                dialogue_line.token += Player.local_avatar_gender;
+                if (!Configs.config_local_data.LocalData.ContainsKey(dialogue_line.token))
+                {
+                    Debug.LogError("Couldn't find dialogue " + dialogue_line.token);
+                    text = dialogue_line.token;
+                }
+                else
+                {
+                    text = LocalData.getLine(dialogue_line.token);
+                }
+            }
+            else
+            {
+                Debug.LogError("Couldn't find dialogue " + dialogue_line.token);
+                text = dialogue_line.token;
+            }
         }
         else
         {
