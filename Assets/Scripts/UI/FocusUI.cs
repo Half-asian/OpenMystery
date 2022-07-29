@@ -49,6 +49,7 @@ public class FocusUI : MonoBehaviour
     public static void startFocusGame()
     {
         current.StartFocusButton.SetActive(true);
+        current.StartCoroutine(spaceStartGame());
     }
 
     public void onStartFocusButtonPressed()
@@ -59,12 +60,30 @@ public class FocusUI : MonoBehaviour
         StartCoroutine(focusGame());
     }
 
+    static IEnumerator spaceStartGame()
+    {
+        yield return null;
+        while (true)
+        {
+            if (current.StartFocusButton.activeSelf)
+            {
+                if (Input.GetKeyDown("space"))
+                {
+                    current.onStartFocusButtonPressed();
+                    yield break;
+                }
+            }
+            else
+                yield break;
+            yield return null;
+        }
+    }
 
     IEnumerator focusGame()
     {
         bool space_pressed = false;
         float elapsedTime = 0.0f;
-
+        yield return null;
 
 
         while (space_pressed == false)
