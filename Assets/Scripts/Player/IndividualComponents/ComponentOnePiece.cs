@@ -48,7 +48,19 @@ namespace IndividualComponents
             {
                 avatar_components.replaceAvatarArms(Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].armpatch);
             }
+            /*
+            for (int i = 0; i < mat.stringIds.Length; i++)
+            {
+                Debug.Log("replaced texture " + mat.stringIds[i]);
+                smr.materials[0].SetTexture(mat.stringIds[i], TextureManager.loadTextureDDS(mat.stringValueKeys[i]));
+            }
 
+            for (int i = 0; i < mat.vec3Ids.Length; i++)
+            {
+                if (mat.vec3Ids[i] != "u_housePrimary" && mat.vec3Ids[i] != "u_houseSecondary")
+                    smr.materials[0].SetVector(mat.vec3Ids[i], new Vector3(mat.vec3Values[i][0], mat.vec3Values[i][1], mat.vec3Values[i][2]));
+            }*/
+            //Add this shit later
 
             if (avatar_components.base_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>().enabled == false)
                 hideComponent();

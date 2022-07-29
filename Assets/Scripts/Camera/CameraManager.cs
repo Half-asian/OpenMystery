@@ -119,8 +119,12 @@ public class CameraManager : MonoBehaviour
 
     public ConfigScene._Scene.Camera focusCam(string camera_name)
     {
+        Debug.Log("FocusCam " + camera_name);
         if (!Scene.current.camera_dict.ContainsKey(camera_name))
+        {
+            Debug.LogError("No camera " + camera_name + " in scene.");
             return null;
+        }
         ConfigScene._Scene.Camera camera = Scene.current.camera_dict[camera_name];
 
         resetCamera();
@@ -159,7 +163,9 @@ public class CameraManager : MonoBehaviour
 
         //Game defined Field of View is often pretty bad. Usually looks better if its constant.
         if (camera.verticalAOV != 0.0f)
+        {
             main_camera.GetComponent<Camera>().fieldOfView = camera.verticalAOV * 1.35f;
+        }
 
         simple_camera_controller.enabled = true;
         return camera;

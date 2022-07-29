@@ -156,7 +156,6 @@ public class Scenario
             if (current.scenario_config.scenarioId == scenario_id)
             {
                 Debug.Log("Didn't load the scenario, as it is the one we're in.");
-                Scene.setMainCamera();
 
                 return; //We are already in the right scenario
             }
@@ -220,7 +219,6 @@ public class Scenario
             string[] a = new string[] { "cam_shotA", "0" };
             CameraManager.focusCam(ref a);
         }*/
-        Scene.setMainCamera();
 
         //Interactions
 

@@ -93,6 +93,37 @@ public class ConfigScene : Config<ConfigScene>
             public Dictionary<string, Light> lights;
         }
         public _Lighting Lighting;
+
+        [System.Serializable]
+        public class Material
+        {
+            public string nodeName;
+            public List<float[]> vec3Values;
+            public List<float[]> vec4Values;
+            public string[] vec3Ids;
+            public string[] vec4Ids;
+            public string[] stringValueKeys;
+            public string shaderName;
+            public string[] stringIds;
+            public int CastShadow;
+            public int VertexLighting;
+            public float[] floatValues;
+            public string[] floatIds;
+            public int[] intSettingValues;
+            public string[] intSettingIds;
+            public int transparent;
+            public int RecieveShadow;
+        }
+
+        [System.Serializable]
+        public class EnvironmentMaterial
+        {
+            public string[] neededTextureStrings;
+            public List<Material> materials;
+        }
+        public EnvironmentMaterial envmaterials;
+        public Dictionary<string, Material> material_dict;
+
     }
 
 

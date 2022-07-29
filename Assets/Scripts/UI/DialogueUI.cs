@@ -167,7 +167,10 @@ public class DialogueUI : MonoBehaviour
 
     private void Update()
     {
-
+        if (dialogue_text.isTextOverflowing)
+            moveUIUp();
+        else
+            moveUIDefault();
 
         if (!dialogue_ui.activeSelf) return;
 

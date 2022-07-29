@@ -142,13 +142,11 @@ public class ActorMovement
         }
         actor_animation.anim_state = "outro";
 
-        if (actor_controller.GetComponent<ActorAnimSequence>() == null)
-        {
+        if (actor_controller.GetComponent<ActorAnimSequence>() != null)
+            yield break;
 
-            actor_animation.replaceCharacterIdle(actor_info.animId_idle);
-            actor_animation.loadAnimationSet();
-            actor_animation.updateAnimationState();
-        }
+        actor_animation.loadAnimationSet();
+        actor_animation.updateAnimationState();
     }
 
     public void moveCharacter(List<string> _path, string animation = "")
