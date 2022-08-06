@@ -583,10 +583,42 @@ public class ModelManager
 									mat.CopyPropertiesFromMaterial(opaque_material);
 									mat.shader = shader_dict[material.shaderName];
 								}
-								else if (material.shaderName == "skinshader")
+								else if (material.shaderName == "skinshader" || material.shaderName == "clothshader")// || material.shaderName == "houserobeshader" || material.shaderName == "houseclothshader")
                                 {
 									mat.CopyPropertiesFromMaterial(opaque_skin_material);
-									mat.shader = shader_dict[material.shaderName];
+									mat.shader = shader_dict["skinshader"];
+
+									mat.SetColor("u_AmbientLightSourceColor", Scene.scene_ambient_color);
+
+									for(int i = 0; i < Scene.dirLights.Count; i++)
+                                    {
+										Debug.Log("SETTING COLOUR!");
+										if (i == 0)
+                                        {
+											mat.SetColor("u_DirLightSourceColor1", Scene.dirLights[i].color);
+											Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
+											mat.SetVector("u_DirLightSourceDirection1", direction);
+										}
+										else if (i == 1)
+										{
+											mat.SetColor("u_DirLightSourceColor2", Scene.dirLights[i].color);
+											Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
+											mat.SetVector("u_DirLightSourceDirection2", direction);
+										}
+										else if (i == 2)
+										{
+											mat.SetColor("u_DirLightSourceColor3", Scene.dirLights[i].color);
+											Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
+											mat.SetVector("u_DirLightSourceDirection3", direction);
+										}
+										else if (i == 3)
+										{
+											mat.SetColor("u_DirLightSourceColor4", Scene.dirLights[i].color);
+											Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
+											mat.SetVector("u_DirLightSourceDirection4", direction);
+										}
+									}
+
 								}
 								else
 								{
@@ -615,6 +647,10 @@ public class ModelManager
 										{
 											mat.SetTexture(material.stringIds[i], all_textures[material.stringValueKeys[i]]);
 										}
+                                        else
+                                        {
+											Debug.LogError("AAAAA");
+                                        }
 									}
 								}
 								if (material.floatIds != null)
@@ -743,7 +779,7 @@ public class ModelManager
 				crash.transform.Find("Error").gameObject.GetComponent<Text>().text = "couldn't find " + shader;
             }
         }
-
+		shader_dict["skinshader"] = Shader.Find("HDRP/Skinshader");
 	}
 
 	public static void loadModelsTextures(string model_name)
