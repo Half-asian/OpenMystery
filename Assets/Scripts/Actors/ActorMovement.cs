@@ -136,7 +136,7 @@ public class ActorMovement
         if (actor_animation.blocked == true)
         {
             GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
-            actor_animation.playAnimationOnComponent("extra_animation");
+            actor_controller.playAnimationOnComponent(actor_animation.animation1_loop);
             actor_animation.StartCoroutine(actor_animation.WaitForAnimateCharacterFinished(actor_animation.animation1_loop));
             yield break;
         }

@@ -174,8 +174,6 @@ public class Configs{
     public static void postload()
     {
 
-        //GameStart.logWrite(config_shader_animation.ShaderAnimation["peevesInvisible"].data["c_body_mesh"].floatData.flt["u_opacity"].start.ToString());
-
         //Avatar components
         if (config_avatar_components is not null)
         {

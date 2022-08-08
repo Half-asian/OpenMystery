@@ -18,8 +18,8 @@ public class Sound : MonoBehaviour
     void Awake()
     {
         current = this;
-        Scenario.onScenarioLoaded += refreshBgSound;
-        Scenario.onScenarioLoaded += refreshMusic;
+        Scenario.onScenarioCallClear += refreshBgSound;
+        Scenario.onScenarioCallClear += refreshMusic;
     }
 
     #region static methods

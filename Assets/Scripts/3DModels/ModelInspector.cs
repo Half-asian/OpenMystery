@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using ModelLoading;
 public class ModelInspector : MonoBehaviour
 {
     Model model;
@@ -12,15 +12,14 @@ public class ModelInspector : MonoBehaviour
 
     [SerializeField]
     InputField model_input;
-
+    Prop prop;
     void Start()
     {
         if (!string.IsNullOrEmpty(GameStart._model_inspector_model)){
             model = ModelManager.loadModel(GameStart._model_inspector_model);
-            Prop prop = model.game_object.AddComponent<Prop>();
-            prop.model = model;
+            prop = model.game_object.AddComponent<Prop>();
+            prop.setup(model);;
             model.game_object.transform.position = Vector3.zero;
-            model.game_object.AddComponent<Animation>();
         }
         else
         {
@@ -34,15 +33,16 @@ public class ModelInspector : MonoBehaviour
         {
             if (Configs.config_animation.Animation3D.ContainsKey(animation_input.text))
             {
-                AnimationClip ac = AnimationManager.loadAnimationClip(animation_input.text, model, null);
-                model.game_object.GetComponent<Animation>().AddClip(ac, "default");
-                model.game_object.GetComponent<Animation>().Play("default");
+                HPAnimation anim = AnimationManager.loadAnimationClip(animation_input.text, model, null);
+                if (anim == null)
+                {
+                    Debug.LogError("unknown anim " + anim);
+                }
+                prop.playAnimationOnComponent(anim);
             }
             else
             {
-                model.game_object.AddComponent<PropAnimSequence>();
-                model.game_object.GetComponent<PropAnimSequence>().enabled = true;
-                model.game_object.GetComponent<PropAnimSequence>().initAnimSequence(animation_input.text, false);
+                prop.playAnimSequence(animation_input.text);
             }
         }
         else

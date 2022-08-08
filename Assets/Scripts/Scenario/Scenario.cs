@@ -14,7 +14,10 @@ public class SerializedScenario
 public class Scenario
 {
     public static Scenario current;
+    public static event Action onScenarioLoading = delegate { };
+    public static event Action onScenarioCallClear = delegate { };
     public static event Action onScenarioLoaded = delegate { };
+
     public static Dictionary<string, SerializedScenario> scenarios_serialized = new Dictionary<string, SerializedScenario>();
 
     public ConfigScenario._Scenario scenario_config;
@@ -145,9 +148,12 @@ public class Scenario
     //If we are in a default scenario, we do not need to pre-activate the scenario. Progress will not be saved.
     public static void Load(string scenario_id)
     {
+
         Debug.Log("Loading Scenario " + scenario_id);
         if (!Configs.config_scenario.Scenario.ContainsKey(scenario_id))
             throw new System.Exception("Load Scenario - invalid scenario name: " + scenario_id);
+
+        onScenarioLoading.Invoke();
 
         Scenario preactivated_scenario = Location.getScenarioById(scenario_id);
 
@@ -189,7 +195,7 @@ public class Scenario
         }
         Scene.setCurrentScene(chosen_scene);
 
-        onScenarioLoaded.Invoke();
+        onScenarioCallClear.Invoke();
 
         if (scenarios_serialized.ContainsKey(current.scenario_config.scenarioId))
         {
@@ -219,7 +225,6 @@ public class Scenario
             string[] a = new string[] { "cam_shotA", "0" };
             CameraManager.focusCam(ref a);
         }*/
-
         //Interactions
 
         if (scenarios_serialized.ContainsKey(current.scenario_config.scenarioId)) //Reload saved interactions
@@ -233,6 +238,18 @@ public class Scenario
                 GameStart.interaction_manager.spawnInteraction(current.scenario_config.firstAction);
             }
         }
+
+
+        EventManager.all_script_events_finished_event += onScenarioLoadScriptEventsFinished;
+    }
+
+    private static void onScenarioLoadScriptEventsFinished()
+    {
+        Debug.Log("onScenarioLoadScriptEventsFinished");
+        EventManager.all_script_events_finished_event -= onScenarioLoadScriptEventsFinished;
+        onScenarioLoaded.Invoke();
+
+
     }
 
     public static void restartScenario()

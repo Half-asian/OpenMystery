@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -59,11 +60,19 @@ public class UiManager : MonoBehaviour
 
     public void nextAreaButtonClicked()
     {
+        LoadingScreenCanvas.current.showImage();
         GameStart.ui_manager.next_area_button.SetActive(false);
-        Goal g = Goal.getGoalById(_goal_popup.latest_goal.goal_id);
         closePopup();
+        StartCoroutine(nextAreaButtonClickedDelay());
+    }
+
+    IEnumerator nextAreaButtonClickedDelay()
+    {
+        yield return null;
+        Goal g = Goal.getGoalById(_goal_popup.latest_goal.goal_id);
         g.loadObjectiveScenario();
     }
+
 
     public void exitToMenuButtonClicked()
     {

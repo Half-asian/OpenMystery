@@ -18,6 +18,7 @@ public class ConfigInteraction : Config<ConfigInteraction>
         public string endHudDialog;
         public string matchId;
         public string successReward;
+        public string titleCardTitle;
         public int? maxToShow;//unused
         public int? minToShow;//unused
         public int? maxProgress;//unused

@@ -11,10 +11,12 @@ public class PostProcess : MonoBehaviour
     public Volume volumeProfile;
     ColorAdjustments colorAdjustments;
     GradientSky gradientsky;
+    DepthOfField depthoffield;
     private void Awake()
     {
         volumeProfile.profile.TryGet(out colorAdjustments);
         volumeProfile.profile.TryGet(out gradientsky);
+        volumeProfile.profile.TryGet(out depthoffield);
     }
     public void changeFilter(Color filterColor)
     {        
@@ -36,6 +38,15 @@ public class PostProcess : MonoBehaviour
         {
             Debug.Log("Gradientsky failed");
         }
+    }
+
+    public void changeDOFDistance(float distance)
+    {
+        depthoffield.nearFocusStart.value = 0.0f;
+        depthoffield.nearFocusEnd.value = Mathf.Min(0.5f,  distance - 0.5f);
+        depthoffield.farFocusStart.value = distance;
+        depthoffield.farFocusEnd.value = distance + 100.0f;
+
     }
 
 }

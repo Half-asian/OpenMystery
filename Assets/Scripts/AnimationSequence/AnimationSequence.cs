@@ -169,18 +169,4 @@ public abstract partial class AnimationSequence : MonoBehaviour
         return Configs.config_quidditch_broom_info.QuidditchBroomInfo["default"].defaultBroom;
     }
 
-    protected IEnumerator p_blackBoardEvidence_skin_transition(float transition_time, float start_time)
-    {
-        Debug.Log("Couroutine start");
-        float u_transition;
-        while (Time.realtimeSinceStartup < transition_time + start_time)
-        {
-            u_transition = Mathf.Lerp(1f, 0.0f, (Time.realtimeSinceStartup - start_time) / transition_time);
-            transform.Find("QuidditchBlackBoardMove").GetComponent<SkinnedMeshRenderer>().material.SetFloat("u_transition", u_transition);
-            yield return null;
-        }
-        u_transition = 0.0f;
-        transform.Find("QuidditchBlackBoardMove").GetComponent<SkinnedMeshRenderer>().material.SetFloat("u_transition", u_transition);
-    }
-
 }

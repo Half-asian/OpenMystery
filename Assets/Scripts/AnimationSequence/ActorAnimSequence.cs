@@ -20,21 +20,15 @@ public class ActorAnimSequence : AnimationSequence
         if (walk == false)
             actor_controller.actor_animation.anim_sequence_idle = _anim_sequence;
 
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation_id, actor_controller.model, actor_controller.actor_info, config_sequence.data.triggerReplacement);
-        if (anim_clip == null)
+        HPAnimation animation = AnimationManager.loadAnimationClip(animation_id, actor_controller.model, actor_controller.actor_info, config_sequence.data.triggerReplacement);
+        if (animation == null)
         {
             Debug.LogError("Failed to load animation clip for " + actor_controller.name + " with sequence of " + config_sequence.sequenceId + " at node index " + node_index);
             return 0.0f;
         }
 
-        animation_component.AddClip(anim_clip, animation_id);
-
-        if (animation_id == "p_blackboardQMovies01_transitions01_blackBoardQMoves01_staticOff")
-        {
-            StartCoroutine(p_blackBoardEvidence_skin_transition(1.5f, Time.realtimeSinceStartup));
-        }
-        actor_controller.actor_animation.playAnimationOnComponent(animation_id);
-        return anim_clip.length;
+        actor_controller.playAnimationOnComponent(animation);
+        return animation.anim_clip.length;
     }
 
     protected override void attachProp(string prop_model_id, string alias, string target)

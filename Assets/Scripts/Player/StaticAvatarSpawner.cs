@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-
+using ModelLoading;
 class StaticAvatarSpawner
 {
     public static ActorController spawnStaticAvatar(ConfigHPActorInfo._HPActorInfo actor = null)

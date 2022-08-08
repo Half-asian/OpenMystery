@@ -396,7 +396,6 @@ public partial class NewPredicate
 
         if ((char.IsNumber(starting_char) || starting_char == '.') && (!char.IsNumber(ending_char) && ending_char != '.') ) //we know an int is finished if the next char is not a digit. Therefore, we leave that last digit alone
         {
-            Debug.Log("HEY");
             string s = char_buf.Substring(0, char_buf.Length - 1);
             if (s.Contains("."))
                 symbols.Add(new SymbolConstantFloat(float.Parse(s)));

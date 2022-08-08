@@ -98,7 +98,6 @@ public class CocosModel
 			public Keyframe[] keyframes;
 		}
 		public Bone[] bones;
-		public Dictionary<string, Bone> bone_dict;
 	}
 	public Animation[] animations;
 

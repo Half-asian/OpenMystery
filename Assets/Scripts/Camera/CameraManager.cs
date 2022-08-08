@@ -28,7 +28,7 @@ public class CameraManager : MonoBehaviour
 
     private void Awake()
     {       
-        Scenario.onScenarioLoaded += cleanup;
+        Scenario.onScenarioCallClear += cleanup;
         current = this;
     }
     private void cleanup()
@@ -76,10 +76,11 @@ public class CameraManager : MonoBehaviour
 
         if (disable_jt_cam_bind)
         {
-            bone_mods["jt_cam_bind"] = new AnimationManager.BoneMod(false);
+            bone_mods["jt_cam_bind"] = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, Vector3.one);
+            bone_mods["jt_cam_bind"].CameraHack = true;
         }
 
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, bone_mods, true);
+        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation, camera_model, null, null, bone_mods:bone_mods, is_camera: true).anim_clip;
 
 
         if (main_camera_holder.GetComponent<Animation>() == null)
@@ -105,7 +106,7 @@ public class CameraManager : MonoBehaviour
         camera_state = CameraState.StatePanCamOnTrack;
 
         
-        AnimationClip anim_clip_pancam = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, null, true);
+        AnimationClip anim_clip_pancam = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, is_camera: true).anim_clip;
 
         if (main_camera_holder.GetComponent<Animation>() == null)
         {
@@ -141,7 +142,7 @@ public class CameraManager : MonoBehaviour
 
         if (camera.animation != null)
         {
-            AnimationClip anim_clip = AnimationManager.loadAnimationClip(camera.animation, camera_model, null, null, null, null, true);
+            AnimationClip anim_clip = AnimationManager.loadAnimationClip(camera.animation, camera_model, null, null, null, is_camera:true).anim_clip;
             anim_clip.SampleAnimation(main_camera_holder.gameObject, 0.0f);
         }
 

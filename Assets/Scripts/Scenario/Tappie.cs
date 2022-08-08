@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using ModelLoading;
 public class Tappie
 {
     private static List<GameObject> tappies = new List<GameObject>();
@@ -9,7 +9,7 @@ public class Tappie
     public static void Initialize()
     {
         GameStart.onReturnToMenu += cleanup;
-        Scenario.onScenarioLoaded += cleanup;
+        Scenario.onScenarioCallClear += cleanup;
     }
 
     private static void cleanup()
@@ -39,7 +39,7 @@ public class Tappie
             Model m = ModelManager.loadModel(tappie.activeModel);
             if (tappie.activeAnimation != null)
             {
-                AnimationClip anim = AnimationManager.loadAnimationClip(tappie.activeAnimation, m, null);
+                AnimationClip anim = AnimationManager.loadAnimationClip(tappie.activeAnimation, m, null).anim_clip;
                 Animation animation_component = m.game_object.AddComponent<Animation>();
                 animation_component.AddClip(anim, "default");
                 animation_component.Play("default");

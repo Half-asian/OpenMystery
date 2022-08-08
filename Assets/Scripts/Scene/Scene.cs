@@ -2,7 +2,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using ModelLoading;
 public class Scene
 {
     public static Model scene_model;
@@ -12,6 +12,18 @@ public class Scene
     public static event Action onSceneChanged = delegate { };
 
     public static GameObject scene_postprocessing_and_lighting;
+
+    public static Color scene_ambient_color = new Color(1,1,1); 
+
+
+    public class dirLight
+    {
+        public Color color;
+        public Vector3 direction;
+        public Matrix4x4 preCameraMatrix;
+    }
+
+    public static List<dirLight> dirLights = new List<dirLight>();
 
     public static void Initialize(){
         GameStart.onReturnToMenu += cleanup;
@@ -65,6 +77,15 @@ public class Scene
             spawnLights();
         }
     }
+    private static float CC_RADIANS_TO_DEGREES(float rads)
+    {
+        return rads * 57.29577951f;
+    }
+
+    private static float CC_DEGREES_TO_RADIANS(float degs)
+    {
+        return degs * 0.01745329252f;
+    }
 
     private static void spawnLights()
     {
@@ -73,8 +94,9 @@ public class Scene
 
         Color ambient_color = Color.black;
         float ambient_intensity = 0;
+        dirLights = new List<dirLight>();
 
-        foreach(ConfigScene._Scene._Lighting.Light light in current.Lighting.lights.Values)
+        foreach (ConfigScene._Scene._Lighting.Light light in current.Lighting.lights.Values)
         {
             Debug.Log("Spawning light type " + light.type + " with colour " + light.color[0]);
 
@@ -84,13 +106,61 @@ public class Scene
             int directional_light_counter = 0;
 
 
-
             switch (light.type)
             {
                 case "directionalLight":
                     GameObject light_go = new GameObject("sceneLight");
                     Light light_component = light_go.AddComponent<Light>();
                     light_component.type = LightType.Directional;
+                    light_component.color = new Color(float.Parse( light.color[0]), float.Parse(light.color[1]), float.Parse(light.color[2]));
+                    //light_go.transform.position = new Vector3(float.Parse(light.position[0]) * -0.01f, float.Parse(light.position[1]) * 0.01f, float.Parse(light.position[2]) * 0.01f);
+
+
+                    Vector3 direction = new Vector3(float.Parse(light.rotation[0]), float.Parse(light.rotation[1]), float.Parse(light.rotation[2]));
+
+                    light_component.transform.rotation = Quaternion.identity;
+                    light_component.transform.rotation = Quaternion.identity;
+                    light_component.transform.Rotate(new Vector3(0, 0, -float.Parse(light.rotation[2])));
+                    light_component.transform.Rotate(new Vector3(0, -float.Parse(light.rotation[1]), 0));
+                    light_component.transform.Rotate(new Vector3(float.Parse(light.rotation[0]), 0, 0));
+
+
+                    //const Mat4& Node::getNodeToParentTransform() const
+
+                    Quaternion _rotationQuat = Quaternion.identity;
+
+                    /*float halfRadx = CC_DEGREES_TO_RADIANS(_rotationX / 2.0f), halfRady = CC_DEGREES_TO_RADIANS(_rotationY / 2.0f), halfRadz = _rotationZ_X == _rotationZ_Y ? -CC_DEGREES_TO_RADIANS(_rotationZ_X / 2.0f) : 0;
+                    float coshalfRadx = Mathf.Cos(halfRadx), sinhalfRadx = Mathf.Sin(halfRadx), coshalfRady = Mathf.Cos(halfRady), sinhalfRady = Mathf.Sin(halfRady), coshalfRadz = Mathf.Cos(halfRadz), sinhalfRadz = Mathf.Sin(halfRadz);
+                    _rotationQuat.x = sinhalfRadx * coshalfRady * coshalfRadz - coshalfRadx * sinhalfRady * sinhalfRadz;
+                    _rotationQuat.y = coshalfRadx * sinhalfRady * coshalfRadz + sinhalfRadx * coshalfRady * sinhalfRadz;
+                    _rotationQuat.z = coshalfRadx * coshalfRady * sinhalfRadz - sinhalfRadx * sinhalfRady * coshalfRadz;
+                    _rotationQuat.w = coshalfRadx * coshalfRady * coshalfRadz + sinhalfRadx * sinhalfRady * sinhalfRadz;
+
+
+                    Matrix4x4 rotation = Matrix4x4.Rotate(_rotationQuat );*/
+                    Matrix4x4 translation = Matrix4x4.Translate(Vector3.zero);
+
+                    Matrix4x4 rotation = Matrix4x4.Rotate(light_component.transform.rotation);
+
+                    Matrix4x4 scale = Matrix4x4.Scale(new Vector3(1, 1, 1));
+
+                    Matrix4x4 m = translation * rotation * scale;
+                    Matrix4x4 view_matrix = CameraManager.current.main_camera.GetComponent<Camera>().worldToCameraMatrix;
+                   // m = m * view_matrix;
+
+                    dirLight d = new dirLight();
+                    d.preCameraMatrix = m;
+                    d.color = new Color(float.Parse(light.color[0]) / 255 * light.intensity, float.Parse(light.color[1]) / 255 * light.intensity, float.Parse(light.color[2]) / 255) * light.intensity;
+                    //d.direction = new Vector3(-m[8], m[9], -m[10]);
+                    
+                    Vector3 newdirection = new Vector3(m[8], -m[9], -m[10]);
+                    newdirection.Normalize();
+                    d.direction = newdirection;
+
+                    dirLights.Add(d);
+
+                    GameObject.Destroy(light_go);
+
                     average_r += float.Parse(light.color[0]) / 255;
                     average_g += float.Parse(light.color[1]) / 255;
                     average_b += float.Parse(light.color[2]) / 255;
@@ -105,15 +175,14 @@ public class Scene
                         ambient_intensity = intensity;
                         ambient_color = color;
                     }
-
+                    scene_ambient_color = ambient_color;
                     //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().color = color;
                     //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().intensity = 0.1f;
                     break;
                 /*case "spotLight":
                     GameObject spotlight = new GameObject(light.name);
                     spotlight.transform.position = new Vector3(float.Parse(light.position[0]) * -0.01f, float.Parse(light.position[1]) * 0.01f, float.Parse(light.position[2]) * 0.01f);
-                    spotlight.transform.rotation = Quaternion.Euler(new Vector3(float.Parse(light.rotation[0]), float.Parse(light.rotation[1]) * -1, float.Parse(light.rotation[2])));
-                    spotlight.transform.rotation = Quaternion.Inverse(spotlight.transform.rotation);
+                    spotlight.transform.rotation = Quaternion.Euler(new Vector3(-float.Parse(light.rotation[0]), float.Parse(light.rotation[1]) + 180.0f, float.Parse(light.rotation[2])));
 
                     Light spotlight_component = spotlight.AddComponent<Light>();
                     spotlight_component.type = LightType.Spot;
@@ -130,10 +199,10 @@ public class Scene
             if (old_ambient.r + old_ambient.g + old_ambient.b > ambient_color.r + ambient_color.g + ambient_color.b)
                 ambient_color = old_ambient;
 
-            GameStart.post_process_manager.changeFilter(ambient_color);
+            /*GameStart.post_process_manager.changeFilter(ambient_color);
 
             GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().color = 
-                new Color(average_r / directional_light_counter, average_g / directional_light_counter, average_b / directional_light_counter);
+                new Color(average_r / directional_light_counter, average_g / directional_light_counter, average_b / directional_light_counter);*/
             //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().intensity = 0.1f;
 
 

@@ -31,7 +31,7 @@ public class EventManager : MonoBehaviour
     private void Awake()
     {
         GameStart.onReturnToMenu += reset;
-        Scenario.onScenarioLoaded += reset;
+        Scenario.onScenarioCallClear += reset;
     }
 
     public void notifyCharacterAnimationComplete(string character, string animation)
@@ -245,7 +245,8 @@ public class EventManager : MonoBehaviour
 
     public bool areEventsActive()
     {
-        if (main_event_player.event_stack.Count == 0 && main_event_player.block_duration == 0.0f && main_event_player.total_block == false)
+        //if (main_event_player.event_stack.Count == 0 && main_event_player.block_duration == 0.0f && main_event_player.total_block == false)
+        if (main_event_player.event_stack.Count == 0)
         {
             //if (sequential_event_player.event_stack.Count == 0 && sequential_event_player.block_duration == 0.0f && sequential_event_player.total_block == false)
             return false;

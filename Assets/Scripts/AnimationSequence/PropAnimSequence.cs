@@ -17,16 +17,11 @@ public class PropAnimSequence : AnimationSequence
 
     protected override float playAnimation(string animation_id, string _anim_sequence = "")
     {
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation_id, prop_controller.model, null , config_sequence.data.triggerReplacement);
-        if (anim_clip == null) return 0.0f;
-        animation_component.AddClip(anim_clip, animation_id);
+        HPAnimation animation = AnimationManager.loadAnimationClip(animation_id, prop_controller.model, null , config_sequence.data.triggerReplacement);
+        if (animation == null) return 0.0f;
 
-        if (animation_id == "p_blackboardQMovies01_transitions01_blackBoardQMoves01_staticOff")
-        {
-            StartCoroutine(p_blackBoardEvidence_skin_transition(1.5f, Time.realtimeSinceStartup));
-        }
-        prop_controller.playAnimationOnComponent(animation_id);
-        return anim_clip.length;
+        prop_controller.playAnimationOnComponent(animation);
+        return animation.anim_clip.length;
     }
 
     protected override void attachProp(string prop_model_id, string alias, string target)

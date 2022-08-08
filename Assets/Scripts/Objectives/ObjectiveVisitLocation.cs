@@ -13,7 +13,7 @@ public class ObjectiveVisitLocation : Objective
             keys = new List<string>(objective_config.keys);
         }
 
-        Scenario.onScenarioLoaded += checkLocation;
+        Scenario.onScenarioCallClear += checkLocation;
     }
 
     void checkLocation()
@@ -27,7 +27,7 @@ public class ObjectiveVisitLocation : Objective
             }
             if (keys_completed >= objective_config.required_count)
             {
-                Scenario.onScenarioLoaded -= checkLocation;
+                Scenario.onScenarioCallClear -= checkLocation;
                 objectiveCompleted();
             }
         }

@@ -60,6 +60,7 @@ public class ConfigScene : Config<ConfigScene>
             public float[] scale;
             public float[] position;
             public float[] rotation;
+            public float flatness;
             public string name;
             public string reference;
             public string animationType;

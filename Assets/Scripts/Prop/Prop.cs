@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
-
-public class Prop : PropHolder
+using ModelLoading;
+public class Prop : ModelHolder
 {
     public static Dictionary<string, Prop> spawned_props = new Dictionary<string, Prop>();
     public string _name;
     public string group;
     public spawner spawned_by;
-    private Animation animation_component;
     public void setup(string _name, Model _model, spawner _spawned_by, string _group)
     {
+        base.setup(_model);
         this._name = _name;
         model = _model;
         spawned_by = _spawned_by;
         group = _group;
-        animation_component = gameObject.AddComponent<Animation>();
     }
 
     public enum spawner
@@ -25,30 +24,6 @@ public class Prop : PropHolder
         Event,
     }
 
-    IEnumerator currentAnimationAlerter;
-
-    public void playAnimationOnComponent(string id)
-    {
-        if (currentAnimationAlerter != null)
-            StopCoroutine(currentAnimationAlerter);
-        animation_component.Play(id);
-        //animation_component.CrossFade(id, 0.5f);
-        currentAnimationAlerter = animationAlert(animation_component.GetClip(id));
-        StartCoroutine(currentAnimationAlerter);
-    }
-
-    IEnumerator animationAlert(AnimationClip clip)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(clip.length);
-            GameStart.event_manager.notifyPropAnimationComplete(name, clip.name);
-            if (clip.wrapMode != WrapMode.Loop)
-                yield break;
-        }
-    }
-
-
     public void playAnimation(string animation_name)
     {
 
@@ -56,10 +31,9 @@ public class Prop : PropHolder
         {
             Destroy(gameObject.GetComponent<PropAnimSequence>());
         }
-        AnimationClip prop_anim_clip = AnimationManager.loadAnimationClip(animation_name, model, null);
+        HPAnimation prop_anim_clip = AnimationManager.loadAnimationClip(animation_name, model, null);
 
-        animation_component.AddClip(prop_anim_clip, "default");
-        playAnimationOnComponent("default");
+        playAnimationOnComponent(prop_anim_clip);
     }
 
     public void playAnimSequence(string sequence_name)
@@ -110,7 +84,7 @@ public class Prop : PropHolder
     public static void Initialize()
     {
         GameStart.onReturnToMenu += cleanup;
-        Scenario.onScenarioLoaded += cleanup;
+        Scenario.onScenarioCallClear += cleanup;
     }
 
     private static void cleanup()
@@ -157,10 +131,9 @@ public class Prop : PropHolder
 
         if (prop_locator.animation != null)
         {
-            AnimationClip anim = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);
-            prop.animation_component.AddClip(anim, "default");
+            HPAnimation animation = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);
             prop.animation_component.wrapMode = WrapMode.Loop;
-            prop.playAnimationOnComponent("default");
+            prop.playAnimationOnComponent(animation);
         }
     }
 

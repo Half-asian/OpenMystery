@@ -53,7 +53,7 @@
     <UnityVersion>2021.3.4f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\ModelViewerScreenShot.cs" />
@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Menu\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Scene\LocationHub.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueManager.cs" />
+    <Compile Include="Assets\Scripts\3DModels\ModelHolderProps.cs" />
     <Compile Include="Assets\Scripts\Objectives\HubNPC.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigScenarioLoader.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentEyes.cs" />
@@ -77,12 +78,14 @@
     <Compile Include="Assets\Scripts\Configs\ConfigScriptEventsLoader.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveMatchComplete.cs" />
     <Compile Include="Assets\Scripts\Events\EventManager.cs" />
+    <Compile Include="Assets\Scripts\UI\LoadingScreenCanvas.cs" />
     <Compile Include="Assets\Scripts\Player\CustomizeAvatarGroup.cs" />
     <Compile Include="Assets\Scripts\Player\AvatarComponents.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionExit.cs" />
     <Compile Include="Assets\Scripts\Scene\Scene.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentFaces.cs" />
     <Compile Include="Assets\Scripts\UI\TlsqBox.cs" />
+    <Compile Include="Assets\Scripts\UI\TitleCardCanvas.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigInteractionLoader.cs" />
     <Compile Include="Assets\Scripts\GlobalEngineVariables.cs" />
     <Compile Include="Assets\Scripts\Player\CustomizableAvatarSpawner.cs" />
@@ -94,14 +97,16 @@
     <Compile Include="Assets\Scripts\Player\CustomizeAvatar.cs" />
     <Compile Include="Assets\Scripts\Scenario\Tappie.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveVisitLocation.cs" />
+    <Compile Include="Assets\Scripts\Animation\AnimationTriggers.cs" />
     <Compile Include="Assets\Scripts\Objectives\Objective.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundQuidditch.cs" />
     <Compile Include="Assets\Scripts\Player\BonemodMap.cs" />
     <Compile Include="Assets\Scripts\Configs\Config3dModelsLoader.cs" />
-    <Compile Include="Assets\Scripts\3DModels\ModelManager.cs" />
+    <Compile Include="Assets\Scripts\3DModels\ModelLoading\ModelManager.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionButton.cs" />
     <Compile Include="Assets\Scripts\Predicate\PredTest.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionGroup.cs" />
+    <Compile Include="Assets\Scripts\Animation\AnimationBoneMods.cs" />
     <Compile Include="Assets\Scripts\Scene\LocationScenarioMenu.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveBlank.cs" />
     <Compile Include="Assets\Scripts\Goals\Goal.cs" />
@@ -131,6 +136,7 @@
     <Compile Include="Assets\Scripts\Configs\ConfigDialoguesLoader.cs" />
     <Compile Include="Assets\Scripts\Encounter\EncounterManager.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentRightWrist.cs" />
+    <Compile Include="Assets\Scripts\3DModels\ModelHolder.cs" />
     <Compile Include="Assets\Scripts\UI\GraphicsSettings.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentBottom.cs" />
     <Compile Include="Assets\Scripts\Interaction\Interaction.cs" />
@@ -143,6 +149,7 @@
     <Compile Include="Assets\Scripts\Predicate\PredFunctions.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionLocationHubButton.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationManager.cs" />
+    <Compile Include="Assets\Scripts\3DModels\TestDirectionViewMatrix.cs" />
     <Compile Include="Assets\Scripts\Events\EventPlayer.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveFriendTutComplete.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundYear1.cs" />
@@ -153,12 +160,12 @@
     <Compile Include="Assets\Scripts\Configs\ConfigEncounterLoader.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelInspector.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraManager.cs" />
-    <Compile Include="Assets\Scripts\Prop\PropHolder.cs" />
     <Compile Include="Assets\Scripts\Actors\ActorHead.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraAutoDOF.cs" />
     <Compile Include="Assets\Scripts\3DModels\BoneTransform.cs" />
     <Compile Include="Assets\Scripts\Predicate\PredOperators.cs" />
+    <Compile Include="Assets\Scripts\Animation\ShaderAnimation.cs" />
     <Compile Include="Assets\Scripts\UI\FocusUI.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigLocationsLoader.cs" />
     <Compile Include="Assets\Scripts\Scene\LocationButton.cs" />
@@ -223,32 +230,49 @@
     <Compile Include="Assets\Scripts\Camera\SimpleCameraController.cs" />
     <Compile Include="Assets\Scripts\Console.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
-    <Compile Include="Assets\Scripts\3DModels\ShadowDecider.cs" />
+    <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
+    <Compile Include="Assets\Scripts\3DModels\ModelLoading\MatrixOperations.cs" />
+    <Compile Include="Assets\Scripts\3DModels\ModelLoading\ModelMaterials.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\LitProperties.hlsl" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\skinshader\skinshader.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\Resources\RenderTextures\ui_remove_depth.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\LitData.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\neweyeshader.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\clothshader\LitData.hlsl" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\clothshader\LitProperties.hlsl" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\skinshader\LitDataIndividualLayer.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\clothshader\skinshader.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\LitDataIndividualLayer.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\skinshader\skinshader.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\skinshader\LitProperties.hlsl" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\skinshader\LitData.hlsl" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\clothshader\clothshader.shader" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\clothshader\LitDataIndividualLayer.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\Resources\Blackboard\Blackboard_Empty_v3@4x.txt" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\neweyeshader.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
   <ItemGroup>

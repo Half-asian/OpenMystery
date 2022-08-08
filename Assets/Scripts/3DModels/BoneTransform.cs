@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static ModelLoading.MatrixOperations;
 public class BoneTransform
 {
     public string boneName;
@@ -27,11 +27,11 @@ public class BoneTransform
     {
         
 
-        Vector3 og_pos = ModelManager.ExtractTranslationFromMatrix(ref matrix);
+        Vector3 og_pos = ExtractTranslationFromMatrix(ref matrix);
         Debug.Log("OG POS: " + og_pos);
-        Quaternion og_rot = ModelManager.ExtractRotationFromMatrix(ref matrix);
+        Quaternion og_rot = ExtractRotationFromMatrix(ref matrix);
         Debug.Log("OG_ROT: " + og_rot);
-        Vector3 og_scale = ModelManager.ExtractScaleFromMatrix(ref matrix);
+        Vector3 og_scale = ExtractScaleFromMatrix(ref matrix);
         Debug.Log("OG_SCALE: " + og_scale);
 
         //Vector3 new_pos = new Vector3(og_pos.x + translation.x, og_pos.y + translation.y, og_pos.z + translation.z);
@@ -45,11 +45,11 @@ public class BoneTransform
 
         matrix = Matrix4x4.TRS(xx, og_rot, new Vector3(5, 5, 5));
 
-        Vector3 new_pos = ModelManager.ExtractTranslationFromMatrix(ref matrix);
+        Vector3 new_pos = ExtractTranslationFromMatrix(ref matrix);
         Debug.Log("NEW POS: " + new_pos);
-        Quaternion new_rot = ModelManager.ExtractRotationFromMatrix(ref matrix);
+        Quaternion new_rot = ExtractRotationFromMatrix(ref matrix);
         Debug.Log("NEW_ROT: " + new_rot);
-        Vector3 new_scale = ModelManager.ExtractScaleFromMatrix(ref matrix);
+        Vector3 new_scale = ExtractScaleFromMatrix(ref matrix);
         Debug.Log("NEW_SCALE: " + new_scale);
 
         //matrix = matrix.;

@@ -12,13 +12,13 @@ public class LocationHub
         Debug.Log("Loading location hub " + id);
         current = Configs.config_location_hub.LocationHub[id];
         Location.current = null;
-        Scenario.onScenarioLoaded += onScenarioLoaded;
+        Scenario.onScenarioCallClear += onScenarioLoaded;
         Scenario.Load(current.scenarioId);
     }
 
     public static void onScenarioLoaded()
     {
-        Scenario.onScenarioLoaded -= onScenarioLoaded;
+        Scenario.onScenarioCallClear -= onScenarioLoaded;
         spawnHubLocationHotspots();
     }
 

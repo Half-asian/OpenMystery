@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
-
+using ModelLoading;
 public class CustomizeAvatar : MonoBehaviour
 {
     public static CustomizeAvatar current;

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
-public class ActorController : PropHolder
+using ModelLoading;
+public class ActorController : ModelHolder
 {
     public ActorHead actor_head;
     public ActorAnimation actor_animation;
     public ActorMovement actor_movement;
-    public Animation animation_component;
     public List<Model> patches;
 
     private ConfigHPActorInfo._HPActorInfo _actor_info;
@@ -29,24 +28,21 @@ public class ActorController : PropHolder
 
     public List<GameObject> particles = new List<GameObject>();
 
-    public float creation_time;
 
     private void LateUpdate()
     {
         actor_head.ApplyHeadTurns();
     }
 
-    public void setup(Model _model)
+    public new void setup(Model _model)
     {
-        model = _model;
-        if (model.game_object.GetComponent<Animation>() == null)
-            animation_component = model.game_object.AddComponent<Animation>();
+        base.setup(_model);
+
         actor_head = new ActorHead(this);
         actor_animation = model.game_object.AddComponent<ActorAnimation>();
         actor_animation.actor_controller = this;
         actor_movement = new ActorMovement(this);
         patches = new List<Model>();
-        creation_time = Time.realtimeSinceStartup;
     }
 
     public void addPatch(string patch_model_id)

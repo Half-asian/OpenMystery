@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+using ModelLoading;
 public class Actor
 {
     //Later on, change this from dictionary look up to using events
@@ -15,7 +15,7 @@ public class Actor
     public static void Initialize()
     {
         GameStart.onReturnToMenu += cleanup;
-        Scenario.onScenarioLoaded += cleanup;
+        Scenario.onScenarioCallClear += cleanup;
     }
 
     private static void cleanup()

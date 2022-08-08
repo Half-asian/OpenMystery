@@ -11,7 +11,6 @@ public class MainMenu : MonoBehaviour
 
     public static MainMenu current;
 
-    public Image loading_image;
     public GameObject canvas;
     public GameObject menu_object;
     public GameObject crash;
@@ -53,7 +52,6 @@ public class MainMenu : MonoBehaviour
 
         Objective.active_objectives[0].LoadScenarioIfValid();
 
-        loading_image.enabled = false;
         menu_object.SetActive(false);
         GameStart.menu_background.destroy();
     }
@@ -62,7 +60,7 @@ public class MainMenu : MonoBehaviour
     public void enterGoalID(string starting_goal_chain, int starting_goal, GoalChainType goal_chain_type)
     {
         GoalChain.startGoalChain(starting_goal_chain, goal_chain_type, starting_goal);
-        loading_image.enabled = true;
+        LoadingScreenCanvas.current.showImage();
         StartCoroutine(countdownLaunch(10));
         GetComponent<PauseMenu>().enabled = true;
     }

@@ -17,6 +17,7 @@ public class ConfigAnimation : Config<ConfigAnimation>
         public string introAnim;
         public string outroAnim;
         public int rigVersion;
+        public string shaderAnimationId;
         public string wrapMode;
 
         [System.Serializable]
@@ -123,3 +124,45 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
     }
 }
 
+public class ConfigShaderAnimation : Config<ConfigShaderAnimation>
+{
+    [System.Serializable]
+    public class _ShaderAnimation
+    {
+        [System.Serializable]
+        public class TimeData
+        {
+            public float start;
+            public float end;
+            public float startVal;
+            public float endVal;
+        }
+
+
+        [System.Serializable]
+        public class FloatData
+        {
+            public TimeData[] u_opacity;
+        }
+
+
+        [System.Serializable]
+        public class PartData
+        {
+            [JsonProperty(PropertyName = "float")]
+            public dynamic fltdata;
+        }
+
+        public Dictionary<string, PartData> data;
+        public float duration;
+        public string name;
+        public string wrapMode;
+
+    }
+    public Dictionary<string, _ShaderAnimation> ShaderAnimation;
+
+    public override ConfigShaderAnimation combine(List<ConfigShaderAnimation> other_list)
+    {
+        throw new NotImplementedException();
+    }
+}

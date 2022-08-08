@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using ModelLoading;
+
 public static class Events
 {
 
@@ -164,8 +166,6 @@ public static class Events
 
                 if (Scene.current.waypoint_dict.ContainsKey(action_params[1]))
                 {
-                    ModelManager.loadModelsTextures(action_params[0]);
-
                     if (action_params.Length == 3)
                         Prop.spawnPropFromEvent(action_params[0], Scene.current.waypoint_dict[action_params[1]], action_params[2], "");
                     else if (action_params.Length == 4)
