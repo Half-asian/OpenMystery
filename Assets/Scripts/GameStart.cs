@@ -164,7 +164,7 @@ public class GameStart : MonoBehaviour
         Objective.Initialize();
         HubNPC.Initialize();
         Tappie.Initialize();
-
+        TextureManager.Initialize();
         //anything thats a getcomponent, makes use of coroutines or needs references to game objects
         
 

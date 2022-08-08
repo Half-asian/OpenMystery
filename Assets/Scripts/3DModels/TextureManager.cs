@@ -63,6 +63,9 @@ public class TextureManager
 			return null;
 		}
 
+		if (loaded_textures.ContainsKey(name))
+			return loaded_textures[name];
+
 		string full_path = "";
 		string file_name = Configs.config_texture.TextureConfig[name].filename;
 		if (file_name.StartsWith("mods/") || file_name.StartsWith("mods\\"))
@@ -104,8 +107,16 @@ public class TextureManager
 
 		tex.LoadRawTextureData(buffer);
 		tex.Apply();
+
+        loaded_textures[name] = tex;
+
 		return tex;
 
 	}
+
+    public static void Initialize()
+    {
+		Scenario.onScenarioLoaded += () => loaded_textures.Clear();
+    }
 
 }

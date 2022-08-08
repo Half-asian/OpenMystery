@@ -149,6 +149,8 @@ public class Scenario
     public static void Load(string scenario_id)
     {
 
+        float start_time = Time.realtimeSinceStartup;
+
         Debug.Log("Loading Scenario " + scenario_id);
         if (!Configs.config_scenario.Scenario.ContainsKey(scenario_id))
             throw new System.Exception("Load Scenario - invalid scenario name: " + scenario_id);
@@ -241,6 +243,8 @@ public class Scenario
 
 
         EventManager.all_script_events_finished_event += onScenarioLoadScriptEventsFinished;
+
+        Debug.Log("Time to load scenario: " + (Time.realtimeSinceStartup - start_time));
     }
 
     private static void onScenarioLoadScriptEventsFinished()
