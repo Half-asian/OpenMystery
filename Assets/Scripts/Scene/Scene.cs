@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using ModelLoading;
+using System.Globalization;
 public class Scene
 {
     public static Model scene_model;
@@ -112,17 +113,15 @@ public class Scene
                     GameObject light_go = new GameObject("sceneLight");
                     Light light_component = light_go.AddComponent<Light>();
                     light_component.type = LightType.Directional;
-                    light_component.color = new Color(float.Parse( light.color[0]), float.Parse(light.color[1]), float.Parse(light.color[2]));
-                    //light_go.transform.position = new Vector3(float.Parse(light.position[0]) * -0.01f, float.Parse(light.position[1]) * 0.01f, float.Parse(light.position[2]) * 0.01f);
+                    light_component.color = new Color(float.Parse( light.color[0], CultureInfo.InvariantCulture), float.Parse(light.color[1], CultureInfo.InvariantCulture), float.Parse(light.color[2], CultureInfo.InvariantCulture));
 
-
-                    Vector3 direction = new Vector3(float.Parse(light.rotation[0]), float.Parse(light.rotation[1]), float.Parse(light.rotation[2]));
+                    Vector3 direction = new Vector3(float.Parse(light.rotation[0], CultureInfo.InvariantCulture), float.Parse(light.rotation[1], CultureInfo.InvariantCulture), float.Parse(light.rotation[2], CultureInfo.InvariantCulture));
 
                     light_component.transform.rotation = Quaternion.identity;
                     light_component.transform.rotation = Quaternion.identity;
-                    light_component.transform.Rotate(new Vector3(0, 0, -float.Parse(light.rotation[2])));
-                    light_component.transform.Rotate(new Vector3(0, -float.Parse(light.rotation[1]), 0));
-                    light_component.transform.Rotate(new Vector3(float.Parse(light.rotation[0]), 0, 0));
+                    light_component.transform.Rotate(new Vector3(0, 0, -float.Parse(light.rotation[2], CultureInfo.InvariantCulture)));
+                    light_component.transform.Rotate(new Vector3(0, -float.Parse(light.rotation[1], CultureInfo.InvariantCulture), 0));
+                    light_component.transform.Rotate(new Vector3(float.Parse(light.rotation[0], CultureInfo.InvariantCulture), 0, 0));
 
 
                     //const Mat4& Node::getNodeToParentTransform() const
@@ -152,7 +151,7 @@ public class Scene
                     d.preCameraMatrix = m;
                     
 
-                    d.color = new Color(float.Parse(light.color[0]) / 255 * light.intensity, float.Parse(light.color[1]) / 255 * light.intensity, float.Parse(light.color[2]) / 255 * light.intensity);
+                    d.color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture) / 255 * light.intensity, float.Parse(light.color[1], CultureInfo.InvariantCulture) / 255 * light.intensity, float.Parse(light.color[2], CultureInfo.InvariantCulture) / 255 * light.intensity);
 
                     //d.direction = new Vector3(-m[8], m[9], -m[10]);
                     
@@ -164,15 +163,15 @@ public class Scene
 
                     GameObject.Destroy(light_go);
 
-                    average_r += float.Parse(light.color[0]) / 255;
-                    average_g += float.Parse(light.color[1]) / 255;
-                    average_b += float.Parse(light.color[2]) / 255;
+                    average_r += float.Parse(light.color[0], CultureInfo.InvariantCulture) / 255;
+                    average_g += float.Parse(light.color[1], CultureInfo.InvariantCulture) / 255;
+                    average_b += float.Parse(light.color[2], CultureInfo.InvariantCulture) / 255;
                     directional_light_counter++;
                     Debug.Log(light.intensity);
                     break;
                 case "ambientLight": //Take the highest value
-                    Color color = new Color(float.Parse(light.color[0]) / 255, float.Parse(light.color[1]) / 255, float.Parse(light.color[2]) / 255);
-                    float intensity = float.Parse(light.color[0]) + float.Parse(light.color[1]) + float.Parse(light.color[2]);
+                    Color color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture) / 255, float.Parse(light.color[1], CultureInfo.InvariantCulture) / 255, float.Parse(light.color[2], CultureInfo.InvariantCulture) / 255);
+                    float intensity = float.Parse(light.color[0], CultureInfo.InvariantCulture) + float.Parse(light.color[1], CultureInfo.InvariantCulture) + float.Parse(light.color[2], CultureInfo.InvariantCulture);
                     if (intensity > ambient_intensity)
                     {
                         ambient_intensity = intensity;
@@ -182,17 +181,17 @@ public class Scene
                     //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().color = color;
                     //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().intensity = 0.1f;
                     break;
-                /*case "spotLight":
-                    GameObject spotlight = new GameObject(light.name);
-                    spotlight.transform.position = new Vector3(float.Parse(light.position[0]) * -0.01f, float.Parse(light.position[1]) * 0.01f, float.Parse(light.position[2]) * 0.01f);
-                    spotlight.transform.rotation = Quaternion.Euler(new Vector3(-float.Parse(light.rotation[0]), float.Parse(light.rotation[1]) + 180.0f, float.Parse(light.rotation[2])));
+                    /*case "spotLight":
+                        GameObject spotlight = new GameObject(light.name);
+                        spotlight.transform.position = new Vector3(float.Parse(light.position[0], CultureInfo.InvariantCulture) * -0.01f, float.Parse(light.position[1], CultureInfo.InvariantCulture) * 0.01f, float.Parse(light.position[2], CultureInfo.InvariantCulture) * 0.01f);
+                        spotlight.transform.rotation = Quaternion.Euler(new Vector3(-float.Parse(light.rotation[0], CultureInfo.InvariantCulture), float.Parse(light.rotation[1], CultureInfo.InvariantCulture) + 180.0f, float.Parse(light.rotation[2], CultureInfo.InvariantCulture)));
 
-                    Light spotlight_component = spotlight.AddComponent<Light>();
-                    spotlight_component.type = LightType.Spot;
-                    spotlight_component.color = new Color(float.Parse(light.color[0]), float.Parse(light.color[1]), float.Parse(light.color[2]));
-                    spotlight_component.intensity = light.intensity;
+                        Light spotlight_component = spotlight.AddComponent<Light>();
+                        spotlight_component.type = LightType.Spot;
+                        spotlight_component.color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture), float.Parse(light.color[1], CultureInfo.InvariantCulture), float.Parse(light.color[2], CultureInfo.InvariantCulture));
+                        spotlight_component.intensity = light.intensity;
 
-                    break;*/
+                        break;*/
 
             }
             Color old_ambient = new Color(ambient_color.r, ambient_color.g, ambient_color.b);

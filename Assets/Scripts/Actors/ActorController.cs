@@ -52,14 +52,6 @@ public class ActorController : ModelHolder
         patch.game_object.transform.parent = transform;
     }
 
-
-    /*public void rootMotionMove(string movement_string)
-    {
-        string[] floats = movement_string.Split(',');
-        Vector3 delta = new Vector3(float.Parse(floats[0]) / 100, float.Parse(floats[1]) / 100, float.Parse(floats[2])) / 100;
-
-        actor_movement.MoveOverTime(delta, float.Parse(floats[3]));
-    }*/
     public void PlaySound(string sound) =>
     Sound.playSoundEffect(sound);
     public void ScriptTrigger(string trigger) =>

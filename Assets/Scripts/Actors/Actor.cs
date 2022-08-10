@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using ModelLoading;
+using System.Globalization;
 public class Actor
 {
     //Later on, change this from dictionary look up to using events
@@ -129,9 +130,9 @@ public class Actor
         foreach (string[] serialized_actor in serialized_actors)
         {
             ActorController am = spawnActor(serialized_actor[1], null, serialized_actor[0]);
-            am.gameObject.transform.position = new Vector3(float.Parse(serialized_actor[2]), float.Parse(serialized_actor[3]), float.Parse(serialized_actor[4]));
-            am.gameObject.transform.rotation = new Quaternion(float.Parse(serialized_actor[5]), float.Parse(serialized_actor[6]), float.Parse(serialized_actor[7]), float.Parse(serialized_actor[8]));
-            am.gameObject.transform.localScale = new Vector3(float.Parse(serialized_actor[9]), float.Parse(serialized_actor[10]), float.Parse(serialized_actor[11]));
+            am.gameObject.transform.position = new Vector3(float.Parse(serialized_actor[2], CultureInfo.InvariantCulture), float.Parse(serialized_actor[3], CultureInfo.InvariantCulture), float.Parse(serialized_actor[4], CultureInfo.InvariantCulture));
+            am.gameObject.transform.rotation = new Quaternion(float.Parse(serialized_actor[5], CultureInfo.InvariantCulture), float.Parse(serialized_actor[6], CultureInfo.InvariantCulture), float.Parse(serialized_actor[7], CultureInfo.InvariantCulture), float.Parse(serialized_actor[8], CultureInfo.InvariantCulture));
+            am.gameObject.transform.localScale = new Vector3(float.Parse(serialized_actor[9], CultureInfo.InvariantCulture), float.Parse(serialized_actor[10], CultureInfo.InvariantCulture), float.Parse(serialized_actor[11], CultureInfo.InvariantCulture));
 
             Enum.TryParse(serialized_actor[12], out am.actor_state);
             am.actor_movement.destination_waypoint = serialized_actor[13];

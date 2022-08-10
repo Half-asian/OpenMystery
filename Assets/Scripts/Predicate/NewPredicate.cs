@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using UnityEngine.Assertions;
+using System.Globalization;
 public partial class NewPredicate
 {
 
@@ -349,9 +350,9 @@ public partial class NewPredicate
             else if (char.IsNumber(char_buf[0]) || char_buf[0] == '.')
             {
                 if (char_buf.Contains("."))
-                    symbols.Add(new SymbolConstantFloat(float.Parse(char_buf.Trim())));
+                    symbols.Add(new SymbolConstantFloat(float.Parse(char_buf.Trim(), CultureInfo.InvariantCulture)));
                 else
-                    symbols.Add(new SymbolConstantInteger(int.Parse(char_buf.Trim())));
+                    symbols.Add(new SymbolConstantInteger(int.Parse(char_buf.Trim(), CultureInfo.InvariantCulture)));
                 char_buf = "";
                 return;
             }
@@ -398,9 +399,9 @@ public partial class NewPredicate
         {
             string s = char_buf.Substring(0, char_buf.Length - 1);
             if (s.Contains("."))
-                symbols.Add(new SymbolConstantFloat(float.Parse(s)));
+                symbols.Add(new SymbolConstantFloat(float.Parse(s, CultureInfo.InvariantCulture)));
             else
-                symbols.Add(new SymbolConstantInteger(int.Parse(s)));
+                symbols.Add(new SymbolConstantInteger(int.Parse(s, CultureInfo.InvariantCulture)));
             char_buf = "";
             string_pointer--; // We used the last character to determine integer. Rerun that last character.
             return;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using ModelLoading;
-
+using System.Globalization;
 public static class Events
 {
 
@@ -338,7 +338,7 @@ public static class Events
             case "screenFadeTo":
                 float ffade_to_time = 1.0f;
                 if (action_params.Length >= 1)
-                    ffade_to_time = float.Parse(action_params[0]);
+                    ffade_to_time = float.Parse(action_params[0], CultureInfo.InvariantCulture);
                 string color_string = action_params[1];
                 int r = int.Parse(color_string.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
                 int g = int.Parse(color_string.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
