@@ -10,7 +10,7 @@ namespace ModelLoading
     {
 		static string[] known_shaders_array = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "simpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "panningfalloff", "eyeballshader", "SimpleTexture", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "eyeshader", "dustmotes_vfx", "houseubershader", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
 
-		static string[] hlsl_shaders = { "skinshader", "clothshader", "neweyeshader" };
+		static string[] hlsl_shaders = {};
 
 		static List<string> known_shaders = new List<string>(known_shaders_array);
 
@@ -29,6 +29,38 @@ namespace ModelLoading
 		public static Dictionary<string, Shader> shader_dict;// = new Dictionary<string, Shader>();
 		//private static Dictionary<string, Texture2D> all_textures;
 
+		private static void setLightData(Material mat)
+        {
+			mat.SetColor("u_AmbientLightSourceColor", Scene.scene_ambient_color);
+
+			for (int i = 0; i < Scene.dirLights.Count; i++)
+			{
+				if (i == 0)
+				{
+					mat.SetColor("u_DirLightSourceColor1", Scene.dirLights[i].color);
+					Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
+					mat.SetVector("u_DirLightSourceDirection1", direction);
+				}
+				else if (i == 1)
+				{
+					mat.SetColor("u_DirLightSourceColor2", Scene.dirLights[i].color);
+					Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
+					mat.SetVector("u_DirLightSourceDirection2", direction);
+				}
+				else if (i == 2)
+				{
+					mat.SetColor("u_DirLightSourceColor3", Scene.dirLights[i].color);
+					Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
+					mat.SetVector("u_DirLightSourceDirection3", direction);
+				}
+				else if (i == 3)
+				{
+					mat.SetColor("u_DirLightSourceColor4", Scene.dirLights[i].color);
+					Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
+					mat.SetVector("u_DirLightSourceDirection4", direction);
+				}
+			}
+		}
 
 		public static void applyModelMaterial(Material mat, Config3DModel._Config3DModel.JsonData.Material material)
         {
@@ -49,114 +81,100 @@ namespace ModelLoading
 				mat.CopyPropertiesFromMaterial(transparent_no_depth_write_material);
 			}
 
-			if (material.shaderName == "ubershader")
+			Material default_material = Resources.Load<Material>("ShaderDefaults/" + material.shaderName);
+			if (default_material != null)
 			{
-
-				bool cutout = false;
-				if (material.intSettingIds != null)
-				{
-					for (int i = 0; i < material.intSettingIds.Length; i++)
-					{
-						if (material.intSettingIds[i] == "UseAsCutout_SWITCH" && material.intSettingValues[i] == 1)
-						{
-							cutout = true;
-						}
-					}
-				}
-
-				if (material.transparent == 1 && cutout == false)
-				{
-					mat.CopyPropertiesFromMaterial(transparent_material);
-					mat.shader = shader_dict["ubershader_transparent"];
-				}
-				else
-				{
-					mat.CopyPropertiesFromMaterial(opaque_material);
-
-					mat.shader = shader_dict["ubershader"];
-
-				}
-
-
-				mat.SetFloat("u_opacityAmount", 1.0f);
-				mat.SetFloat("u_flatness", 1.0f);
-				mat.SetTexture("u_diffuseMap", (Texture)Resources.Load("Shaders/black"));
-				mat.SetTexture("u_specularMap", (Texture)Resources.Load("default_dirtmap"));
-
-				mat.SetTexture("u_lightmapMap", (Texture)Resources.Load("default_lightmap"));
-
-				//mat.SetTexture("u_dirtMap", (Texture)Resources.Load("default_dirtmap"));
-
-				mat.SetFloat("_Surface", 1.0f);
-
-
-			}
-
-			else if (material.shaderName == "houseubershader")
-			{
-				mat.shader = shader_dict["quidditchshader"];
-
-			}
-
-
-			else if (material.shaderName == "simpleColor")
-			{
-				mat.shader = shader_dict["SimpleColor"];
-			}
-
-			else if (material.shaderName == "crowd_vfx")
-			{
-				mat.CopyPropertiesFromMaterial(opaque_material);
+				Debug.Log("FOUND THE MATERIAL " + material.shaderName);
 				mat.shader = shader_dict[material.shaderName];
-			}
-			else if (material.shaderName == "skinshader" || material.shaderName == "clothshader")// || material.shaderName == "houserobeshader" || material.shaderName == "houseclothshader")
-			{
-				mat.CopyPropertiesFromMaterial(opaque_skin_material);
-				mat.shader = shader_dict[material.shaderName];
-
-				mat.SetColor("u_AmbientLightSourceColor", Scene.scene_ambient_color);
-
-				for (int i = 0; i < Scene.dirLights.Count; i++)
-				{
-					if (i == 0)
-					{
-						mat.SetColor("u_DirLightSourceColor1", Scene.dirLights[i].color);
-						Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
-						mat.SetVector("u_DirLightSourceDirection1", direction);
-					}
-					else if (i == 1)
-					{
-						mat.SetColor("u_DirLightSourceColor2", Scene.dirLights[i].color);
-						Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
-						mat.SetVector("u_DirLightSourceDirection2", direction);
-					}
-					else if (i == 2)
-					{
-						mat.SetColor("u_DirLightSourceColor3", Scene.dirLights[i].color);
-						Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
-						mat.SetVector("u_DirLightSourceDirection3", direction);
-					}
-					else if (i == 3)
-					{
-						mat.SetColor("u_DirLightSourceColor4", Scene.dirLights[i].color);
-						Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
-						mat.SetVector("u_DirLightSourceDirection4", direction);
-					}
-				}
-
+				mat.CopyPropertiesFromMaterial(default_material);
+				setLightData(mat);
 			}
 			else
 			{
-				if (shader_dict.ContainsKey(material.shaderName))
+				Debug.Log("Default material was null for " + "ShaderDefaults/" + material.shaderName + ".mat");
+				if (material.shaderName == "ubershader")
 				{
+
+					bool cutout = false;
+					if (material.intSettingIds != null)
+					{
+						for (int i = 0; i < material.intSettingIds.Length; i++)
+						{
+							if (material.intSettingIds[i] == "UseAsCutout_SWITCH" && material.intSettingValues[i] == 1)
+							{
+								cutout = true;
+							}
+						}
+					}
+
+					if (material.transparent == 1 && cutout == false)
+					{
+						mat.CopyPropertiesFromMaterial(transparent_material);
+						mat.shader = shader_dict["ubershader_transparent"];
+					}
+					else
+					{
+						mat.CopyPropertiesFromMaterial(opaque_material);
+
+						mat.shader = shader_dict["ubershader"];
+
+					}
+
+
+					mat.SetFloat("u_opacityAmount", 1.0f);
+					mat.SetFloat("u_flatness", 1.0f);
+					mat.SetTexture("u_diffuseMap", (Texture)Resources.Load("Shaders/black"));
+					mat.SetTexture("u_specularMap", (Texture)Resources.Load("default_dirtmap"));
+
+					mat.SetTexture("u_lightmapMap", (Texture)Resources.Load("default_lightmap"));
+
+					//mat.SetTexture("u_dirtMap", (Texture)Resources.Load("default_dirtmap"));
+
+					mat.SetFloat("_Surface", 1.0f);
+
+
+				}
+
+
+
+				else if (material.shaderName == "houseubershader")
+				{
+					mat.shader = shader_dict["quidditchshader"];
+
+				}
+
+
+				else if (material.shaderName == "simpleColor")
+				{
+					mat.shader = shader_dict["SimpleColor"];
+				}
+
+				else if (material.shaderName == "crowd_vfx")
+				{
+					mat.CopyPropertiesFromMaterial(opaque_material);
 					mat.shader = shader_dict[material.shaderName];
+				}
+				else if (material.shaderName == "skinshader" || material.shaderName == "clothshader" || material.shaderName == "neweyeshader")// || material.shaderName == "houserobeshader" || material.shaderName == "houseclothshader")
+				{
+					mat.CopyPropertiesFromMaterial(opaque_skin_material);
+					mat.shader = shader_dict[material.shaderName];
+
+					setLightData(mat);
+
 				}
 				else
 				{
-					mat.shader = shader_dict["ubershader"];
+					if (shader_dict.ContainsKey(material.shaderName))
+					{
+						mat.shader = shader_dict[material.shaderName];
+					}
+					else
+					{
+						mat.shader = shader_dict["ubershader"];
+					}
 				}
-			}
 
+			}
 			if (material.shaderName == "avatarfaceshader")
 			{
 				mat.SetTexture("u_facePaintTexture", (Texture)Resources.Load("Shaders/transparent"));
@@ -207,15 +225,35 @@ namespace ModelLoading
 				{
 					case "ravenclaw":
 						mat.SetInt("is_ravenclaw", 1);
+						mat.SetColor("u_robeColor", new Color(0.161f, 0.329f, 0.588f));
+						mat.SetVector("u_emblemTexOffset", new Vector2(0.0f, 0.5f));
+						mat.SetFloat("u_houseSet", 1.0f);
+						mat.SetColor("u_primaryColor", new Color(0.14f, 0.308f, 0.656f));
+						mat.SetColor("u_secondaryColor", new Color(0.656f, 0.656f, 0.656f));
 						break;
 					case "gryffindor":
 						mat.SetInt("is_gryffindor", 1);
+						mat.SetColor("u_robeColor", new Color(0.761f, 0.549f, 0.102f));
+						mat.SetVector("u_emblemTexOffset", new Vector2(0f, 0f));
+						mat.SetFloat("u_houseSet", 1.0f);
+						mat.SetColor("u_primaryColor", new Color(0.706f, 0.15f, 0.15f));
+						mat.SetColor("u_secondaryColor", new Color(0.722f, 0.635f, 0.166f));
 						break;
 					case "slytherin":
 						mat.SetInt("is_slytherin", 1);
+						mat.SetColor("u_robeColor", new Color(0.056f, 0.433f, 0.191f));
+						mat.SetVector("u_emblemTexOffset", new Vector2(0.5f, 0.0f));
+						mat.SetFloat("u_houseSet", 1.0f);
+						mat.SetColor("u_primaryColor", new Color(0.056f, 0.433f, 0.191f));
+						mat.SetColor("u_secondaryColor", new Color(0.822f, 0.822f, 0.822f));
 						break;
 					case "hufflepuff":
 						mat.SetInt("is_hufflepuff", 1);
+						mat.SetColor("u_robeColor", new Color(0.761f, 0.549f, 0.102f));
+						mat.SetVector("u_emblemTexOffset", new Vector2(0.5f, 0.5f));
+						mat.SetFloat("u_houseSet", 1.0f);
+						mat.SetColor("u_primaryColor", new Color(0.833f, 0.72f, 0.239f));
+						mat.SetColor("u_secondaryColor", new Color(0.101f, 0.096f, 0.075f));
 						break;
 				}
 			}

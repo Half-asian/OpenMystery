@@ -21,7 +21,13 @@ public class TestDirectionViewMatrix : MonoBehaviour
             Matrix4x4 matrix = Scene.dirLights[i].preCameraMatrix;
 
 
-            Matrix4x4 view_matrix = CameraManager.current.main_camera.GetComponent<Camera>().projectionMatrix;
+            Matrix4x4 view_matrix = CameraManager.current.main_camera.GetComponent<Camera>().worldToCameraMatrix;
+
+            Vector3 flipz = new Vector3(0, 180, 0);
+            Matrix4x4 flipzm = Matrix4x4.Rotate(Quaternion.Euler(flipz));
+            view_matrix = view_matrix * flipzm;
+
+
             matrix = matrix * view_matrix;
 
             SkinnedMeshRenderer smr = gameObject.GetComponent<SkinnedMeshRenderer>();

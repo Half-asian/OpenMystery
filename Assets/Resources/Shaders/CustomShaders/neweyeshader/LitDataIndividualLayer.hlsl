@@ -201,6 +201,8 @@ float3 ADD_IDX(GetBentNormalTS)(FragInputs input, LayerTexCoord layerTexCoord, f
 // Return opacity
 float ADD_IDX(GetSurfaceData)(FragInputs input, LayerTexCoord layerTexCoord, out SurfaceData surfaceData, out float3 normalTS, out float3 bentNormalTS)
 {
+    PositionInputs posinputs = GetPositionInput(input.positionSS, float2(1.0f / g_viDimensions.x, 1.0f / g_viDimensions.y));
+
     float3 detailNormalTS = float3(0.0, 0.0, 0.0);
     float detailMask = 0.0;
 #ifdef _DETAIL_MAP_IDX
@@ -221,7 +223,7 @@ float ADD_IDX(GetSurfaceData)(FragInputs input, LayerTexCoord layerTexCoord, out
     //HERE
     normalTS = ADD_IDX(GetNormalTS)(input, layerTexCoord, detailNormalTS, detailMask);
     bentNormalTS = ADD_IDX(GetBentNormalTS)(input, layerTexCoord, normalTS, detailNormalTS, detailMask);
-    float4 color = processHMShader(input, layerTexCoord);
+    float4 color = processHMShader(input, layerTexCoord, posinputs);
 
     surfaceData.baseColor = color.rgb;
     float alpha = color.a;

@@ -150,10 +150,13 @@ public class Scene
 
                     dirLight d = new dirLight();
                     d.preCameraMatrix = m;
-                    d.color = new Color(float.Parse(light.color[0]) / 255 * light.intensity, float.Parse(light.color[1]) / 255 * light.intensity, float.Parse(light.color[2]) / 255) * light.intensity;
+                    
+
+                    d.color = new Color(float.Parse(light.color[0]) / 255 * light.intensity, float.Parse(light.color[1]) / 255 * light.intensity, float.Parse(light.color[2]) / 255 * light.intensity);
+
                     //d.direction = new Vector3(-m[8], m[9], -m[10]);
                     
-                    Vector3 newdirection = new Vector3(m[8], -m[9], -m[10]);
+                    Vector3 newdirection = new Vector3(-m[8], -m[9], -m[10]);
                     newdirection.Normalize();
                     d.direction = newdirection;
 

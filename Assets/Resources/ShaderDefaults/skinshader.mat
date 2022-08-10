@@ -7,13 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: opaque_skin_base
-  m_Shader: {fileID: 4800000, guid: 5961254507a8d6545ad332850eb73d7f, type: 3}
+  m_Name: skinshader
+  m_Shader: {fileID: -6465566751694194690, guid: 90ae92c5fcb13ef4e8210ebea73a3c10, type: 3}
   m_ValidKeywords:
+  - IS_SKIN_SHADER
+  - USE_RIM
   - _DISABLE_SSR_TRANSPARENT
-  - _MATERIAL_FEATURE_CLEAR_COAT
+  m_InvalidKeywords:
   - _NORMALMAP_TANGENT_SPACE
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -46,7 +47,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CoatMaskMap:
-        m_Texture: {fileID: 2800000, guid: 5efb11106d4d5454d92d2ba94efd9b31, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailMap:
@@ -70,7 +71,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 24efc86a805a9344d95dbf09e7fd71d2, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -113,18 +114,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _u_colorMap:
-        m_Texture: {fileID: 2800000, guid: 0a45954c3845a4f44bed611df033c90b, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _u_secondaryMaps:
-        m_Texture: {fileID: 2800000, guid: b380a47593673b14ba08e9fb0186704f, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _u_shadowMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - u_colorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -147,6 +136,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - IS_SKIN_SHADER: 1
+    - USE_RIM: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -224,7 +215,7 @@ Material:
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
     - _RenderQueueType: 1
-    - _RequireSplitLighting: 1
+    - _RequireSplitLighting: 0
     - _Smoothness: 0.5
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
@@ -266,21 +257,15 @@ Material:
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
     - _ZWrite: 1
-    - _alpha: 1
-    - _u_flatness: 1
-    - _u_lightAngleBoost: 1
-    - _u_rimAngle: 15
-    - _u_specularity: 20
-    - alpha: 0
-    - u_flatness: 0
-    - u_lightAngleBoost: 0.4
+    - alpha: 1
+    - u_flatness: 1
+    - u_lightAngleBoost: 0.5
     - u_rimAngle: 0
     - u_specularity: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _CoatMask: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 0.759434, b: 0.759434, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
@@ -294,18 +279,6 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
-    - _u_AmbientLightSourceColor: {r: 1, g: 0.74509805, b: 0.40392157, a: 1}
-    - _u_DirLightSourceColor1: {r: 1, g: 0.9411765, b: 0.78431374, a: 1}
-    - _u_DirLightSourceColor2: {r: 1, g: 0.5803921, b: 0.42352942, a: 1}
-    - _u_DirLightSourceColor3: {r: 0.9098039, g: 0.8666667, b: 1, a: 1}
-    - _u_DirLightSourceColor4: {r: 1, g: 1, b: 1, a: 1}
-    - _u_DirLightSourceDirection1: {r: -58.78618, g: 2.989407, b: -32.050117, a: 0}
-    - _u_DirLightSourceDirection2: {r: 23.851969, g: 4.867237, b: -16.656998, a: 0}
-    - _u_DirLightSourceDirection3: {r: -124.336334, g: 31.070265, b: -60.144302, a: 0}
-    - _u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
-    - _u_rimColor: {r: 0.5, g: 0.42919996, b: 0.3199, a: 1}
-    - _u_shadeColor: {r: 0.16609994, g: 0.045199975, b: 0.041, a: 1}
-    - _u_specColor: {r: 0.13019994, g: 0.13149998, b: 0.1885, a: 1}
     - u_AmbientLightSourceColor: {r: 1, g: 1, b: 1, a: 1}
     - u_DirLightSourceColor1: {r: 1, g: 1, b: 1, a: 1}
     - u_DirLightSourceColor2: {r: 1, g: 1, b: 1, a: 1}
@@ -315,11 +288,11 @@ Material:
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
-    - u_rimColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_shadeColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_specColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_shadeColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_specColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &5420347321475677135
+--- !u!114 &5571307314426355002
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
