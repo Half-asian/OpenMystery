@@ -47,15 +47,17 @@ public partial class ModelHolder : MonoBehaviour
         }
         else
         {
+            animation_component.Play("default");
+
             //This check prevents a small spaz in lookats for looping anims
-            if (lastclip != null && lastclip == animation)
+            /*if (lastclip != null && lastclip == animation)
             {
                 animation_component.Play("default");
             }
             else
             {
                 animation_component.CrossFade("default", 0.4f);
-            }
+            }*/
         }
         lastclip = animation;
         currentAnimationAlerter = animationAlert(animation.anim_clip);
@@ -75,9 +77,9 @@ public partial class ModelHolder : MonoBehaviour
             GameStart.event_manager.notifyCharacterAnimationComplete(name, clip.name);
             if (clip.wrapMode != WrapMode.Loop)
             {
-                yield return null;
-                yield return null;
-                playAnimationOnComponent(idle);
+                //yield return null;
+                //yield return null;
+                //playAnimationOnComponent(idle);
                 yield break;
             }
         }

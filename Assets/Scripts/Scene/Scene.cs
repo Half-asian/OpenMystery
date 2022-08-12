@@ -14,17 +14,7 @@ public class Scene
 
     public static GameObject scene_postprocessing_and_lighting;
 
-    public static Color scene_ambient_color = new Color(1,1,1); 
-
-
-    public class dirLight
-    {
-        public Color color;
-        public Vector3 direction;
-        public Matrix4x4 preCameraMatrix;
-    }
-
-    public static List<dirLight> dirLights = new List<dirLight>();
+    public static Dictionary<string, SceneLight> scene_lights;
 
     public static void Initialize(){
         GameStart.onReturnToMenu += cleanup;
@@ -69,43 +59,39 @@ public class Scene
 
             if (scene_model != null)
                 GameObject.Destroy(scene_model.game_object);
+            spawnLights();
+            ModelMaterials.lighting_phase = "ENV";
             scene_model = ModelManager.loadModel(current.envId);
-            Debug.Log("applySceneMaterials");
             applySceneMaterials();
+            ModelMaterials.lighting_phase = "CHARACTER";
             setMainCamera();
             onSceneChanged.Invoke();
 
-            spawnLights();
         }
-    }
-    private static float CC_RADIANS_TO_DEGREES(float rads)
-    {
-        return rads * 57.29577951f;
-    }
-
-    private static float CC_DEGREES_TO_RADIANS(float degs)
-    {
-        return degs * 0.01745329252f;
     }
 
     private static void spawnLights()
     {
         if (current.Lighting == null || current.Lighting.lights == null)
             return;
+        
+        scene_lights = new Dictionary<string, SceneLight>();
 
-        Color ambient_color = Color.black;
-        float ambient_intensity = 0;
-        dirLights = new List<dirLight>();
+        if (current.Lighting.layers == null)
+        {
+            Debug.LogError("NO LAYERS");
+            return;
+        }
+        if (!current.Lighting.layers.ContainsKey("CHARACTER"))
+        {
+            Debug.LogError("NO CHARACTER LIGHTING");
+            return;
+        }
 
-        foreach (ConfigScene._Scene._Lighting.Light light in current.Lighting.lights.Values)
+       
+        foreach(var light in current.Lighting.lights.Values)
         {
             Debug.Log("Spawning light type " + light.type + " with colour " + light.color[0]);
-
-            float average_r = 0;
-            float average_g = 0;
-            float average_b = 0;
-            int directional_light_counter = 0;
-
 
             switch (light.type)
             {
@@ -113,7 +99,7 @@ public class Scene
                     GameObject light_go = new GameObject("sceneLight");
                     Light light_component = light_go.AddComponent<Light>();
                     light_component.type = LightType.Directional;
-                    light_component.color = new Color(float.Parse( light.color[0], CultureInfo.InvariantCulture), float.Parse(light.color[1], CultureInfo.InvariantCulture), float.Parse(light.color[2], CultureInfo.InvariantCulture));
+                    light_component.color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture), float.Parse(light.color[1], CultureInfo.InvariantCulture), float.Parse(light.color[2], CultureInfo.InvariantCulture));
 
                     Vector3 direction = new Vector3(float.Parse(light.rotation[0], CultureInfo.InvariantCulture), float.Parse(light.rotation[1], CultureInfo.InvariantCulture), float.Parse(light.rotation[2], CultureInfo.InvariantCulture));
 
@@ -123,20 +109,8 @@ public class Scene
                     light_component.transform.Rotate(new Vector3(0, -float.Parse(light.rotation[1], CultureInfo.InvariantCulture), 0));
                     light_component.transform.Rotate(new Vector3(float.Parse(light.rotation[0], CultureInfo.InvariantCulture), 0, 0));
 
-
-                    //const Mat4& Node::getNodeToParentTransform() const
-
                     Quaternion _rotationQuat = Quaternion.identity;
 
-                    /*float halfRadx = CC_DEGREES_TO_RADIANS(_rotationX / 2.0f), halfRady = CC_DEGREES_TO_RADIANS(_rotationY / 2.0f), halfRadz = _rotationZ_X == _rotationZ_Y ? -CC_DEGREES_TO_RADIANS(_rotationZ_X / 2.0f) : 0;
-                    float coshalfRadx = Mathf.Cos(halfRadx), sinhalfRadx = Mathf.Sin(halfRadx), coshalfRady = Mathf.Cos(halfRady), sinhalfRady = Mathf.Sin(halfRady), coshalfRadz = Mathf.Cos(halfRadz), sinhalfRadz = Mathf.Sin(halfRadz);
-                    _rotationQuat.x = sinhalfRadx * coshalfRady * coshalfRadz - coshalfRadx * sinhalfRady * sinhalfRadz;
-                    _rotationQuat.y = coshalfRadx * sinhalfRady * coshalfRadz + sinhalfRadx * coshalfRady * sinhalfRadz;
-                    _rotationQuat.z = coshalfRadx * coshalfRady * sinhalfRadz - sinhalfRadx * sinhalfRady * coshalfRadz;
-                    _rotationQuat.w = coshalfRadx * coshalfRady * coshalfRadz + sinhalfRadx * sinhalfRady * sinhalfRadz;
-
-
-                    Matrix4x4 rotation = Matrix4x4.Rotate(_rotationQuat );*/
                     Matrix4x4 translation = Matrix4x4.Translate(Vector3.zero);
 
                     Matrix4x4 rotation = Matrix4x4.Rotate(light_component.transform.rotation);
@@ -145,70 +119,52 @@ public class Scene
 
                     Matrix4x4 m = translation * rotation * scale;
                     Matrix4x4 view_matrix = CameraManager.current.main_camera.GetComponent<Camera>().worldToCameraMatrix;
-                   // m = m * view_matrix;
+                    // m = m * view_matrix;
 
-                    dirLight d = new dirLight();
+                    DirLight d = new DirLight();
+                    d.name = light.name;
                     d.preCameraMatrix = m;
-                    
 
                     d.color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture) / 255 * light.intensity, float.Parse(light.color[1], CultureInfo.InvariantCulture) / 255 * light.intensity, float.Parse(light.color[2], CultureInfo.InvariantCulture) / 255 * light.intensity);
 
-                    //d.direction = new Vector3(-m[8], m[9], -m[10]);
-                    
                     Vector3 newdirection = new Vector3(-m[8], -m[9], -m[10]);
                     newdirection.Normalize();
                     d.direction = newdirection;
 
-                    dirLights.Add(d);
+                    scene_lights[light.name] = d;
 
                     GameObject.Destroy(light_go);
-
-                    average_r += float.Parse(light.color[0], CultureInfo.InvariantCulture) / 255;
-                    average_g += float.Parse(light.color[1], CultureInfo.InvariantCulture) / 255;
-                    average_b += float.Parse(light.color[2], CultureInfo.InvariantCulture) / 255;
-                    directional_light_counter++;
-                    Debug.Log(light.intensity);
                     break;
                 case "ambientLight": //Take the highest value
-                    Color color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture) / 255, float.Parse(light.color[1], CultureInfo.InvariantCulture) / 255, float.Parse(light.color[2], CultureInfo.InvariantCulture) / 255);
-                    float intensity = float.Parse(light.color[0], CultureInfo.InvariantCulture) + float.Parse(light.color[1], CultureInfo.InvariantCulture) + float.Parse(light.color[2], CultureInfo.InvariantCulture);
-                    if (intensity > ambient_intensity)
-                    {
-                        ambient_intensity = intensity;
-                        ambient_color = color;
-                    }
-                    scene_ambient_color = ambient_color;
-                    //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().color = color;
-                    //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().intensity = 0.1f;
+                    Color color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture) / 255 * light.intensity, float.Parse(light.color[1], CultureInfo.InvariantCulture) / 255 * light.intensity, float.Parse(light.color[2], CultureInfo.InvariantCulture) / 255 * light.intensity);
+                    AmbLight ambLight = new AmbLight();
+                    ambLight.color = color;
+                    ambLight.name = light.name;
+                    scene_lights[light.name] = ambLight;
                     break;
-                    /*case "spotLight":
-                        GameObject spotlight = new GameObject(light.name);
-                        spotlight.transform.position = new Vector3(float.Parse(light.position[0], CultureInfo.InvariantCulture) * -0.01f, float.Parse(light.position[1], CultureInfo.InvariantCulture) * 0.01f, float.Parse(light.position[2], CultureInfo.InvariantCulture) * 0.01f);
-                        spotlight.transform.rotation = Quaternion.Euler(new Vector3(-float.Parse(light.rotation[0], CultureInfo.InvariantCulture), float.Parse(light.rotation[1], CultureInfo.InvariantCulture) + 180.0f, float.Parse(light.rotation[2], CultureInfo.InvariantCulture)));
+                /*case "spotLight":
+                    GameObject spotlight = new GameObject(light.name);
+                    spotlight.transform.position = new Vector3(float.Parse(light.position[0], CultureInfo.InvariantCulture) * -0.01f, float.Parse(light.position[1], CultureInfo.InvariantCulture) * 0.01f, float.Parse(light.position[2], CultureInfo.InvariantCulture) * 0.01f);
+                    spotlight.transform.rotation = Quaternion.Euler(new Vector3(-float.Parse(light.rotation[0], CultureInfo.InvariantCulture), float.Parse(light.rotation[1], CultureInfo.InvariantCulture) + 180.0f, float.Parse(light.rotation[2], CultureInfo.InvariantCulture)));
 
-                        Light spotlight_component = spotlight.AddComponent<Light>();
-                        spotlight_component.type = LightType.Spot;
-                        spotlight_component.color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture), float.Parse(light.color[1], CultureInfo.InvariantCulture), float.Parse(light.color[2], CultureInfo.InvariantCulture));
-                        spotlight_component.intensity = light.intensity;
+                    Light spotlight_component = spotlight.AddComponent<Light>();
+                    spotlight_component.type = LightType.Spot;
+                    spotlight_component.color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture), float.Parse(light.color[1], CultureInfo.InvariantCulture), float.Parse(light.color[2], CultureInfo.InvariantCulture));
+                    spotlight_component.intensity = light.intensity;
 
-                        break;*/
+                    break;*/
+                case "spotLight":
+                    SpotLight spotLight = new SpotLight();
+                    scene_lights[light.name] = spotLight;
+                    break;
+                case "pointLight":
+                    PointLight pointLight = new PointLight();
+                    scene_lights[light.name] = pointLight;
+                    break;
 
             }
-            Color old_ambient = new Color(ambient_color.r, ambient_color.g, ambient_color.b);
-
-            ambient_color += new Color(average_r, average_g, average_b);
-            ambient_color = ambient_color / 2;
-            if (old_ambient.r + old_ambient.g + old_ambient.b > ambient_color.r + ambient_color.g + ambient_color.b)
-                ambient_color = old_ambient;
-
-            /*GameStart.post_process_manager.changeFilter(ambient_color);
-
-            GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().color = 
-                new Color(average_r / directional_light_counter, average_g / directional_light_counter, average_b / directional_light_counter);*/
-            //GameStart.post_process_manager.PostProcessDefaultLight.GetComponent<Light>().intensity = 0.1f;
-
-
         }
+
     }
 
     public static void setMainCamera()
@@ -397,13 +353,21 @@ public class Scene
                 current_scene.Lighting = new ConfigScene._Scene._Lighting();
             if (current_scene.Lighting.lights == null)
                 current_scene.Lighting.lights = new Dictionary<string, ConfigScene._Scene._Lighting.Light>();
-
+            if (current_scene.Lighting.layers == null)
+                current_scene.Lighting.layers = new Dictionary<string, ConfigScene._Scene._Lighting.Layer>();
 
             foreach (string master_light_name in Configs.config_scene.Scene[current_scene.masterSceneId].Lighting.lights.Keys)
             {
                 if (!current_scene.Lighting.lights.ContainsKey(master_light_name))
                 {
                     current_scene.Lighting.lights[master_light_name] = Configs.config_scene.Scene[current_scene.masterSceneId].Lighting.lights[master_light_name];
+                }
+            }
+            foreach (string master_layer_name in Configs.config_scene.Scene[current_scene.masterSceneId].Lighting.layers.Keys)
+            {
+                if (!current_scene.Lighting.layers.ContainsKey(master_layer_name))
+                {
+                    current_scene.Lighting.layers[master_layer_name] = Configs.config_scene.Scene[current_scene.masterSceneId].Lighting.layers[master_layer_name];
                 }
             }
         }

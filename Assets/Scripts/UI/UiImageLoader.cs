@@ -91,7 +91,21 @@ public class UiImageLoader : MonoBehaviour
 
     Texture2D loadTextureFromApk(string filename)
     {
-        using (FileStream fs = File.Open(GlobalEngineVariables.apk_folder + "\\assets\\" + filename, FileMode.Open))
+        string filepath;
+        if (File.Exists(GlobalEngineVariables.apk_folder + "\\assets\\" + filename))
+        {
+            filepath = GlobalEngineVariables.apk_folder + "\\assets\\" + filename;
+        }
+        else if (File.Exists(GlobalEngineVariables.assets_folder + "\\apktex\\" + filename))
+        {
+            filepath = GlobalEngineVariables.assets_folder + "\\apktex\\" + filename;
+        }
+        else
+        {
+            throw new System.Exception("Could not find apk asset " + filename);
+        }
+
+        using (FileStream fs = File.Open(filepath, FileMode.Open))
         {
             byte[] data = new BinaryReader(fs).ReadBytes((int)fs.Length);
             Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
@@ -103,7 +117,22 @@ public class UiImageLoader : MonoBehaviour
 
     Sprite loadSpriteFromApk(string filename)
     {
-        using (FileStream fs = File.Open(GlobalEngineVariables.apk_folder + "\\assets\\" + filename, FileMode.Open))
+        string filepath;
+        if (File.Exists(GlobalEngineVariables.apk_folder + "\\assets\\" + filename))
+        {
+            filepath = GlobalEngineVariables.apk_folder + "\\assets\\" + filename;
+        }
+        else if (File.Exists(GlobalEngineVariables.assets_folder + "\\apktex\\" + filename))
+        {
+            filepath = GlobalEngineVariables.assets_folder + "\\apktex\\" + filename;
+        }
+        else
+        {
+            throw new System.Exception("Could not find apk asset " + filename);
+        }
+
+
+        using (FileStream fs = File.Open(filepath, FileMode.Open))
         {
             byte[] data = new BinaryReader(fs).ReadBytes((int)fs.Length);
             Texture2D tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);

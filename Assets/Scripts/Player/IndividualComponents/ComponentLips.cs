@@ -13,6 +13,7 @@ namespace IndividualComponents
 
         public ComponentLips(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             replaceComponent();
         }
@@ -20,6 +21,12 @@ namespace IndividualComponents
         public override void setFloat(float f, string s)
         {
             avatar_components.customization_categories["lips"].float_parameters[s] = f;
+            setModifiers();
+        }
+
+        public override void setInt(int i, string s)
+        {
+            avatar_components.customization_categories["lips"].int_parameters[s] = i;
             setModifiers();
         }
 
@@ -39,6 +46,8 @@ namespace IndividualComponents
         }
         public override void setModifiers()
         {
+            if (component_model is null)
+                return;
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["lips"];
 
             if (category.int_parameters.ContainsKey("naturalLips"))

@@ -236,35 +236,41 @@ public class InteractionManager : MonoBehaviour {
     {
         destroyAllInteractions();
         Debug.Log("loading interactions");  
-        Dictionary<System.Guid, Interaction> guid_to_interaction = new Dictionary<Guid, Interaction>();
+        Dictionary<Guid, Interaction> guid_to_interaction = new Dictionary<Guid, Interaction>();
 
         foreach (string[] interaction_s in serializedInteractions) //Spawn
         {
             GameObject gameobject = spawnInteraction(interaction_s[0]);
             Interaction interaction = gameobject.GetComponent<Interaction>();
             interaction.config_interaction = Configs.config_interaction.Interactions[interaction_s[0]];
-            interaction.id = System.Guid.Parse(interaction_s[1]);
-            if (interaction_s[2] != null) interaction.parent_group_id = System.Guid.Parse(interaction_s[2]);
-            if (interaction_s[3] != null) interaction.parent_autotune_group_id = System.Guid.Parse(interaction_s[3]);
+            //interaction.guid = System.Guid.Parse(interaction_s[1]); huh?
+            if (interaction_s[2] != null) interaction.parent_group_guid = System.Guid.Parse(interaction_s[2]);
+            if (interaction_s[3] != null) interaction.parent_autotune_group_guid = System.Guid.Parse(interaction_s[3]);
             interaction.group_progress = int.Parse(interaction_s[4]);
             interaction.shouldShow = bool.Parse(interaction_s[5]);
             interaction.destroyed = bool.Parse(interaction_s[6]);
             interaction.should_onFinishedEnterEvents_when_respawned = bool.Parse(interaction_s[7]);
             interaction.gameObject.SetActive(true);
 
-            guid_to_interaction[interaction.id] = interaction;
+            guid_to_interaction[interaction.guid] = interaction;
         }
+        foreach(var key in guid_to_interaction.Keys)
+        {
+            Debug.Log("KEY: " + key);
+        }
+
         foreach (Interaction interaction in active_interactions) //Link
         {
-            if (interaction.parent_group_id != System.Guid.Empty)
+            Debug.Log("Linking interaction " + interaction.config_interaction.id);
+            if (interaction.parent_group_guid != System.Guid.Empty)
             {
-                interaction.parent_group_interaction = (InteractionGroup)guid_to_interaction[interaction.parent_group_id];
+                interaction.parent_group_interaction = (InteractionGroup)guid_to_interaction[interaction.parent_group_guid];
                 interaction.transform.parent = interaction.parent_group_interaction.transform;
                 interaction.parent_group_interaction.onRespawnAddMemberInteraction(interaction);
             }
-            if (interaction.parent_autotune_group_id != System.Guid.Empty) 
+            if (interaction.parent_autotune_group_guid != System.Guid.Empty) 
             {
-                interaction.parent_autotune_group_interaction = (InteractionAutotuneGroup)guid_to_interaction[interaction.parent_autotune_group_id];
+                interaction.parent_autotune_group_interaction = (InteractionAutotuneGroup)guid_to_interaction[interaction.parent_autotune_group_guid];
                 interaction.transform.parent = interaction.parent_autotune_group_interaction.transform;
             }
         }

@@ -33,14 +33,22 @@ public class CustomizeAvatar : MonoBehaviour
     void Awake()
     {
         current = this;
-        _camera_preview.SetActive(false);
-        _camera_preview_depth.SetActive(false);
 
         customize_avatar_preview_images = GetComponent<CustomizeAvatarPreviewImages>();
 
         createCustomizableAvatar();
 
         createCustomizablePreviewAvatar();
+    }
+
+    public static void setCameraBody()
+    {
+        current._camera.transform.position = new Vector3(0, 1, 0);
+    }
+
+    public static void setCameraHead()
+    {
+        current._camera.transform.position = new Vector3(-0.144f, 1.312f, 0.992f);
     }
 
     void createCustomizableAvatar()
@@ -59,6 +67,11 @@ public class CustomizeAvatar : MonoBehaviour
 
         reference_model.game_object.transform.position = new Vector3(-0.24f, 0.55f, 1.32f);
         reference_model.game_object.transform.eulerAngles = new Vector3(0, 160f, 0);
+        reference_model.game_object.AddComponent<Animation>();
+        reference_model.game_object.GetComponent<Animation>().AddClip(AnimationManager.loadAnimationClip("c_Stu_DialogueIdle01", reference_model, reference_character).anim_clip, "default");
+        reference_model.game_object.GetComponent<Animation>().Play("default");
+
+
         customizable_avatar_modified_bones = new Dictionary<string, Transform>();
 
         avatar_components.setCharacterManager(customizable_avatar);
@@ -87,11 +100,11 @@ public class CustomizeAvatar : MonoBehaviour
         customizable_avatar_preview.actor_animation.replaceCharacterIdle("c_Stu_DialogueIdle01");
 
         reference_model_preview = ModelManager.loadModel(reference_character.modelId);
-        customizable_avatar_preview.animation_component["loop"].time = 0.01f;
-        customizable_avatar_preview.animation_component["loop"].enabled = true;
-        customizable_avatar_preview.animation_component["loop"].weight = 1;
+        customizable_avatar_preview.animation_component["default"].time = 0.01f;
+        customizable_avatar_preview.animation_component["default"].enabled = true;
+        customizable_avatar_preview.animation_component["default"].weight = 1;
         customizable_avatar_preview.animation_component.Sample();
-        customizable_avatar_preview.animation_component["loop"].enabled = false;
+        customizable_avatar_preview.animation_component["default"].enabled = false;
 
         reference_model_preview.game_object.transform.position = new Vector3(0, -10, 0);
         reference_model_preview.game_object.transform.rotation = Quaternion.identity;
@@ -109,7 +122,7 @@ public class CustomizeAvatar : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         //Resets bones to reference.
         foreach (string bone in reference_model.pose_bones.Keys)
@@ -157,11 +170,11 @@ public class CustomizeAvatar : MonoBehaviour
             }
         }
 
-        customizable_avatar_preview.animation_component["loop"].time = 0.01f;
-        customizable_avatar_preview.animation_component["loop"].enabled = true;
-        customizable_avatar_preview.animation_component["loop"].weight = 1;
+        customizable_avatar_preview.animation_component["default"].time = 0.01f;
+        customizable_avatar_preview.animation_component["default"].enabled = true;
+        customizable_avatar_preview.animation_component["default"].weight = 1;
         customizable_avatar_preview.animation_component.Sample();
-        customizable_avatar_preview.animation_component["loop"].enabled = false;
+        customizable_avatar_preview.animation_component["default"].enabled = false;
     }
 
     public void saveAvatarButtonPressed()
@@ -184,7 +197,11 @@ public class CustomizeAvatar : MonoBehaviour
 
     }
 
-
+    public void changeAvatarEyeColor(int colorId) { avatar_components.changeAvatarEyeColor(colorId); }
+    public void changeAvatarSkinColor(int colorId) { avatar_components.changeAvatarSkinColor(colorId); }
+    public void changeAvatarLipsColor(int colorId) { avatar_components.changeAvatarLipsColor(colorId); }
+    public void changeAvatarBrowColor(int colorId) { avatar_components.changeAvatarBrowColor(colorId); }
+    public void changeAvatarHairColor(int colorId) { avatar_components.changeAvatarHairColor(colorId); }
     public void changeAvatarBrowThickness(float browThickness) { avatar_components.changeAvatarBrowThickness(browThickness); avatar_components_preview.changeAvatarBrowThickness(browThickness); }
     public void changeAvatarEyeCloseness(float eyeCloseness) { avatar_components.changeAvatarEyeCloseness(eyeCloseness); avatar_components_preview.changeAvatarEyeCloseness(eyeCloseness); }
     public void changeAvatarEyeSize(float eyeSize) { avatar_components.changeAvatarEyeSize(eyeSize); avatar_components_preview.changeAvatarEyeSize(eyeSize); }

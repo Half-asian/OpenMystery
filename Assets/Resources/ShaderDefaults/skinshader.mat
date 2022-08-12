@@ -259,7 +259,7 @@ Material:
     - _ZWrite: 1
     - alpha: 1
     - u_flatness: 1
-    - u_lightAngleBoost: 0.5
+    - u_lightAngleBoost: 0.2
     - u_rimAngle: 0
     - u_specularity: 0
     m_Colors:
@@ -289,7 +289,7 @@ Material:
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_shadeColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
     - u_specColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5571307314426355002

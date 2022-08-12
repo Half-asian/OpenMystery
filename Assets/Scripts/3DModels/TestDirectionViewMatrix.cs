@@ -14,11 +14,11 @@ public class TestDirectionViewMatrix : MonoBehaviour
         return degs * 0.01745329252f;
     }
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
-        for (int i = 0; i < Scene.dirLights.Count; i++) {
+        for (int i = 0; i < Scene.env_dirLights.Count; i++) {
 
-            Matrix4x4 matrix = Scene.dirLights[i].preCameraMatrix;
+            Matrix4x4 matrix = Scene.env_dirLights[i].preCameraMatrix;
 
 
             Matrix4x4 view_matrix = CameraManager.current.main_camera.GetComponent<Camera>().worldToCameraMatrix;
@@ -44,5 +44,5 @@ public class TestDirectionViewMatrix : MonoBehaviour
             if (i == 3)
                 smr.material.SetVector("u_DirLightSourceDirection4", newdirection);
         }
-    }
+    }*/
 }

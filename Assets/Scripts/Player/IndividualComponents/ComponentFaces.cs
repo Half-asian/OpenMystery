@@ -11,6 +11,7 @@ namespace IndividualComponents
     {
         public ComponentFaces(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             setModifiers();
         }

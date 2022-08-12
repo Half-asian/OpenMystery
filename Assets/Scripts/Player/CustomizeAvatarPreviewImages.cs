@@ -26,6 +26,7 @@ public class CustomizeAvatarPreviewImages : MonoBehaviour
             renderToImage(render_queue[0].Item2, customize_avatar._camera_preview.GetComponent<Camera>(), customize_avatar._camera_preview_depth.GetComponent<Camera>());
             render_queue.RemoveAt(0);
             yield return new WaitForEndOfFrame();
+
         }
         render_queue_coroutine = null;
     }

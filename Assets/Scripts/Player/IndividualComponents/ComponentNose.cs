@@ -12,6 +12,7 @@ namespace IndividualComponents
     {
         public ComponentNose(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             replaceComponent();
         }
@@ -47,6 +48,8 @@ namespace IndividualComponents
         static private readonly Vector2 noseTwist_rotation_x_range = new Vector2(-0.610865f * 45, 0.610865f * 45);
         public override void setModifiers()
         {
+            if (component_model is null)
+                return;
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["nose"];
             avatar_components.bonemods["jt_noseBridge_MOD_bind"] = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1));
             avatar_components.bonemods["jt_nose_MOD_bind"] = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1));

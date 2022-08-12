@@ -18,6 +18,9 @@ public class CCDisplay : MonoBehaviour
     [SerializeField] GameObject NoseGroup;
     [SerializeField] GameObject EyesGroup;
     [SerializeField] GameObject BrowsGroup;
+    [SerializeField] GameObject LipsGroup;
+    [SerializeField] GameObject HairGroup;
+
 
 
     private void Start()
@@ -36,16 +39,19 @@ public class CCDisplay : MonoBehaviour
                 robesSubButtons.SetActive(true);
                 headSubButtons.SetActive(false);
                 miscSubButtons.SetActive(false);
+                CustomizeAvatar.setCameraBody();
                 break;
             case "head":
                 robesSubButtons.SetActive(false);
                 headSubButtons.SetActive(true);
                 miscSubButtons.SetActive(false);
+                CustomizeAvatar.setCameraHead();
                 break;
             case "misc":
                 robesSubButtons.SetActive(false);
                 headSubButtons.SetActive(false);
                 miscSubButtons.SetActive(true);
+                CustomizeAvatar.setCameraHead();
                 break;
         }
     }
@@ -56,6 +62,8 @@ public class CCDisplay : MonoBehaviour
         EyesGroup.SetActive(false);
         FaceGroup.SetActive(false);
         NoseGroup.SetActive(false);
+        LipsGroup.SetActive(false);
+        HairGroup.SetActive(false);
     }
     public void hideRenderPreviews()
     {
@@ -95,6 +103,7 @@ public class CCDisplay : MonoBehaviour
         customizeAvatarGroup.renderHairComponents();
         nextPreviewButton.SetActive(true);
         previousPreviewButton.SetActive(true);
+        HairGroup.SetActive(true);
     }
 
     public void showBrowsGroup()
@@ -108,8 +117,8 @@ public class CCDisplay : MonoBehaviour
     {
         hideGroups();
         customizeAvatarGroup.renderEyeComponents();
-        nextPreviewButton.SetActive(true);
-        previousPreviewButton.SetActive(true);
+        nextPreviewButton.SetActive(false);
+        previousPreviewButton.SetActive(false);
         EyesGroup.SetActive(true);
     }
 
@@ -120,12 +129,28 @@ public class CCDisplay : MonoBehaviour
         NoseGroup.SetActive(true);
     }
 
+    public void showLipsGroup()
+    {
+        hideGroups();
+        customizeAvatarGroup.renderLipsComponents();
+        nextPreviewButton.SetActive(false);
+        previousPreviewButton.SetActive(false);
+        LipsGroup.SetActive(true);
+    }
+
     public void showFaceGroup()
     {
         hideRenderPreviews();
         hideGroups();
-        Debug.Log("AAAAAA");
         FaceGroup.SetActive(true);
+    }
+
+    public void showFacePaintGroup()
+    {
+        hideGroups();
+        customizeAvatarGroup.renderFacePaintComponents();
+        nextPreviewButton.SetActive(true);
+        previousPreviewButton.SetActive(true);
     }
 
 }

@@ -130,7 +130,25 @@ public class CustomizeAvatarGroup : MonoBehaviour
         renderComponents();
     }
 
+    public void renderLipsComponents()
+    {
+        customize_avatar.avatar_components_preview.resetFromPlayerFile();
+        customize_avatar._camera_preview_depth.transform.position = new Vector3(0, -9.193f, 0.17f);
+        customize_avatar._camera_preview.transform.position = new Vector3(0, -9.193f, 0.17f);
+        components_list = AvatarComponents.avatar_components_lips;
+        current_group_index = 0;
+        renderComponents();
+    }
 
+    public void renderFacePaintComponents()
+    {
+        customize_avatar._camera_preview_depth.transform.position = new Vector3(0, -9.193f, 0.17f);
+        customize_avatar._camera_preview.transform.position = new Vector3(0, -9.193f, 0.17f);
+        customize_avatar.avatar_components_preview.resetFromPlayerFile();
+        components_list = AvatarComponents.avatar_components_facepaint;
+        current_group_index = 0;
+        renderComponents();
+    }
 
 
     public void nextPanel()
@@ -148,10 +166,10 @@ public class CustomizeAvatarGroup : MonoBehaviour
     public void spawnPreviewGrid()
     {
         preview_panels = new List<GameObject>();
-        int x_start = 355;
+        int x_start = 340;
         int y_start = 178;
-        int x_offset = -82;
-        int y_offset = -82;
+        int x_offset = -60;
+        int y_offset = -60;
         int x = 5;
         int y = 3;
 

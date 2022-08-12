@@ -12,6 +12,7 @@ namespace IndividualComponents
     {
         public ComponentGlasses(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             replaceComponent();
         }

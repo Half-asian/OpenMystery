@@ -13,6 +13,7 @@ namespace IndividualComponents
         static private readonly Vector2 browThickness_translate_y_range = new Vector2(-0.242f * 0.01f, 0f );
         public ComponentBrows(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             setModifiers();
         }

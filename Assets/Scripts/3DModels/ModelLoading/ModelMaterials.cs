@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.Rendering;
 
 namespace ModelLoading
 {
     public class ModelMaterials
     {
+		public static string lighting_phase = "CHARACTER";
+
 		static string[] known_shaders_array = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "simpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "panningfalloff", "eyeballshader", "SimpleTexture", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "eyeshader", "dustmotes_vfx", "houseubershader", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
 
 		static string[] hlsl_shaders = {};
@@ -31,33 +34,78 @@ namespace ModelLoading
 
 		private static void setLightData(Material mat)
         {
-			mat.SetColor("u_AmbientLightSourceColor", Scene.scene_ambient_color);
-
-			for (int i = 0; i < Scene.dirLights.Count; i++)
+			if (Scene.current == null || Scene.current.Lighting == null || Scene.current.Lighting.layers == null)
 			{
-				if (i == 0)
+				return;
+			}
+
+			ConfigScene._Scene._Lighting.Layer lighting_layer = null;
+
+
+			if (lighting_phase == "CHARACTER")
+			{
+
+				if (!Scene.current.Lighting.layers.ContainsKey(lighting_phase))
 				{
-					mat.SetColor("u_DirLightSourceColor1", Scene.dirLights[i].color);
-					Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
-					mat.SetVector("u_DirLightSourceDirection1", direction);
+					Debug.LogWarning("No light layer for current lighting phase " + lighting_phase);
+					return;
 				}
-				else if (i == 1)
+				lighting_layer = Scene.current.Lighting.layers["CHARACTER"];
+			}
+			else
+			{
+				foreach (var layer in Scene.current.Lighting.layers.Values)
 				{
-					mat.SetColor("u_DirLightSourceColor2", Scene.dirLights[i].color);
-					Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
-					mat.SetVector("u_DirLightSourceDirection2", direction);
+					if (layer.name != "CHARACTER")
+						lighting_layer = layer;
 				}
-				else if (i == 2)
+				if (lighting_layer == null)
 				{
-					mat.SetColor("u_DirLightSourceColor3", Scene.dirLights[i].color);
-					Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
-					mat.SetVector("u_DirLightSourceDirection3", direction);
+					Debug.LogWarning("Failed to find the env lighting layer ");
+					return;
 				}
-				else if (i == 3)
-				{
-					mat.SetColor("u_DirLightSourceColor4", Scene.dirLights[i].color);
-					Vector4 direction = new Vector4(Scene.dirLights[i].direction.x, Scene.dirLights[i].direction.y, Scene.dirLights[i].direction.z, 0.0f);
-					mat.SetVector("u_DirLightSourceDirection4", direction);
+			}
+
+			int dirlight_count = 0;
+			foreach (string lightname in lighting_layer.lights)
+            {
+				//if (!Scene.scene_lights.ContainsKey(lightname))
+				//	continue;
+				SceneLight sceneLight = Scene.scene_lights[lightname];
+				Debug.LogWarning("Settinglight " + sceneLight.name + mat.name);
+				if (sceneLight is AmbLight)
+                {
+					Debug.LogWarning("Setting amb colour " + sceneLight.name + " " + mat.name);
+					mat.SetColor("u_AmbientLightSourceColor", sceneLight.color);
+				}
+				else if (sceneLight is DirLight)
+                {
+					DirLight dirLight = (DirLight)sceneLight;
+					if (dirlight_count == 0)
+					{
+						mat.SetColor("u_DirLightSourceColor1", dirLight.color);
+						Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
+						mat.SetVector("u_DirLightSourceDirection1", direction);
+					}
+					else if (dirlight_count == 1)
+					{
+						mat.SetColor("u_DirLightSourceColor2", dirLight.color);
+						Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
+						mat.SetVector("u_DirLightSourceDirection2", direction);
+					}
+					else if (dirlight_count == 2)
+					{
+						mat.SetColor("u_DirLightSourceColor3", dirLight.color);
+						Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
+						mat.SetVector("u_DirLightSourceDirection3", direction);
+					}
+					else if (dirlight_count == 3)
+					{
+						mat.SetColor("u_DirLightSourceColor4", dirLight.color);
+						Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
+						mat.SetVector("u_DirLightSourceDirection4", direction);
+					}
+					dirlight_count++;
 				}
 			}
 		}
@@ -84,14 +132,13 @@ namespace ModelLoading
 			Material default_material = Resources.Load<Material>("ShaderDefaults/" + material.shaderName);
 			if (default_material != null)
 			{
-				Debug.Log("FOUND THE MATERIAL " + material.shaderName);
 				mat.shader = shader_dict[material.shaderName];
 				mat.CopyPropertiesFromMaterial(default_material);
+				Debug.Log("Setting light data for " + material.nodeName);
 				setLightData(mat);
 			}
 			else
 			{
-				Debug.Log("Default material was null for " + "ShaderDefaults/" + material.shaderName + ".mat");
 				if (material.shaderName == "ubershader")
 				{
 
@@ -123,10 +170,10 @@ namespace ModelLoading
 
 					mat.SetFloat("u_opacityAmount", 1.0f);
 					mat.SetFloat("u_flatness", 1.0f);
-					mat.SetTexture("u_diffuseMap", (Texture)Resources.Load("Shaders/black"));
-					mat.SetTexture("u_specularMap", (Texture)Resources.Load("default_dirtmap"));
+					//mat.SetTexture("u_diffuseMap", (Texture)Resources.Load("Shaders/black"));
+					//mat.SetTexture("u_specularMap", (Texture)Resources.Load("default_dirtmap"));
 
-					mat.SetTexture("u_lightmapMap", (Texture)Resources.Load("default_lightmap"));
+					//mat.SetTexture("u_lightmapMap", (Texture)Resources.Load("default_lightmap"));
 
 					//mat.SetTexture("u_dirtMap", (Texture)Resources.Load("default_dirtmap"));
 
@@ -187,6 +234,8 @@ namespace ModelLoading
 				for (int i = 0; i < material.stringValueKeys.Length; i++)
 				{
 					mat.SetTexture(material.stringIds[i], TextureManager.loadTextureDDS(material.stringValueKeys[i]));
+					if (material.shaderName == "ubershader" && material.stringIds[i] == "u_diffuseMap")
+						mat.SetKeyword(new LocalKeyword(mat.shader, "USE_DIFFUSE_COLOR"), false);
 				}
 			}
 			if (material.floatIds != null)

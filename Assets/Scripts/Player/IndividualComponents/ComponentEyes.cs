@@ -12,12 +12,19 @@ namespace IndividualComponents
     {
         public ComponentEyes(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             replaceComponent();
         }
 
         public override void setFloat(float f, string s) {
             avatar_components.customization_categories["eyes"].float_parameters[s] = f;
+            setModifiers();
+        }
+
+        public override void setInt(int i, string s)
+        {
+            avatar_components.customization_categories["eyes"].int_parameters[s] = i;
             setModifiers();
         }
 
@@ -41,6 +48,8 @@ namespace IndividualComponents
 
         public override void setModifiers()
         {
+            if (component_model is null)
+                return;
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["eyes"];
             avatar_components.bonemods["jt_L_eye_MOD_bind"] = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1));
             avatar_components.bonemods["jt_R_eye_MOD_bind"] = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1));
@@ -88,9 +97,7 @@ namespace IndividualComponents
                 SkinnedMeshRenderer smr = avatar_components.base_model.game_object.transform.Find("c_eyes_mesh").GetComponent<SkinnedMeshRenderer>();
 
                 if (smr.material.HasColor("u_diffuseColor"))
-                {
                     smr.material.SetColor("u_diffuseColor", c);
-                }
 
             }
         }

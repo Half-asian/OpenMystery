@@ -43,7 +43,7 @@ public class InteractionGroup : Interaction
     {
         member_interactions[interaction.config_interaction.id] = interaction;
         interaction.parent_group_interaction = this;
-        interaction.parent_group_id = id;
+        interaction.parent_group_guid = guid;
     }
 
     public void spawnMemberInteractions()
@@ -62,7 +62,7 @@ public class InteractionGroup : Interaction
                 if (new_interaction != null)
                 {
                     new_interaction.parent_group_interaction = this;
-                    new_interaction.parent_group_id = id;
+                    new_interaction.parent_group_guid = guid;
                     if (interaction_gameobject != null)
                         new_interaction.interaction_gameobject.transform.parent = interaction_gameobject.transform;
                     member_interactions[member_interaction] = new_interaction;

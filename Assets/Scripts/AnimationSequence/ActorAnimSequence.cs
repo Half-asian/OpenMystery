@@ -42,6 +42,11 @@ public class ActorAnimSequence : AnimationSequence
             actor_controller.actor_animation.anim_sequence_idle = "";
         base.finishSequence();
 
+        if (config_sequence.isOneShot)
+        {
+            actor_controller.actor_animation.setCharacterIdle();
+        }
+
         //actor_controller.actor_animation.unblock();
     }
 

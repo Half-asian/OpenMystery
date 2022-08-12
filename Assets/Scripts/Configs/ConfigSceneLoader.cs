@@ -92,6 +92,15 @@ public class ConfigScene : Config<ConfigScene>
                 public string[] rotation;
             }
             public Dictionary<string, Light> lights;
+            [System.Serializable]
+            public class Layer
+            {
+                public bool fx;
+                public string[] lights;
+                public string[] objects;
+                public string name;
+            }
+            public Dictionary<string, Layer> layers;
         }
         public _Lighting Lighting;
 

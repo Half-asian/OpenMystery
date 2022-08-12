@@ -46,6 +46,9 @@ public class ActorAnimation : MonoBehaviour
 
     public void replaceCharacterIdle(string anim_name)
     {
+        if (animation1_loop != null && animId_idle == anim_name) //The same animation
+            return;
+
         anim_state = "outro";
 
         animId_idle = anim_name;

@@ -12,7 +12,14 @@ namespace IndividualComponents
     {
         public ComponentTop(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
+
+            replaceComponent();
+        }
+
+        public override Model replaceComponent()
+        {
             if (!avatar_components.customization_categories.ContainsKey("tops"))
             {
                 avatar_components.customization_categories["tops"] = new PlayerFile.CustomizationCategory();
@@ -21,11 +28,7 @@ namespace IndividualComponents
                 else
                     avatar_components.customization_categories["tops"].component_id = "o_Male_PrepOutfit_TOP";
             }
-            replaceComponent();
-        }
 
-        public override Model replaceComponent()
-        {
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["tops"];
             string outfit_id = Configs.config_avatar_components.AvatarComponents[category.component_id].outfitId;
             if (Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles != null)

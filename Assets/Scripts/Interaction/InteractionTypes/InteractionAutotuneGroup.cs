@@ -60,14 +60,14 @@ public class InteractionAutotuneGroup : Interaction
                 {
                     new_bubble = new_bubble_gameobject.GetComponent<Interaction>();
                     new_bubble.parent_autotune_group_interaction = this;
-                    new_bubble.parent_autotune_group_id = id;
+                    new_bubble.parent_autotune_group_guid = guid;
                 }
                 member_counter++;
             }
             if (new_bubble != null)
             {
                 new_bubble.parent_autotune_group_interaction = this;
-                new_bubble.parent_autotune_group_id = id;
+                new_bubble.parent_autotune_group_guid = guid;
                 new_bubble.interaction_gameobject.transform.parent = interaction_gameobject.transform;
             }
             else

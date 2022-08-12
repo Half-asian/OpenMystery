@@ -4,7 +4,7 @@
 #define USE_SPECULAR
 #define USE_EMISSIVE
 #define HAS_DYNAMIC_LIGHT
-#define USE_NEW_NORM
+//#define USE_NEW_NORM
 
 #if defined(HAS_DYNAMIC_LIGHT) && !defined(USE_VERTEX_LIGHTING)
 float3 computeLighting(float3 normalVector, float3 lightDirection, float3 lightColor, float attenuation)
@@ -49,6 +49,8 @@ float3 tex_u_secondaryMaps;
 float3 tex_u_mask;
 float4 tex_u_emblemTexture;
 
+float4 tex_u_facePaintTexture;
+
 float4 main_float(){
 	
     float3 blendWeights = abs(normal);
@@ -57,7 +59,13 @@ float4 main_float(){
     blendWeights = max(blendWeights, real3(0.0, 0.0, 0.0));
     blendWeights /= dot(blendWeights, 1.0);
 
+    #ifdef USE_NEW_NORM
     float3 new_normal = float3(normal.x * blendWeights.x, normal.y * blendWeights.y, normal.z * blendWeights.z);
+    #else
+    float3 new_normal = normal;
+    #endif
+
+
                 
     float3 lowered_normal = normal * 0.75;
     
@@ -341,12 +349,12 @@ float4 main_float(){
         #endif
     #endif
 
-    #if defined(IS_AVATAR_FACE_SHADER) && defined(USE_FACE_PAINT)
-        vec4 facePaintColor = texture2D(u_facePaintTexture, v_texCoords1);
+    #if defined(IS_AVATAR_FACE_SHADER)
+        float4 facePaintColor = tex_u_facePaintTexture;
 
-        vec3 paintPrimary = (u_housePrimary * facePaintColor.g) + (1.0 - facePaintColor.g);
-        vec3 paintSecondary = (u_houseSecondary * facePaintColor.b) + (1.0 - facePaintColor.b);
-        vec3 paintCombined = (paintPrimary * paintSecondary) * vec3(facePaintColor.r);
+        float3 paintPrimary = (u_housePrimary * facePaintColor.g) + (1.0 - facePaintColor.g);
+        float3 paintSecondary = (u_houseSecondary * facePaintColor.b) + (1.0 - facePaintColor.b);
+        float3 paintCombined = (paintPrimary * paintSecondary) * float3(facePaintColor.r, facePaintColor.r, facePaintColor.r);
 
         #ifdef USE_FACIAL_HAIR
         float saturation = clamp((1.0 - (maskColor.g + beardTexColor.a)) + 0.2, 0.0, 1.0);
@@ -354,7 +362,7 @@ float4 main_float(){
         float saturation = clamp((1.0 - maskColor.g) + 0.2, 0.0, 1.0);
         #endif
 
-        diffuseColor = mix(diffuseColor, paintCombined, facePaintColor.a * saturation);
+        diffuseColor = lerp(diffuseColor, paintCombined, facePaintColor.a * saturation);
     #endif
         
     //Add ambient light at the end.
@@ -475,12 +483,13 @@ void houseclothshader_float(float3 _u_colorMap, float3 _u_secondaryMaps, float3 
     gl_FragColor = main_float();
 }
 
-void avatarfaceshader_float(float3 _u_colorMap, float3 _u_secondaryMaps, float3 _u_mask, float3 _normal, float3 _eyeDir, out float4 gl_FragColor){
+void avatarfaceshader_float(float3 _u_colorMap, float3 _u_secondaryMaps, float3 _u_mask, float4 _u_facePaintTexture, float3 _normal, float3 _eyeDir, out float4 gl_FragColor){
     normal = _normal;
     eyeDir = _eyeDir;
-    tex_u_mask = _u_mask;
     tex_u_colorMap = _u_colorMap;
     tex_u_secondaryMaps = _u_secondaryMaps;
+    tex_u_mask = _u_mask;
+    tex_u_facePaintTexture = _u_facePaintTexture;
 
     gl_FragColor = main_float();
 }

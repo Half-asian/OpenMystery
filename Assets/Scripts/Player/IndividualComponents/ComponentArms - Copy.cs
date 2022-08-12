@@ -14,6 +14,7 @@ namespace IndividualComponents
 
         public ComponentArms(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             component_id = avatar_components.customization_categories["arms"].component_id;
             replaceComponent();
@@ -48,6 +49,9 @@ namespace IndividualComponents
 
         public override void setModifiers()
         {
+            if (component_model is null)
+                return;
+
             if (avatar_components.customization_categories["faces"].int_parameters.ContainsKey("skinColor"))
             {
                 int skin_color_id = avatar_components.customization_categories["faces"].int_parameters["skinColor"];

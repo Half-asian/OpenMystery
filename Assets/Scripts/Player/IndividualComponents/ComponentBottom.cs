@@ -12,7 +12,14 @@ namespace IndividualComponents
     {
         public ComponentBottom(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
+
+            replaceComponent();
+        }
+
+        public override Model replaceComponent()
+        {
             if (!avatar_components.customization_categories.ContainsKey("bottoms"))
             {
                 avatar_components.customization_categories["bottoms"] = new PlayerFile.CustomizationCategory();
@@ -22,11 +29,6 @@ namespace IndividualComponents
                     avatar_components.customization_categories["bottoms"].component_id = "maleBottom1";
             }
 
-            replaceComponent();
-        }
-
-        public override Model replaceComponent()
-        {
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["bottoms"];
             if (!Configs.config_avatar_components.AvatarComponents.ContainsKey(category.component_id))
             {

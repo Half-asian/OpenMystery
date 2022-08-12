@@ -232,7 +232,7 @@ Material:
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
     - _RenderQueueType: 1
-    - _RequireSplitLighting: 1
+    - _RequireSplitLighting: 0
     - _Smoothness: 0.5
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
@@ -240,10 +240,10 @@ Material:
     - _SpecularAAThreshold: 0.2
     - _SpecularOcclusionMode: 1
     - _SrcBlend: 1
-    - _StencilRef: 4
+    - _StencilRef: 0
     - _StencilRefDepth: 8
     - _StencilRefDistortionVec: 4
-    - _StencilRefGBuffer: 14
+    - _StencilRefGBuffer: 10
     - _StencilRefMV: 40
     - _StencilWriteMask: 6
     - _StencilWriteMaskDepth: 8
@@ -280,7 +280,7 @@ Material:
     - _u_specularity: 0
     - alpha: 1
     - u_flatness: 1
-    - u_lightAngleBoost: 0.5
+    - u_lightAngleBoost: 0.2
     - u_rimAngle: 0
     - u_specularity: 0
     m_Colors:
@@ -326,7 +326,7 @@ Material:
     - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
     - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_shadeColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
     - u_skinColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

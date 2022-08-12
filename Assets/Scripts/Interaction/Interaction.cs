@@ -25,9 +25,9 @@ public abstract class Interaction : MonoBehaviour
     public InteractionAutotuneGroup parent_autotune_group_interaction { get; set; }
     public GameObject interaction_gameobject { get; protected set; }
 
-    public System.Guid id = System.Guid.NewGuid();
-    public System.Guid parent_group_id = System.Guid.Empty;
-    public System.Guid parent_autotune_group_id = System.Guid.Empty;
+    public System.Guid guid = System.Guid.NewGuid();
+    public System.Guid parent_group_guid = System.Guid.Empty;
+    public System.Guid parent_autotune_group_guid = System.Guid.Empty;
 
     [SerializeField]
     public int group_progress = 0;
@@ -52,9 +52,9 @@ public abstract class Interaction : MonoBehaviour
     {
         return new string[] {
             config_interaction.id,
-            id.ToString(),
-            parent_group_id.ToString(),
-            parent_autotune_group_id.ToString(),
+            guid.ToString(),
+            parent_group_guid.ToString(),
+            parent_autotune_group_guid.ToString(),
             group_progress.ToString(),
             shouldShow.ToString(),
             destroyed.ToString(),

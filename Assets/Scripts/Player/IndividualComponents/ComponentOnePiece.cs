@@ -12,12 +12,19 @@ namespace IndividualComponents
     {
         public ComponentOnePiece(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             replaceComponent();
         }
 
         public override Model replaceComponent()
         {
+            if (!avatar_components.customization_categories.ContainsKey("one-piece"))
+            {
+                return null;
+            }
+
+
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["one-piece"];
             string outfit_id = Configs.config_avatar_components.AvatarComponents[category.component_id].outfitId;
             if (Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles != null)

@@ -4,9 +4,12 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System.IO;
 using System.Text;
+using System;
 
 public class AvatarComponents
 {
+    public static event Action onReapplyModifiers = delegate { };
+
     public Dictionary<string, AnimationManager.BoneMod> bonemods;
 
     public string actor_id;
@@ -24,6 +27,8 @@ public class AvatarComponents
     public static List<string> avatar_components_tops;
     public static List<string> avatar_components_bottoms;
     public static List<string> avatar_components_eyes;
+    public static List<string> avatar_components_lips;
+    public static List<string> avatar_components_facepaint;
     public AvatarComponents(string filename)
     {
         components = new Dictionary<string, AvatarComponent>();
@@ -33,6 +38,11 @@ public class AvatarComponents
         resetFromPlayerFile();
     }
     
+    public void callReapply()
+    {
+        onReapplyModifiers.Invoke();
+    }
+
     public void resetFromPlayerFile()
     {
         customization_categories = new Dictionary<string, PlayerFile.CustomizationCategory>();
@@ -56,6 +66,10 @@ public class AvatarComponents
                     customization_categories[key].int_parameters[fkey] = PlayerManager.current.customization_categories[key].int_parameters[fkey];
                 }
             }
+        }
+        foreach(var comp in components)
+        {
+            comp.Value.replaceComponent();
         }
     }
 
@@ -103,7 +117,10 @@ public class AvatarComponents
         switch (category)
         {
             case "brows":
-                components["brows"] = new IndividualComponents.ComponentBrows(this);
+                if (components.ContainsKey("brows"))
+                    components["brows"].replaceComponent();
+                else
+                    components["brows"] = new IndividualComponents.ComponentBrows(this);
                 break;
             case "eyes":
                 if (components.ContainsKey("eyes"))
@@ -112,13 +129,22 @@ public class AvatarComponents
                     components["eyes"] = new IndividualComponents.ComponentEyes(this);
                 break;
             case "faces":
-                components["faces"] = new IndividualComponents.ComponentFaces(this);
+                if (components.ContainsKey("faces"))
+                    components["faces"].replaceComponent();
+                else
+                    components["faces"] = new IndividualComponents.ComponentFaces(this);
                 break;
             case "nose":
-                components["nose"] = new IndividualComponents.ComponentNose(this);
+                if (components.ContainsKey("nose"))
+                    components["nose"].replaceComponent();
+                else
+                    components["nose"] = new IndividualComponents.ComponentNose(this);
                 break;
             case "lips":
-                components["lips"] = new IndividualComponents.ComponentLips(this);
+                if (components.ContainsKey("lips"))
+                    components["lips"].replaceComponent();
+                else
+                    components["lips"] = new IndividualComponents.ComponentLips(this);
                 break;
             case "hair":
                 if (components.ContainsKey("hair"))
@@ -127,18 +153,23 @@ public class AvatarComponents
                     components["hair"] = new IndividualComponents.ComponentHair(this);
                 break;
             case "glasses":
-                components["glasses"] = new IndividualComponents.ComponentGlasses(this);
+                if (components.ContainsKey("glasses"))
+                    components["glasses"].replaceComponent();
+                else
+                    components["glasses"] = new IndividualComponents.ComponentGlasses(this);
                 break;
             case "one-piece":
                 if (components.ContainsKey("tops"))
                 {
                     components["tops"].removeComponent();
                     components.Remove("tops");
+                    customization_categories.Remove("tops");
                 }
                 if (components.ContainsKey("bottoms"))
                 {
                     components["bottoms"].removeComponent();
                     components.Remove("bottoms");
+                    customization_categories.Remove("bottoms");
                 }
                 if (components.ContainsKey("one-piece"))
                     components["one-piece"].replaceComponent();
@@ -151,12 +182,15 @@ public class AvatarComponents
                 {
                     components["one-piece"].removeComponent();
                     components.Remove("one-piece");
+                    customization_categories.Remove("one-piece");
                 }
 
-                if (!components.ContainsKey("bottoms"))// && customization_categories.ContainsKey("bottoms"))
+                if (!components.ContainsKey("bottoms"))
                 {
                     components["bottoms"] = new IndividualComponents.ComponentBottom(this);
                 }
+                else { }
+
                 if (components.ContainsKey("tops"))
                     components["tops"].replaceComponent();
                 else
@@ -164,16 +198,23 @@ public class AvatarComponents
                 break;
 
             case "neckwear":
-                components["neckwear"] = new IndividualComponents.ComponentNeckwear(this);
+                if (components.ContainsKey("neckwear"))
+                    components["neckwear"].replaceComponent();
+                else
+                    components["neckwear"] = new IndividualComponents.ComponentNeckwear(this);
                 break;
             case "facePaint":
-                components["facePaint"] = new IndividualComponents.ComponentFacepaint(this);
+                if (components.ContainsKey("facePaint"))
+                    components["facePaint"].replaceComponent();
+                else
+                    components["facePaint"] = new IndividualComponents.ComponentFacepaint(this);
                 break;
             case "bottoms":
                 if (components.ContainsKey("one-piece"))
                 {
                     components["one-piece"].removeComponent();
                     components.Remove("one-piece");
+                    customization_categories.Remove("one-piece");
                 }
 
                 if (!components.ContainsKey("tops"))// && customization_categories.ContainsKey("tops"))
@@ -201,6 +242,29 @@ public class AvatarComponents
         }
     }
 
+    public void changeAvatarEyeColor(int colorId)
+    {
+        components["eyes"].setInt(colorId, "eyeColor");
+    }
+
+    public void changeAvatarSkinColor(int colorId)
+    {
+        customization_categories["faces"].int_parameters["skinColor"] = colorId;
+        callReapply();
+    }
+    public void changeAvatarLipsColor(int colorId)
+    {
+        components["lips"].setInt(colorId, "naturalLips");
+    }
+    public void changeAvatarBrowColor(int colorId)
+    {
+        customization_categories["brows"].int_parameters["browColor"] = colorId;
+        callReapply();
+    }
+    public void changeAvatarHairColor(int colorId)
+    {
+        components["hair"].setInt(colorId, "hairColor");
+    }
 
     public void changeAvatarBrowThickness(float browThickness) { components["brows"].setFloat(browThickness, "browThickness"); }
     public void changeAvatarEyeCloseness(float eyeCloseness) { components["eyes"].setFloat(eyeCloseness, "eyeCloseness"); }
@@ -268,7 +332,6 @@ public abstract class AvatarComponent
     }
     public virtual void setModifiers()
     {
-        throw new System.NotImplementedException();
     }
     public virtual Model getModel()
     {
@@ -297,6 +360,7 @@ public abstract class AvatarComponentWithModel : AvatarComponent
     }
     public override void removeComponent()
     {
+        AvatarComponents.onReapplyModifiers -= setModifiers;
         GameObject.DestroyImmediate(component_model.game_object);
         component_model = null;
     }

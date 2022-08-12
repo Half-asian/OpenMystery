@@ -13,8 +13,15 @@ namespace IndividualComponents
 
         public ComponentHair(AvatarComponents _avatar_components)
         {
+            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             replaceComponent();
+        }
+
+        public override void setInt(int i, string s)
+        {
+            avatar_components.customization_categories["hair"].int_parameters[s] = i;
+            setModifiers();
         }
 
         public override Model replaceComponent()
@@ -35,6 +42,10 @@ namespace IndividualComponents
 
         public override void setModifiers()
         {
+            Debug.Log("ComponentHair SetMod");
+            if (component_model is null)
+                return;
+            Debug.Log("HERR");
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["hair"];
 
             if (category.int_parameters.ContainsKey("hairColor"))
