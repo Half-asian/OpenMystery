@@ -72,10 +72,8 @@ namespace ModelLoading
 				//if (!Scene.scene_lights.ContainsKey(lightname))
 				//	continue;
 				SceneLight sceneLight = Scene.scene_lights[lightname];
-				Debug.LogWarning("Settinglight " + sceneLight.name + mat.name);
 				if (sceneLight is AmbLight)
                 {
-					Debug.LogWarning("Setting amb colour " + sceneLight.name + " " + mat.name);
 					mat.SetColor("u_AmbientLightSourceColor", sceneLight.color);
 				}
 				else if (sceneLight is DirLight)
@@ -129,10 +127,21 @@ namespace ModelLoading
 				mat.CopyPropertiesFromMaterial(transparent_no_depth_write_material);
 			}
 
-			Material default_material = Resources.Load<Material>("ShaderDefaults/" + material.shaderName);
+			Material default_material;
+			if (material.transparent == 1 && material.shaderName == "ubershader")
+			{
+				default_material = Resources.Load<Material>("ShaderDefaults/" + material.shaderName + "_transparent");
+			}
+			else
+			{
+				default_material = Resources.Load<Material>("ShaderDefaults/" + material.shaderName);
+			}
 			if (default_material != null)
 			{
-				mat.shader = shader_dict[material.shaderName];
+				if (material.transparent == 1 && material.shaderName == "ubershader")
+					mat.shader = shader_dict[material.shaderName + "_transparent"];
+				else
+					mat.shader = shader_dict[material.shaderName];
 				mat.CopyPropertiesFromMaterial(default_material);
 				Debug.Log("Setting light data for " + material.nodeName);
 				setLightData(mat);

@@ -3,6 +3,7 @@
 #define USE_DIFFUSE
 #define HAS_DIFFUSE2_TEXTURE
 #define HAS_DIFFUSE3_TEXTURE
+
 #define USE_ALPHA_TEST
 #define HAS_DIRTMAP_TEXTURE
 #define USE_AMBIENT_COLOR
@@ -13,14 +14,16 @@
 #define HAS_LIGHTMAP_TEXTURE
 #define USE_LIGHTMAP_COLOR
 #define USE_LIGHTMAP_BRIGHTNESS
-//#define USE_LIGHTMAP_EXPOSURE
+#define USE_LIGHTMAP_EXPOSURE
+
 //#define HAS_TOP_DIFFUSE_TEXTURE
 
-#undef USE_DIFFUSE_COLOR
+//#undef USE_DIFFUSE_COLOR
 //#define USE_DIFFUSE_COLOR_ADJUST
 #define USE_EMISSIVE
 #define HAS_EMISSIVE_TEXTURE
 #define HAS_EMISSIVE_COMP
+
 #define USE_SPECULAR
 #define USE_SPECULAR_RADIUS
 #define HAS_SPECULAR_TEXTURE
@@ -162,9 +165,14 @@ float luma(float3 color)
 
 float4 main_float(){ 
 
+
     eyeDir = -eyeDir;
 
     eyeDir = float3(-eyeDir.x, eyeDir.y, eyeDir.z);
+
+    if (u_opacityAmount < 0.95){
+        u_opacityAmount = clamp(u_opacityAmount / 3, 0.08, 1.0);
+    }
 
     float shadowVal = 1.0;
     #ifdef USE_SHADOWMAP
@@ -337,7 +345,7 @@ float4 main_float(){
 
     float3 lightColor;
 
-    if (BakedDiffuse == 1.0){
+    if (BakedDiffuse > 0.5){
         lightColor = float3(0.0, 0.0, 0.0);
     }
     else{
@@ -401,7 +409,7 @@ float4 main_float(){
                 curLightColor = computeLighting(normal, -ldir, u_DirLightSourceColor1, 1.0);
             #endif
     
-            if (BakedDiffuse == 0.0){
+            if (BakedDiffuse != 1.0){
                 lightColor += curLightColor;
             }
     
@@ -417,7 +425,7 @@ float4 main_float(){
                 #endif
                 
                 curLightColor = computeLighting(normal, -ldir, u_DirLightSourceColor2, 1.0);
-                if (BakedDiffuse == 0.0){
+                if (BakedDiffuse != 1.0){
                     lightColor += curLightColor;
                 }
     
@@ -434,7 +442,7 @@ float4 main_float(){
                 #endif
                 
                 curLightColor = computeLighting(normal, -ldir, u_DirLightSourceColor3, 1.0);
-                if (BakedDiffuse == 0.0){
+                if (BakedDiffuse != 1.0){
                     lightColor += curLightColor;
                 }
     
@@ -451,7 +459,7 @@ float4 main_float(){
                 #endif
                 
                 curLightColor = computeLighting(normal, -ldir, u_DirLightSourceColor4, 1.0);
-                if (BakedDiffuse == 0.0){
+                if (BakedDiffuse != 1.0){
                     lightColor += curLightColor;
                 }
     
@@ -467,7 +475,7 @@ float4 main_float(){
             vec3 vertToLight = normalize(v_vertexToPointLightDirection[0]);
             curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor[0], attenuation);
     
-            if (BakedDiffuse == 0.0){
+            if (BakedDiffuse != 1.0){
                 #if NUM_SCENE_POINT_LIGHTS <= 0
                 lightColor += curLightColor;
                 #endif
@@ -483,7 +491,7 @@ float4 main_float(){
                 vertToLight = normalize(v_vertexToPointLightDirection[1]);
                 curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor[1], attenuation);
     
-                if (BakedDiffuse == 0.0){
+                if (BakedDiffuse != 1.0){
                     #if NUM_SCENE_POINT_LIGHTS <= 1
                     lightColor += curLightColor;
                     #endif
@@ -499,7 +507,7 @@ float4 main_float(){
                     vertToLight = normalize(v_vertexToPointLightDirection[2]);
                     curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor[2], attenuation);
     
-                    if (BakedDiffuse == 0.0){
+                    if (BakedDiffuse != 1.0){
                         #if NUM_SCENE_POINT_LIGHTS <= 2
                         lightColor += curLightColor;
                         #endif
@@ -533,7 +541,7 @@ float4 main_float(){
                 curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[0], attenuation);
             #endif
 
-            if (BakedDiffuse == 0.0){
+            if (BakedDiffuse != 0.0){
                 #if NUM_SCENE_SPOT_LIGHTS <= 0
                 lightColor += curLightColor;
                 #endif
@@ -562,7 +570,7 @@ float4 main_float(){
                 attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[1], u_SpotLightSourceInnerAngleCos[1], spotCurrentAngleCos);
                 
                 curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[1], attenuation);
-                if (BakedDiffuse == 0.0){
+                if (BakedDiffuse == 1.0){
                     #if NUM_SCENE_SPOT_LIGHTS <= 1
                     lightColor += curLightColor;
                     #endif
@@ -592,7 +600,7 @@ float4 main_float(){
                 attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[2], u_SpotLightSourceInnerAngleCos[2], spotCurrentAngleCos);
                 
                 curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[2], attenuation);
-                if (BakedDiffuse == 0.0){
+                if (BakedDiffuse != 1.0){
                     #if NUM_SCENE_SPOT_LIGHTS <= 2
                     lightColor += curLightColor;
                     #endif
@@ -725,6 +733,8 @@ float4 main_float(){
         #endif
     #endif
 
+    const float3 desaturateColor = float3(0.3, 0.6, 0.1);
+
     //Handle transparency. If using cutout, then modulate the emissive, specular, and reflection.
     #ifdef USE_TRANSPARENCY
         #if defined(USE_TRANSPARENCY_TEXTURE) && defined(USE_TRANSPARENCY_VERTEX)
@@ -837,7 +847,7 @@ float4 main_float(){
             gl_FragColor = vec4(finalColor, 1);
         }
     #else
-        return float4(finalColor, 1);
+        return float4(finalColor, opacity * alpha);
     #endif
 
 }
