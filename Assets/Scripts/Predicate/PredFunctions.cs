@@ -48,6 +48,8 @@ public partial class NewPredicate
         {"creatureAffinityLevel"        , new Func<SymbolConstantString, SymbolConstantInteger>(creatureAffinityLevel) },
         {"random"                       , new Func<SymbolConstantFloat>(random) },
         {"isVersionAtLeast"             , new Func<SymbolConstantString, SymbolConstantBool>(isVersionAtLeast) },
+        {"companionLevel"               , new Func<SymbolConstantString, SymbolConstantInteger >(companionLevel) },
+        {"numCompletedDatesWithPartner" , new Func<SymbolConstantString, SymbolConstantInteger>(numCompletedDatesWithPartner) },
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -282,9 +284,16 @@ public partial class NewPredicate
         System.Random r = new System.Random();
         return new SymbolConstantFloat((float)r.NextDouble());
     }
-
     static SymbolConstantBool isVersionAtLeast(SymbolConstantString version)
     {
         return new SymbolConstantBool(true);
+    }
+    static SymbolConstantInteger companionLevel(SymbolConstantString companion)
+    {
+        return new SymbolConstantInteger(10);
+    }
+    static SymbolConstantInteger numCompletedDatesWithPartner(SymbolConstantString partner)
+    {
+        return new SymbolConstantInteger(100);
     }
 }
