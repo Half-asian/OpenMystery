@@ -130,6 +130,62 @@ public class Prop : ModelHolder
         prop.setup(prop_locator.name, model, Prop.spawner.Scene, "");
         spawned_props[prop_locator.name] = prop;
 
+        if (prop_locator.materials != null)
+        {
+            Debug.LogError("Applying prop materials " + prop_locator.name);
+            for (int c = 0; c < prop.model.game_object.transform.childCount; c++)
+            {
+                Transform child = prop.model.game_object.transform.GetChild(c);
+                if (!prop_locator.material_dict.ContainsKey(child.name))
+                    continue;
+                Material mat = child.GetComponent<SkinnedMeshRenderer>().material;
+                var material = prop_locator.material_dict[child.name];
+
+                if (material.stringValueKeys != null)
+                {
+                    for (int i = 0; i < material.stringValueKeys.Length; i++)
+                    {
+                        mat.SetTexture(material.stringIds[i], TextureManager.loadTextureDDS(material.stringValueKeys[i]));
+                        if (mat.shader.name.Contains("ubershader") || mat.shader.name.Contains("quidditchshader"))
+                        {
+                            ModelMaterials.setUbershaderSwitches(mat, material.stringIds[i]);
+                        }
+                    }
+                }
+                if (material.floatIds != null)
+                {
+                    for (int i = 0; i < material.floatIds.Length; i++)
+                    {
+                        mat.SetFloat(material.floatIds[i], material.floatValues[i]);
+                    }
+                }
+                if (material.vec3Ids != null)
+                {
+                    for (int i = 0; i < material.vec3Ids.Length; i++)
+                    {
+                        mat.SetVector(material.vec3Ids[i], new Vector3(material.vec3Values[i][0], material.vec3Values[i][1], material.vec3Values[i][2]));
+                    }
+                }
+                if (material.vec4Ids != null)
+                {
+
+                    for (int i = 0; i < material.vec4Ids.Length; i++)
+                    {
+                        mat.SetVector(material.vec4Ids[i], new Vector4(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]));
+                    }
+                }
+                if (material.intSettingIds != null)
+                {
+                    for (int i = 0; i < material.intSettingIds.Length; i++)
+                    {
+                        mat.SetFloat(material.intSettingIds[i], material.intSettingValues[i]);
+
+                    }
+                }
+
+            }
+        }
+
         if (prop_locator.animation != null)
         {
             HPAnimation animation = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);

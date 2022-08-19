@@ -229,6 +229,16 @@ public class Scenario
         }*/
         //Interactions
 
+        EventManager.all_script_events_finished_event += onScenarioLoadScriptEventsFinished;
+
+        Debug.Log("Time to load scenario: " + (Time.realtimeSinceStartup - start_time));
+    }
+
+    private static void onScenarioLoadScriptEventsFinished()
+    {
+        Debug.Log("onScenarioLoadScriptEventsFinished");
+        EventManager.all_script_events_finished_event -= onScenarioLoadScriptEventsFinished;
+
         if (scenarios_serialized.ContainsKey(current.scenario_config.scenarioId)) //Reload saved interactions
         {
             GameStart.interaction_manager.loadSerializedInteractions(scenarios_serialized[current.scenario_config.scenarioId].interactions);
@@ -241,19 +251,7 @@ public class Scenario
             }
         }
 
-
-        EventManager.all_script_events_finished_event += onScenarioLoadScriptEventsFinished;
-
-        Debug.Log("Time to load scenario: " + (Time.realtimeSinceStartup - start_time));
-    }
-
-    private static void onScenarioLoadScriptEventsFinished()
-    {
-        Debug.Log("onScenarioLoadScriptEventsFinished");
-        EventManager.all_script_events_finished_event -= onScenarioLoadScriptEventsFinished;
         onScenarioLoaded.Invoke();
-
-
     }
 
     public static void restartScenario()
