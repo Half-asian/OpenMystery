@@ -10,7 +10,6 @@ Material:
   m_Name: ubershader_transparent
   m_Shader: {fileID: -6465566751694194690, guid: c7cc70a8a06e7004ab1c99817b56c622, type: 3}
   m_ValidKeywords:
-  - USE_DIFFUSE_COLOR
   - USE_TRANSPARENCY
   - _DISABLE_SSR_TRANSPARENT
   - _ENABLE_FOG_ON_TRANSPARENT
@@ -27,11 +26,10 @@ Material:
     MotionVector: User
     RenderType: Transparent
   disabledShaderPasses:
-  - TransparentDepthPrepass
+  - MOTIONVECTORS
   - TransparentDepthPostpass
   - TransparentBackface
   - RayTracingPrepass
-  - MOTIONVECTORS
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -139,6 +137,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_rimMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_secondDiffuseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -174,9 +176,13 @@ Material:
     m_Ints: []
     m_Floats:
     - BakedDiffuse: 0
-    - DirtMap_UvSet: 0
+    - DirtMap_UvSet: 1
     - EmissiveVertexColor_SWITCH: 0
     - Emissive_UvSet: 0
+    - HAS_DIFFUSE2_TEXTURE: 0
+    - HAS_DIFFUSE3_TEXTURE: 0
+    - HAS_DIFFUSE_TEXTURE: 0
+    - HAS_LIGHTMAP_TEXTURE: 0
     - IS_SKIN_SHADER: 1
     - Lightmap_UvSet: 1
     - RimVertexColor_SWITCH: 0
@@ -185,6 +191,7 @@ Material:
     - TopDiffuse_UvSet: 0
     - USE_BAKED_DIFFUSE: 0
     - USE_DIFFUSE_COLOR: 1
+    - USE_LIGHTMAP_COLOR: 1
     - USE_RIM: 1
     - USE_TRANSPARENCY: 1
     - UseAsCutout_SWITCH: 0
@@ -295,7 +302,7 @@ Material:
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentDepthPostpassEnable: 0
-    - _TransparentDepthPrepassEnable: 0
+    - _TransparentDepthPrepassEnable: 1
     - _TransparentSortPriority: 0
     - _TransparentWritingMotionVec: 0
     - _TransparentZWrite: 0
@@ -310,7 +317,7 @@ Material:
     - _ZWrite: 0
     - alpha: 1
     - u_alphaTestReferenceValue: 0.5
-    - u_brightness: 0
+    - u_brightness: 1
     - u_diffuseColorAdjust_Switch: 0
     - u_flatness: 1
     - u_lightAngleBoost: 0.2
@@ -318,6 +325,7 @@ Material:
     - u_lmPower: 0
     - u_opacityAmount: 1
     - u_rimAngle: 0
+    - u_rimFalloff: 0
     - u_specMaxRadius: 0
     - u_specMinRadius: 0
     - u_specularity: 0
@@ -351,10 +359,11 @@ Material:
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 1, g: 1, b: 1, a: 0}
+    - u_lightmapColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
     - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
     - u_specColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_tintColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_tintColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5571307314426355002
 MonoBehaviour:

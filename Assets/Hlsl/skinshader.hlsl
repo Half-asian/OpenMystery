@@ -51,6 +51,20 @@ float4 tex_u_emblemTexture;
 
 float4 tex_u_facePaintTexture;
 
+float Unity_Saturation_float(float3 In, float Saturation)
+{
+    float luma = dot(In, float3(0.2126729, 0.7151522, 0.0721750));
+    return (luma.xxx + Saturation.xxx * (In - luma.xxx));
+}
+
+float3 desaturatte(float3 color, float Desaturation)
+{
+	float3 grayXfer = float3(0.3, 0.6, 0.1);
+	float grayf = dot(grayXfer, color);
+	float3 gray = float3(grayf, grayf, grayf);
+	return lerp(color, gray, Desaturation) + float3(0.2, 0.2, 0.2);
+}
+
 float4 main_float(){
 	
     float3 blendWeights = abs(normal);
@@ -67,15 +81,9 @@ float4 main_float(){
 
 
                 
-    float3 lowered_normal = normal * 0.75;
+    float3 lowered_normal = normal;
     
-    float3 old_eyeDir = eyeDir;
-
     eyeDir = -eyeDir;
-
-    eyeDir = float3(-eyeDir.x, eyeDir.y, eyeDir.z);
-
-
 
 
     #ifdef USE_SCREENDOOR_TRANSPARENCY
@@ -165,11 +173,11 @@ float4 main_float(){
     #elif defined(IS_AVATAR_HAIR_SHADER)
         float3 diffuseColor = tex_u_colorMap * u_hairColor;
     #elif defined(IS_AVATAR_SKIN_SHADER)
-        float3 diffuseColor = tex_u_colorMap * u_skinColor;
+        float3 diffuseColor = tex_u_colorMap * desaturatte(u_skinColor, 0.8);
     #elif defined(IS_AVATAR_FACE_SHADER)
         float3 maskColor = tex_u_mask;
         float3 gradientColor = tex_u_colorMap;
-        float3 skinColor = u_skinColor;
+        float3 skinColor = desaturatte(u_skinColor, 0.7);
 
         #ifdef USE_FRECKLES
             vec3 frecklesTexColor = texture2D(u_frecklesTexture, v_texCoords1).rgb;
@@ -339,7 +347,7 @@ float4 main_float(){
 
     //Rim is a part of diffuse, but if diffuse is cheated off, we still want to show the rim. Blue component of secondary texture is a rim mask.
     #ifdef USE_RIM
-        float fresnel = dot(old_eyeDir, normal);
+        float fresnel = dot(eyeDir, normal);
         fresnel = 1.0 - clamp((fresnel * fresnel * u_rimAngle), 0.0, 1.0);
         fresnel = u_flatness * fresnel;
         #ifdef IS_SKIN_SHADER

@@ -1,8 +1,5 @@
 //#define USE_UNLIT_DIFFUSE
-#define HAS_DIFFUSE_TEXTURE
 #define USE_DIFFUSE
-#define HAS_DIFFUSE2_TEXTURE
-#define HAS_DIFFUSE3_TEXTURE
 
 #define USE_ALPHA_TEST
 #define HAS_DIRTMAP_TEXTURE
@@ -11,15 +8,12 @@
 #define HAS_DYNAMIC_LIGHT
 #define HAS_EMISSIVE_COMP
 #define USE_LIGHTMAP
-#define HAS_LIGHTMAP_TEXTURE
-#define USE_LIGHTMAP_COLOR
 #define USE_LIGHTMAP_BRIGHTNESS
 #define USE_LIGHTMAP_EXPOSURE
 
 //#define HAS_TOP_DIFFUSE_TEXTURE
 
-//#undef USE_DIFFUSE_COLOR
-//#define USE_DIFFUSE_COLOR_ADJUST
+#define USE_DIFFUSE_COLOR_ADJUST
 #define USE_EMISSIVE
 #define HAS_EMISSIVE_TEXTURE
 #define HAS_EMISSIVE_COMP
@@ -27,6 +21,11 @@
 #define USE_SPECULAR
 #define USE_SPECULAR_RADIUS
 #define HAS_SPECULAR_TEXTURE
+
+//#define USE_EMBLEM_IN_DIFFUSE
+
+//#define USE_RIM
+
 float4 v_vertColor;
 
 float4 tex_u_diffuseMap;
@@ -35,8 +34,11 @@ float4 tex_u_thirdDiffuseMap;
 float3 tex_u_dirtMap;
 float3 tex_u_lightmapMap;
 float3 tex_u_emissiveMap;
-float4 tex_u_topDiffuseMap;
 float4 tex_u_specularMap;
+float3 tex_u_rimMap;
+float4 tex_u_topDiffuseMap;
+float4 tex_u_emblemTexture;
+float4 tex_u_teamColorMask;
 
 float3 eyeDir;
 float3 normal;
@@ -168,10 +170,8 @@ float4 main_float(){
 
     eyeDir = -eyeDir;
 
-    eyeDir = float3(-eyeDir.x, eyeDir.y, eyeDir.z);
-
     if (u_opacityAmount < 0.95){
-        u_opacityAmount = clamp(u_opacityAmount / 3, 0.08, 1.0);
+        u_opacityAmount = clamp(u_opacityAmount / 3, 0.00, 1.0);
     }
 
     float shadowVal = 1.0;
@@ -221,12 +221,13 @@ float4 main_float(){
         #endif
     #endif
 
+    float3 diffuseColor;
     #ifdef USE_DIFFUSE
-        #ifdef USE_DIFFUSE_COLOR
-        float3 diffuseColor = u_diffuseColor;
-        #endif
+        if (USE_DIFFUSE_COLOR == true){
+            diffuseColor = u_diffuseColor;
+        }
     
-        #ifdef HAS_DIFFUSE_TEXTURE
+        if (HAS_DIFFUSE_TEXTURE){
             #ifdef USE_TRANSPARENCY_TEXTURE
                 vec4 diffuseTexColor = texture2D(u_diffuseMap, v_diffuseCoords);
                 #ifdef USE_ALPHA_TEST
@@ -234,32 +235,35 @@ float4 main_float(){
                         discard;
                     }
                 #endif
-                #ifndef USE_DIFFUSE_COLOR
-                    vec3 diffuseColor = diffuseTexColor.rgb;
-                #endif
+                if (USE_DIFFUSE_COLOR == false){
+                    diffuseColor = diffuseTexColor.rgb;
+                }
             #elif defined(USE_ALPHA_TEST)
                 float4 diffuseTexColor = tex_u_diffuseMap;
                 if (diffuseTexColor.a < u_alphaTestReferenceValue) {
                     discard;
                 }
-                #ifndef USE_DIFFUSE_COLOR
-                    float3 diffuseColor = diffuseTexColor.rgb;
-                #endif
-            #elif !defined(USE_DIFFUSE_COLOR)
-                float3 diffuseColor = tex_u_diffuseMap;
+                if (USE_DIFFUSE_COLOR == false){
+                    diffuseColor = diffuseTexColor.rgb;
+                }
+            #else 
+                if (USE_DIFFUSE_COLOR == false){
+                    diffuseColor = tex_u_diffuseMap;
+                }
             #endif
-    
-        #endif
+        }
 
-        #if !defined(USE_DIFFUSE_COLOR) && !defined(HAS_DIFFUSE_TEXTURE)
-        vec3 diffuseColor = vec3(0.0);
-        #endif
+        if (HAS_DIFFUSE_TEXTURE == false){
+            if (USE_DIFFUSE_COLOR == false){
+                diffuseColor = float3(0.0, 0.0, 0.0);
+            }
+        }
     
         #ifdef USE_HOUSE_COLORS
-            vec4 maskColor = texture2D(u_teamColorMask, v_houseColorCoords);
-            vec3 primaryColor = (u_primaryColor * maskColor.g) + (1.0 - maskColor.g);
-            vec3 secondaryColor = (u_secondaryColor * maskColor.b) + (1.0 - maskColor.b);
-            vec3 combinedHouseDiffuse = mix(diffuseColor, primaryColor * secondaryColor * maskColor.r, maskColor.a);
+            float4 maskColor = tex_u_teamColorMask;
+            float3 primaryColor = (u_primaryColor * maskColor.g) + (1.0 - maskColor.g);
+            float3 secondaryColor = (u_secondaryColor * maskColor.b) + (1.0 - maskColor.b);
+            float3 combinedHouseDiffuse = lerp(diffuseColor, primaryColor * secondaryColor * maskColor.r, maskColor.a);
 
             #ifdef USE_EMBLEM_IN_DIFFUSE
             diffuseColor = combinedHouseDiffuse;
@@ -268,15 +272,15 @@ float4 main_float(){
 
         #ifndef USE_EMBLEM_IN_DIFFUSE
             #if defined(USE_HOUSE_EMBLEM) && !defined(USE_EMBLEM_IN_DIFFUSE)
-                vec4 emblemTexColor = texture2D(u_emblemTexture, v_emblemTexCoords);
+                float4 emblemTexColor = tex_u_emblemTexture;
             #endif
 
             #if defined(USE_HOUSE_COLORS) && !defined(USE_HOUSE_EMBLEM)
                 diffuseColor = combinedHouseDiffuse;
             #elif !defined(USE_HOUSE_COLORS) && defined(USE_HOUSE_EMBLEM)
-                diffuseColor = mix(diffuseColor, emblemTexColor.rgb, emblemTexColor.a * u_houseSet);
+                diffuseColor = lerp(diffuseColor, emblemTexColor.rgb, emblemTexColor.a * u_houseSet);
             #elif defined(USE_HOUSE_COLORS) && defined(USE_HOUSE_EMBLEM)
-                diffuseColor = mix(combinedHouseDiffuse, emblemTexColor.rgb, emblemTexColor.a * u_houseSet);
+                diffuseColor = lerp(combinedHouseDiffuse, emblemTexColor.rgb, emblemTexColor.a * u_houseSet);
             #endif        
         #endif
 
@@ -284,23 +288,23 @@ float4 main_float(){
         diffuseColor *= (u_tintColor * u_brightness);
         #endif
     #else
-        vec3 diffuseColor = vec3(0.0);
+        diffuseColor = vec3(0.0);
         #ifdef USE_TRANSPARENCY_TEXTURE
         vec4 diffuseTexColor = vec4(diffuseColor, 1.0);
         #endif
     #endif
 
-    #ifdef HAS_DIFFUSE2_TEXTURE
-    float4 diffuse2Color = tex_u_secondDiffuseMap;
-    float diffuse2Blend = v_vertColor.r * diffuse2Color.a;
-    diffuseColor = lerp(diffuseColor, diffuse2Color.rgb, diffuse2Blend);
-    #endif
+    if (HAS_DIFFUSE2_TEXTURE == true){
+        float4 diffuse2Color = tex_u_secondDiffuseMap;
+        float diffuse2Blend = v_vertColor.r * diffuse2Color.a;
+        diffuseColor = lerp(diffuseColor, diffuse2Color.rgb, diffuse2Blend);
+    }
     
-    #ifdef HAS_DIFFUSE3_TEXTURE
-    float4 diffuse3Color = tex_u_thirdDiffuseMap;
-    float diffuse3Blend = v_vertColor.g * diffuse3Color.a;
-    diffuseColor = lerp(diffuseColor, diffuse3Color.rgb, diffuse3Blend);
-    #endif
+    if (HAS_DIFFUSE3_TEXTURE == true){
+        float4 diffuse3Color = tex_u_thirdDiffuseMap;
+        float diffuse3Blend = v_vertColor.g * diffuse3Color.a;
+        diffuseColor = lerp(diffuseColor, diffuse3Color.rgb, diffuse3Blend);
+    }
 
     #ifdef HAS_TINT_TEXTURE
         vec3 tintVec = texture2D(u_tintMap, v_tintMapCoords).rgb;
@@ -619,7 +623,7 @@ float4 main_float(){
     #endif
 
     #ifdef USE_LIGHTMAP
-        #ifdef HAS_LIGHTMAP_TEXTURE
+        if (HAS_LIGHTMAP_TEXTURE == true){
             #ifdef USE_LIGHTMAP_BRIGHTNESS
                 #ifdef USE_LIGHTMAP_EXPOSURE
                     float3 lightMapValue = u_lmPower * tex_u_lightmapMap;
@@ -657,11 +661,12 @@ float4 main_float(){
                 #endif
                 emissiveComponent += lightmap2Value;
             #endif
-        #elif defined(USE_LIGHTMAP_COLOR)
+        }
+        else if (USE_LIGHTMAP_COLOR == true){
             #ifdef USE_LIGHTMAP_BRIGHTNESS
                 #ifdef USE_LIGHTMAP_EXPOSURE
-                    vec3 lightMapValue = u_lmPower * u_lightmapColor;
-                    lightMapValue = pow(lightMapValue, vec3(u_lmExposure));
+                    float3 lightMapValue = u_lmPower * u_lightmapColor;
+                    lightMapValue = pow(lightMapValue, float3(u_lmExposure, u_lmExposure, u_lmExposure));
                     emissiveComponent += diffuseColor * lightMapValue;
                 #else
                     emissiveComponent += u_lmPower * (diffuseColor * u_lightmapColor);
@@ -675,7 +680,7 @@ float4 main_float(){
                     emissiveComponent += 4.0 * (diffuseColor * u_lightmapColor);
                 #endif
             #endif
-        #endif
+        }
     #endif
 
         #ifdef USE_EMISSIVE
@@ -781,7 +786,7 @@ float4 main_float(){
         #endif
         opacity = clamp(opacity + opacityBoost, opacity, 1.0);
     #else
-        float opacity = 1.0;
+        float opacity = 0.0;
     #endif
 
     //Determine final color, based on diffuse lighting, specular, emissive, and reflection.
@@ -832,11 +837,11 @@ float4 main_float(){
     #ifdef USE_SCREENDOOR_TRANSPARENCY
         float finalAlpha = opacity * alpha;
         #ifdef RANDOM_DITHER_FALLBACK
-            #ifdef HAS_DIFFUSE_TEXTURE
+            if (HAS_DIFFUSE_TEXTURE == true) {
                 if (finalAlpha < rand(v_diffuseCoords)) {
                     discard;
                 }
-            #endif
+            }
         #else
             if (alpha < thresholdMatrix[int(mod(gl_FragCoord.x, 4.0))][int(mod(gl_FragCoord.y, 4.0))]) {
                 discard;
@@ -853,15 +858,35 @@ float4 main_float(){
 }
 
 
-void ubershader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _u_thirdDiffuseMap, float3 _u_dirtMap, float3 _u_lightmapMap, float3 _u_emissiveMap, float4 _u_specularMap, float4 _u_topDiffuseMap, float4 v_vertColor, float3 _eyeDir, float3 _normal, out float4 gl_FragColor){
+void ubershader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _u_thirdDiffuseMap, float3 _u_dirtMap, float3 _u_lightmapMap, float3 _u_emissiveMap, float4 _u_specularMap, float3 _u_rimMap, float4 _u_topDiffuseMap, float4 _v_vertColor, float3 _eyeDir, float3 _normal, out float4 gl_FragColor){
     tex_u_diffuseMap = _u_diffuseMap;
     tex_u_secondDiffuseMap = _u_secondDiffuseMap;
     tex_u_thirdDiffuseMap = _u_thirdDiffuseMap;
     tex_u_dirtMap = _u_dirtMap;
     tex_u_lightmapMap = _u_lightmapMap;
     tex_u_emissiveMap = _u_emissiveMap;
+    tex_u_rimMap = _u_rimMap;
     tex_u_specularMap = _u_specularMap;
     tex_u_topDiffuseMap = _u_topDiffuseMap;
+    v_vertColor = _v_vertColor;
+    eyeDir = _eyeDir;
+    normal = _normal;
+    gl_FragColor = main_float();
+}
+
+void quidditchshader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _u_thirdDiffuseMap, float3 _u_dirtMap, float3 _u_lightmapMap, float3 _u_emissiveMap, float4 _u_specularMap, float3 _u_rimMap, float4 _u_topDiffuseMap, float4 _u_emblemTexture, float4 _u_teamColorMask, float4 _v_vertColor, float3 _eyeDir, float3 _normal, out float4 gl_FragColor){
+    tex_u_diffuseMap = _u_diffuseMap;
+    tex_u_secondDiffuseMap = _u_secondDiffuseMap;
+    tex_u_thirdDiffuseMap = _u_thirdDiffuseMap;
+    tex_u_dirtMap = _u_dirtMap;
+    tex_u_lightmapMap = _u_lightmapMap;
+    tex_u_emissiveMap = _u_emissiveMap;
+    tex_u_rimMap = _u_rimMap;
+    tex_u_specularMap = _u_specularMap;
+    tex_u_topDiffuseMap = _u_topDiffuseMap;
+    tex_u_emblemTexture = _u_emblemTexture;
+    tex_u_teamColorMask = _u_teamColorMask;
+    v_vertColor = _v_vertColor;
     eyeDir = _eyeDir;
     normal = _normal;
     gl_FragColor = main_float();
