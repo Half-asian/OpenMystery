@@ -342,6 +342,14 @@ public class Configs{
                     foreach (ConfigScene._Scene.PropLocator prop_locator in scene.proplocators)
                     {
                         scene.proplocator_dict[prop_locator.name] = prop_locator;
+                        if (prop_locator.materials != null)
+                        {
+                            prop_locator.material_dict = new Dictionary<string, ConfigScene._Scene.Material>();
+                            foreach(var material in prop_locator.materials)
+                            {
+                                prop_locator.material_dict[material.nodeName] = material;
+                            }
+                        }
                     }
                 }
                 if (scene.cameras != null)

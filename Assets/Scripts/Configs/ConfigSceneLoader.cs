@@ -45,6 +45,9 @@ public class ConfigScene : Config<ConfigScene>
             public float[] scale;
             public float[] rotation;
             public string animation;
+            public List<Material> materials;
+            public string neededTextureKeys;
+            public Dictionary<string, Material> material_dict;
         }
         public PropLocator[] proplocators;
         public Dictionary<string, PropLocator> proplocator_dict;

@@ -113,7 +113,7 @@ namespace ModelLoading {
 						mesh.VERTEX_ATTRIB_COLOR = new List<Color>();
 						break;
 					default:
-						Debug.LogError("ERROR, UNKNOWN VERTEX ATTRIB " + attrib.attribute);
+						//Debug.LogError("ERROR, UNKNOWN VERTEX ATTRIB " + attrib.attribute);
 						break;
 				}
 				stride += attrib.size;
@@ -157,7 +157,7 @@ namespace ModelLoading {
 							mesh.VERTEX_ATTRIB_COLOR.Add(new Color(mesh.vertices[v + offset], mesh.vertices[v + offset + 1], mesh.vertices[v + offset + 2], mesh.vertices[v + offset + 3]));
 							break;
 						default:
-							Debug.LogError("ERROR, UNKNOWN VERTEX ATTRIB " + attrib.attribute);
+							//Debug.LogError("ERROR, UNKNOWN VERTEX ATTRIB " + attrib.attribute);
 							break;
 					}
 					offset += attrib.size;
@@ -410,22 +410,8 @@ namespace ModelLoading {
 
 			foreach (CocosModel.Node node in model.nodes)
 			{
-				if (node.skeleton)
-					continue;
+				processNode(node);
 
-				if (node.parts is null)
-					continue;
-
-				Matrix4x4 node_transform_matrix = new Matrix4x4(
-					new Vector4(node.transform[0], node.transform[1], node.transform[2], node.transform[3]),
-					new Vector4(node.transform[4], node.transform[5], node.transform[6], node.transform[7]),
-					new Vector4(node.transform[8], node.transform[9], node.transform[10], node.transform[11]),
-					new Vector4(-node.transform[12], node.transform[13], node.transform[14], node.transform[15]));
-
-				foreach (CocosModel.Node.Part node_part in node.parts)
-				{
-					buildNodePart(node, node_part, node_transform_matrix);
-				}
 			}
 
 			model_game_object.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
@@ -446,6 +432,36 @@ namespace ModelLoading {
 		public static void Initialize()
 		{
 			ModelMaterials.Initialize();
+		}
+
+		public static void processNode(CocosModel.Node node)
+        {
+			if (node.skeleton)
+				return;
+
+			//if (node.parts is null)
+			//	continue;
+
+			Matrix4x4 node_transform_matrix = new Matrix4x4(
+				new Vector4(node.transform[0], node.transform[1], node.transform[2], node.transform[3]),
+				new Vector4(node.transform[4], node.transform[5], node.transform[6], node.transform[7]),
+				new Vector4(node.transform[8], node.transform[9], node.transform[10], node.transform[11]),
+				new Vector4(-node.transform[12], node.transform[13], node.transform[14], node.transform[15]));
+
+			if (node.parts != null)
+			{
+				foreach (CocosModel.Node.Part node_part in node.parts)
+				{
+					buildNodePart(node, node_part, node_transform_matrix);
+				}
+			}
+			if (node.children == null)
+				return;
+
+			foreach (var n in node.children)
+			{
+				processNode(n);
+			}
 		}
 
 	}

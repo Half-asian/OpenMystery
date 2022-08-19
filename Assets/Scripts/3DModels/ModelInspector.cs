@@ -15,6 +15,25 @@ public class ModelInspector : MonoBehaviour
     Prop prop;
     void Start()
     {
+        Scene.current = new ConfigScene._Scene();
+        Scene.current.Lighting = new ConfigScene._Scene._Lighting();
+        Scene.current.Lighting.layers = new Dictionary<string, ConfigScene._Scene._Lighting.Layer>();
+        Scene.current.Lighting.lights = new Dictionary<string, ConfigScene._Scene._Lighting.Light>();
+
+        ConfigScene._Scene._Lighting.Layer env_layer = new ConfigScene._Scene._Lighting.Layer();
+        env_layer.name = "CHARACTER";
+        env_layer.lights = new string[] { "amb" };
+        Scene.current.Lighting.layers["CHARACTER"] = env_layer;
+
+        ConfigScene._Scene._Lighting.Light amb_light = new ConfigScene._Scene._Lighting.Light();
+        amb_light.color = new string[] { "255.0", "255.0", "255.0" };
+        amb_light.intensity = 1.0f;
+        amb_light.name = "amb";
+        amb_light.type = "ambientLight";
+
+        Scene.current.Lighting.lights["amb"] = amb_light;
+        Scene.spawnLights();
+
         if (!string.IsNullOrEmpty(GameStart._model_inspector_model)){
             model = ModelManager.loadModel(GameStart._model_inspector_model);
             prop = model.game_object.AddComponent<Prop>();
@@ -68,9 +87,10 @@ public class ModelInspector : MonoBehaviour
 
     public void loadModel()
     {
-        //DestroyImmediate(model.game_object);
+        if (model != null)
+            DestroyImmediate(model.game_object);
 
-        ModelManager.loadModel(model_input.text);
+        model = ModelManager.loadModel(model_input.text);
         model.game_object.transform.position = Vector3.zero;
         model.game_object.AddComponent<Animation>();
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.Rendering;
-
+using System;
 namespace ModelLoading
 {
     public class ModelMaterials
@@ -12,8 +12,6 @@ namespace ModelLoading
 		public static string lighting_phase = "CHARACTER";
 
 		static string[] known_shaders_array = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "simpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "panningfalloff", "eyeballshader", "SimpleTexture", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "eyeshader", "dustmotes_vfx", "houseubershader", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
-
-		static string[] hlsl_shaders = {};
 
 		static List<string> known_shaders = new List<string>(known_shaders_array);
 
@@ -108,6 +106,26 @@ namespace ModelLoading
 			}
 		}
 
+		public static void setUbershaderSwitches(Material mat, string tex_name)
+        {
+			switch (tex_name)
+            {
+				case "u_diffuseMap":
+					mat.SetFloat("USE_DIFFUSE_COLOR", 0);
+					mat.SetFloat("HAS_DIFFUSE_TEXTURE", 1);
+					break;
+				case "u_lightmapMap":
+					mat.SetFloat("USE_LIGHTMAP_COLOR", 0);
+					mat.SetFloat("HAS_LIGHTMAP_TEXTURE", 1);
+					break;
+				case "u_secondDiffuseMap":
+					mat.SetFloat("HAS_DIFFUSE2_TEXTURE", 1);
+					break;
+				case "u_thirdDiffuseMap":
+					mat.SetFloat("HAS_DIFFUSE3_TEXTURE", 1);
+					break;
+			}
+		}
 		public static void applyModelMaterial(Material mat, Config3DModel._Config3DModel.JsonData.Material material)
         {
 			if (!known_shaders.Contains(material.shaderName))
@@ -143,7 +161,6 @@ namespace ModelLoading
 				else
 					mat.shader = shader_dict[material.shaderName];
 				mat.CopyPropertiesFromMaterial(default_material);
-				Debug.Log("Setting light data for " + material.nodeName);
 				setLightData(mat);
 			}
 			else
@@ -243,8 +260,10 @@ namespace ModelLoading
 				for (int i = 0; i < material.stringValueKeys.Length; i++)
 				{
 					mat.SetTexture(material.stringIds[i], TextureManager.loadTextureDDS(material.stringValueKeys[i]));
-					if (material.shaderName == "ubershader" && material.stringIds[i] == "u_diffuseMap")
-						mat.SetKeyword(new LocalKeyword(mat.shader, "USE_DIFFUSE_COLOR"), false);
+					if (material.shaderName == "ubershader" || material.shaderName == "quidditchshader")
+					{
+						setUbershaderSwitches(mat, material.stringIds[i]);
+					}
 				}
 			}
 			if (material.floatIds != null)
@@ -279,7 +298,34 @@ namespace ModelLoading
 			}
 			if (material.shaderName == "houserobeshader" || material.shaderName == "houseclothshader" || material.shaderName == "quidditchshader" || material.shaderName == "houseubershader")
 			{
-				switch (Player.local_avatar_house)
+				string chooser = "";
+
+				if (material.intSettingIds == null || !material.intSettingIds.Contains("TeamId"))
+					chooser = Player.local_avatar_house;
+                else
+                {
+					int index = Array.IndexOf(material.intSettingIds, "TeamId");
+					int value = material.intSettingValues[index];
+
+					switch (value)
+                    {
+						case 0:
+							chooser = "gryffindor";
+							break;
+						case 1:
+							chooser = "hufflepuff";
+							break;
+						case 2:
+							chooser = "ravenclaw";
+							break;
+						case 3:
+							chooser = "slytherin";
+							break;
+                    }
+
+                }
+
+				switch (chooser)
 				{
 					case "ravenclaw":
 						mat.SetInt("is_ravenclaw", 1);
@@ -296,6 +342,7 @@ namespace ModelLoading
 						mat.SetFloat("u_houseSet", 1.0f);
 						mat.SetColor("u_primaryColor", new Color(0.706f, 0.15f, 0.15f));
 						mat.SetColor("u_secondaryColor", new Color(0.722f, 0.635f, 0.166f));
+						mat.SetVector("u_emblemTexOffset", new Vector2(0.0f, 0.0f));
 						break;
 					case "slytherin":
 						mat.SetInt("is_slytherin", 1);
@@ -313,6 +360,8 @@ namespace ModelLoading
 						mat.SetColor("u_primaryColor", new Color(0.833f, 0.72f, 0.239f));
 						mat.SetColor("u_secondaryColor", new Color(0.101f, 0.096f, 0.075f));
 						break;
+					default:
+						throw new Exception("Team chooser wasn't set.");
 				}
 			}
 
@@ -359,13 +408,6 @@ namespace ModelLoading
 
 			foreach (string shader in real_shaders)
 			{
-				if (hlsl_shaders.Contains(shader))
-				{
-					shader_dict[shader] = Shader.Find("HDRP/" + shader);
-					continue;
-				}
-
-
 				shader_dict[shader] = Shader.Find("Shader Graphs/" + shader);
 				if (shader_dict[shader] == null)
 				{
