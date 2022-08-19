@@ -301,7 +301,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3973814960898402204, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: model_inspector_model
-      value: b_Lakeshore_skin
+      value: o_rayBansAviators_GLASSES_skin
       objectReference: {fileID: 0}
     - target: {fileID: 3973814960898402206, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: ui_dialogue
@@ -401,6 +401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3973814960898402200, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
+    - {fileID: 3973814960898402279, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
 --- !u!114 &216980108 stripped
 MonoBehaviour:
@@ -1135,7 +1136,7 @@ PrefabInstance:
       objectReference: {fileID: 1605447205}
     - target: {fileID: 5235073168471083382, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_Text
-      value: BUILD 8.0.0
+      value: BUILD 8.1.0
       objectReference: {fileID: 0}
     - target: {fileID: 5422768078852317515, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1247,7 +1248,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7760846749486851940, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_Text
-      value: BUILD 8.0.0
+      value: BUILD 8.1.0
       objectReference: {fileID: 0}
     - target: {fileID: 7879890938707277791, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1842,6 +1843,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogue_id: 
+  next_choice_index: -1
   dialogue_choice_1_next_dialogue: 
   dialogue_choice_2_next_dialogue: 
   dialogue_choice_3_next_dialogue: 
@@ -1944,6 +1946,10 @@ PrefabInstance:
     - target: {fileID: 7339653518560060799, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_Version
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8375131801709569760, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9181388647301115274, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_Intensity

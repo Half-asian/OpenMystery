@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 using System.IO;
+using UnityEngine.TextCore.Text;
 
 public class EventManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class EventManager : MonoBehaviour
     //public float block_duration = 0.0f;
 
     public EventPlayer main_event_player;
-    public EventPlayer sequential_event_player;
+    public List<EventPlayer> sequential_event_players;
 
     public GameObject main_camera;
 
@@ -37,37 +38,64 @@ public class EventManager : MonoBehaviour
     public void notifyCharacterAnimationComplete(string character, string animation)
     {
         main_event_player.notifyCharacterAnimationComplete(character, animation);
-        sequential_event_player.notifyCharacterAnimationComplete(character, animation);
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.notifyCharacterAnimationComplete(character, animation);
+        }
     }
 
     public void notifyCamAnimFinished(string animation)
     {
         main_event_player.notifyCamAnimFinished(animation);
-        sequential_event_player.notifyCamAnimFinished(animation);
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.notifyCamAnimFinished(animation);
+        }
     }
 
     public void notifyMoveComplete(string character)
     {
         main_event_player.notifyMoveComplete(character);
-        sequential_event_player.notifyMoveComplete(character);
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.notifyMoveComplete(character);
+        }
     }
 
     public void notifyScriptTrigger(string trigger)
     {
         main_event_player.notifyScriptTrigger(trigger);
-        sequential_event_player.notifyScriptTrigger(trigger);
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.notifyScriptTrigger(trigger);
+        }
     }
 
     public void notifyPropAnimationComplete(string prop, string animation)
     {
         main_event_player.notifyPropAnimationComplete(prop, animation);
-        sequential_event_player.notifyPropAnimationComplete(prop, animation);
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.notifyPropAnimationComplete(prop, animation);
+        }
+    }
+
+    public void notifyScreenFadeComplete()
+    {
+        main_event_player.notifyScreenFadeComplete();
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.notifyScreenFadeComplete();
+        }
     }
 
     public IEnumerator waitCameraAnimation(float start_time, float length, string animation)
     {
         main_event_player.last_finished_animation = "";
-        sequential_event_player.last_finished_animation = "";
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.last_finished_animation = "";
+        }
 
         while (Time.realtimeSinceStartup < length + start_time)
         {
@@ -78,7 +106,10 @@ public class EventManager : MonoBehaviour
 
         CameraManager.current.simple_camera_controller.enabled = true;
         main_event_player.last_finished_animation = animation;
-        sequential_event_player.last_finished_animation = animation;
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.last_finished_animation = animation;
+        }
     }
 
     public IEnumerator lookAtCountdown(string character, float time)
@@ -180,6 +211,28 @@ public class EventManager : MonoBehaviour
         return final_result;
     }
 
+    public void startSequentialPlayer(string[] events)
+    {
+        EventPlayer new_event_player = gameObject.AddComponent<EventPlayer>();
+        new_event_player.is_sequential_player = true;
+        new_event_player.addEvent(events);
+        sequential_event_players.Add(new_event_player);
+    }
+
+    public void removeSequentialPlayers()
+    {
+        List<EventPlayer> to_remove = new List<EventPlayer>();
+        foreach(var sequential_player in sequential_event_players)
+        {
+            if (sequential_player is null)
+                to_remove.Add(sequential_player);
+        }
+        foreach(var remove in to_remove)
+        {
+            sequential_event_players.Remove(remove);
+        }
+    }
+
     /*IEnumerator waitSequentialEvents(string[] sequences, string[][] message_and_keys)
     {
         Debug.Log("Sequential events");
@@ -234,7 +287,11 @@ public class EventManager : MonoBehaviour
     public void Update()
     {
         main_event_player.runImmediateEvents();
-        sequential_event_player.runImmediateEvents();
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.runImmediateEvents();
+        }
+        removeSequentialPlayers();
     }
 
     public void checkEventsActive()
@@ -262,7 +319,11 @@ public class EventManager : MonoBehaviour
     {
         main_event_player.reset();
 
-        sequential_event_player.reset();
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            Destroy(sequential_event_player);
+        }
+        sequential_event_players = new List<EventPlayer>();
 
     }
 

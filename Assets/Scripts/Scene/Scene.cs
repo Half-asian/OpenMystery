@@ -70,7 +70,7 @@ public class Scene
         }
     }
 
-    private static void spawnLights()
+    public static void spawnLights()
     {
         if (current.Lighting == null || current.Lighting.lights == null)
             return;

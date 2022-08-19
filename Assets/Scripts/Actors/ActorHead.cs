@@ -20,7 +20,7 @@ public class ActorHead
 
     public void setLookat(Events.Looking _looking)
     {
-        Debug.Log(actor_controller.name + " is now looking at " + _looking.character);
+        //Debug.Log(actor_controller.name + " is now looking at " + _looking.character);
         if (looking != null && looking.character == _looking.character)
             return;
 
@@ -41,7 +41,7 @@ public class ActorHead
 
     public void setTurnHeadAt(Events.Looking _turnHeadAt)
     {
-        Debug.Log(actor_controller.name + " is now turning head at at " + _turnHeadAt.character);
+        //Debug.Log(actor_controller.name + " is now turning head at at " + _turnHeadAt.character);
         if (turning != null && turning.character == _turnHeadAt.character)
             return;
         

@@ -17,7 +17,7 @@ public class EventPlayer : MonoBehaviour
 
     private int missed_blocking_key_count = 0;
 
-    [SerializeField] private bool is_sequential_player;
+    public bool is_sequential_player;
 
     public void addEvent(string event_id)
     {
@@ -104,12 +104,7 @@ public class EventPlayer : MonoBehaviour
             //StartCoroutine(waitSequentialEvents(Configs.config_script_events.ScriptEvents[event_name].sequenceIds, Configs.config_script_events.ScriptEvents[event_name].messageAndKeys)); //We need to complete message and keys before activating sequences
             if (Configs.config_script_events.ScriptEvents[event_name].sequenceIds != null)
             {
-                GameStart.event_manager.sequential_event_player.blocking_key = "";
-                GameStart.event_manager.sequential_event_player.total_block = false;
-                GameStart.event_manager.sequential_event_player.event_stack = new List<string>();
-                GameStart.event_manager.sequential_event_player.block_duration = 0.0f;
-                GameStart.event_manager.sequential_event_player.blocking_message = "";
-                GameStart.event_manager.sequential_event_player.addEvent(Configs.config_script_events.ScriptEvents[event_name].sequenceIds);
+                GameStart.event_manager.startSequentialPlayer(Configs.config_script_events.ScriptEvents[event_name].sequenceIds);
             }
         }
         return event_time;
@@ -129,6 +124,12 @@ public class EventPlayer : MonoBehaviour
             block_duration = 1f;
         }
 
+        if (event_stack.Count == 0 && is_sequential_player)
+        {
+            Destroy(this);
+            return;
+        }
+
         while (event_stack.Count != 0 && block_duration == 0.0f && total_block == false)
         {
             string event_id = event_stack[0];
@@ -137,29 +138,11 @@ public class EventPlayer : MonoBehaviour
 
         }
 
-        if (blocking_key == "ScreenFadeComplete")
-        {
-            blocking_message = "";
-            blocking_key = "";
-            block_duration = 0.85f;
-            total_block = false;
-        }
-        if (blocking_message == "ScreenFadeComplete")
-        {
-            blocking_message = "";
-            blocking_key = "";
-            block_duration = 0.85f;
-            total_block = false;
-        }
-
         if (blocking_message == "CamAnimFinished") //Sometimes, a blocking key is called after the animation has finished playing. May be related to very precise timing.
         {
             if (blocking_key == last_finished_animation)
             {
-                total_block = false;
-                blocking_message = "";
-                blocking_key = "";
-                block_duration = 0.00f;
+                removeBlock();
             }
         }
 
@@ -190,6 +173,14 @@ public class EventPlayer : MonoBehaviour
 
     public void reset()
     {
+        if (is_sequential_player)
+        {
+            Debug.LogError("Reset sequential");
+        }
+        else
+        {
+            Debug.LogError("Reset event non");
+        }
         event_stack.Clear();
         total_block = false;
         block_duration = 0.0f;
@@ -224,12 +215,15 @@ public class EventPlayer : MonoBehaviour
         {
             removeBlock();
         }
-        else
+        else if (blocking_message == "CharAnimEnded")
         {
             if (blocking_key.Split(':')[0] == character) //If the block is missed 3 times, we break out
                 missed_blocking_key_count++;
             if (missed_blocking_key_count >= 3)
+            {
                 removeBlock();
+                missed_blocking_key_count = 0;
+            }
         }
     }
 
@@ -257,8 +251,24 @@ public class EventPlayer : MonoBehaviour
         }
     }
 
+    public void notifyScreenFadeComplete()
+    {
+        if (blocking_message == "ScreenFadeComplete")
+        {
+            removeBlock();
+        }
+    }
+
     private void removeBlock()
     {
+        if (is_sequential_player)
+        {
+            Debug.LogError("Remove block sequential");
+        }
+        else
+        {
+            Debug.LogError("Remove block");
+        }
         total_block = false;
         blocking_message = "";
         blocking_key = "";

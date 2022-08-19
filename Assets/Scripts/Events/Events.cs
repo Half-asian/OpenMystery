@@ -7,6 +7,20 @@ using System.Globalization;
 public static class Events
 {
 
+    public static void doEventAction(string action_type, string[] action_params)
+    {
+        switch (action_type)
+        {
+            case "replaceCharacterIdle":
+                if (Actor.actor_controllers.ContainsKey(action_params[0]))
+                {
+                    Actor.actor_controllers[action_params[0]].actor_animation.replaceCharacterIdle(action_params[1]);
+                }
+
+                break;
+        }
+    }
+
     public static void doEventAction(string event_name, int event_index, string[] action_params, EventPlayer event_player)
     {
         switch (Configs.config_script_events.ScriptEvents[event_name].action[event_index])
@@ -749,7 +763,7 @@ public static class Events
     }
     public static void lookAt(string[] action_params) //Up to 4 parameters. Idk what 4 is for.
     {
-        Debug.Log("lookAt " + string.Join(",", action_params));
+        //Debug.Log("lookAt " + string.Join(",", action_params));
         if (action_params.Length < 2)
         {
             if (Actor.actor_controllers.ContainsKey(action_params[0]))

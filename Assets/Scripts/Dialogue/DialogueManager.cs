@@ -25,6 +25,7 @@ public class DialogueManager : MonoBehaviour
 
     public string dialogue_id;
 
+    public int next_choice_index = -1;
     public string dialogue_choice_1_next_dialogue;
     public string dialogue_choice_2_next_dialogue;
     public string dialogue_choice_3_next_dialogue;
@@ -397,15 +398,30 @@ public class DialogueManager : MonoBehaviour
 
     public void activateDialogueOption1()
     {
-        activateDialogueLine(dialogue_choice_1_next_dialogue);
+        next_choice_index = 1;
+        GameStart.event_manager.main_event_player.addEvent(exit_stack);
+        exit_stack.Clear();
+        setDialogueUIActive(false);
+        dialogue_status = DialogueStatus.WaitingExitEvents;
+        GameStart.event_manager.main_event_player.runImmediateEvents();
     }
     public void activateDialogueOption2()
     {
-        activateDialogueLine(dialogue_choice_2_next_dialogue);
+        next_choice_index = 2;
+        GameStart.event_manager.main_event_player.addEvent(exit_stack);
+        exit_stack.Clear();
+        setDialogueUIActive(false);
+        dialogue_status = DialogueStatus.WaitingExitEvents;
+        GameStart.event_manager.main_event_player.runImmediateEvents();
     }
     public void activateDialogueOption3()
     {
-        activateDialogueLine(dialogue_choice_3_next_dialogue);
+        next_choice_index = 3;
+        GameStart.event_manager.main_event_player.addEvent(exit_stack);
+        exit_stack.Clear();
+        setDialogueUIActive(false);
+        dialogue_status = DialogueStatus.WaitingExitEvents;
+        GameStart.event_manager.main_event_player.runImmediateEvents();
     }
     public void Update()
     {
@@ -467,29 +483,50 @@ public class DialogueManager : MonoBehaviour
     void onExitEventsFinished()
     {
         string next_turn_id = null;
-        if (current_dialogue_line.nextTurnIds != null)
+        if (current_dialogue_line.dialogueChoiceIds != null)
         {
-            //Check predicates
-            if (current_dialogue_line.nextTurnPredicates != null)
+            switch (next_choice_index)
             {
-                for (int p = 0; p < current_dialogue_line.nextTurnPredicates.Length; p++)
+                case 1:
+                    next_turn_id =dialogue_choice_1_next_dialogue;
+                    break;
+                case 2:
+                    next_turn_id = dialogue_choice_2_next_dialogue;
+                    break;
+                case 3:
+                    next_turn_id = dialogue_choice_3_next_dialogue;
+                    break;
+                default:
+                    throw new System.Exception("I fucked up the choice system");
+            }
+            next_choice_index = -1;
+        }
+
+        else {
+            if (current_dialogue_line.nextTurnIds != null)
+            {
+                //Check predicates
+                if (current_dialogue_line.nextTurnPredicates != null)
                 {
-                    if (Predicate.parsePredicate(current_dialogue_line.nextTurnPredicates[p]))
+                    for (int p = 0; p < current_dialogue_line.nextTurnPredicates.Length; p++)
                     {
-                        next_turn_id = current_dialogue_line.nextTurnIds[p];
-                        break;
-                    }
-                    else
-                    {
-                        if (current_dialogue_line.nextTurnIds.Length > p + 1)
-                            next_turn_id = current_dialogue_line.nextTurnIds[p + 1];
-                        else
+                        if (Predicate.parsePredicate(current_dialogue_line.nextTurnPredicates[p]))
+                        {
                             next_turn_id = current_dialogue_line.nextTurnIds[p];
+                            break;
+                        }
+                        else
+                        {
+                            if (current_dialogue_line.nextTurnIds.Length > p + 1)
+                                next_turn_id = current_dialogue_line.nextTurnIds[p + 1];
+                            else
+                                next_turn_id = current_dialogue_line.nextTurnIds[p];
+                        }
                     }
                 }
+                else
+                    next_turn_id = current_dialogue_line.nextTurnIds[0];
             }
-            else
-                next_turn_id = current_dialogue_line.nextTurnIds[0];
         }
 
         if (next_turn_id != null)

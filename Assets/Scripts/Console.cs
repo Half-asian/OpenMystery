@@ -48,21 +48,17 @@ public class Console : MonoBehaviour
         if (parameters.Length == 0)
             return;
 
-        try
+        switch (parameters[0])
         {
-            switch (parameters[0])
-            {
-                case "loadscenario":
-                    Scenario.Load(parameters[1]);
-                    break;
-                default:
-                    StartCoroutine(sendErrorMessage("Unknown command " + parameters[0]));
-                    break;
-            }
-        }
-        catch
-        {
-            StartCoroutine(sendErrorMessage("Malformed command."));
+            case "loadscenario":
+                Scenario.Load(parameters[1]);
+                break;
+            case "replaceCharacterIdle":
+                Events.doEventAction("replaceCharacterIdle", new string[] { parameters[1], parameters[2] });
+                break;
+            default:
+                StartCoroutine(sendErrorMessage("Unknown command " + parameters[0]));
+                break;
         }
 
 
