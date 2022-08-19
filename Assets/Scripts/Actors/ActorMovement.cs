@@ -140,7 +140,7 @@ public class ActorMovement
             actor_animation.StartCoroutine(actor_animation.WaitForAnimateCharacterFinished(actor_animation.animation1_loop));
             yield break;
         }
-        actor_animation.anim_state = "outro";
+        actor_animation.anim_state = "intro";
 
         if (actor_controller.GetComponent<ActorAnimSequence>() != null)
             yield break;
