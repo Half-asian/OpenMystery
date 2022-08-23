@@ -8,7 +8,7 @@ public class ImageLoader : MonoBehaviour
     protected static Texture2D loadTextureFromApk(string filename)
     {
         string filepath;
-        string filepath_assets = Path.Combine(GlobalEngineVariables.assets_folder, "assets", filename);
+        string filepath_assets = Path.Combine(GlobalEngineVariables.apk_folder, "assets", filename);
         string filepath_apktex = Path.Combine(GlobalEngineVariables.assets_folder, "apktex", filename);
         if (File.Exists(filepath_assets))
         {
@@ -37,7 +37,7 @@ public class ImageLoader : MonoBehaviour
     protected static Sprite loadSpriteFromApk(string filename)
     {
         string filepath;
-        string filepath_assets = Path.Combine(GlobalEngineVariables.assets_folder, "assets", filename);
+        string filepath_assets = Path.Combine(GlobalEngineVariables.apk_folder, "assets", filename);
         string filepath_apktex = Path.Combine(GlobalEngineVariables.assets_folder, "apktex", filename);
         if (File.Exists(filepath_assets))
         {
@@ -65,3 +65,4 @@ public class ImageLoader : MonoBehaviour
 
     }
 }
+
