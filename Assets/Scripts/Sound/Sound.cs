@@ -115,9 +115,10 @@ public class Sound : MonoBehaviour
     private void playAudioFile(string filename, string type)
     {
         if (SoundEffectPlayer == null) return;
-        if (File.Exists(GlobalEngineVariables.assets_folder + "\\sounds\\" + filename) || filename == "none")
+        string path = Path.Combine(GlobalEngineVariables.assets_folder, "sounds", filename);
+        if (File.Exists(path) || filename == "none")
         {
-            StartCoroutine(PlayAudioFile(GlobalEngineVariables.assets_folder + "\\sounds\\" + filename, type));
+            StartCoroutine(PlayAudioFile(path, type));
         }
         else
         {

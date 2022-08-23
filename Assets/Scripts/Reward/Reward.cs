@@ -13,11 +13,12 @@ public class Reward
         ConfigReward._Reward reward = Configs.config_reward.Reward[reward_id];
         if (reward.wizardSkills != null)
         {
+            string skills_unlocked_txt = Path.Combine(GlobalEngineVariables.player_folder, "skills_unlocked.txt");
             foreach(string skill_id in reward.wizardSkills)
             {
-                if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\skills_unlocked.txt").Contains("skillUnlocked(\"" + skill_id + "\")"))
+                if (!File.ReadAllText(skills_unlocked_txt).Contains("skillUnlocked(\"" + skill_id + "\")"))
                 {
-                    StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\skills_unlocked.txt", true);
+                    StreamWriter writer = new StreamWriter(skills_unlocked_txt, true);
                     writer.WriteLine("skillUnlocked(\"" + skill_id + "\")");
                     writer.Close();
                     Debug.Log("Unlocked new skill " + skill_id);
@@ -30,9 +31,10 @@ public class Reward
 
     public static void getSkill(string skill_id)
     {
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\skills_unlocked.txt").Contains("skillUnlocked(\"" + skill_id + "\")"))
+        string skills_unlocked_txt = Path.Combine(GlobalEngineVariables.player_folder, "skills_unlocked.txt");
+        if (!File.ReadAllText(skills_unlocked_txt).Contains("skillUnlocked(\"" + skill_id + "\")"))
         {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\skills_unlocked.txt", true);
+            StreamWriter writer = new StreamWriter(skills_unlocked_txt, true);
             writer.WriteLine("skillUnlocked(\"" + skill_id + "\")");
             writer.Close();
             Debug.Log("Unlocked new skill " + skill_id);

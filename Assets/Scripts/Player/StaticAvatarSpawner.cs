@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using ModelLoading;
+
 class StaticAvatarSpawner
 {
     public static ActorController spawnStaticAvatar(ConfigHPActorInfo._HPActorInfo actor = null)
     {
         //Get the Avatar components
-        AvatarComponents avatar_components = new AvatarComponents(GlobalEngineVariables.player_folder + "\\avatar.json");
+        AvatarComponents avatar_components = new AvatarComponents(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"));
         ConfigHPActorInfo._HPActorInfo character;
         if (actor == null)
         {

@@ -167,8 +167,12 @@ public class EventPlayer : MonoBehaviour
             }
 
         }
-
-        GameStart.event_manager.checkEventsActive();
+        if (GameStart.event_manager != null) {
+            GameStart.event_manager.checkEventsActive();
+        }
+        else {
+            GameStart.event_manager = GetComponent<EventManager>();
+        }
     }
 
     public void reset()

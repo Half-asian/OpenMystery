@@ -8,13 +8,15 @@ public class ImageLoader : MonoBehaviour
     protected static Texture2D loadTextureFromApk(string filename)
     {
         string filepath;
-        if (File.Exists(GlobalEngineVariables.apk_folder + "\\assets\\" + filename))
+        string filepath_assets = Path.Combine(GlobalEngineVariables.assets_folder, "assets", filename);
+        string filepath_apktex = Path.Combine(GlobalEngineVariables.assets_folder, "apktex", filename);
+        if (File.Exists(filepath_assets))
         {
-            filepath = GlobalEngineVariables.apk_folder + "\\assets\\" + filename;
+            filepath = filepath_assets;
         }
-        else if (File.Exists(GlobalEngineVariables.assets_folder + "\\apktex\\" + filename))
+        else if (File.Exists(filepath_apktex))
         {
-            filepath = GlobalEngineVariables.assets_folder + "\\apktex\\" + filename;
+            filepath = filepath_apktex;
         }
         else
         {
@@ -35,17 +37,19 @@ public class ImageLoader : MonoBehaviour
     protected static Sprite loadSpriteFromApk(string filename)
     {
         string filepath;
-        if (File.Exists(GlobalEngineVariables.apk_folder + "\\assets\\" + filename))
+        string filepath_assets = Path.Combine(GlobalEngineVariables.assets_folder, "assets", filename);
+        string filepath_apktex = Path.Combine(GlobalEngineVariables.assets_folder, "apktex", filename);
+        if (File.Exists(filepath_assets))
         {
-            filepath = GlobalEngineVariables.apk_folder + "\\assets\\" + filename;
+            filepath = filepath_assets;
         }
-        else if (File.Exists(GlobalEngineVariables.assets_folder + "\\apktex\\" + filename))
+        else if (File.Exists(filepath_apktex))
         {
-            filepath = GlobalEngineVariables.assets_folder + "\\apktex\\" + filename;
+            filepath = filepath_apktex;
         }
         else
         {
-            throw new System.Exception("Could not find apk asset " + filename);
+            throw new System.Exception("Could not find apk asset " + filename + " " + filepath_apktex);
         }
 
         using (FileStream fs = File.Open(filepath, FileMode.Open))

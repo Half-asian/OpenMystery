@@ -92,13 +92,15 @@ public class UiImageLoader : MonoBehaviour
     Texture2D loadTextureFromApk(string filename)
     {
         string filepath;
-        if (File.Exists(GlobalEngineVariables.apk_folder + "\\assets\\" + filename))
+        string filepath_assets = Path.Combine(GlobalEngineVariables.apk_folder, "assets", filename);
+        string filepath_apktex = Path.Combine(GlobalEngineVariables.assets_folder, "apktex", filename);
+        if (File.Exists(filepath_assets))
         {
-            filepath = GlobalEngineVariables.apk_folder + "\\assets\\" + filename;
+            filepath = filepath_assets;
         }
-        else if (File.Exists(GlobalEngineVariables.assets_folder + "\\apktex\\" + filename))
+        else if (File.Exists(filepath_apktex))
         {
-            filepath = GlobalEngineVariables.assets_folder + "\\apktex\\" + filename;
+            filepath = filepath_apktex;
         }
         else
         {
@@ -118,13 +120,15 @@ public class UiImageLoader : MonoBehaviour
     Sprite loadSpriteFromApk(string filename)
     {
         string filepath;
-        if (File.Exists(GlobalEngineVariables.apk_folder + "\\assets\\" + filename))
+        string filepath_assets = Path.Combine(GlobalEngineVariables.apk_folder, "assets", filename);
+        string filepath_apktex = Path.Combine(GlobalEngineVariables.assets_folder, "apktex", filename);
+        if (File.Exists(filepath_assets))
         {
-            filepath = GlobalEngineVariables.apk_folder + "\\assets\\" + filename;
+            filepath = filepath_assets;
         }
-        else if (File.Exists(GlobalEngineVariables.assets_folder + "\\apktex\\" + filename))
+        else if (File.Exists(filepath_apktex))
         {
-            filepath = GlobalEngineVariables.assets_folder + "\\apktex\\" + filename;
+            filepath = filepath_apktex;
         }
         else
         {

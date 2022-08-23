@@ -472,9 +472,10 @@ public class Quidditch
         {
             Reward.getReward(current_match.perfectRewardId);
         }
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\matches_won.txt").Contains("matchWon(\"" + current_match.matchId + "\")"))
+        string matches_won_txt = Path.Combine(GlobalEngineVariables.player_folder, "matches_won.txt");
+        if (!File.ReadAllText(matches_won_txt).Contains("matchWon(\"" + current_match.matchId + "\")"))
         {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\matches_won.txt", true);
+            StreamWriter writer = new StreamWriter(matches_won_txt, true);
             writer.WriteLine("matchWon(\"" + current_match.matchId + "\")");
             writer.Close();
         }

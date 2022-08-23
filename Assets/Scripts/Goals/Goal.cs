@@ -83,9 +83,10 @@ public class Goal
         active_goals.Remove(this);
         Objective.onObjectiveCompleted -= objectiveCompleted;
 
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\goals_complete.txt").Contains("isGoalComplete(\"" + goal_config.goal_id + "\")"))
+        string goals_complete_txt = Path.Combine(GlobalEngineVariables.player_folder, "goals_complete.txt");
+        if (!File.ReadAllText(goals_complete_txt).Contains("isGoalComplete(\"" + goal_config.goal_id + "\")"))
         {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\goals_complete.txt", true);
+            StreamWriter writer = new StreamWriter(goals_complete_txt, true);
             writer.WriteLine("isGoalComplete(\"" + goal_config.goal_id + "\")");
             writer.Close();
         }

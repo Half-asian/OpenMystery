@@ -53,7 +53,7 @@ public class CustomizeAvatar : MonoBehaviour
 
     void createCustomizableAvatar()
     {
-        avatar_components = new AvatarComponents(GlobalEngineVariables.player_folder + "\\avatar.json");
+        avatar_components = new AvatarComponents(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"));
 
         //_camera.transform.position = new Vector3(0, 0.773000002f, 0.338999987f);
         //_camera.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
@@ -89,7 +89,7 @@ public class CustomizeAvatar : MonoBehaviour
 
     void createCustomizablePreviewAvatar()
     {
-        avatar_components_preview = new AvatarComponents(GlobalEngineVariables.player_folder + "\\avatar.json");
+        avatar_components_preview = new AvatarComponents(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"));
 
         _camera_preview.transform.position = new Vector3(0, 0.773000002f - 10f, 0.338999987f);
         _camera_preview.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
