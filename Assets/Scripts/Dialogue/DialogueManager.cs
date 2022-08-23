@@ -512,7 +512,12 @@ public class DialogueManager : MonoBehaviour
                     {
                         if (Predicate.parsePredicate(current_dialogue_line.nextTurnPredicates[p]))
                         {
-                            next_turn_id = current_dialogue_line.nextTurnIds[p];
+                            try {
+                                next_turn_id = current_dialogue_line.nextTurnIds[p];
+                            }
+                            catch (IndexOutOfRangeException e) {
+                                Debug.LogError("Tried accessing index " + p + " of array with " + current_dialogue_line.nextTurnIds.Length + " elements.");
+                            }
                             break;
                         }
                         else
