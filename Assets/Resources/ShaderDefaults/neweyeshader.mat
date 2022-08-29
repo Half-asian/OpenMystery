@@ -280,14 +280,14 @@ Material:
     - u_rimAngle: 0
     - u_rimColor: 0
     - u_shadeColor: 0
-    - u_sideShadowEnd: 0
-    - u_sideShadowStart: 0
+    - u_sideShadowEnd: 1
+    - u_sideShadowStart: 0.1
     - u_specColor: 0
     - u_specMaxRadius: 0
     - u_specMinRadius: 0
     - u_specularity: 0
-    - u_topShadowEnd: 0
-    - u_topShadowStart: 0
+    - u_topShadowEnd: 1.2
+    - u_topShadowStart: 0.4
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
