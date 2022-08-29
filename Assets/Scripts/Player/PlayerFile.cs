@@ -40,7 +40,7 @@ public class PlayerFile
     public static void save()
     {
         string json_file = JsonConvert.SerializeObject(PlayerManager.current);
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\avatar.json", json_file);
+        File.WriteAllText(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"), json_file);
     }
 
     public static void respawnAvatar()

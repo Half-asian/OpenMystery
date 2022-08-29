@@ -135,10 +135,11 @@ public class GameStart : MonoBehaviour
 
     public void Awake()
     {
+        string engine_variables_json = Path.Combine("..", "engine_variables.json");
         //Are we in model view or game mode?
-        if (!File.Exists("..\\engine_variables.json"))
+        if (!File.Exists(engine_variables_json))
             throw new System.Exception("Please launch the game using the launcher.");
-        GlobalEngineVariables.CreateFromJSON("..\\engine_variables.json");
+        GlobalEngineVariables.CreateFromJSON(engine_variables_json);
         if (!GlobalEngineVariables.checkIntegrity())
             throw new System.Exception("Please launch the game using the launcher.");
         PlayerManager.initialize();
@@ -179,7 +180,7 @@ public class GameStart : MonoBehaviour
 
 
         if (!Application.isEditor)
-            File.Delete("..\\engine_variables.json");
+            File.Delete(Path.Combine("..", "engine_variables.json"));
 
         main_menu.state = MainMenu.State.stateLoadingScreenLoading;
 
@@ -190,38 +191,45 @@ public class GameStart : MonoBehaviour
 
         System.IO.FileStream oFileStream = null;
 
-        if (!Directory.Exists(GlobalEngineVariables.player_folder + "\\..\\..\\screenshots"))
+        string screenshots_folder = Path.Combine(GlobalEngineVariables.player_folder, "..", "..", "screenshots");
+        string choices_made_txt = Path.Combine(GlobalEngineVariables.player_folder, "choices_made.txt");
+        string goals_complete_txt = Path.Combine(GlobalEngineVariables.player_folder, "goals_complete.txt");
+        string goalchains_complete_txt = Path.Combine(GlobalEngineVariables.player_folder, "goalchains_complete.txt");
+        string matches_won_txt = Path.Combine(GlobalEngineVariables.player_folder, "matches_won.txt");
+        string skills_unlocked_txt = Path.Combine(GlobalEngineVariables.player_folder, "skills_unlocked.txt");
+
+        if (!Directory.Exists(screenshots_folder))
         {
-            Directory.CreateDirectory(GlobalEngineVariables.player_folder + "\\..\\..\\screenshots");
+            Directory.CreateDirectory(screenshots_folder);
         }
 
-        if (!File.Exists(GlobalEngineVariables.player_folder + "\\choices_made.txt"))
+        if (!File.Exists(choices_made_txt))
         {
-            oFileStream = new System.IO.FileStream(GlobalEngineVariables.player_folder + "\\choices_made.txt", System.IO.FileMode.Create);
+            oFileStream = new System.IO.FileStream(choices_made_txt, System.IO.FileMode.Create);
             oFileStream.Close();
         }
 
-        if (!File.Exists(GlobalEngineVariables.player_folder + "\\goals_complete.txt"))
+        if (!File.Exists(goals_complete_txt))
         {
-            oFileStream = new System.IO.FileStream(GlobalEngineVariables.player_folder + "\\goals_complete.txt", System.IO.FileMode.Create);
+            oFileStream = new System.IO.FileStream(goals_complete_txt, System.IO.FileMode.Create);
             oFileStream.Close();
         }
 
-        if (!File.Exists(GlobalEngineVariables.player_folder + "\\goalchains_complete.txt"))
+        if (!File.Exists(goalchains_complete_txt))
         {
-            oFileStream = new System.IO.FileStream(GlobalEngineVariables.player_folder + "\\goalchains_complete.txt", System.IO.FileMode.Create);
+            oFileStream = new System.IO.FileStream(goalchains_complete_txt, System.IO.FileMode.Create);
             oFileStream.Close();
         }
 
-        if (!File.Exists(GlobalEngineVariables.player_folder + "\\matches_won.txt"))
+        if (!File.Exists(matches_won_txt))
         {
-            oFileStream = new System.IO.FileStream(GlobalEngineVariables.player_folder + "\\matches_won.txt", System.IO.FileMode.Create);
+            oFileStream = new System.IO.FileStream(matches_won_txt, System.IO.FileMode.Create);
             oFileStream.Close();
         }
 
-        if (!File.Exists(GlobalEngineVariables.player_folder + "\\skills_unlocked.txt"))
+        if (!File.Exists(skills_unlocked_txt))
         {
-            oFileStream = new System.IO.FileStream(GlobalEngineVariables.player_folder + "\\skills_unlocked.txt", System.IO.FileMode.Create);
+            oFileStream = new System.IO.FileStream(skills_unlocked_txt, System.IO.FileMode.Create);
             oFileStream.Close();
         }
 

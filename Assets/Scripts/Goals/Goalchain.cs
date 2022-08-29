@@ -149,9 +149,10 @@ public class GoalChain
         Goal.onGoalCompleted -= GoalCompleted;
 
 
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\goalchains_complete.txt").Contains("goalChainComplete(\"" + goal_chain_config.id + "\")"))
+        string goals_complete_txt = Path.Combine(GlobalEngineVariables.player_folder, "goals_complete.txt");
+        if (!File.ReadAllText(goals_complete_txt).Contains("goalChainComplete(\"" + goal_chain_config.id + "\")"))
         {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\goalchains_complete.txt", true);
+            StreamWriter writer = new StreamWriter(goals_complete_txt, true);
             writer.WriteLine("goalChainComplete(\"" + goal_chain_config.id + "\")");
             writer.Close();
         }

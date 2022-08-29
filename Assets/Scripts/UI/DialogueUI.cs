@@ -111,16 +111,18 @@ public class DialogueUI : MonoBehaviour
         choice_2_gameobject.SetActive(false);
         choice_3_gameobject.SetActive(false);
 
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[0] + "\")"))
+        string choices_made_txt = Path.Combine(GlobalEngineVariables.player_folder, "choices_made.txt");
+
+        if (!File.ReadAllText(choices_made_txt).Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[0] + "\")"))
         {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\choices_made.txt", true);
+            StreamWriter writer = new StreamWriter(choices_made_txt, true);
             writer.WriteLine("madeChoice(\"" + GameStart.dialogue_manager.choices[0] + "\")");
             writer.Close();
         }
 
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[1] + "\")", ""));
+        File.WriteAllText(choices_made_txt, File.ReadAllText(choices_made_txt).Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[1] + "\")", ""));
         if (GameStart.dialogue_manager.choices.Count > 2)
-            File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[2] + "\")", ""));
+            File.WriteAllText(choices_made_txt, File.ReadAllText(choices_made_txt).Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[2] + "\")", ""));
         GameStart.dialogue_manager.activateDialogueOption1();
     }
 
@@ -130,15 +132,17 @@ public class DialogueUI : MonoBehaviour
         choice_1_gameobject.SetActive(false);
         choice_2_gameobject.SetActive(false);
         choice_3_gameobject.SetActive(false);
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[1] + "\")"))
+
+        string choices_made_txt = Path.Combine(GlobalEngineVariables.player_folder, "choices_made.txt");
+        if (!File.ReadAllText(choices_made_txt).Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[1] + "\")"))
         {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\choices_made.txt", true);
+            StreamWriter writer = new StreamWriter(choices_made_txt, true);
             writer.WriteLine("madeChoice(\"" + GameStart.dialogue_manager.choices[1] + "\")");
             writer.Close();
         }
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[0] + "\")", ""));
+        File.WriteAllText(choices_made_txt, File.ReadAllText(choices_made_txt).Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[0] + "\")", ""));
         if (GameStart.dialogue_manager.choices.Count > 2)
-            File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[2] + "\")", ""));
+            File.WriteAllText(choices_made_txt, File.ReadAllText(choices_made_txt).Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[2] + "\")", ""));
         GameStart.dialogue_manager.activateDialogueOption2();
     }
 
@@ -148,14 +152,16 @@ public class DialogueUI : MonoBehaviour
         choice_1_gameobject.SetActive(false);
         choice_2_gameobject.SetActive(false);
         choice_3_gameobject.SetActive(false);
-        if (!File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[2] + "\")"))
+
+        string choices_made_txt = Path.Combine(GlobalEngineVariables.player_folder, "choices_made.txt");
+        if (!File.ReadAllText(choices_made_txt).Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[2] + "\")"))
         {
-            StreamWriter writer = new StreamWriter(GlobalEngineVariables.player_folder + "\\choices_made.txt", true);
+            StreamWriter writer = new StreamWriter(choices_made_txt, true);
             writer.WriteLine("madeChoice(\"" + GameStart.dialogue_manager.choices[2] + "\")");
             writer.Close();
         }
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[0] + "\")", ""));
-        File.WriteAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt", File.ReadAllText(GlobalEngineVariables.player_folder + "\\choices_made.txt").Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[1] + "\")", ""));
+        File.WriteAllText(choices_made_txt, File.ReadAllText(choices_made_txt).Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[0] + "\")", ""));
+        File.WriteAllText(choices_made_txt, File.ReadAllText(choices_made_txt).Replace("madeChoice(\"" + GameStart.dialogue_manager.choices[1] + "\")", ""));
         GameStart.dialogue_manager.activateDialogueOption3();
     }
 

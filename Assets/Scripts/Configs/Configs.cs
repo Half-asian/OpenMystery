@@ -20,7 +20,7 @@ public abstract class Config<T>
         foreach (string config_name in Configs.config_contents.Contents[type])
         {
             string path = null;
-            if (config_name.Contains("\\mods\\"))
+            if (config_name.Contains("\\mods\\") || config_name.Contains("/mods/"))
                 path = config_name;
             else
                 path = Common.getConfigPath(config_name);
@@ -67,7 +67,7 @@ public abstract class Config<T>
         foreach (string config_name in Configs.config_contents.Contents[type])
         {
             string path = null;
-            if (config_name.Contains("\\mods\\"))
+            if (config_name.Contains("\\mods\\") || config_name.Contains("/mods/"))
                 path = config_name;
             else
                 path = Common.getConfigPath(config_name);

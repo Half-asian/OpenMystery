@@ -417,12 +417,13 @@ public class C3B
 			file_name = file_name.Substring(5);
         }
 
+		string model_path = Path.Combine(root_folder, file_name);
 
-		if (System.IO.File.Exists(root_folder + file_name))
+		if (File.Exists(model_path))
 		{
-			return readC3B(root_folder + file_name);
+			return readC3B(model_path);
 		}
-		Debug.LogError("Couldn't find " + root_folder + file_name);
+		Debug.LogError("Couldn't find " + model_path);
 		return null;
 	}
 }

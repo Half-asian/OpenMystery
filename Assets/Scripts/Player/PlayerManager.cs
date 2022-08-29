@@ -15,7 +15,7 @@ public class PlayerManager
     public static PlayerFile current;
     public static void initialize()
     {
-        current = PlayerFile.createFromJson(GlobalEngineVariables.player_folder + "\\avatar.json");
+        current = PlayerFile.createFromJson(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"));
         string[] d_split = Path.GetFileName(GlobalEngineVariables.player_folder).Split('_');
         Player.local_avatar_first_name = d_split[0];
         Player.local_avatar_last_name = d_split[1];

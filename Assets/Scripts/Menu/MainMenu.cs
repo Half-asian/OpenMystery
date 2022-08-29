@@ -67,10 +67,6 @@ public class MainMenu : MonoBehaviour
 
 
 
-    public string output = "";
-    public string stack = "";
-
-
     void OnEnable()
     {
         Application.logMessageReceived += HandleLog;
@@ -78,22 +74,27 @@ public class MainMenu : MonoBehaviour
 
     void HandleLog(string logString, string stackTrace, LogType type)
     {
-        output = logString;
-        stack = stackTrace;
-
         if (type == LogType.Exception)
         {
-            crash.SetActive(true);
-            crash.transform.Find("Error").GetComponent<Text>().text = logString;
-            crash.transform.Find("Trace").GetComponent<Text>().text = stackTrace;
+            if (crash) {
+                crash.SetActive(true);
+                crash.transform.Find("Error").GetComponent<Text>().text = logString;
+                crash.transform.Find("Trace").GetComponent<Text>().text = stackTrace;
+                return;
+            }
+            Debug.Log("Couldn't show crash to user.");
+            if (logString != null && logString.Length > 1) Debug.Log(logString);
+            if (stackTrace != null && stackTrace.Length > 1) Debug.Log(stackTrace);
         }
     }
 
     public void fakeCrash(string logString, string stackTrace)
     {
-        crash.SetActive(true);
-        crash.transform.Find("Error").GetComponent<Text>().text = logString;
-        crash.transform.Find("Trace").GetComponent<Text>().text = stackTrace;
+        if (crash) {
+            crash.SetActive(true);
+            crash.transform.Find("Error").GetComponent<Text>().text = logString;
+            crash.transform.Find("Trace").GetComponent<Text>().text = stackTrace;
+        }
     }
 
     public void quitGame()

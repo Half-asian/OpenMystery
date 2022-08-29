@@ -31,9 +31,9 @@ public class GlobalEngineVariables
 
     public static Dictionary<string, string> goal_chains;
 
-    public static string models_folder => assets_folder + "\\models\\";
+    public static string models_folder => Path.Combine(assets_folder, "models");
 
-    public static string animations_folder => assets_folder + "\\animations\\";
+    public static string animations_folder => Path.Combine(assets_folder, "animations");
 
 
     public static void CreateFromJSON(string file)

@@ -5,8 +5,12 @@ using System.IO;
 public class TextureManager
 {
 	public static Dictionary<string, Texture2D> loaded_textures = new Dictionary<string, Texture2D>();
-	public static Texture2D loadTexturePng(string name, string folder)
+	public static Texture2D loadTexturePng(string name, string folder = "")
 	{
+		if (folder.Length < 1) {
+			folder = Path.Combine(GlobalEngineVariables.assets_folder, "textures");
+		}
+
 		if (!Configs.config_texture.TextureConfig.ContainsKey(name))
 		{
 			Debug.Log("Not tex config entry for " + name);
@@ -14,9 +18,10 @@ public class TextureManager
 		}
 		string file_name = Configs.config_texture.TextureConfig[name].filename;
 
-		if (System.IO.File.Exists("patches\\textures\\" + file_name.Substring(0, file_name.Length - 11) + "@4x.png"))
+		string texture_patch_path = Path.Combine("patches", "textures", file_name.Substring(0, file_name.Length - 11), "@4x.png");
+		if (System.IO.File.Exists(texture_patch_path))
         {
-			using (FileStream fs = File.Open("patches\\textures\\" + file_name.Substring(0, file_name.Length - 11) + "@4x.png", FileMode.Open))
+			using (FileStream fs = File.Open(texture_patch_path, FileMode.Open))
 			{
 				byte[] data = new BinaryReader(fs).ReadBytes((int)fs.Length);
 				Texture2D new_image = new Texture2D(1, 1, TextureFormat.RGBA32, false);
@@ -26,9 +31,10 @@ public class TextureManager
 			}
 		}
 
-		if (System.IO.File.Exists(folder + "\\" + file_name.Substring(0, file_name.Length - 11) + "@4x.png"))
+		string texture_normal_path = Path.Combine(folder, file_name.Substring(0, file_name.Length - 11), "@4x.png");
+		if (System.IO.File.Exists(texture_normal_path))
 		{   //Try to find specific file version
-			using (FileStream fs = File.Open(folder + "\\" + file_name.Substring(0, file_name.Length - 11) + "@4x.png", FileMode.Open))
+			using (FileStream fs = File.Open(texture_normal_path, FileMode.Open))
 			{
 				byte[] data = new BinaryReader(fs).ReadBytes((int)fs.Length);
 				Texture2D new_image = new Texture2D(1, 1, TextureFormat.RGBA32, false);
@@ -77,7 +83,7 @@ public class TextureManager
         else
         {
 			name = Configs.config_texture.TextureConfig[name].filename.Replace(".compressed", "@4x.dds");
-			full_path = GlobalEngineVariables.assets_folder + "\\textures\\" + name;
+			full_path = Path.Combine(GlobalEngineVariables.assets_folder, "textures", name);
 		}
 
 		if (!System.IO.File.Exists(full_path))
