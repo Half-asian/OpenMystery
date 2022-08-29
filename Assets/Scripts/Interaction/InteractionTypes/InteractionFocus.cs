@@ -24,6 +24,7 @@ public class InteractionFocus : Interaction
 
     public void onFocusGameFinished(bool focus_success)
     {
+        FocusUI.onFocusGameFinished -= onFocusGameFinished;
         interactionComplete(focus_success);
     }
 }

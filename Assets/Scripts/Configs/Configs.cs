@@ -154,6 +154,8 @@ public class Configs{
     public static ConfigDialogueSpeakerMapping config_dialogue_speaker_mapping;
     public static ConfigTappie config_tappie;
     public static ConfigShaderAnimation config_shader_animation;
+    public static ConfigQuizGroup config_quiz_group;
+    public static ConfigQuiz config_quiz;
 
     public static Dictionary<string, ConfigSound._Ambient> ambient_dict;
     public static Dictionary<string, ConfigSound._Playlist> playlist_dict;
@@ -493,6 +495,8 @@ public class Configs{
         config_sound = ConfigSound.getJObjectsConfigsListST("Playlist");
         config_tappie = ConfigTappie.getJObjectsConfigsListST("Tappie");
         config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
+        config_quiz_group = ConfigQuizGroup.getJObjectsConfigsListST("QuizGroup");
+        config_quiz = ConfigQuiz.getJObjectsConfigsListST("Quiz");
         Configs.config_3dmodel.createMaterialDict();
         GameStart.logWrite("FINISHED ALL");
     }

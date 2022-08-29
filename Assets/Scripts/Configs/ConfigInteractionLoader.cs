@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using static ConfigInteraction;
+using static ConfigQuizGroup;
 
 public class ConfigInteraction : Config<ConfigInteraction>
 {
@@ -19,6 +21,7 @@ public class ConfigInteraction : Config<ConfigInteraction>
         public string matchId;
         public string successReward;
         public string titleCardTitle;
+        public string quizOrGroupId;
         public int? maxToShow;//unused
         public int? minToShow;//unused
         public int? maxProgress;//unused
@@ -113,3 +116,66 @@ public class ConfigInteraction : Config<ConfigInteraction>
     }
 
 }
+
+public class ConfigQuizGroup : Config<ConfigQuizGroup>
+{
+    [System.Serializable]
+    public class _QuizGroup
+    {
+        public string id;
+        public string[] quizIds;
+    }
+    public Dictionary<string, _QuizGroup> QuizGroup;
+
+    public override ConfigQuizGroup combine(List<ConfigQuizGroup> other_list)
+    {
+        for (int i = 1; i < other_list.Count; i++)
+        {
+            foreach (string key in other_list[i].QuizGroup.Keys)
+            {
+                if (!QuizGroup.ContainsKey(key))
+                {
+                    QuizGroup[key] = other_list[i].QuizGroup[key];
+                }
+            }
+        }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_quiz_group = getJObjectsConfigsListST("QuizGroup");
+    }
+}
+
+public class ConfigQuiz : Config<ConfigQuiz>
+{
+    [System.Serializable]
+    public class _Quiz
+    {
+        public string id;
+        public string question;
+        public string correctAnswer;
+        public string[] wrongAnswers;
+    }
+    public Dictionary<string, _Quiz> Quiz;
+
+    public override ConfigQuiz combine(List<ConfigQuiz> other_list)
+    {
+        for (int i = 1; i < other_list.Count; i++)
+        {
+            foreach (string key in other_list[i].Quiz.Keys)
+            {
+                if (!Quiz.ContainsKey(key))
+                {
+                    Quiz[key] = other_list[i].Quiz[key];
+                }
+            }
+        }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_quiz = getJObjectsConfigsListST("Quiz");
+    }
+}
+
