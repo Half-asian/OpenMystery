@@ -50,6 +50,7 @@ public partial class NewPredicate
         {"isVersionAtLeast"             , new Func<SymbolConstantString, SymbolConstantBool>(isVersionAtLeast) },
         {"companionLevel"               , new Func<SymbolConstantString, SymbolConstantInteger >(companionLevel) },
         {"numCompletedDatesWithPartner" , new Func<SymbolConstantString, SymbolConstantInteger>(numCompletedDatesWithPartner) },
+        {"attributeLevel"               , new Func<SymbolConstantString, SymbolConstantInteger>(attributeLevel) },
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -293,6 +294,10 @@ public partial class NewPredicate
         return new SymbolConstantInteger(10);
     }
     static SymbolConstantInteger numCompletedDatesWithPartner(SymbolConstantString partner)
+    {
+        return new SymbolConstantInteger(100);
+    }
+    static SymbolConstantInteger attributeLevel(SymbolConstantString attribute)
     {
         return new SymbolConstantInteger(100);
     }
