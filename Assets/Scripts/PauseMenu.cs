@@ -41,8 +41,9 @@ public class PauseMenu : MonoBehaviour
     {
         yield return null;
         yield return null; // so it's at least one
-        string[] filename_pieces = {GlobalEngineVariables.player_folder, "..", "..", "screenshots", screenshot_num.ToString(), ".png"};
+        string[] filename_pieces = {GlobalEngineVariables.player_folder, "..", "..", "screenshots", screenshot_num.ToString() + ".png"};
         string filename = Path.Combine(filename_pieces);
+        Debug.Log("saving screenshot to " + filename);
         ScreenCapture.CaptureScreenshot(filename);
         //camera.antialiasing = HDAdditionalCameraData.AntialiasingMode.TemporalAntialiasing;
     }
@@ -74,7 +75,7 @@ public class PauseMenu : MonoBehaviour
         {
             for (int i = 1; i <= 9999; i++)
             {
-                string[] filename_pieces = {GlobalEngineVariables.player_folder, "..", "..", "screenshots", i.ToString(), ".png"};
+                string[] filename_pieces = {GlobalEngineVariables.player_folder, "..", "..", "screenshots", i.ToString() + ".png"};
                 if (!System.IO.File.Exists(Path.Combine(filename_pieces)))
                 {
                     //camera.antialiasing = HDAdditionalCameraData.AntialiasingMode.SubpixelMorphologicalAntiAliasing;
