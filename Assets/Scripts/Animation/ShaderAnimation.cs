@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine.XR;
 
 public abstract class ShaderAnimation
 {
@@ -28,6 +29,7 @@ public class ShaderAnimationFloat : ShaderAnimation
         float _end,
         float _end_value) : base(_mesh_id, _value_id)
     {
+        Debug.Log("Adding new shaderanimationfloat start: " + _start + " end: " + _end);
         start = _start;
         start_value = _start_value;
         end = _end;
@@ -66,6 +68,29 @@ public static partial class AnimationManager
                 }
 
 
+            }
+        }
+        return list;
+    }
+
+    static List<ShaderAnimation> processEffects(ConfigAnimation._Animation3D.EffectInfo[] effectInfo)
+    {
+        List<ShaderAnimation> list = new List<ShaderAnimation>();
+
+        foreach (var effect in effectInfo)
+        {
+            Debug.Log("ADDING EFFECT for " + effect.name);
+            if (effect.fades == null)
+            {
+                Debug.LogError("Unknown effect");
+                return new List<ShaderAnimation>();
+            }
+
+            foreach (var fade in effect.fades)
+            {
+                Debug.Log("ADDING EFFECT FADE");
+                ShaderAnimation shaderAnimation = new ShaderAnimationFloat(effect.name, "alpha", fade.start, fade.startVal, fade.end, fade.endVal);
+                list.Add(shaderAnimation);
             }
         }
         return list;

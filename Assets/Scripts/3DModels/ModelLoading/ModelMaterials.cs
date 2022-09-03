@@ -17,10 +17,10 @@ namespace ModelLoading
 
 		static string[] real_shaders = { "ubershader", "ubershader_transparent", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "SimpleTexture", "panningfalloff", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
 
-		static string[] transparent_shaders_array = { "ocean_vfx", "shadowplane_vfx", "vertecolor_vfx", "panningb_vfx", "panningfalloff", "fire02_vfx", "ubershader_transparent", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "SimpleColor", "panningbfresnel_vfx", "ghost_vfx", "ghostfade_vfx", "warp2_vfx", "scaleuv_vfx", "SimpleTexture", "foammiddle_vfx", "foamedge_vfx" };
+		static string[] transparent_shaders_array = {"SimpleColor", "simpleColor", "ocean_vfx", "shadowplane_vfx", "vertecolor_vfx", "panningb_vfx", "fire02_vfx", "ubershader_transparent", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "SimpleColor", "panningbfresnel_vfx", "ghost_vfx", "ghostfade_vfx", "warp2_vfx", "scaleuv_vfx", "SimpleTexture", "foammiddle_vfx", "foamedge_vfx" };
 		static List<string> transparent_shaders = new List<string>(transparent_shaders_array);
 
-		static string[] transparent_no_depth_write_shaders_array = { "glow_vfx", "lightrays_vfx" };
+		static string[] transparent_no_depth_write_shaders_array = { "glow_vfx", "lightrays_vfx", "panningfalloff" };
 		static List<string> transparent_no_depth_write_shaders = new List<string>(transparent_no_depth_write_shaders_array);
 
 		static Material transparent_material;
@@ -220,6 +220,7 @@ namespace ModelLoading
 				else if (material.shaderName == "simpleColor")
 				{
 					mat.shader = shader_dict["SimpleColor"];
+					mat.SetFloat("alpha", 1.0f);
 				}
 
 				else if (material.shaderName == "crowd_vfx")
@@ -285,7 +286,11 @@ namespace ModelLoading
 
 				for (int i = 0; i < material.vec4Ids.Length; i++)
 				{
-					mat.SetVector(material.vec4Ids[i], new Vector4(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]));
+                    mat.SetVector(material.vec4Ids[i], new Vector4(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]));
+                    if (material.vec4Ids[i] == "color")
+					{
+                        mat.SetVector("_color", new Vector4(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]));
+                    }
 				}
 			}
 			if (material.intSettingIds != null)

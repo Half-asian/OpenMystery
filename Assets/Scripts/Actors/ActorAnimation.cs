@@ -49,7 +49,10 @@ public class ActorAnimation : MonoBehaviour
         if (animation1_loop != null && animId_idle == anim_name) //The same animation
             return;
 
-        anim_state = "outro";
+        if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
+            anim_state = "outro";
+        else
+            anim_state = "intro";
 
         animId_idle = anim_name;
         if (actor_state == ActorState.Idle)

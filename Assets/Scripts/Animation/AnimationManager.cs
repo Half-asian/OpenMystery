@@ -126,6 +126,18 @@ public static partial class AnimationManager
 		else
 			hpanimation.shaderAnimations = null;
 
+		if (animation_config.effectInfo != null)
+		{
+			if (hpanimation.shaderAnimations != null) {
+				hpanimation.shaderAnimations.AddRange(processEffects(animation_config.effectInfo));
+			}
+			else
+			{
+				hpanimation.shaderAnimations = new List<ShaderAnimation>();
+                hpanimation.shaderAnimations.AddRange(processEffects(animation_config.effectInfo));
+            }
+        }
+
 		//Final settings
 		anim_clip.legacy = true;
 		anim_clip.name = animation_name;

@@ -9,7 +9,7 @@ using ModelLoading;
 public partial class ModelHolder : MonoBehaviour 
 {
 
-    protected Dictionary<string, Model> props = new Dictionary<string, Model>();
+    protected Dictionary<string, GameObject> props = new Dictionary<string, GameObject>();
 
 
 
@@ -23,53 +23,56 @@ public partial class ModelHolder : MonoBehaviour
                 Debug.LogError("Failed to find attach bone " + target);
         }
 
-        Model prop = ModelManager.loadModel(prop_model_id);
-
-        if (prop == null)
+        Model prop_model = ModelManager.loadModel(prop_model_id);
+        if (prop_model == null)
         {
             Debug.LogError("Failed to attach prop " + prop_model_id + " due to invalid id");
             return;
         }
-        prop.game_object.AddComponent<Animation>();
-        prop.game_object.AddComponent<Prop>().model = prop;
+
+        ModelHolder prop = prop_model.game_object.AddComponent<ModelHolder>();
+        prop.setup(prop_model);
+
+
+
 
         if (alias != null)
         {
             if (props.ContainsKey(alias))
-                Destroy(props[alias].game_object);
+                Destroy(props[alias]);
 
             Debug.Log("Adding prop " + alias);
-            props[alias] = prop;
+            props[alias] = prop.model.game_object;
         }
         else
         {
             if (props.ContainsKey(prop_model_id))
-                Destroy(props[prop_model_id].game_object);
-            props[prop_model_id] = prop;
+                Destroy(props[prop_model_id]);
+            props[prop_model_id] = prop.model.game_object;
         }
         //if (bone_to_attach.name == "jt_propCounterScale")
         //{
         //    bone_to_attach = Common.recursiveFindChild(gameObject.transform, "jt_all_bind");
         //}
-        prop.game_object.transform.parent = transform;
+        prop.model.game_object.transform.parent = transform;
         if (target != null)
         {
-            ParentConstraint parent_constraint = prop.game_object.AddComponent<ParentConstraint>();
+            ParentConstraint parent_constraint = prop.model.game_object.AddComponent<ParentConstraint>();
             parent_constraint.constraintActive = true;
             ConstraintSource constraint_source = new ConstraintSource();
             constraint_source.sourceTransform = bone_to_attach;
             constraint_source.weight = 1.0f;
             parent_constraint.AddSource(constraint_source);
         }
-        prop.game_object.transform.localPosition = Vector3.zero;
-        prop.game_object.transform.rotation = Quaternion.identity;
+        prop.model.game_object.transform.localPosition = Vector3.zero;
+        prop.model.game_object.transform.rotation = Quaternion.identity;
     }
 
     public void removeProp(string id)
     {
         if (props.ContainsKey(id))
         {
-            Destroy(props[id].game_object);
+            Destroy(props[id]);
             props.Remove(id);
         }
     }
@@ -82,26 +85,25 @@ public partial class ModelHolder : MonoBehaviour
             return;
         }
 
-        HPAnimation animation = AnimationManager.loadAnimationClip(target, props[id], null, triggerReplacement);
-        if (animation == null) return;
 
-        props[id].game_object.GetComponent<Animation>().AddClip(animation.anim_clip, "default");
-        props[id].game_object.GetComponent<Animation>().Play("default");
+        HPAnimation animation = AnimationManager.loadAnimationClip(target, props[id].GetComponent<ModelHolder>().model, null, triggerReplacement);
+        if (animation == null) return;
+        props[id].GetComponent<ModelHolder>().playAnimationOnComponent(animation);
     }
 
     public void stopPropAnim(string id)
     {
         if (props.ContainsKey(id))
         {
-            props[id].game_object.GetComponent<Animation>().Stop();
+            props[id].GetComponent<Animation>().Stop();
         }
     }
 
     public void destroyProps()
     {
-        foreach (Model g in props.Values)
+        foreach (var g in props.Values)
         {
-            Destroy(g.game_object);
+            Destroy(g);
         }
         props.Clear();
     }

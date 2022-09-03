@@ -85,6 +85,20 @@ public class ModelInspector : MonoBehaviour
         model.game_object.GetComponent<Animation>().Stop();
     }
 
+    public void advanceAnimSequence()
+    {
+        if (model != null)
+        {
+            if (model.game_object.GetComponent<PropAnimSequence>() != null)
+                model.game_object.GetComponent<PropAnimSequence>().advanceAnimSequence();
+        }
+        else {
+            if (am.gameObject.GetComponent<ActorAnimSequence>() != null)
+                am.gameObject.GetComponent<ActorAnimSequence>().advanceAnimSequence();
+        }
+
+    }
+
     public void loadModel()
     {
         if (model != null)

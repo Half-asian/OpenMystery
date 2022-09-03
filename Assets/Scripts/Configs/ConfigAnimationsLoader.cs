@@ -31,6 +31,21 @@ public class ConfigAnimation : Config<ConfigAnimation>
         }
         public TriggerMap[] triggerMap;
 
+        [System.Serializable]
+        public class EffectInfo
+        {
+            [System.Serializable]
+            public class FadeEffect
+            {
+                public float start;
+                public float endVal;
+                public float end;
+                public float startVal;
+            }
+            public FadeEffect[] fades;
+            public string name;
+        }
+        public EffectInfo[] effectInfo;
     }
     public Dictionary<string, _Animation3D> Animation3D;
 

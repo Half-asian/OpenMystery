@@ -78,7 +78,7 @@ public class ActorController : ModelHolder
             prop_name = split[2];
             if (props.ContainsKey(prop_name))
             {
-                Transform bone = props[prop_name].pose_bones[bone_name];
+                Transform bone = props[prop_name].GetComponent<ModelHolder>().model.pose_bones[bone_name];
                 particle = Particle.AttachParticleSystem(particle_name, bone);
             }
         }

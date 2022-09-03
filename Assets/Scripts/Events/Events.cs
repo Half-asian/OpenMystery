@@ -34,6 +34,14 @@ public static class Events
                 break;
 
             case "replaceCharacterIdleStaggered":
+                if (Actor.actor_controllers.ContainsKey(action_params[0]))
+                {
+                    Actor.actor_controllers[action_params[0]].actor_animation.replaceCharacterIdle(action_params[1]);
+                    Actor.actor_controllers[action_params[0]].actor_animation.anim_state = "loop";
+                    Actor.actor_controllers[action_params[0]].actor_animation.updateAnimationState();
+
+                }
+                break;
             case "replaceCharacterIdle":
                 if (Actor.actor_controllers.ContainsKey(action_params[0]))
                 {

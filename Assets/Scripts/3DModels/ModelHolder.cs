@@ -105,6 +105,9 @@ public partial class ModelHolder : MonoBehaviour
                         float divider = delta_time / anim_clip.length;
                         ShaderAnimationFloat animf = (ShaderAnimationFloat)anim;
 
+                        if (divider < animf.start || divider > animf.end)
+                            continue;
+
                         divider += animf.start;
                         divider += 1.0f - animf.end;
                         divider = Mathf.Min(1.0f, divider);

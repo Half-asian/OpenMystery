@@ -140,11 +140,11 @@ public class ActorMovement
             actor_animation.StartCoroutine(actor_animation.WaitForAnimateCharacterFinished(actor_animation.animation1_loop));
             yield break;
         }
-        actor_animation.anim_state = "intro";
 
         if (actor_controller.GetComponent<ActorAnimSequence>() != null)
             yield break;
 
+        actor_animation.anim_state = "intro";
         actor_animation.loadAnimationSet();
         actor_animation.updateAnimationState();
     }
@@ -226,7 +226,6 @@ public class ActorMovement
         }
         path = null;
         gameObject.transform.position = destination_position;
-        //gameObject.transform.rotation = Quaternion.identity * Quaternion.Euler(destination_rotation);
 
         gameObject.transform.rotation = Quaternion.identity;
         gameObject.transform.Rotate(new Vector3(0, 0, -destination_rotation[2]));
@@ -236,7 +235,7 @@ public class ActorMovement
         actor_controller.creation_time = Time.realtimeSinceStartup;
 
         actor_state = ActorState.Idle;
-        actor_animation.loadAnimationSet();
+        actor_animation.loadAnimationSet(); //This basically restarts the current animation
         actor_animation.anim_state = "outro";
         actor_animation.updateAnimationState();
     }
