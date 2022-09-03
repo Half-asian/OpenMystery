@@ -576,8 +576,9 @@ public static class Events
 
         foreach (ConfigScene._Scene.WayPointConnection connection in Scene.current.waypointconnections)
         {
-            if (Scene.current.waypoint_dict.ContainsKey(connection.connection[0]) ||
-                Scene.current.waypoint_dict.ContainsKey(connection.connection[1]))
+            //Check if the waypoint connection defines invalid waypoints
+            if (!Scene.current.waypoint_dict.ContainsKey(connection.connection[0]) ||
+                !Scene.current.waypoint_dict.ContainsKey(connection.connection[1]))
                 continue;
 
             if (connection.connection[0] == visited[visited.Count - 1])
@@ -678,8 +679,6 @@ public static class Events
             return;
         }
 
-        ConfigScene._Scene.WayPoint waypoint = Scene.current.waypoint_dict[action_params[1]];
-
         List<string> visited = new List<string>();
         visited.Add(Actor.actor_controllers[action_params[0]].actor_movement.getDestinationWaypoint());
 
@@ -693,62 +692,47 @@ public static class Events
         if (path.Count != 0)
         {
             if (path[path.Count - 1] != action_params[1])
-            {//Did not find a path
+            {   //Did not find a path
+                Debug.LogError("Could not carve a path for " + action_params[0]);
                 path.Clear();
                 path.Add(action_params[1]); //Change to a direct route
             }
         }
         else
         {
+            Debug.LogError("Could not carve a path for " + action_params[0]);
             path.Clear();
             path.Add(action_params[1]); //Change to a direct route
         }
 
-        if (Actor.actor_controllers.ContainsKey(action_params[0]))
+        if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
         {
-            if (Actor.actor_controllers[action_params[0]].gameObject != null)
+            Debug.LogError("Couldn't find character " + action_params[0] + " in characters.");
+            return;
+        }
+
+        if (set_animation)
+        {
+            if (action_params.Length > 2)
             {
-                WayPoint new_waypoint = new WayPoint();
-                new_waypoint.position = new Vector3(waypoint.position[0] * -0.01f, waypoint.position[1] * 0.01f, waypoint.position[2] * 0.01f);
-                if (waypoint.rotation != null)
-                {
-                    new_waypoint.rotation = Quaternion.identity;
-                    new_waypoint.rotation *= Quaternion.Euler(new Vector3(0, 0, -waypoint.rotation[2]));
-                    new_waypoint.rotation *= Quaternion.Euler(new Vector3(0, -waypoint.rotation[1], 0));
-                    new_waypoint.rotation *= Quaternion.Euler(new Vector3(waypoint.rotation[0], 0, 0));
-
-                }
-
-                if (set_animation)
-                {
-
-                    if (action_params.Length > 2)
-                    {
-                        //Unknown what fourth action_param does. It is usually set to 1
-                        Actor.actor_controllers[action_params[0]].actor_movement.moveCharacter(path, action_params[2]);
-                    }
-                    else
-                    {
-                        if (walking)
-                            Actor.actor_controllers[action_params[0]].actor_movement.moveCharacter(path);
-                        else
-                            Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 0.0f);
-                    }
-                }
+                //Unknown what fourth action_param does. It is usually set to 1
+                Actor.actor_controllers[action_params[0]].actor_movement.moveCharacter(path, action_params[2]);
+            }
+            else
+            {
+                if (walking)
+                    Actor.actor_controllers[action_params[0]].actor_movement.moveCharacter(path);
                 else
-                {
-                    if (action_params[2] == "walk_wheelchairStudent" || action_params[2] == "c_Stu_Jog01" || action_params[2].Contains("flyingOnBroom"))
-                        Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 1.3f);
-                    else
-                        Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 0.0f);
-                }
+                    Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 0.0f);
             }
         }
         else
         {
-            Debug.Log("Couldn't find character " + action_params[0] + " in characters.");
+            if (action_params[2] == "walk_wheelchairStudent" || action_params[2] == "c_Stu_Jog01" || action_params[2].Contains("flyingOnBroom"))
+                Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 1.3f);
+            else
+                Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 0.0f);
         }
-
     }
     public class Looking
     {

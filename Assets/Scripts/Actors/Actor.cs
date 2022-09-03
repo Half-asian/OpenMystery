@@ -95,6 +95,7 @@ public class Actor
         {
             Scene.setGameObjectToWaypoint(actor_controller.model.game_object, waypoint_id);
         }
+        actor_controller.actor_movement.destination_waypoint = waypoint_id;
 
         if (Scene.scene_model != null)
             actor_controller.model.game_object.transform.parent = Scene.scene_model.game_object.transform;

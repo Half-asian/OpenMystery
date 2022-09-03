@@ -65,7 +65,8 @@ public class TextureManager
     {
 		if (!Configs.config_texture.TextureConfig.ContainsKey(name))
 		{
-			Debug.Log("Not tex config entry for " + name);
+			if (name != "room1")
+				Debug.Log("Not tex config entry for " + name);
 			return null;
 		}
 

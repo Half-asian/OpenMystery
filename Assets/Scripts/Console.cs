@@ -53,6 +53,10 @@ public class Console : MonoBehaviour
             case "loadscenario":
                 Scenario.Load(parameters[1]);
                 break;
+            case "loadscene":
+                Scene.setCurrentScene(parameters[1]);
+                Scenario.cleanup();
+                break;
             case "replaceCharacterIdle":
                 Events.doEventAction("replaceCharacterIdle", new string[] { parameters[1], parameters[2] });
                 break;

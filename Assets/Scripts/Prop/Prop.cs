@@ -113,7 +113,6 @@ public class Prop : ModelHolder
 
     public static void spawnPropFromLocator(ConfigScene._Scene.PropLocator prop_locator)
     {
-        Debug.Log("Spawning prop from locator " + prop_locator.reference);
         Model model = ModelManager.loadModel(prop_locator.reference);
 
         Common.setWaypointTransform(ref model.game_object, prop_locator);
@@ -132,7 +131,6 @@ public class Prop : ModelHolder
 
         if (prop_locator.materials != null)
         {
-            Debug.LogError("Applying prop materials " + prop_locator.name);
             for (int c = 0; c < prop.model.game_object.transform.childCount; c++)
             {
                 Transform child = prop.model.game_object.transform.GetChild(c);
