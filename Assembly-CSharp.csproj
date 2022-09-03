@@ -196,6 +196,7 @@
     <Compile Include="Assets\Scripts\Menu\IMenuBackground.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveRepeatableMatchComplete.cs" />
     <Compile Include="Assets\Scripts\Events\Events.cs" />
+    <Compile Include="Assets\Scripts\UI\QuizUIButton.cs" />
     <Compile Include="Assets\Scripts\UI\CompanionSelectUI.cs" />
     <Compile Include="Assets\Scripts\UI\GoalPopup.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentTop.cs" />
@@ -236,7 +237,6 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
-    <Compile Include="Assets\Scripts\UI\QuizUIButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

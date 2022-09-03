@@ -154,9 +154,6 @@
             "m_Id": "34d6f7be894c47afa37f5d8053fca016"
         },
         {
-            "m_Id": "f9ff8af366e24581be662c42fa62796f"
-        },
-        {
             "m_Id": "cbdb35c2172d4f12aca850587c679e3a"
         },
         {
@@ -318,20 +315,6 @@
                     "m_Id": "639a40b811ff4c669dfc4fb48d194437"
                 },
                 "m_SlotId": 0
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
-                    "m_Id": "f9ff8af366e24581be662c42fa62796f"
-                },
-                "m_SlotId": 0
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "34d6f7be894c47afa37f5d8053fca016"
-                },
-                "m_SlotId": 1
             }
         }
     ],
@@ -3180,19 +3163,6 @@
 }
 
 {
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.CubemapMaterialSlot",
-    "m_ObjectId": "f42bb39d6f544114978be85f43edb0ef",
-    "m_Id": 0,
-    "m_DisplayName": "reflectTexel",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Out",
-    "m_StageCapability": 3,
-    "m_BareResource": false
-}
-
-{
     "m_SGVersion": 1,
     "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
     "m_ObjectId": "f5fe571dc148c582ad921ff6fac4b2f3",
@@ -3269,41 +3239,6 @@
         "z": 0.0
     },
     "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
-    "m_ObjectId": "f9ff8af366e24581be662c42fa62796f",
-    "m_Group": {
-        "m_Id": ""
-    },
-    "m_Name": "Property",
-    "m_DrawState": {
-        "m_Expanded": true,
-        "m_Position": {
-            "serializedVersion": "2",
-            "x": 1790.6650390625,
-            "y": 349.1399841308594,
-            "width": 0.0,
-            "height": 0.0
-        }
-    },
-    "m_Slots": [
-        {
-            "m_Id": "f42bb39d6f544114978be85f43edb0ef"
-        }
-    ],
-    "synonyms": [],
-    "m_Precision": 0,
-    "m_PreviewExpanded": true,
-    "m_PreviewMode": 0,
-    "m_CustomColors": {
-        "m_SerializableColors": []
-    },
-    "m_Property": {
-        "m_Id": "284830a19f314ac8a44a3c42db683da2"
-    }
 }
 
 {

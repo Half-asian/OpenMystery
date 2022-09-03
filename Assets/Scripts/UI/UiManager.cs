@@ -39,6 +39,39 @@ public class UiManager : MonoBehaviour
         _event_goal_dropdown_changed = new UnityEvent<ConfigGoal.Goal>();
         _event_goal_dropdown_changed.AddListener(showPopup);
         _ui_image_loader = GetComponent<UiImageLoader>();
+        DialogueManager.onDialogueStartedEvent += hideShit;
+    }
+
+    private void hideShit()
+    {
+        if (_goal_popup.gameObject.activeSelf)
+        {
+            _goal_popup.closePopup();
+            if (Goal.getGoalById(_goal_popup.latest_goal.goal_id) == null)
+                DialogueManager.onDialogueFinishedEvent += showPopup;
+        }
+        if (GameStart.ui_manager.next_area_button.activeSelf)
+        {
+            GameStart.ui_manager.next_area_button.SetActive(false);
+            DialogueManager.onDialogueFinishedEvent += showNextAreaButton;
+        }
+        if (GameStart.ui_manager.exit_to_menu_button.activeSelf)
+        {
+            GameStart.ui_manager.exit_to_menu_button.SetActive(false);
+            DialogueManager.onDialogueFinishedEvent += showExitMenuButton;
+        }
+    }
+
+    private void showNextAreaButton(string rubbish)
+    {
+        DialogueManager.onDialogueFinishedEvent -= showNextAreaButton;
+        GameStart.ui_manager.next_area_button.SetActive(true);
+    }
+
+    private void showExitMenuButton(string rubbish)
+    {
+        DialogueManager.onDialogueFinishedEvent -= showExitMenuButton;
+        GameStart.ui_manager.exit_to_menu_button.SetActive(true);
     }
 
     public void setup()
@@ -104,6 +137,11 @@ public class UiManager : MonoBehaviour
         if (goal_chain != null) GameObject.Find("MainMenuCanvas").GetComponent<MainMenu>().enterGoalID(goal_chain, goal_index, goal_chain_type);
     }
 
+    public void showPopup(string rubbish)
+    {
+        DialogueManager.onDialogueFinishedEvent -= showPopup;
+        _goal_popup.setPopup(_goal_popup.latest_goal);
+    }
     public void showPopup(ConfigGoal.Goal goal_id)
     {
         _goal_popup.setPopup(goal_id);

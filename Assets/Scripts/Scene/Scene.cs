@@ -143,19 +143,21 @@ public class Scene
                     scene_lights[light.name] = ambLight;
                     break;
                 /*case "spotLight":
+
+
+                    break;*/
+                case "spotLight":
+                    SpotLight spotLight = new SpotLight();
+                    scene_lights[light.name] = spotLight;
+
                     GameObject spotlight = new GameObject(light.name);
                     spotlight.transform.position = new Vector3(float.Parse(light.position[0], CultureInfo.InvariantCulture) * -0.01f, float.Parse(light.position[1], CultureInfo.InvariantCulture) * 0.01f, float.Parse(light.position[2], CultureInfo.InvariantCulture) * 0.01f);
                     spotlight.transform.rotation = Quaternion.Euler(new Vector3(-float.Parse(light.rotation[0], CultureInfo.InvariantCulture), float.Parse(light.rotation[1], CultureInfo.InvariantCulture) + 180.0f, float.Parse(light.rotation[2], CultureInfo.InvariantCulture)));
 
                     Light spotlight_component = spotlight.AddComponent<Light>();
                     spotlight_component.type = LightType.Spot;
-                    spotlight_component.color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture), float.Parse(light.color[1], CultureInfo.InvariantCulture), float.Parse(light.color[2], CultureInfo.InvariantCulture));
-                    spotlight_component.intensity = light.intensity;
+                    spotlight_component.color = new Color(float.Parse(light.color[0], CultureInfo.InvariantCulture) / 255 * light.intensity, float.Parse(light.color[1], CultureInfo.InvariantCulture) / 255 * light.intensity, float.Parse(light.color[2], CultureInfo.InvariantCulture) / 255 * light.intensity);
 
-                    break;*/
-                case "spotLight":
-                    SpotLight spotLight = new SpotLight();
-                    scene_lights[light.name] = spotLight;
                     break;
                 case "pointLight":
                     PointLight pointLight = new PointLight();

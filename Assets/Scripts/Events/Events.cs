@@ -116,43 +116,27 @@ public static class Events
                 GameStart.logWrite("Teleporting character " + action_params[0] + " to " + action_params[1]);
 
                 ConfigScene._Scene.WayPoint waypoint_b = Scene.current.waypoint_dict[action_params[1]];
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    if (Actor.actor_controllers[action_params[0]].gameObject != null)
-                    {
-                        if (waypoint_b.rotation != null)
-                        {
-                            Vector3 rotation = new Vector3(waypoint_b.rotation[0], waypoint_b.rotation[1], waypoint_b.rotation[2]);
 
-
-
-                            Actor.actor_controllers[action_params[0]].actor_movement.teleportCharacter(new Vector3(waypoint_b.position[0] * -0.01f, waypoint_b.position[1] * 0.01f, waypoint_b.position[2] * 0.01f), rotation);
-                            GameStart.logWrite("Teleported character to position " + waypoint_b.position[0] * -0.01f + ", " + waypoint_b.position[1] * 0.01f + ", " + waypoint_b.position[2] * 0.01f + " rotation " + rotation[0] + ", " + rotation[1] + ", " + rotation[2]);
-
-                        }
-                        else if (waypoint_b.position != null)
-                        {
-                            Actor.actor_controllers[action_params[0]].actor_movement.teleportCharacter(new Vector3(waypoint_b.position[0] * -0.01f, waypoint_b.position[1] * 0.01f, waypoint_b.position[2] * 0.01f), Vector3.zero);
-                            GameStart.logWrite("Teleported character to position " + waypoint_b.position[0] * -0.01f + ", " + waypoint_b.position[1] * 0.01f + ", " + waypoint_b.position[2] * 0.01f + " rotation zero vector");
-                        }
-                        else
-                        {
-                            Actor.actor_controllers[action_params[0]].actor_movement.teleportCharacter(Vector3.zero, Vector3.zero);
-                            GameStart.logWrite("Teleported character to position zero vector rotation zero vector");
-                        }
-                        Actor.actor_controllers[action_params[0]].actor_head.clearTurnHeadAt();
-
-                        Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
-
-
-                        Actor.actor_controllers[action_params[0]].actor_movement.destination_waypoint = waypoint_b.name;
-                    }
-                }
-                else
+                if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
                 {
                     Debug.Log("Couldn't find character " + action_params[0] + " in characters.");
+                    break;
                 }
 
+                Vector3 position = Vector3.zero;
+                Vector3 rotation = Vector3.zero;
+
+                if (waypoint_b.position != null)
+                    position = new Vector3(waypoint_b.position[0] * -0.01f, waypoint_b.position[1] * 0.01f, waypoint_b.position[2] * 0.01f);
+                if (waypoint_b.rotation != null)
+                    rotation = new Vector3(waypoint_b.rotation[0], waypoint_b.rotation[1], waypoint_b.rotation[2]);
+
+                
+                Actor.actor_controllers[action_params[0]].actor_movement.teleportCharacter(position, rotation);
+
+                Actor.actor_controllers[action_params[0]].actor_head.clearTurnHeadAt();
+                Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
+                Actor.actor_controllers[action_params[0]].actor_movement.destination_waypoint = waypoint_b.name;
                 break;
 
             case "teleportProp":
@@ -592,6 +576,10 @@ public static class Events
 
         foreach (ConfigScene._Scene.WayPointConnection connection in Scene.current.waypointconnections)
         {
+            if (Scene.current.waypoint_dict.ContainsKey(connection.connection[0]) ||
+                Scene.current.waypoint_dict.ContainsKey(connection.connection[1]))
+                continue;
+
             if (connection.connection[0] == visited[visited.Count - 1])
             {
                 if (connection.connection[1] == destination)

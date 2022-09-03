@@ -21,6 +21,7 @@ public class DialogueManager : MonoBehaviour
     public static event Action<string> setChoice2ActiveWithText = delegate { };
     public static event Action<string> setChoice3ActiveWithText = delegate { };
 
+    public static event Action onDialogueStartedEvent = delegate { };
     public static event Action<string> onDialogueFinishedEvent = delegate { };
 
     public string dialogue_id;
@@ -118,6 +119,7 @@ public class DialogueManager : MonoBehaviour
 
     public bool activateDialogueLine(string dialogue_name)
     {
+        onDialogueStartedEvent.Invoke();
         in_bubble = false;
 
         if (String.IsNullOrEmpty(dialogue_name))

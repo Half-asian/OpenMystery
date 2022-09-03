@@ -16,11 +16,13 @@ public class DirLight : SceneLight
 
 public class AmbLight : SceneLight
 {
+
 }
 
 public class SpotLight : SceneLight
 {
-
+    public float coneAngle;
+    public float penumbraAngle;
 }
 
 public class PointLight : SceneLight
