@@ -15,6 +15,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     public IEnumerator wait_for_animation = null;
 
+    public Dictionary<string, HPAnimation> loadedAnimations = new Dictionary<string, HPAnimation>();
 
     public bool walk;
 
@@ -66,14 +67,27 @@ public abstract partial class AnimationSequence : MonoBehaviour
     public void advanceAnimSequence()
     {
         //Find the new node
+        int edge_index = -1;
+
+        int weight_total = 0;
+        int generated_weight = Random.Range(1, 100);
+
+        for(int i = 0; i < config_sequence.data.nodes[node_index].edges.Length; i++) //Choose an edge to branch
+        {
+            weight_total += config_sequence.data.nodes[node_index].edges[i].weight;
+            if (generated_weight <= weight_total || i == config_sequence.data.nodes[node_index].edges.Length - 1)
+            {
+                edge_index = i;
+                break;
+            }
+        }
+
         int new_node_index = -1;
 
-        for (int i = 0; i < config_sequence.data.nodes.Length; i++)
+        for (int i = 0; i < config_sequence.data.nodes.Length; i++) //Find the node that matches the edge id
         {
-            if (config_sequence.data.nodes[i].nodeId == config_sequence.data.nodes[node_index].edges[config_sequence.data.nodes[node_index].edges.Length - 1].destinationId) //Take the higher one. More accurate would be to check weight.
-            {
+            if (config_sequence.data.nodes[i].nodeId == config_sequence.data.nodes[node_index].edges[edge_index].destinationId)
                 new_node_index = i;
-            }
         }
 
         if (config_sequence.data.nodes[node_index].edges[config_sequence.data.nodes[node_index].edges.Length - 1].actions != null) //activate the actions

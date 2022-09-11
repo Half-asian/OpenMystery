@@ -6,13 +6,20 @@ using ModelLoading;
 public class ModelInspector : MonoBehaviour
 {
     Model model;
-    ActorController am;
+    ActorController actor_controller;
     [SerializeField]
     InputField animation_input;
 
     [SerializeField]
     InputField model_input;
+    [SerializeField]
+    InputField actor_input;
     Prop prop;
+
+    [SerializeField]
+    GameObject directional_light;
+    [SerializeField]
+    GameObject canvas;
     void Start()
     {
         Scene.current = new ConfigScene._Scene();
@@ -33,22 +40,19 @@ public class ModelInspector : MonoBehaviour
 
         Scene.current.Lighting.lights["amb"] = amb_light;
         Scene.spawnLights();
+    }
 
-        if (!string.IsNullOrEmpty(GameStart._model_inspector_model)){
-            model = ModelManager.loadModel(GameStart._model_inspector_model);
-            prop = model.game_object.AddComponent<Prop>();
-            prop.setup(model);;
-            model.game_object.transform.position = Vector3.zero;
-        }
-        else
+    private void Update()
+    {
+        if (Input.GetKeyDown("f4"))
         {
-            am = Actor.spawnActor(GameStart._model_inspector_actor, null, "test");
+            canvas.SetActive(!canvas.activeSelf);
         }
     }
 
     public void playAnimation()
     {
-        if (model != null)
+        if (prop is not null) //Prop
         {
             if (Configs.config_animation.Animation3D.ContainsKey(animation_input.text))
             {
@@ -64,19 +68,20 @@ public class ModelInspector : MonoBehaviour
                 prop.playAnimSequence(animation_input.text);
             }
         }
-        else
+        else //Actor
         {
             if (Configs.config_animation.Animation3D.ContainsKey(animation_input.text))
             {
-                am.actor_animation.replaceCharacterIdle(animation_input.text);
+                actor_controller.actor_animation.replaceCharacterIdle(animation_input.text);
             }
             else
             {
 
-                am.gameObject.AddComponent<ActorAnimSequence>();
-                am.gameObject.GetComponent<ActorAnimSequence>().enabled = true;
-                am.gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(animation_input.text, false);
+                actor_controller.gameObject.AddComponent<ActorAnimSequence>();
+                actor_controller.gameObject.GetComponent<ActorAnimSequence>().enabled = true;
+                actor_controller.gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(animation_input.text, false);
             }
+            model.game_object.GetComponent<Animation>().Play();
         }
 
     }
@@ -93,21 +98,50 @@ public class ModelInspector : MonoBehaviour
                 model.game_object.GetComponent<PropAnimSequence>().advanceAnimSequence();
         }
         else {
-            if (am.gameObject.GetComponent<ActorAnimSequence>() != null)
-                am.gameObject.GetComponent<ActorAnimSequence>().advanceAnimSequence();
+            if (actor_controller.gameObject.GetComponent<ActorAnimSequence>() != null)
+                actor_controller.gameObject.GetComponent<ActorAnimSequence>().advanceAnimSequence();
         }
 
     }
 
     public void loadModel()
     {
-        if (model != null)
-            DestroyImmediate(model.game_object);
+        if (prop != null)
+        {
+            DestroyImmediate(prop.model.game_object);
+            DestroyImmediate(prop);
+            prop = null;
+        }
+        if (actor_controller != null)
+            actor_controller.destroy();
 
         model = ModelManager.loadModel(model_input.text);
         model.game_object.transform.position = Vector3.zero;
         model.game_object.AddComponent<Animation>();
+        prop = model.game_object.AddComponent<Prop>();
+        prop.setup(model);
+    }
 
+    public void loadActor()
+    {
+        if (prop != null)
+        {
+            DestroyImmediate(prop.model.game_object);
+            DestroyImmediate(prop);
+            prop = null;
+        }
+        if (actor_controller != null)
+            actor_controller.destroy();
+
+        actor_controller = Actor.spawnActor(actor_input.text, null, "test");
+        model = actor_controller.model;
+        actor_controller.model.game_object.transform.position = Vector3.zero;
+        actor_controller.model.game_object.AddComponent<Animation>();
+    }
+
+    public void toggleLight()
+    {
+        directional_light.SetActive(!directional_light.activeSelf);
     }
 
 }

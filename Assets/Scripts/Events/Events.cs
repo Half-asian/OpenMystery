@@ -356,7 +356,7 @@ public static class Events
                 float fade_to_time = 1.0f;
                 if (action_params.Length >= 1)
                 {
-                    bool success = float.TryParse(action_params[0], out float result);
+                    bool success = float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float result);
                     if (success == false)
                         throw new System.Exception("fadeToBlack: Failed to parse " + action_params[0] + " as a float.");
                     else
@@ -370,7 +370,7 @@ public static class Events
                 float fade_from_time = 1.0f;
                 if (action_params.Length >= 1)
                 {
-                    bool success = float.TryParse(action_params[0], out float result);
+                    bool success = float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float result);
                     if (success == false)
                         throw new System.Exception("fadeFromBlack: Failed to parse " + action_params[0] + " as a float.");
                     else
@@ -601,7 +601,6 @@ public static class Events
                         {
                             s_path += s + " ";
                         }
-
                         if (final_result.Count != 0) //we already found a path
                         {
                             if (result.Count < final_result.Count)
@@ -681,6 +680,8 @@ public static class Events
 
         List<string> visited = new List<string>();
         visited.Add(Actor.actor_controllers[action_params[0]].actor_movement.getDestinationWaypoint());
+        if (visited[0] == action_params[1]) //We are already at the destination
+            return;
 
         List<string> path = carvePath(visited, action_params[1]);
 
@@ -689,6 +690,7 @@ public static class Events
         {
             s_path += s + " ";
         }
+        Debug.Log(action_params[0] + " Walking: " + s_path + ". Starting at " + Actor.actor_controllers[action_params[0]].actor_movement.getDestinationWaypoint() + " going to " + action_params[1]);
         if (path.Count != 0)
         {
             if (path[path.Count - 1] != action_params[1])
@@ -777,7 +779,7 @@ public static class Events
         
         if (action_params.Length > 2)
         {
-            float.TryParse(action_params[2], out float action_params_2_float);
+            float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out float action_params_2_float);
             GameStart.event_manager.StartCoroutine(GameStart.event_manager.lookAtCountdown(action_params[0], action_params_2_float));
         }
     }

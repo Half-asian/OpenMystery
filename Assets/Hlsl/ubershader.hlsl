@@ -1,6 +1,7 @@
 //#define USE_UNLIT_DIFFUSE
 #define USE_DIFFUSE
-
+#define USE_TRANSPARENCY
+//#define USE_TRANSPARENCY_TEXTURE
 #define USE_ALPHA_TEST
 #define HAS_DIRTMAP_TEXTURE
 #define USE_AMBIENT_COLOR
@@ -170,10 +171,6 @@ float4 main_float(){
 
     eyeDir = -eyeDir;
 
-    if (u_opacityAmount < 0.95){
-        u_opacityAmount = clamp(u_opacityAmount / 3, 0.00, 1.0);
-    }
-
     float shadowVal = 1.0;
     #ifdef USE_SHADOWMAP
         int index = 0;
@@ -226,31 +223,37 @@ float4 main_float(){
         if (USE_DIFFUSE_COLOR == true){
             diffuseColor = u_diffuseColor;
         }
-    
+        float4 diffuseTexColor;
         if (HAS_DIFFUSE_TEXTURE){
-            #ifdef USE_TRANSPARENCY_TEXTURE
-                vec4 diffuseTexColor = texture2D(u_diffuseMap, v_diffuseCoords);
+            if (HAS_DIFFUSE_TEXTURE) {
+                //#ifdef USE_TRANSPARENCY_TEXTURE
+                diffuseTexColor = tex_u_diffuseMap;
                 #ifdef USE_ALPHA_TEST
+                if (UseAsCutout_SWITCH) {
                     if (diffuseTexColor.a < u_alphaTestReferenceValue) {
                         discard;
                     }
+                }
                 #endif
-                if (USE_DIFFUSE_COLOR == false){
+                if (USE_DIFFUSE_COLOR == false) {
                     diffuseColor = diffuseTexColor.rgb;
                 }
-            #elif defined(USE_ALPHA_TEST)
-                float4 diffuseTexColor = tex_u_diffuseMap;
+            }
+            else {
+            #if defined(USE_ALPHA_TEST)
+                diffuseTexColor = tex_u_diffuseMap;
                 if (diffuseTexColor.a < u_alphaTestReferenceValue) {
                     discard;
                 }
-                if (USE_DIFFUSE_COLOR == false){
+                if (USE_DIFFUSE_COLOR == false) {
                     diffuseColor = diffuseTexColor.rgb;
                 }
             #else 
-                if (USE_DIFFUSE_COLOR == false){
+                if (USE_DIFFUSE_COLOR == false) {
                     diffuseColor = tex_u_diffuseMap;
                 }
             #endif
+            }
         }
 
         if (HAS_DIFFUSE_TEXTURE == false){
@@ -259,7 +262,7 @@ float4 main_float(){
             }
         }
     
-        #ifdef USE_HOUSE_COLORS
+        #ifdef IS_QUIDDITCH_SHADER
             float4 maskColor = tex_u_teamColorMask;
             float3 primaryColor = (u_primaryColor * maskColor.g) + (1.0 - maskColor.g);
             float3 secondaryColor = (u_secondaryColor * maskColor.b) + (1.0 - maskColor.b);
@@ -268,25 +271,31 @@ float4 main_float(){
             #ifdef USE_EMBLEM_IN_DIFFUSE
             diffuseColor = combinedHouseDiffuse;
             #endif
-        #endif
 
-        #ifndef USE_EMBLEM_IN_DIFFUSE
-            #if defined(USE_HOUSE_EMBLEM) && !defined(USE_EMBLEM_IN_DIFFUSE)
-                float4 emblemTexColor = tex_u_emblemTexture;
+            #ifndef USE_EMBLEM_IN_DIFFUSE
+                float4 emblemTexColor;
+                if (USE_HOUSE_EMBLEM)
+                    emblemTexColor = tex_u_emblemTexture;
+            
+                if (USE_HOUSE_COLORS) {
+
+                    if (!USE_HOUSE_EMBLEM) {
+                        diffuseColor = combinedHouseDiffuse;
+                    }
+                    else {
+                        diffuseColor = lerp(combinedHouseDiffuse, emblemTexColor.rgb, emblemTexColor.a * u_houseSet);
+                    }
+                }
+                else if (USE_HOUSE_EMBLEM) {
+                    diffuseColor = lerp(diffuseColor, emblemTexColor.rgb, emblemTexColor.a * u_houseSet);
+                }
             #endif
 
-            #if defined(USE_HOUSE_COLORS) && !defined(USE_HOUSE_EMBLEM)
-                diffuseColor = combinedHouseDiffuse;
-            #elif !defined(USE_HOUSE_COLORS) && defined(USE_HOUSE_EMBLEM)
-                diffuseColor = lerp(diffuseColor, emblemTexColor.rgb, emblemTexColor.a * u_houseSet);
-            #elif defined(USE_HOUSE_COLORS) && defined(USE_HOUSE_EMBLEM)
-                diffuseColor = lerp(combinedHouseDiffuse, emblemTexColor.rgb, emblemTexColor.a * u_houseSet);
-            #endif        
         #endif
-
         #ifdef USE_DIFFUSE_COLOR_ADJUST
         diffuseColor *= (u_tintColor * u_brightness);
         #endif
+   
     #else
         diffuseColor = vec3(0.0);
         #ifdef USE_TRANSPARENCY_TEXTURE
@@ -742,16 +751,22 @@ float4 main_float(){
 
     //Handle transparency. If using cutout, then modulate the emissive, specular, and reflection.
     #ifdef USE_TRANSPARENCY
-        #if defined(USE_TRANSPARENCY_TEXTURE) && defined(USE_TRANSPARENCY_VERTEX)
+        //float opacity = 1.0;//diffuseTexColor.a;
+        float opacity = u_opacityAmount;
+        if (HAS_DIFFUSE_TEXTURE)
+            opacity = diffuseTexColor.a;
+        /*#if defined(USE_TRANSPARENCY_TEXTURE) && defined(USE_TRANSPARENCY_VERTEX)
             float opacity = diffuseTexColor.a * v_vertColor.a;
-        #elif defined(USE_TRANSPARENCY_TEXTURE)
-            float opacity = diffuseTexColor.a;
+
         #elif defined(USE_TRANSPARENCY_VERTEX)
             float opacity = v_vertColor.a;
         #else
             float opacity = u_opacityAmount;
         #endif
-    
+        if (HAS_DIFFUSE_TEXTURE) {
+            //#elif defined(USE_TRANSPARENCY_TEXTURE)
+            float opacity = diffuseTexColor.a;
+        }*/
         #ifdef USE_TRANSPARENCY_CUTOUT
             #ifdef USE_SPECULAR
             specularColor *= opacity;

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Text;
 using System;
+using static ConfigAvatarComponents;
 
 public class AvatarComponents
 {
@@ -67,7 +68,23 @@ public class AvatarComponents
                 }
             }
         }
-        foreach(var comp in components)
+
+        if (!customization_categories.ContainsKey("legs"))
+        {
+            customization_categories["legs"] = new PlayerFile.CustomizationCategory();
+            customization_categories["legs"].component_id = "LongPants";
+            //components["legs"] = new IndividualComponents.ComponentLegs(this);
+            replaceAvatarLegs("LongPants");
+        }
+        if (!customization_categories.ContainsKey("arms"))
+        {
+            customization_categories["arms"] = new PlayerFile.CustomizationCategory();
+            customization_categories["arms"].component_id = "LongSleeve";
+            //components["arms"] = new IndividualComponents.ComponentArms(this);
+            replaceAvatarArms("LongSleeve");
+        }
+
+        foreach (var comp in components)
         {
             comp.Value.replaceComponent();
         }
@@ -177,7 +194,6 @@ public class AvatarComponents
                     components["one-piece"] = new IndividualComponents.ComponentOnePiece(this);
                 break;
             case "tops":
-                Debug.Log("Tops");
                 if (components.ContainsKey("one-piece"))
                 {
                     components["one-piece"].removeComponent();

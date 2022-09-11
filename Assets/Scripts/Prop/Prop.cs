@@ -144,10 +144,7 @@ public class Prop : ModelHolder
                     for (int i = 0; i < material.stringValueKeys.Length; i++)
                     {
                         mat.SetTexture(material.stringIds[i], TextureManager.loadTextureDDS(material.stringValueKeys[i]));
-                        if (mat.shader.name.Contains("ubershader") || mat.shader.name.Contains("quidditchshader"))
-                        {
-                            ModelMaterials.setUbershaderSwitches(mat, material.stringIds[i]);
-                        }
+                        ModelMaterials.setTexSwitches(mat, material.stringIds[i]);
                     }
                 }
                 if (material.floatIds != null)

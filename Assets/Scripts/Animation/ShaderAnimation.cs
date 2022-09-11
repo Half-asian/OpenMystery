@@ -29,7 +29,7 @@ public class ShaderAnimationFloat : ShaderAnimation
         float _end,
         float _end_value) : base(_mesh_id, _value_id)
     {
-        Debug.Log("Adding new shaderanimationfloat start: " + _start + " end: " + _end);
+        //Debug.Log("Adding new shaderanimationfloat start: " + _start + " end: " + _end);
         start = _start;
         start_value = _start_value;
         end = _end;
@@ -79,7 +79,7 @@ public static partial class AnimationManager
 
         foreach (var effect in effectInfo)
         {
-            Debug.Log("ADDING EFFECT for " + effect.name);
+            //Debug.Log("ADDING EFFECT for " + effect.name);
             if (effect.fades == null)
             {
                 Debug.LogError("Unknown effect");
@@ -88,7 +88,7 @@ public static partial class AnimationManager
 
             foreach (var fade in effect.fades)
             {
-                Debug.Log("ADDING EFFECT FADE");
+                //Debug.Log("ADDING EFFECT FADE");
                 ShaderAnimation shaderAnimation = new ShaderAnimationFloat(effect.name, "alpha", fade.start, fade.startVal, fade.end, fade.endVal);
                 list.Add(shaderAnimation);
             }

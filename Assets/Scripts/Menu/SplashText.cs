@@ -34,14 +34,12 @@ public class SplashText : MonoBehaviour
         "Benny Harvey R.I.P",
         "The game was rigged\n from the start.",
         "Nowadays, anything can be art.\n This splash is art.",
-        "My demented fantasy.",
-        "My sick fantasy world.",
         "My deep, dark fantasy.",
         "I want Rath to crush\n my head with her thighs.",
         "A bean!",
         "Legalize heroin!",
         "I'm a targeted individual.",
-        "Young Jennifer Connelly.",
+        "Jennifer Connelly.",
         "Need it or keep it?",
         "Liz Tuttle fucks horses.",
         "The weak should\n fear the strong.",
@@ -58,7 +56,12 @@ public class SplashText : MonoBehaviour
         "You hate this game\nbecause you hate yourself.",
         "Get to know\nthe name, C----Sucker",
         "$100 Meru Lover",
-
+        "Und das heisst, Erika!",
+        "ZOINKS!",
+        "Highly illogical.",
+        "Dammit Jim!",
+        "Queen Elizabeth has died.",
+        "Putas Harry... Putas..."
     };
 
     void Start()

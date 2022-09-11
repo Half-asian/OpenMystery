@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
@@ -91,7 +92,7 @@ public class CameraManager : MonoBehaviour
         main_camera_holder.GetComponent<Animation>().Play("default");
         main_camera_holder.GetComponent<Animation>().wrapMode = WrapMode.Once;
 
-        GameStart.event_manager.StartCoroutine(GameStart.event_manager.waitCameraAnimation(Time.realtimeSinceStartup, anim_clip.length, animation));
+        GameStart.event_manager.StartCoroutine(GameStart.event_manager.waitCameraAnimation(anim_clip.length, animation));
     }
 
     public void panCamOnTrack(string animation)
@@ -115,7 +116,7 @@ public class CameraManager : MonoBehaviour
         main_camera_holder.GetComponent<Animation>().AddClip(anim_clip_pancam, "default");
         main_camera_holder.GetComponent<Animation>().Play("default");
         main_camera_holder.GetComponent<Animation>().wrapMode = WrapMode.Once;
-        GameStart.event_manager.StartCoroutine(GameStart.event_manager.waitCameraAnimation(Time.realtimeSinceStartup, anim_clip_pancam.length, animation));
+        GameStart.event_manager.StartCoroutine(GameStart.event_manager.waitCameraAnimation(anim_clip_pancam.length, animation));
     }
 
     public ConfigScene._Scene.Camera focusCam(string camera_name)
@@ -234,7 +235,7 @@ public class CameraManager : MonoBehaviour
             }
             else
             {
-                if (float.TryParse(action_params[1], out float time))
+                if (float.TryParse(action_params[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float time))
                     last_camera = focusCam(action_params[0], time);
                 else
                     Debug.LogError("Unknown focuscam string, string");

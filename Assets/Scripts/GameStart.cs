@@ -30,10 +30,6 @@ public class GameStart : MonoBehaviour
     public static PostProcess post_process_manager;
 
     public bool model_inspector;
-    public string model_inspector_model;
-    public string model_inspector_actor;
-    public static string _model_inspector_model;
-    public static string _model_inspector_actor;
     public AudioClip music;
 
     void Update()
@@ -238,46 +234,30 @@ public class GameStart : MonoBehaviour
 
         ui_manager.setup();
         Debug.Log("StartLoading");
-        //await Task.Run(() => Configs.loadConfigs());
         Configs.preload();
-        System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-        stopwatch.Start();
         List<Task> tasks = new List<Task>();
-        //tasks.Add(Task.Run(() => Configs.loadConfigsa()));
-        //tasks.Add(Task.Run(() => Configs.loadConfigsb()));
-        //tasks.Add(Task.Run(() => Configs.loadConfigsc()));
-        //await Task.WhenAll(tasks);
 
         if (GlobalEngineVariables.launch_mode == "character")
-        {
             await Task.Run(() => Configs.loadConfigModelInspector());
-        }
-        else if (!model_inspector)
-        {
-            await Task.Run(() => Configs.loadConfigAll());
-        }
+        else if (GlobalEngineVariables.launch_mode == "model_inspector" || model_inspector)
+            await Task.Run(() => Configs.loadConfigModelInspector());
         else
-            await Task.Run(() => Configs.loadConfigModelInspector());
+            await Task.Run(() => Configs.loadConfigAll());
+
         Configs.postload();
         onConfigsLoaded.Invoke();
         CameraManager.current.initialise();
-        stopwatch.Stop();
-        Debug.Log("Time to load configs: " + stopwatch.Elapsed);
-        //Sound.playBGMusic("BGM");
 
         Sound.current.playCustom("theblueghost.mp3");
 
-        if (model_inspector)
+        if (GlobalEngineVariables.launch_mode == "model_inspector" || model_inspector)
         {
-            _model_inspector_model = model_inspector_model;
-            _model_inspector_actor = model_inspector_actor;
-            UnityEngine.SceneManagement.SceneManager.LoadScene("ModelInspector");
+            SceneManager.LoadScene("ModelInspector");
         }
         else if (GlobalEngineVariables.launch_mode == "character")
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("CharacterCreator");
+            SceneManager.LoadScene("CharacterCreator");
         }
-
         else
         {
             ui_manager.setMenu();

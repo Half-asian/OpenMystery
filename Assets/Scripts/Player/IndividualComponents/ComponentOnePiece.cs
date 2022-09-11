@@ -46,7 +46,6 @@ namespace IndividualComponents
             if (Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].legpatch != null)
             {
                 avatar_components.replaceAvatarLegs(Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].legpatch);
-                Debug.LogError("replace those legs");
             }
             else
             {

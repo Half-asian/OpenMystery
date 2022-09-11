@@ -192,7 +192,7 @@ namespace ModelLoading {
 			}
 		}
 
-		private static void buildNodePart(CocosModel.Node node, CocosModel.Node.Part node_part, Matrix4x4 node_transform_matrix)
+		private static void buildNodePart(CocosModel.Node node, CocosModel.Node.Part node_part, Matrix4x4 node_transform_matrix, bool force_transparent)
         {
 			GameObject node_part_gameobject = new GameObject(node.id);
 			Quaternion extracted_rotation = ExtractRotationFromMatrix(ref node_transform_matrix);
@@ -279,10 +279,18 @@ namespace ModelLoading {
 				Debug.LogError("No material defined for node id " + node.id);
 				return;
 			}
+            Config3DModel._Config3DModel.JsonData.Material material = c3m.jsonData[0].material_dict[node.id];
 
-			Material mat = new Material(shader_dict["ubershader"]);
+			bool unknown_shader = !known_shaders.Contains(material.shaderName);
 
-			Config3DModel._Config3DModel.JsonData.Material material = c3m.jsonData[0].material_dict[node.id];
+            Material mat = new Material(shader_dict["ubershader"]);
+
+            if (unknown_shader)
+			{
+				mat = Resources.Load("error_mat") as Material;
+			}
+
+
 			mat.name = material.nodeName;
 
 			SkinnedMeshRenderer skinned_mesh_renderer = null;
@@ -359,11 +367,11 @@ namespace ModelLoading {
 			mesh.triangles = mesh.triangles.Reverse().ToArray();
 			mesh.Optimize();
 			mesh.RecalculateBounds();
-
-			applyModelMaterial(mat, material);
+			if (!unknown_shader)
+				applyModelMaterial(mat, material, force_transparent);
 		}
 
-		public static Model loadModel(string name, Dictionary<string, Transform> _parent_bones = null)
+		public static Model loadModel(string name, Dictionary<string, Transform> _parent_bones = null, bool force_transparent = false)
 		{
 			if (string.IsNullOrEmpty(name))
 			{
@@ -410,7 +418,7 @@ namespace ModelLoading {
 
 			foreach (CocosModel.Node node in model.nodes)
 			{
-				processNode(node);
+				processNode(node, force_transparent);
 
 			}
 
@@ -434,7 +442,7 @@ namespace ModelLoading {
 			ModelMaterials.Initialize();
 		}
 
-		public static void processNode(CocosModel.Node node)
+		public static void processNode(CocosModel.Node node, bool force_transparent)
         {
 			if (node.skeleton)
 				return;
@@ -452,7 +460,7 @@ namespace ModelLoading {
 			{
 				foreach (CocosModel.Node.Part node_part in node.parts)
 				{
-					buildNodePart(node, node_part, node_transform_matrix);
+					buildNodePart(node, node_part, node_transform_matrix, force_transparent);
 				}
 			}
 			if (node.children == null)
@@ -460,7 +468,7 @@ namespace ModelLoading {
 
 			foreach (var n in node.children)
 			{
-				processNode(n);
+				processNode(n, force_transparent);
 			}
 		}
 

@@ -10,13 +10,13 @@ Material:
   m_Name: quidditchshader
   m_Shader: {fileID: -6465566751694194690, guid: ed60c4e058ac72946bb4ee4999b17a65, type: 3}
   m_ValidKeywords:
-  - USE_HOUSE_COLORS
-  - USE_HOUSE_EMBLEM
+  - IS_QUIDDITCH_SHADER
   - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
   - IS_SKIN_SHADER
   - USE_DIFFUSE_COLOR
+  - USE_HOUSE_COLORS
   - USE_RIM
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
@@ -193,6 +193,7 @@ Material:
     - HAS_DIFFUSE3_TEXTURE: 0
     - HAS_DIFFUSE_TEXTURE: 0
     - HAS_LIGHTMAP_TEXTURE: 0
+    - IS_QUIDDITCH_SHADER: 1
     - IS_SKIN_SHADER: 1
     - Lightmap_UvSet: 1
     - RimVertexColor_SWITCH: 0
@@ -204,7 +205,7 @@ Material:
     - USE_BAKED_DIFFUSE: 0
     - USE_DIFFUSE_COLOR: 1
     - USE_HOUSE_COLORS: 1
-    - USE_HOUSE_EMBLEM: 1
+    - USE_HOUSE_EMBLEM: 0
     - USE_LIGHTMAP_COLOR: 1
     - USE_RIM: 1
     - UseAsCutout_SWITCH: 0

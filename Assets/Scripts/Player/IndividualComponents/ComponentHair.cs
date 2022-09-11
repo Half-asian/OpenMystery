@@ -42,10 +42,8 @@ namespace IndividualComponents
 
         public override void setModifiers()
         {
-            Debug.Log("ComponentHair SetMod");
             if (component_model is null)
                 return;
-            Debug.Log("HERR");
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["hair"];
 
             if (category.int_parameters.ContainsKey("hairColor"))

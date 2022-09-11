@@ -20,7 +20,14 @@ public class ActorAnimSequence : AnimationSequence
         if (walk == false)
             actor_controller.actor_animation.anim_sequence_idle = _anim_sequence;
 
-        HPAnimation animation = AnimationManager.loadAnimationClip(animation_id, actor_controller.model, actor_controller.actor_info, config_sequence.data.triggerReplacement);
+        HPAnimation animation;
+        if (loadedAnimations.ContainsKey(animation_id))
+            animation = loadedAnimations[animation_id];
+        else
+        {
+            animation = AnimationManager.loadAnimationClip(animation_id, actor_controller.model, actor_controller.actor_info, config_sequence.data.triggerReplacement);
+            loadedAnimations[animation_id] = animation;
+        }
         if (animation == null)
         {
             Debug.LogError("Failed to load animation clip for " + actor_controller.name + " with sequence of " + config_sequence.sequenceId + " at node index " + node_index);

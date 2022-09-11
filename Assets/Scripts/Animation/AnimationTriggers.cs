@@ -9,9 +9,9 @@ public static partial class AnimationManager
 	static void processTriggerMap(Dictionary<string, string> triggerReplacement, ConfigAnimation._Animation3D.TriggerMap trigger, float offset)
 	{
 		AnimationEvent animationEvent = new AnimationEvent();
-		switch (trigger.id)
+		switch (trigger.id.ToLower()) //Capitalization is not consistent
 		{
-			case "playSound":
+			case "playsound":
 				if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
 					animationEvent.stringParameter = triggerReplacement[trigger.parameters[0]];
 				else
@@ -21,7 +21,7 @@ public static partial class AnimationManager
 				anim_clip.AddEvent(animationEvent);
 				break;
 
-			case "AttachProp":
+			case "attachprop":
 				if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
 					animationEvent.stringParameter =
 						triggerReplacement[trigger.parameters[0]] + ":" + triggerReplacement[trigger.parameters[0]] + ":" + trigger.parameters[1];
@@ -31,7 +31,7 @@ public static partial class AnimationManager
 				animationEvent.time = trigger.time + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
-			case "RemoveProp":
+			case "removeprop":
 				if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
 					animationEvent.stringParameter =
 						triggerReplacement[trigger.parameters[0]];
@@ -41,7 +41,7 @@ public static partial class AnimationManager
 				animationEvent.time = trigger.time + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
-			case "PlayPropAnim":
+			case "playpropanim":
 
 				if (triggerReplacement != null && triggerReplacement.ContainsKey(trigger.parameters[0]))
 				{
@@ -53,14 +53,14 @@ public static partial class AnimationManager
 				animationEvent.time = trigger.time + 0.01f + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
-			case "ScriptTrigger":
+			case "scripttrigger":
 				animationEvent.functionName = "ScriptTrigger";
 				animationEvent.stringParameter = trigger.parameters[0];
 				animationEvent.time = trigger.time + 0.01f + offset;
 				anim_clip.AddEvent(animationEvent);
 				break;
 
-			case "AttachParticleSystem":
+			case "attachparticlesystem":
 
 				if (trigger.parameters.Length == 2)
 				{

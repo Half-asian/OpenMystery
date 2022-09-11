@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Animations;
 using ModelLoading;
-public partial class ModelHolder : MonoBehaviour 
+public partial class ModelHolder : MonoBehaviour
 {
 
     protected Dictionary<string, GameObject> props = new Dictionary<string, GameObject>();
-
-
 
     public void attachProp(string prop_model_id, string alias, string target)
     {
@@ -41,7 +39,7 @@ public partial class ModelHolder : MonoBehaviour
             if (props.ContainsKey(alias))
                 Destroy(props[alias]);
 
-            Debug.Log("Adding prop " + alias);
+            //Debug.Log("Adding prop " + alias);
             props[alias] = prop.model.game_object;
         }
         else

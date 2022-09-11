@@ -24,7 +24,7 @@ public class MatImageLoader : ImageLoader
     void Awake()
     {
         if (is_transparent)
-            mesh_renderer.material = Resources.Load("Materials/TransparentLit") as Material;
+            mesh_renderer.material = Resources.Load("UI/transparent") as Material;
 
         Texture2D texture = null;
         if (!string.IsNullOrEmpty(h_name))

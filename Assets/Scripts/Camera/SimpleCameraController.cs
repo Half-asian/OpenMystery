@@ -5,6 +5,8 @@
 #endif
 
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SimpleCameraController : MonoBehaviour
 {
@@ -114,6 +116,12 @@ public class SimpleCameraController : MonoBehaviour
         
     void Update()
     {
+        GameObject current = EventSystem.current.currentSelectedGameObject;
+        if (current != null && current.gameObject != null && current.gameObject.GetComponent<InputField>() != null)
+        {
+            return;
+        }
+
         if (camera_armature.GetComponent<Animation>() != null)
         {
             if (camera_armature.GetComponent<Animation>().isPlaying)

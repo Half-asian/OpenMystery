@@ -89,7 +89,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public IEnumerator waitCameraAnimation(float start_time, float length, string animation)
+    public IEnumerator waitCameraAnimation(float length, string animation)
     {
         main_event_player.last_finished_animation = "";
         foreach (EventPlayer sequential_event_player in sequential_event_players)
@@ -97,10 +97,8 @@ public class EventManager : MonoBehaviour
             sequential_event_player.last_finished_animation = "";
         }
 
-        while (Time.realtimeSinceStartup < length + start_time)
-        {
-            yield return null;
-        }
+        yield return new WaitForSeconds(length);
+
         CameraManager.current.freeCamera();
         GameStart.event_manager.notifyCamAnimFinished(animation);
 
@@ -121,94 +119,6 @@ public class EventManager : MonoBehaviour
         }
         if (Actor.actor_controllers.ContainsKey(character))
             Actor.actor_controllers[character].actor_head.clearLookat();
-    }
-
-    public List<string> carvePath(List<string> visited, string destination)
-    {
-        List<string> final_result = new List<string>();
-
-        if (Scene.current.waypointconnections == null)
-        {
-            return final_result;
-        }
-
-        foreach(ConfigScene._Scene.WayPointConnection connection in Scene.current.waypointconnections)
-        {
-            if (connection.connection[0] == visited[visited.Count - 1]){
-                if (connection.connection[1] == destination)
-                {
-                    visited.Add( destination);
-                    return visited;
-                }
-                else if (!visited.Contains(connection.connection[1]))
-                {
-                    List<string> temp = new List<string>(visited);
-                    temp.Add(connection.connection[1]);
-                    List<string> result = carvePath(temp, destination);
-
-                    if (result[result.Count - 1] == destination) //we found a path
-                    {
-                        string s_path = "";
-                        foreach (string s in result)
-                        {
-                            s_path += s + " ";
-                        }
-
-                        if (final_result.Count != 0) //we already found a path
-                        {
-                            if (result.Count < final_result.Count)
-                            {
-                                final_result = result; //The new path is shorter
-                            }
-                        }
-                        else
-                        {
-                            
-                            final_result = result; //we hadn't found a path, now we have
-                        }
-                    }
-                }
-            }
-            else if (connection.connection[1] == visited[visited.Count - 1])
-            {
-                if (connection.connection[0] == destination)
-                {
-                    visited.Add(destination);
-                    return visited;
-                }
-                else if (!visited.Contains(connection.connection[0]))
-                {
-                    List<string> temp = new List<string>(visited);
-                    temp.Add(connection.connection[0]);
-                    List<string> result = carvePath(temp, destination);
-
-                    if (result[result.Count - 1] == destination) //we found a path
-                    {
-                        string s_path = "";
-                        foreach (string s in result)
-                        {
-                            s_path += s + " ";
-                        }
-                        if (final_result.Count != 0) //we already found a path
-                        {
-                            if (result.Count < final_result.Count)
-                            {
-                                final_result = result; //The new path is shorter
-                            }
-                        }
-                        else
-                        {
-                            final_result = result; //we hadn't found a path, now we have
-                        }
-                    }
-                }
-            }
-        }
-        if (final_result.Count == 0)
-        {
-            return visited;
-        }
-        return final_result;
     }
 
     public void startSequentialPlayer(string[] events)

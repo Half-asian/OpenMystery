@@ -195,8 +195,6 @@ public class Actor
 
     private static void setQuidditchProperties(GameObject actor_gameobject, ConfigHPActorInfo._HPActorInfo actor_info)
     {
-
-
         string house;
         if (actor_info.quidditchMaterialOptions.houseId == "Avatar")
         {
@@ -235,34 +233,20 @@ public class Actor
                     {
                         if (house == "ravenclaw" || (house == "Avatar" && Player.local_avatar_house == "ravenclaw"))
                         {
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_ravenclaw", 1);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_slytherin", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_hufflepuff", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_gryffindor", 0);
-
+                            ModelMaterials.setHouseUniforms(piece.GetComponent<SkinnedMeshRenderer>().material, "ravenclaw");
                         }
                         else if (house == "slytherin" || (house == "Avatar" && Player.local_avatar_house == "slytherin"))
                         {
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_ravenclaw", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_slytherin", 1);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_hufflepuff", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_gryffindor", 0);
+                            ModelMaterials.setHouseUniforms(piece.GetComponent<SkinnedMeshRenderer>().material, "slytherin");
                         }
                         else if (house == "hufflepuff" || (house == "Avatar" && Player.local_avatar_house == "hufflepuff"))
                         {
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_ravenclaw", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_slytherin", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_hufflepuff", 1);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_gryffindor", 0);
+                            ModelMaterials.setHouseUniforms(piece.GetComponent<SkinnedMeshRenderer>().material, "hufflepuff");
                         }
                         else if (house == "gryffindor" || (house == "Avatar" && Player.local_avatar_house == "gryffindor"))
                         {
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_ravenclaw", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_slytherin", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_hufflepuff", 0);
-                            piece.GetComponent<SkinnedMeshRenderer>().material.SetInt("is_gryffindor", 1);
+                            ModelMaterials.setHouseUniforms(piece.GetComponent<SkinnedMeshRenderer>().material, "gryffindor");
                         }
-
                         else
                         {
                             Debug.LogError("Invalid houseid " + house);

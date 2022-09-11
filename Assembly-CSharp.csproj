@@ -139,7 +139,6 @@
     <Compile Include="Assets\Scripts\Configs\ConfigDialoguesLoader.cs" />
     <Compile Include="Assets\Scripts\Encounter\EncounterManager.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentRightWrist.cs" />
-    <Compile Include="Assets\Scripts\3DModels\ModelHolder.cs" />
     <Compile Include="Assets\Scripts\UI\GraphicsSettings.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentBottom.cs" />
     <Compile Include="Assets\Scripts\Interaction\Interaction.cs" />
@@ -237,6 +236,7 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
+    <Compile Include="Assets\Scripts\Node\NodeBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

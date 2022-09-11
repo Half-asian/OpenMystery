@@ -26,7 +26,7 @@ public partial class ModelHolder : MonoBehaviour
         creation_time = Time.realtimeSinceStartup;
 
         mesh_renderers = new Dictionary<string, SkinnedMeshRenderer>();
-        for(int i = 0; i < _model.game_object.transform.childCount; i++)
+        for (int i = 0; i < _model.game_object.transform.childCount; i++)
         {
             SkinnedMeshRenderer smr = _model.game_object.transform.GetChild(i).GetComponent<SkinnedMeshRenderer>();
             if (smr != null)
@@ -69,6 +69,11 @@ public partial class ModelHolder : MonoBehaviour
         }
     }
 
+    public void changeOpaqueMaterialToTransparent()
+    {
+
+    }
+
     IEnumerator animationAlert(AnimationClip clip)
     {
         while (true)
@@ -94,7 +99,7 @@ public partial class ModelHolder : MonoBehaviour
         {
             delta_time = (Time.realtimeSinceStartup - start_time);
 
-            foreach(var anim in shaderAnimations)
+            foreach (var anim in shaderAnimations)
             {
                 if (mesh_renderers.ContainsKey(anim.mesh_id))
                 {

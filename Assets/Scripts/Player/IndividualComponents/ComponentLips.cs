@@ -13,7 +13,6 @@ namespace IndividualComponents
 
         public ComponentLips(AvatarComponents _avatar_components)
         {
-            AvatarComponents.onReapplyModifiers += setModifiers;
             avatar_components = _avatar_components;
             replaceComponent();
         }
@@ -37,6 +36,7 @@ namespace IndividualComponents
             string model_id = Configs.config_avatar_components.AvatarComponents[category.component_id].patchModelId;
             if (component_model != null)
                 removeComponent();
+            AvatarComponents.onReapplyModifiers += setModifiers;
             component_model = ModelManager.loadModel(model_id, avatar_components.base_model.pose_bones);
             component_model.game_object.transform.parent = avatar_components.base_model.game_object.transform;
             if (avatar_components.base_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>().enabled == false)

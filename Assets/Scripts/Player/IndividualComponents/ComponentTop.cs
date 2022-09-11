@@ -43,6 +43,9 @@ namespace IndividualComponents
             if (component_model != null)
                 removeComponent();
             component_model = ModelManager.loadModel(model_id, avatar_components.base_model.pose_bones);
+            if (component_model == null)
+                return component_model;
+
             component_model.game_object.transform.parent = avatar_components.base_model.game_object.transform;
 
             if (Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].armpatch != null)

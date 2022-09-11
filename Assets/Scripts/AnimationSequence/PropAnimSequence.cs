@@ -17,7 +17,15 @@ public class PropAnimSequence : AnimationSequence
 
     protected override float playAnimation(string animation_id, string _anim_sequence = "")
     {
-        HPAnimation animation = AnimationManager.loadAnimationClip(animation_id, prop_controller.model, null , config_sequence.data.triggerReplacement);
+        HPAnimation animation;
+        if (loadedAnimations.ContainsKey(animation_id))
+            animation = loadedAnimations[animation_id];
+        else
+        {
+            animation = AnimationManager.loadAnimationClip(animation_id, prop_controller.model, null, config_sequence.data.triggerReplacement);
+            loadedAnimations[animation_id] = animation;
+        }
+
         if (animation == null) return 0.0f;
 
         prop_controller.playAnimationOnComponent(animation);
