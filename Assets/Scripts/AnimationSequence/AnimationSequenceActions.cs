@@ -9,7 +9,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         switch (action.type)
         {
             case "AttachProp":
-                attachProp(action.id, action.alias, action.target);
+                attachChildNode(action.id, action.alias, action.target);
                 break;
 
             case "AttachBroom":
@@ -22,7 +22,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 break;
 
             case "PlayPropAnim":
-                playPropAnim(action.id, action.target, config_sequence.data.triggerReplacement);
+                playChildNodeAnim(action.id, action.target, config_sequence.data.triggerReplacement);
                 break;
 
             case "StopPropAnim":
@@ -34,14 +34,45 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 break;
         }
     }
-    protected abstract float playAnimation(string animation_id, string anim_sequence_id);
-    protected abstract void attachProp(string prop_model_id, string alias, string target);
+    protected float playAnimation(string animation_id, string anim_sequence_id)
+    {
+        if (base_node is ActorController)
+        {
+            if (walk == false) {
+                ActorController ac = base_node as ActorController;
+                ac.actor_animation.anim_sequence_idle = anim_sequence_id;
+            }
+        }
+
+        HPAnimation animation;
+        if (loadedAnimations.ContainsKey(animation_id))
+            animation = loadedAnimations[animation_id];
+        else
+        {
+            animation = AnimationManager.loadAnimationClip(animation_id, base_node.model, null, config_sequence.data.triggerReplacement);
+            loadedAnimations[animation_id] = animation;
+        }
+
+        if (animation == null) return 0.0f;
+
+        base_node.playAnimationOnComponent(animation);
+        return animation.anim_clip.length;
+    }
+    protected void attachChildNode(string prop_model_id, string alias, string target)
+    {
+        base_node.attachChildNode(prop_model_id, alias, target);
+    }
     protected abstract void attachBroom(string prop_model_id, string alias, string target);
     protected void playBroomAnim(string target)
     {
-        playPropAnim("broom", target, config_sequence.data.triggerReplacement);
+        playChildNodeAnim("broom", target, config_sequence.data.triggerReplacement);
     }
-    protected abstract void playPropAnim(string id, string target, Dictionary<string, string> triggerReplacement);
-
-    protected abstract void stopPropAnim(string id);
+    protected void playChildNodeAnim(string id, string target, Dictionary<string, string> triggerReplacement)
+    {
+        base_node.playPropAnim(id, target, triggerReplacement);
+    }
+    protected void stopPropAnim(string id)
+    {
+        base_node.stopPropAnim(id);
+    }
 }

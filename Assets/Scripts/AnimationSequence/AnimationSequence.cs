@@ -21,6 +21,8 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     string current_animation_name;
 
+    protected Node base_node;
+
     public virtual void initAnimSequence(string _anim_sequence, bool _walk)
     {
 
@@ -135,7 +137,6 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     protected virtual void finishSequence()
     {
-        //animation_component.Stop();
         Destroy(this);
         return;
     }
@@ -162,7 +163,10 @@ public abstract partial class AnimationSequence : MonoBehaviour
         advanceAnimSequence();
     }
 
-    protected abstract void destroyProps();
+    protected void destroyProps()
+    {
+        base_node.destroyProps();
+    }
 
     protected static string getBroomSkinName(string actor_id)
     {

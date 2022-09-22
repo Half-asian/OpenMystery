@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 using ModelLoading;
-public class Prop : ModelHolder
+public class Prop : Node
 {
     public static Dictionary<string, Prop> spawned_props = new Dictionary<string, Prop>();
     public string _name;
@@ -67,9 +67,9 @@ public class Prop : ModelHolder
         if (split.Length == 3)
         {
             prop_name = split[2];
-            if (props.ContainsKey(prop_name))
+            if (childNodes.ContainsKey(prop_name))
             {
-                Transform bone = props[prop_name].GetComponent<ModelHolder>().model.pose_bones[bone_name];
+                Transform bone = childNodes[prop_name].GetComponent<Node>().model.pose_bones[bone_name];
                 particle = Particle.AttachParticleSystem(particle_name, bone);
             }
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 
-public partial class ModelHolder : MonoBehaviour
+public partial class Node : MonoBehaviour
 {
     public Model model;
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using ModelLoading;
-public class ActorController : ModelHolder
+public class ActorController : Node
 {
     public ActorHead actor_head;
     public ActorAnimation actor_animation;
@@ -76,9 +76,9 @@ public class ActorController : ModelHolder
         if (split.Length == 3)
         {
             prop_name = split[2];
-            if (props.ContainsKey(prop_name))
+            if (childNodes.ContainsKey(prop_name))
             {
-                Transform bone = props[prop_name].GetComponent<ModelHolder>().model.pose_bones[bone_name];
+                Transform bone = childNodes[prop_name].GetComponent<Node>().model.pose_bones[bone_name];
                 particle = Particle.AttachParticleSystem(particle_name, bone);
             }
         }

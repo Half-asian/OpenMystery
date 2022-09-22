@@ -4,7 +4,6 @@ using UnityEngine.Rendering.HighDefinition;
 public class CameraAutoDOF : MonoBehaviour
 {
     public HDAdditionalCameraData cameradata;
-    public Camera camera;
 
     /*void aStart()
     {
