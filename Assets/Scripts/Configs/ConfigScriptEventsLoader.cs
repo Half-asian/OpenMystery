@@ -50,7 +50,6 @@ public class ConfigScriptEvents : Config<ConfigScriptEvents>
         stopwatch.Start();
         List<ConfigScriptEvents> configs = getConfigList(type);
         configs[0].combine(configs);
-        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
         return configs[0];
     }
 }

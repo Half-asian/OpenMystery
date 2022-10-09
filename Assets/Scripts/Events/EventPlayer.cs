@@ -19,13 +19,7 @@ public class EventPlayer : MonoBehaviour
 
     public bool is_sequential_player;
 
-    public void addEvent(string event_id)
-    {
-        Debug.Log("Adding event to stack " + event_id);
-        event_stack.Add(event_id);
-    }
-
-    public void addEvent(IEnumerable<string> events_ids)
+    public void addEvents(IEnumerable<string> events_ids)
     {
         foreach (string event_id in events_ids)
             Debug.Log("Adding event to stack " + event_id);
@@ -44,7 +38,7 @@ public class EventPlayer : MonoBehaviour
             }
         }
 
-        Debug.Log("Event " + event_name + " is sequential player: " + is_sequential_player);
+        Debug.Log("Activating Event " + event_name + " is sequential player: " + is_sequential_player);
 
         float event_time = 0.0f;
         if (!Configs.config_script_events.ScriptEvents.ContainsKey(event_name))
@@ -267,11 +261,11 @@ public class EventPlayer : MonoBehaviour
     {
         if (is_sequential_player)
         {
-            Debug.LogError("Remove block sequential");
+            Debug.Log("Remove block sequential");
         }
         else
         {
-            Debug.LogError("Remove block");
+            Debug.Log("Remove block");
         }
         total_block = false;
         blocking_message = "";

@@ -48,29 +48,29 @@ public class UiManager : MonoBehaviour
         {
             _goal_popup.closePopup();
             if (Goal.getGoalById(_goal_popup.latest_goal.goal_id) == null)
-                DialogueManager.onDialogueFinishedEvent += showPopup;
+                DialogueManager.onDialogueFinishedEventPrimary += showPopup;
         }
         if (GameStart.ui_manager.next_area_button.activeSelf)
         {
             GameStart.ui_manager.next_area_button.SetActive(false);
-            DialogueManager.onDialogueFinishedEvent += showNextAreaButton;
+            DialogueManager.onDialogueFinishedEventPrimary += showNextAreaButton;
         }
         if (GameStart.ui_manager.exit_to_menu_button.activeSelf)
         {
             GameStart.ui_manager.exit_to_menu_button.SetActive(false);
-            DialogueManager.onDialogueFinishedEvent += showExitMenuButton;
+            DialogueManager.onDialogueFinishedEventPrimary += showExitMenuButton;
         }
     }
 
     private void showNextAreaButton(string rubbish)
     {
-        DialogueManager.onDialogueFinishedEvent -= showNextAreaButton;
+        DialogueManager.onDialogueFinishedEventPrimary -= showNextAreaButton;
         GameStart.ui_manager.next_area_button.SetActive(true);
     }
 
     private void showExitMenuButton(string rubbish)
     {
-        DialogueManager.onDialogueFinishedEvent -= showExitMenuButton;
+        DialogueManager.onDialogueFinishedEventPrimary -= showExitMenuButton;
         GameStart.ui_manager.exit_to_menu_button.SetActive(true);
     }
 
@@ -139,7 +139,7 @@ public class UiManager : MonoBehaviour
 
     public void showPopup(string rubbish)
     {
-        DialogueManager.onDialogueFinishedEvent -= showPopup;
+        DialogueManager.onDialogueFinishedEventPrimary -= showPopup;
         _goal_popup.setPopup(_goal_popup.latest_goal);
     }
     public void showPopup(ConfigGoal.Goal goal_id)

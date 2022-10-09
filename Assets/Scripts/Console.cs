@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Globalization;
+using System;
+
 public class Console : MonoBehaviour
 {
     [SerializeField]
@@ -45,8 +48,13 @@ public class Console : MonoBehaviour
 
         string[] parameters = command.Split();
 
+        string[] actionParams = new string[parameters.Length - 1];
+        Array.Copy(parameters, 1, actionParams, 0, actionParams.Length);
+
         if (parameters.Length == 0)
             return;
+
+
 
         switch (parameters[0])
         {
@@ -57,11 +65,30 @@ public class Console : MonoBehaviour
                 Scene.setCurrentScene(parameters[1]);
                 Scenario.cleanup();
                 break;
-            case "replaceCharacterIdle":
-                Events.doEventAction("replaceCharacterIdle", new string[] { parameters[1], parameters[2] });
+            case "completeobjective":
+                Objective.active_objectives[0].objectiveCompleted();
+                break;
+            case "markinteractioncomplete":
+                Scenario.completeInteraction(parameters[1]);
+                break;
+            case "fadeToBlack":
+                ScreenFade.fadeTo(float.Parse(parameters[1], CultureInfo.InvariantCulture), Color.black);
+                break;
+            case "fadeFromBlack":
+                ScreenFade.fadeFrom(float.Parse(parameters[1], CultureInfo.InvariantCulture), Color.black);
+                break;
+            case "spawnProp":
+                Prop.spawnPropFromEvent(parameters[1], null, parameters[1], "");
+                break;
+            case "spawnActor":
+                Actor.spawnActor(parameters[1], null, parameters[1]);
+                break;
+            case "animateCharacter":
+                Events.doEventAction("animateCharacter", new string[] { parameters[1], parameters[2] }, null);
                 break;
             default:
-                StartCoroutine(sendErrorMessage("Unknown command " + parameters[0]));
+                Events.doEventAction(parameters[0], actionParams, null);
+
                 break;
         }
 

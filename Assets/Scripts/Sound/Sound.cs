@@ -7,12 +7,13 @@ using UnityEngine.Networking;
 public class Sound : MonoBehaviour
 {
     [SerializeField]
-    private GameObject BGMusicPlayer;
+    AudioSource BGMusicPlayer;
     [SerializeField]
-    private GameObject AMBAudioPlayer;
+    AudioSource AMBAudioPlayer;
     [SerializeField]
-    private GameObject SoundEffectPlayer;
-
+    AudioSource SoundEffectPlayer;
+    [SerializeField]
+    AudioSource main_camera_audiosource;
     public static Sound current;
 
     void Awake()
@@ -143,9 +144,9 @@ public class Sound : MonoBehaviour
 
         if (type == "bgaudio")
         {
-            if (BGMusicPlayer.GetComponent<AudioSource>().clip != null)
+            if (BGMusicPlayer.clip != null)
             {
-                if (BGMusicPlayer.GetComponent<AudioSource>().clip.name == filename)
+                if (BGMusicPlayer.clip.name == filename)
                 {
                     yield break;
                 }
@@ -154,9 +155,9 @@ public class Sound : MonoBehaviour
 
         if (type == "custom")
         {
-            if (BGMusicPlayer.GetComponent<AudioSource>().clip != null)
+            if (BGMusicPlayer.clip != null)
             {
-                if (BGMusicPlayer.GetComponent<AudioSource>().clip.name == filename)
+                if (BGMusicPlayer.clip.name == filename)
                 {
                     yield break;
                 }
@@ -184,7 +185,7 @@ public class Sound : MonoBehaviour
 
             if (type == "bark" || type == "sound") //TODO: sounds have the ability to loop
             {
-                CameraManager.current.main_camera.GetComponent<AudioSource>().PlayOneShot(myClip);
+                main_camera_audiosource.PlayOneShot(myClip);
             }
             else if (type == "soundeffect")
             {
@@ -194,14 +195,14 @@ public class Sound : MonoBehaviour
             else if (type == "bgaudio" || type == "custom")
             {
                 myClip.name = filename;
-                BGMusicPlayer.GetComponent<AudioSource>().clip = myClip;
+                BGMusicPlayer.clip = myClip;
 
-                BGMusicPlayer.GetComponent<AudioSource>().Play();
+                BGMusicPlayer.Play();
             }
             else if (type == "amb")
             {
-                AMBAudioPlayer.GetComponent<AudioSource>().clip = myClip;
-                AMBAudioPlayer.GetComponent<AudioSource>().Play();
+                AMBAudioPlayer.clip = myClip;
+                AMBAudioPlayer.Play();
             }
             else
             {

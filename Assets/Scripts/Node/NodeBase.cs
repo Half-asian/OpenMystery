@@ -34,6 +34,12 @@ public partial class Node : MonoBehaviour
         }
     }
 
+    public void OnDestroy()
+    {
+        destroyProps();
+        Destroy(model.game_object);
+    }
+
     public void playAnimationOnComponent(HPAnimation animation)
     {
         if (currentAnimationAlerter != null)

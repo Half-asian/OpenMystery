@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using ModelLoading;
-public class ActorController : Node
+public partial class ActorController : Node
 {
     public ActorHead actor_head;
-    public ActorAnimation actor_animation;
     public ActorMovement actor_movement;
     public List<Model> patches;
 
@@ -39,10 +38,44 @@ public class ActorController : Node
         base.setup(_model);
 
         actor_head = new ActorHead(this);
-        actor_animation = model.game_object.AddComponent<ActorAnimation>();
-        actor_animation.actor_controller = this;
+        initializeAnimations();
         actor_movement = new ActorMovement(this);
         patches = new List<Model>();
+
+    }
+
+    //Clean up everything from last state
+    public void cleanupState()
+    {
+        DestroyImmediate(GetComponent<ActorAnimSequence>());
+        destroyProps();
+        foreach (GameObject particle in particles)
+        {
+            GameObject.Destroy(particle);
+        }
+        particles = new List<GameObject>();
+    }
+
+    public void setActorState(ActorState _actor_state)
+    {
+        if (actor_state != _actor_state)
+        {
+            cleanupState();
+        }
+
+        //Set new state
+        actor_state = _actor_state;
+    }
+
+    public void setCharacterIdle()
+    {
+        setActorState(ActorState.Idle);
+        playIdleAnimation();
+    }
+    public void setCharacterWalk()
+    {
+        setActorState(ActorState.Walk);
+        playWalkAnimation();
     }
 
     public void addPatch(string patch_model_id)
@@ -112,7 +145,7 @@ public class ActorController : Node
 
             actor_state.ToString(),                     //12
             actor_movement.getDestinationWaypoint(),    //13
-            actor_animation.animId_idle,                //14
+            idle_animation,             //14
         };
 
         return array;

@@ -37,7 +37,7 @@ public abstract class Config<T>
             }
             else
             {
-                GameStart.logWrite("Could not find config " + config_name);
+                UnityEngine.Debug.Log("Could not find config " + config_name);
             }
         }
         //GameStart.logWrite(type + " loaded: " + st.Elapsed);
@@ -52,7 +52,6 @@ public abstract class Config<T>
         var result = list_configs[0].ToObject<T>(JsonSerializer.Create(settings));
 
         stopwatch.Stop();
-        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
         return result;
     }
 
@@ -85,7 +84,7 @@ public abstract class Config<T>
             }
             else
             {
-                GameStart.logWrite("Could not find config " + config_name);
+                UnityEngine.Debug.Log("Could not find config " + config_name);
             }
         }
         return list_configs;
@@ -444,7 +443,6 @@ public class Configs{
         config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
         config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
         Configs.config_3dmodel.createMaterialDict();
-        GameStart.logWrite("FINISHED ALL");
     }
 
     public static void loadConfigAll()
@@ -498,6 +496,5 @@ public class Configs{
         config_quiz_group = ConfigQuizGroup.getJObjectsConfigsListST("QuizGroup");
         config_quiz = ConfigQuiz.getJObjectsConfigsListST("Quiz");
         Configs.config_3dmodel.createMaterialDict();
-        GameStart.logWrite("FINISHED ALL");
     }
 }

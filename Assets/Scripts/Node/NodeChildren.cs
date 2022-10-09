@@ -101,7 +101,7 @@ public partial class Node : MonoBehaviour
     {
         foreach (var g in childNodes.Values)
         {
-            Destroy(g);
+            DestroyImmediate(g);
         }
         childNodes.Clear();
     }

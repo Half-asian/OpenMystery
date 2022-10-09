@@ -51,6 +51,8 @@ public class Common
 
     public static void setWaypointTransform(ref GameObject prop, ConfigScene._Scene.WayPoint prop_locator)
     {
+        if (prop_locator == null)
+            return;
         if (prop_locator.position != null)
         {
             prop.transform.position = new Vector3(prop_locator.position[0] * -0.01f, prop_locator.position[1] * 0.01f, prop_locator.position[2] * 0.01f);

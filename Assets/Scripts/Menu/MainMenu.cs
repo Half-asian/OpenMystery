@@ -125,7 +125,6 @@ public class MainMenu : MonoBehaviour
         }
         menu_object.SetActive(false);
 
-        CameraManager.current.main_camera_holder.GetComponent<Animator>().SetTrigger("changing room");
         while (Time.realtimeSinceStartup < start_time + 2f)
         {
             yield return null;

@@ -7,28 +7,18 @@ using System.Globalization;
 public static class Events
 {
 
-    public static void doEventAction(string action_type, string[] action_params)
+    public static void doEventAction(string action_type, string[] action_params, EventPlayer event_player)
     {
         switch (action_type)
-        {
-            case "replaceCharacterIdle":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    Actor.actor_controllers[action_params[0]].actor_animation.replaceCharacterIdle(action_params[1]);
-                }
-
-                break;
-        }
-    }
-
-    public static void doEventAction(string event_name, int event_index, string[] action_params, EventPlayer event_player)
-    {
-        switch (Configs.config_script_events.ScriptEvents[event_name].action[event_index])
         {
             case "animateCharacter":
                 if (Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
-                    Actor.actor_controllers[action_params[0]].actor_animation.animateCharacter(action_params[1]);
+                    Actor.actor_controllers[action_params[0]].animateCharacter(action_params[1]);
+                }
+                else
+                {
+                    Debug.Log("Couldn't find actor " + action_params[0] + " in scene.");
                 }
 
                 break;
@@ -36,16 +26,14 @@ public static class Events
             case "replaceCharacterIdleStaggered":
                 if (Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
-                    Actor.actor_controllers[action_params[0]].actor_animation.replaceCharacterIdle(action_params[1]);
-                    Actor.actor_controllers[action_params[0]].actor_animation.anim_state = "loop";
-                    Actor.actor_controllers[action_params[0]].actor_animation.updateAnimationState();
+                    Actor.actor_controllers[action_params[0]].replaceCharacterIdleStaggered(action_params[1]);
 
                 }
                 break;
             case "replaceCharacterIdle":
                 if (Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
-                    Actor.actor_controllers[action_params[0]].actor_animation.replaceCharacterIdle(action_params[1]);
+                    Actor.actor_controllers[action_params[0]].replaceCharacterIdle(action_params[1]);
                 }
 
                 break;
@@ -55,7 +43,7 @@ public static class Events
                 {
                     if (Actor.actor_controllers.ContainsKey(action_params[0]))
                     {
-                        Actor.actor_controllers[action_params[0]].actor_animation.setCharacterIdle();
+                        Actor.actor_controllers[action_params[0]].setCharacterIdle();
                     }
                 }
                 break;
@@ -113,8 +101,6 @@ public static class Events
                     break;
                 }
 
-                GameStart.logWrite("Teleporting character " + action_params[0] + " to " + action_params[1]);
-
                 ConfigScene._Scene.WayPoint waypoint_b = Scene.current.waypoint_dict[action_params[1]];
 
                 if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
@@ -131,7 +117,7 @@ public static class Events
                 if (waypoint_b.rotation != null)
                     rotation = new Vector3(waypoint_b.rotation[0], waypoint_b.rotation[1], waypoint_b.rotation[2]);
 
-                
+
                 Actor.actor_controllers[action_params[0]].actor_movement.teleportCharacter(position, rotation);
 
                 Actor.actor_controllers[action_params[0]].actor_head.clearTurnHeadAt();
@@ -180,7 +166,7 @@ public static class Events
                         Prop.spawnPropFromEvent(action_params[0], Scene.current.waypoint_dict[action_params[1]], action_params[0], "");
                 }
                 break;
-            
+
             case "removeProp":
             case "despawnProp":
                 //string despawn_id
@@ -194,7 +180,7 @@ public static class Events
                         Debug.LogError("Unknown mode for despawnProp");
                         break;
                     }
-                    
+
                     List<string> props_to_destroy = new List<string>();
                     foreach (string p_key in Prop.spawned_props.Keys)
                     {
@@ -221,7 +207,7 @@ public static class Events
                     else
                     {
                         Debug.LogError("remove/despawn prop didn't find prop " + action_params[0]);
-                    } 
+                    }
                 }
 
                 else
@@ -282,11 +268,11 @@ public static class Events
                 break;
 
             case "focusCamera": //action param 1 is probably time to transition camera (lerp)
-                event_player.last_camera = CameraManager.current.focusCam(ref action_params);
+                if (event_player) event_player.last_camera = CameraManager.current.focusCam(ref action_params);
                 break;
 
             case "panCamOnTrack":
-                if (action_params[0] != "0:0") //no clue what this means but it seems faulty
+                if (action_params[0] != "0:0" && event_player != null) //no clue what this means but it seems faulty
                     CameraManager.current.panCamOnTrack(event_player.last_camera.animation);
                 break;
 
@@ -395,7 +381,8 @@ public static class Events
                         Debug.LogWarning("Couldn't find prop " + action_params[0] + " in spawned props");
                     }
                 }
-                GameStart.event_manager.StartCoroutine(event_player.waitSafeAdvanceAnimSequenceToCoroutine(action_params[2]));
+                if (event_player)
+                    GameStart.event_manager.StartCoroutine(event_player.waitSafeAdvanceAnimSequenceToCoroutine(action_params[2]));
 
                 break;
 
@@ -424,66 +411,27 @@ public static class Events
                 }
                 break;
             case "replaceCharacterIdleSequence":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    if (Actor.actor_controllers[action_params[0]].actor_state == ActorState.Idle)
-                    {
-                        if (Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>() != null)
-                        {
-                            Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().enabled = true;
-                            Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(action_params[1], false);
-                        }
-                        else
-                        {
-                            Actor.actor_controllers[action_params[0]].gameObject.AddComponent<ActorAnimSequence>();
-                            Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(action_params[1], false);
-                        }
-                    }
-                    else
-                    {
-                        event_player.anim_sequences_to_add.Add(action_params);
-                    }
-                }
-                break;
             case "playCharacterAnimSequence":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
+                if (!Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
-                    if (Actor.actor_controllers[action_params[0]].actor_state == ActorState.Idle)
-                    {
-                        Debug.Log("CharacterIdleSequence " + action_params[0] + " " + action_params[1]);
-
-                        if (Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>() != null)
-                        {
-                            Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().enabled = true;
-                            Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(action_params[1], false);
-                        }
-                        else
-                        {
-                            Actor.actor_controllers[action_params[0]].gameObject.AddComponent<ActorAnimSequence>();
-                            Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(action_params[1], false);
-                        }
-                    }
-                    else
-                    {
-                        event_player.anim_sequences_to_add.Add(action_params);
-                    }
+                    Debug.LogError("Couldn't find actor " + action_params[0]);
                 }
+
+                Debug.Log("CharacterIdleSequence " + action_params[0] + " " + action_params[1]);
+
+                Actor.actor_controllers[action_params[0]].replaceCharacterIdleSequence(action_params[1]);
+
                 break;
 
             case "moveCharacterWithSequence":
-                moveCharacter(action_params, false, false);
 
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
+                if (!Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
-                    if (Actor.actor_controllers[action_params[0]].actor_state == ActorState.Walk)
-                    {
-                        if (Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>() == null)
-                            Actor.actor_controllers[action_params[0]].gameObject.AddComponent<ActorAnimSequence>();
-
-                        //This next comment seems sus no cap fr
-                        Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(action_params[2], true); //not always action_params 2
-                    }
+                    Debug.LogError("Couldn't find actor " + action_params[0]);
+                    return;
                 }
+                moveCharacter(action_params, false, false);
+                Actor.actor_controllers[action_params[0]].replaceCharacterWalkSequence(action_params[2]);
                 break;
 
             case "animateProp":
@@ -560,9 +508,14 @@ public static class Events
                 break;
 
             default:
-                Debug.LogWarning("Unknown event type " + Configs.config_script_events.ScriptEvents[event_name].action[event_index]);
+                Debug.LogWarning("Unknown event type " + action_type);
                 break;
         }
+    }
+
+    public static void doEventAction(string event_name, int event_index, string[] action_params, EventPlayer event_player)
+    {
+        doEventAction(Configs.config_script_events.ScriptEvents[event_name].action[event_index], action_params, event_player);
     }
 
     public static List<string> carvePath(List<string> visited, string destination)
@@ -665,16 +618,15 @@ public static class Events
     }
     public static void moveCharacter(string[] action_params, bool walking = true, bool set_animation = true)
     {
+        if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
+        {
+            Debug.LogError("Couldn't find character " + action_params[0] + " in characters.");
+            return;
+        }
 
         if (!Scene.current.waypoint_dict.ContainsKey(action_params[1]))
         {
             Debug.LogWarning("COULDN'T FIND WAYPOINT " + action_params[1] + " IN CURRENT SCENE! for character move");
-            return;
-        }
-
-        if (!Actor.actor_controllers.ContainsKey(action_params[0]))
-        {
-            Debug.LogWarning("COULDN'T FIND ACTOR " + action_params[0] + " IN CURRENT SCENARIO! for character move");
             return;
         }
 
@@ -695,23 +647,17 @@ public static class Events
         {
             if (path[path.Count - 1] != action_params[1])
             {   //Did not find a path
-                Debug.LogError("Could not carve a path for " + action_params[0]);
                 path.Clear();
                 path.Add(action_params[1]); //Change to a direct route
             }
         }
         else
         {
-            Debug.LogError("Could not carve a path for " + action_params[0]);
             path.Clear();
             path.Add(action_params[1]); //Change to a direct route
         }
 
-        if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
-        {
-            Debug.LogError("Couldn't find character " + action_params[0] + " in characters.");
-            return;
-        }
+
 
         if (set_animation)
         {

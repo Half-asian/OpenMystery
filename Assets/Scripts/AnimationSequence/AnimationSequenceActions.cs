@@ -40,7 +40,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         {
             if (walk == false) {
                 ActorController ac = base_node as ActorController;
-                ac.actor_animation.anim_sequence_idle = anim_sequence_id;
+                ac.idle_animation_sequence = anim_sequence_id;
             }
         }
 

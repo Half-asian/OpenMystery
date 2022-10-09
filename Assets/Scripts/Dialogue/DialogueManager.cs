@@ -22,7 +22,9 @@ public class DialogueManager : MonoBehaviour
     public static event Action<string> setChoice3ActiveWithText = delegate { };
 
     public static event Action onDialogueStartedEvent = delegate { };
-    public static event Action<string> onDialogueFinishedEvent = delegate { };
+    public static event Action<string> onDialogueFinishedEventPrimary = delegate { };
+    public static event Action<string> onDialogueFinishedEventSecondary = delegate { };
+
 
     public string dialogue_id;
 
@@ -155,45 +157,48 @@ public class DialogueManager : MonoBehaviour
 
 
 
-
-        if (!Configs.config_local_data.LocalData.ContainsKey(dialogue_line.token))
+        if (dialogue_line.token != null)
         {
-            if (dialogue_line.token.EndsWith("_gendered"))
+            if (!Configs.config_local_data.LocalData.ContainsKey(dialogue_line.token))
             {
-                dialogue_line.token = dialogue_line.token.Substring(0, dialogue_line.token.Length - 8);
-                dialogue_line.token += Player.local_avatar_gender;
-                if (!Configs.config_local_data.LocalData.ContainsKey(dialogue_line.token))
+                if (dialogue_line.token.EndsWith("_gendered"))
+                {
+                    dialogue_line.token = dialogue_line.token.Substring(0, dialogue_line.token.Length - 8);
+                    dialogue_line.token += Player.local_avatar_gender;
+                    if (!Configs.config_local_data.LocalData.ContainsKey(dialogue_line.token))
+                    {
+                        Debug.LogError("Couldn't find dialogue " + dialogue_line.token);
+                        text = dialogue_line.token;
+                    }
+                    else
+                    {
+                        text = LocalData.getLine(dialogue_line.token);
+                    }
+                }
+                else
                 {
                     Debug.LogError("Couldn't find dialogue " + dialogue_line.token);
                     text = dialogue_line.token;
                 }
-                else
-                {
-                    text = LocalData.getLine(dialogue_line.token);
-                }
             }
             else
             {
-                Debug.LogError("Couldn't find dialogue " + dialogue_line.token);
-                text = dialogue_line.token;
+                text =
+                    (Configs.config_local_data.LocalData.ContainsKey(dialogue_line.token + "+female")
+                    && Player.local_avatar_gender == "female") ?
+                    LocalData.getLine(dialogue_line.token + "+female") :
+                    LocalData.getLine(dialogue_line.token);
             }
-        }
-        else
-        {
-            text = 
-                (Configs.config_local_data.LocalData.ContainsKey(dialogue_line.token + "+female") 
-                && Player.local_avatar_gender == "female") ? 
-                LocalData.getLine(dialogue_line.token + "+female") : 
-                LocalData.getLine(dialogue_line.token);
         }
 
         setDialogueUIActive(false);
 
         if (dialogue_line.enterEvents != null)
         {
+            Debug.Log("Adding enter events to stack from " + dialogue_line.id);
             List<string> entry_stack = new List<string>();
             entry_stack.AddRange(dialogue_line.enterEvents);
-            GameStart.event_manager.main_event_player.addEvent(entry_stack);
+            GameStart.event_manager.main_event_player.addEvents(entry_stack);
             GameStart.event_manager.main_event_player.runImmediateEvents();
         }
 
@@ -220,16 +225,10 @@ public class DialogueManager : MonoBehaviour
     void dialogueLineStartActions(ConfigHPDialogueLine.HPDialogueLine dialogue_line)
     {
         if (dialogue_line.emoteResetEvents != null)
-            foreach (string emote_reset_event in dialogue_line.emoteResetEvents)
-            {
-                GameStart.event_manager.main_event_player.addEvent(emote_reset_event);
-            }
+            GameStart.event_manager.main_event_player.addEvents(dialogue_line.emoteResetEvents);
 
         if (dialogue_line.emoteEvents != null)
-            foreach (string emote_event in dialogue_line.emoteEvents)
-            {
-                GameStart.event_manager.main_event_player.addEvent(emote_event);
-            }
+            GameStart.event_manager.main_event_player.addEvents(dialogue_line.emoteEvents);
 
 
 
@@ -401,7 +400,7 @@ public class DialogueManager : MonoBehaviour
     public void activateDialogueOption1()
     {
         next_choice_index = 1;
-        GameStart.event_manager.main_event_player.addEvent(exit_stack);
+        GameStart.event_manager.main_event_player.addEvents(exit_stack);
         exit_stack.Clear();
         setDialogueUIActive(false);
         dialogue_status = DialogueStatus.WaitingExitEvents;
@@ -410,7 +409,7 @@ public class DialogueManager : MonoBehaviour
     public void activateDialogueOption2()
     {
         next_choice_index = 2;
-        GameStart.event_manager.main_event_player.addEvent(exit_stack);
+        GameStart.event_manager.main_event_player.addEvents(exit_stack);
         exit_stack.Clear();
         setDialogueUIActive(false);
         dialogue_status = DialogueStatus.WaitingExitEvents;
@@ -419,7 +418,7 @@ public class DialogueManager : MonoBehaviour
     public void activateDialogueOption3()
     {
         next_choice_index = 3;
-        GameStart.event_manager.main_event_player.addEvent(exit_stack);
+        GameStart.event_manager.main_event_player.addEvents(exit_stack);
         exit_stack.Clear();
         setDialogueUIActive(false);
         dialogue_status = DialogueStatus.WaitingExitEvents;
@@ -475,7 +474,7 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        GameStart.event_manager.main_event_player.addEvent(exit_stack);
+        GameStart.event_manager.main_event_player.addEvents(exit_stack);
         exit_stack.Clear();
         setDialogueUIActive(false);
         dialogue_status = DialogueStatus.WaitingExitEvents;
@@ -517,7 +516,7 @@ public class DialogueManager : MonoBehaviour
                             try {
                                 next_turn_id = current_dialogue_line.nextTurnIds[p];
                             }
-                            catch (IndexOutOfRangeException e) {
+                            catch {
                                 Debug.LogError("Tried accessing index " + p + " of array with " + current_dialogue_line.nextTurnIds.Length + " elements.");
                             }
                             break;
@@ -555,13 +554,14 @@ public class DialogueManager : MonoBehaviour
         setDialogueUIActive(false);
         InteractionManager.changeOptionInteractionsVisibility(true);
         current_dialogue_line = null;
-        onDialogueFinishedEvent?.Invoke(dialogue_id);
-        CameraManager.current.freeCamera();
 
         foreach (string character in Actor.actor_controllers.Keys)
         {
             Actor.actor_controllers[character].actor_head.clearLookat();
             Actor.actor_controllers[character].actor_head.clearTurnHeadAt();
         }
+
+        onDialogueFinishedEventPrimary?.Invoke(dialogue_id); //For things that need to finish first, like interactions
+        onDialogueFinishedEventSecondary?.Invoke(dialogue_id); //For things that need to finish last, like objectives
     }
 }

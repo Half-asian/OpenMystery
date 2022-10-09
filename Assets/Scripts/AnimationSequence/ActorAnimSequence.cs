@@ -11,7 +11,7 @@ public class ActorAnimSequence : AnimationSequence
         actor_controller = GetComponent<ActorController>();
         base_node = actor_controller;
 
-        GameStart.logWrite("Activating animSequence " + _anim_sequence + " for actor " + actor_controller.name + " walk: " + _walk);
+        Debug.Log("Activating animSequence " + _anim_sequence + " for actor " + actor_controller.name + " walk: " + _walk);
 
         base.initAnimSequence(_anim_sequence, _walk);
     }
@@ -19,12 +19,12 @@ public class ActorAnimSequence : AnimationSequence
     protected override void finishSequence()
     {
         if (walk == false)
-            actor_controller.actor_animation.anim_sequence_idle = "";
+            actor_controller.idle_animation_sequence = "";
         base.finishSequence();
 
         if (config_sequence.isOneShot)
         {
-            actor_controller.actor_animation.setCharacterIdle();
+            actor_controller.setCharacterIdle();
         }
     }
 

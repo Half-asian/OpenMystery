@@ -102,9 +102,7 @@ public class GameStart : MonoBehaviour
     public void cleanUp() {
         interaction_manager.destroyAllInteractions();
         Scene.destroyScenePrefab();
-        CameraManager.current.resetCamera();
-        CameraManager.current.simple_camera_controller.enabled = false;
-
+        CameraManager.current.cleanup();
         menu_background.spawnMenuBackground();
         GraduationUI.current.hideGraduation();
 
@@ -118,15 +116,6 @@ public class GameStart : MonoBehaviour
         }
 
         onReturnToMenu.Invoke();
-    }
-
-
-    public static void logWrite(string message)
-    {
-        //StreamWriter writer = new StreamWriter("log.txt", true);
-        Debug.Log(message);
-        //writer.WriteLine(message);
-        //writer.Close();
     }
 
     public void Awake()

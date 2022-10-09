@@ -19,7 +19,6 @@ public class LoadingScreenCanvas : MonoBehaviour
 
     public void showImage()
     {
-        Debug.LogError("SHOWIMAGE");
         image.SetActive(true);
     }
 

@@ -11,7 +11,7 @@ public class ObjectiveMatchComplete : Objective
         Assert.IsNotNull(objective_config.keys, "ObjectiveMatchComplete(): objective.keys cannot be null.");
         Assert.IsNotNull(objective_config.objectiveScenario, "ObjectiveMatchComplete(): objective.objectiveScenario cannot be null");
         keys = new List<string>(objective_config.keys);
-        GameStart.quidditch_manager.objective_callbacks.Add(this);
+        GameStart.quidditch_manager.match_finished_event += quidditchMatchFinishedCheck;
     }
 
     public void quidditchMatchFinishedCheck(string match_id)
@@ -23,7 +23,7 @@ public class ObjectiveMatchComplete : Objective
         }
         if (keys_completed >= objective_config.required_count)
         {
-            GameStart.quidditch_manager.objective_callbacks.Remove(this);
+            GameStart.quidditch_manager.match_finished_event -= quidditchMatchFinishedCheck;
             objectiveCompleted();
         }
     }

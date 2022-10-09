@@ -111,7 +111,6 @@ public class ConfigInteraction : Config<ConfigInteraction>
         stopwatch.Start();
         List<ConfigInteraction> configs = getConfigList(type);
         configs[0].combine(configs);
-        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
         return configs[0];
     }
 

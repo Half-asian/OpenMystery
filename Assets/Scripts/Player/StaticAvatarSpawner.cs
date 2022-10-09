@@ -45,9 +45,8 @@ class StaticAvatarSpawner
 
 
         ActorController c = parent_model.game_object.AddComponent<ActorController>();
-        c.setup(parent_model);
         c.actor_info = character;
-        c.actor_animation.animId_idle = character.animId_idle;
+        c.setup(parent_model);
         c.patches = new List<Model>();
         c.avatar_components = avatar_components;
 
@@ -72,15 +71,7 @@ class StaticAvatarSpawner
             }
         }
 
-
-
-        c.actor_animation.bone_mods = avatar_components.bonemods;
-        c.actor_animation.replaceCharacterIdle(c.actor_info.animId_idle);
-        c.actor_animation.setCharacterIdle();
-
-
-
-
+        c.bone_mods = avatar_components.bonemods;
 
         return c;
     }

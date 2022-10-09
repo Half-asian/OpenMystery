@@ -80,6 +80,9 @@ public partial class NewPredicate
 
     static SymbolConstantBool goalChainComplete(SymbolConstantString goalchain_id)
     {
+        //There was a bug where goalchains were being saved to the wrong txt. This just helps.
+        if (File.ReadAllText(GlobalEngineVariables.player_folder + "\\goals_complete.txt").Contains("goalChainComplete(\"" + goalchain_id.value + "\")"))
+            return new SymbolConstantBool(true);
         if (File.ReadAllText(GlobalEngineVariables.player_folder + "\\goalchains_complete.txt").Contains("goalChainComplete(\"" + goalchain_id.value + "\")"))
             return new SymbolConstantBool(true);
         return new SymbolConstantBool(false);

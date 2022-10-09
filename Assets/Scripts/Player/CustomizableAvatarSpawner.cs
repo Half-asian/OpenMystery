@@ -26,20 +26,19 @@ public class CustomizableAvatarSpawner : MonoBehaviour
         Debug.Log("spawning avatar");
         character_model.game_object.name = character_name;
 
-        ActorController c = character_model.game_object.AddComponent<ActorController>();
-        c.setup(character_model);
-        c.actor_info = character;
-        c.actor_animation.animId_idle = character.animId_idle;
-        c.patches = new List<Model>();
-        c.actor_animation.bone_mods = new Dictionary<string, AnimationManager.BoneMod>();
+        ActorController actor_controller = character_model.game_object.AddComponent<ActorController>();
+        actor_controller.setup(character_model);
+        actor_controller.actor_info = character;
+        actor_controller.replaceCharacterIdle(character.animId_idle);
+        actor_controller.patches = new List<Model>();
+        actor_controller.bone_mods = new Dictionary<string, AnimationManager.BoneMod>();
 
         if (character_model.game_object != null)
         {
             character_model.game_object.name = character_name;
         }
 
-        c.actor_animation.replaceCharacterIdle(c.actor_info.animId_idle);
-        c.actor_animation.setCharacterIdle();
-        return c;
+        actor_controller.replaceCharacterIdle(actor_controller.actor_info.animId_idle);
+        return actor_controller;
     }
 }

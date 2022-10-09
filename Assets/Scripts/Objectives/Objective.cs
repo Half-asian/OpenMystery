@@ -107,7 +107,7 @@ public abstract class Objective
         }
     }
 
-    protected void objectiveCompleted()
+    public void objectiveCompleted()
     {
         Debug.Log("Objective completed: " + objective_config.objective_id);
         active_objectives.Remove(this);

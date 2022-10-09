@@ -16,9 +16,9 @@ public class MenuBackgroundChristmas : MonoBehaviour, IMenuBackground
         postProcessChristmasMenu.SetActive(true);
         GameStart.post_process_manager.PostProcessDefault.SetActive(false);
 
-        CameraManager.current.main_camera.transform.localPosition = new Vector3(5.94999981f, 2.93000007f, 6.42000008f);
-        CameraManager.current.main_camera.transform.localRotation = new Quaternion(-0.02014447f, 0.906656086f, -0.0440791287f, -0.419077516f);
-        CameraManager.current.main_camera.GetComponent<Camera>().fieldOfView = 58.3f;
+        //CameraManager.current.main_camera.transform.localPosition = new Vector3(5.94999981f, 2.93000007f, 6.42000008f);
+        //CameraManager.current.main_camera.transform.localRotation = new Quaternion(-0.02014447f, 0.906656086f, -0.0440791287f, -0.419077516f);
+        //CameraManager.current.main_camera.GetComponent<Camera>().fieldOfView = 58.3f;
 
         background_model = ModelManager.loadModel("b_WinterBallroomStudent_skin");
 
@@ -28,8 +28,7 @@ public class MenuBackgroundChristmas : MonoBehaviour, IMenuBackground
         merula_manager.transform.eulerAngles = new Vector3(0, 285.151855f, 0);
 
 
-        merula_manager.actor_animation.replaceCharacterIdle("c_Penny_DanceWithAvatar01_loop");
-        merula_manager.actor_animation.updateAnimationState();
+        merula_manager.replaceCharacterIdle("c_Penny_DanceWithAvatar01_loop");
 
         _light = new GameObject();
         _light.AddComponent<Light>();

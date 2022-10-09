@@ -5,50 +5,80 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    public static CameraManager current;
-    public enum CameraState
+    private enum CameraState
     {
-        StateFree,
+        StateStatic,
+        StateLocked,
         StateAnimation,
         StateLerp,
         StatePanCamOnTrack,
     }
-    
 
-
-    public Transform main_camera;
-    public Transform main_camera_holder;
-    public Transform main_camera_jt_all_bind;
-    public Transform main_camera_jt_cam_bind;
-    public Transform main_camera_jt_anim_bind;
-    public SimpleCameraController simple_camera_controller;
-    public CameraState camera_state;
-    public Model camera_model;
-    private IEnumerator lerpCoroutine;
-
-
-    private void Awake()
-    {       
-        Scenario.onScenarioCallClear += cleanup;
-        current = this;
-    }
-    private void cleanup()
+    private struct CameraTransform
     {
-        if (main_camera_holder.GetComponent<Animator>() != null)
-        {
-            Destroy(main_camera_holder.GetComponent<Animator>());
-        }
+        public Vector3 position;
+        public Quaternion rotation;
     }
 
+    public static CameraManager current;
+
+    [SerializeField]
+    private Transform main_camera;
+    [SerializeField]
+    private Transform main_camera_holder;
+    [SerializeField]
+    private Transform main_camera_jt_all_bind;
+    [SerializeField]
+    public Transform main_camera_jt_cam_bind;
+    [SerializeField]
+    private Transform main_camera_jt_anim_bind;
+    [SerializeField]
+
+    private CameraState camera_state;
+    private Model camera_model;
+    private IEnumerator lerpCoroutine;
+    private Animation camera_animation;
+
+    /*----------        Public        ----------*/
     public void initialise()
     {
-        simple_camera_controller = main_camera.GetComponent<SimpleCameraController>();
+        camera_animation = main_camera_holder.GetComponent<Animation>();
         camera_model = new Model();
         camera_model.game_object = main_camera_holder.gameObject;
         camera_model.jt_all_bind = main_camera_jt_all_bind;
-        camera_state = CameraState.StateFree;
+        setCameraState(CameraState.StateStatic);
         main_camera.transform.localPosition = Vector3.zero;
         main_camera.transform.localEulerAngles = Vector3.zero;
+    }
+
+    public bool getCameraControllable()
+    {
+        return camera_state == CameraState.StateStatic;
+    }
+
+    public void setMainLockedCamera(Vector3 position, Vector3 rotation)
+    {
+        setCameraState(CameraState.StateLocked);
+
+        main_camera.localPosition = position;
+        main_camera.localEulerAngles = rotation;
+    }
+    public void setMainLockedCamera(Vector3 position, Quaternion rotation)
+    {
+        setCameraState(CameraState.StateLocked);
+
+        main_camera.localPosition = position;
+        main_camera.localRotation = rotation;
+    }
+
+    public void setFOV(float fov)
+    {
+        main_camera.GetComponent<Camera>().fieldOfView = fov;
+    }
+
+    public void cleanup()
+    {
+        camera_animation.Stop();
     }
 
     public void resetCamera()
@@ -62,17 +92,44 @@ public class CameraManager : MonoBehaviour
         main_camera.transform.position = Vector3.zero;//new Vector3(0, 0.05f, 0); //idk?
     }
 
-    public void freeCamera()
+    public ConfigScene._Scene.Camera focusCam(ref string[] action_params)
     {
-        camera_state = CameraState.StateFree;
-        //simple_camera_controller.enabled = true;
+        if (camera_state == CameraState.StateLerp)
+        {
+            main_camera.localPosition = Vector3.zero;
+            main_camera.localEulerAngles = new Vector3(0, 180, 0);
+        }
+
+        setCameraState(CameraState.StateStatic);
+
+        ConfigScene._Scene.Camera last_camera = null;
+
+        if (action_params.Length < 1)
+            return last_camera;
+
+        if (action_params.Length > 2)
+        {
+            last_camera = staticFocusCam(action_params[0]);
+            Debug.LogError("Camera what the fuck? why do you have more than 2 params?");
+        }
+        if (action_params[1] == "0")
+        {
+            last_camera = staticFocusCam(action_params[0]);
+        }
+        else
+        {
+            if (float.TryParse(action_params[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float time))
+                last_camera = lerpFocusCam(action_params[0], time);
+            else
+                Debug.LogError("Unknown focuscam string, string");
+        }
+        return last_camera;
     }
 
     public void playCameraAnimation(string animation, bool disable_jt_cam_bind)
     {
-        simple_camera_controller.enabled = false;
+        setCameraState(CameraState.StateAnimation);
 
-        camera_state = CameraState.StateAnimation;
         Dictionary<string, AnimationManager.BoneMod> bone_mods = new Dictionary<string, AnimationManager.BoneMod>();
 
         if (disable_jt_cam_bind)
@@ -81,47 +138,104 @@ public class CameraManager : MonoBehaviour
             bone_mods["jt_cam_bind"].CameraHack = true;
         }
 
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation, camera_model, null, null, bone_mods:bone_mods, is_camera: true).anim_clip;
+        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation, camera_model, null, null, bone_mods: bone_mods, is_camera: true).anim_clip;
 
+        camera_animation.AddClip(anim_clip, "default");
+        camera_animation.Play("default");
 
-        if (main_camera_holder.GetComponent<Animation>() == null)
-        {
-            main_camera_holder.gameObject.AddComponent<Animation>();
-        }
-        main_camera_holder.GetComponent<Animation>().AddClip(anim_clip, "default");
-        main_camera_holder.GetComponent<Animation>().Play("default");
-        main_camera_holder.GetComponent<Animation>().wrapMode = WrapMode.Once;
-
-        GameStart.event_manager.StartCoroutine(GameStart.event_manager.waitCameraAnimation(anim_clip.length, animation));
+        GameStart.event_manager.StartCoroutine(waitCameraAnimation(anim_clip.length, animation));
     }
 
+    //Plays a camera lerp between two scene cameras
+    public void playLerpCamera(Vector3 start_position, Quaternion start_rotation, Vector3 end_position, Quaternion end_rotation, float length)
+    {
+        setCameraState(CameraState.StateLerp);
+        lerpCoroutine = waitLerpCamera(start_position, start_rotation, end_position, end_rotation, length);
+        StartCoroutine(lerpCoroutine);
+    }
+
+    //The camera pans over a track specified as an animation
+    //Camera can still be moved by the player
     public void panCamOnTrack(string animation)
     {
         if (animation == null)
-        {
             return;
-        }
 
-        simple_camera_controller.enabled = false;
+        setCameraState(CameraState.StatePanCamOnTrack);
 
-        camera_state = CameraState.StatePanCamOnTrack;
-
-        
         AnimationClip anim_clip_pancam = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, is_camera: true).anim_clip;
-
-        if (main_camera_holder.GetComponent<Animation>() == null)
-        {
-            main_camera_holder.gameObject.AddComponent<Animation>();
-        }
-        main_camera_holder.GetComponent<Animation>().AddClip(anim_clip_pancam, "default");
-        main_camera_holder.GetComponent<Animation>().Play("default");
-        main_camera_holder.GetComponent<Animation>().wrapMode = WrapMode.Once;
-        GameStart.event_manager.StartCoroutine(GameStart.event_manager.waitCameraAnimation(anim_clip_pancam.length, animation));
+        anim_clip_pancam.wrapMode = WrapMode.Once;
+        camera_animation.AddClip(anim_clip_pancam, "default");
+        camera_animation.Play("default");
+        StartCoroutine(waitPanCam(anim_clip_pancam.length));
     }
 
-    public ConfigScene._Scene.Camera focusCam(string camera_name)
+    /*----------        Private        ----------*/
+    private void Awake()
     {
-        Debug.Log("FocusCam " + camera_name);
+        Scenario.onScenarioCallClear += cleanup;
+        current = this;
+    }
+
+    private void setCameraState(CameraState state)
+    {
+        if (lerpCoroutine != null) StopCoroutine(lerpCoroutine);
+        camera_animation.Stop();
+        camera_state = state;
+    }
+
+    //Gets the position and rotation from a scene camera
+    private CameraTransform getCameraTransform(ConfigScene._Scene.Camera camera)
+    {
+        CameraTransform camera_transform = new CameraTransform();
+
+        //Set the fullroom transform
+        if (camera.fullRoomCam_position != null)
+        {
+            camera_transform.position = new Vector3(
+                    camera.fullRoomCam_position[0] * 0.01f,
+                    camera.fullRoomCam_position[1] * 0.01f,
+                    camera.fullRoomCam_position[2] * 0.01f
+                    );
+        }
+
+        if (camera.fullRoomCam_rotation != null)
+        {
+            camera_transform.rotation = Quaternion.identity;
+            camera_transform.rotation *= Quaternion.Euler(new Vector3(0, 0, camera.fullRoomCam_rotation[2]));
+            camera_transform.rotation *= Quaternion.Euler(new Vector3(0, camera.fullRoomCam_rotation[1], 0));
+            camera_transform.rotation *= Quaternion.Euler(new Vector3(camera.fullRoomCam_rotation[0], 0, 0));
+        }
+
+        //Set the regular transform
+        if (camera.position != null && camera.position.Length != 0)
+        {
+            camera_transform.position = new Vector3(
+                camera.position[0] * 0.01f,
+                camera.position[1] * 0.01f,
+                camera.position[2] * 0.01f);
+        }
+
+        if (camera.rotation != null && camera.rotation.Length != 0)
+        {
+            camera_transform.rotation = Quaternion.identity;
+            camera_transform.rotation *= Quaternion.Euler(new Vector3(0, 0, camera.rotation[2]));
+            camera_transform.rotation *= Quaternion.Euler(new Vector3(0, camera.rotation[1], 0));
+            camera_transform.rotation *= Quaternion.Euler(new Vector3(camera.rotation[0], 0, 0));
+        }
+        return camera_transform;
+    }
+
+
+    //Sets the camera to a static position
+    //Camera can still be moved by the player
+    private ConfigScene._Scene.Camera staticFocusCam(string camera_name)
+    {
+        Debug.Log("Static FocusCam " + camera_name);
+
+        setCameraState(CameraState.StateStatic);
+
+        //Get the scene camera
         if (!Scene.current.camera_dict.ContainsKey(camera_name))
         {
             Debug.LogError("No camera " + camera_name + " in scene.");
@@ -130,121 +244,50 @@ public class CameraManager : MonoBehaviour
         ConfigScene._Scene.Camera camera = Scene.current.camera_dict[camera_name];
 
         resetCamera();
-        if (camera.fullRoomCam_position != null)
-            main_camera_jt_cam_bind.transform.localPosition = new Vector3(camera.fullRoomCam_position[0] * 0.01f, camera.fullRoomCam_position[1] * 0.01f, camera.fullRoomCam_position[2] * 0.01f);
-        if (camera.fullRoomCam_rotation != null)
-        {
 
-            main_camera_jt_cam_bind.transform.rotation = Quaternion.identity;
-            main_camera_jt_cam_bind.transform.Rotate(new Vector3(0, 0, camera.fullRoomCam_rotation[2]));
-            main_camera_jt_cam_bind.transform.Rotate(new Vector3(0, camera.fullRoomCam_rotation[1], 0));
-            main_camera_jt_cam_bind.transform.Rotate(new Vector3(camera.fullRoomCam_rotation[0], 0, 0));
-        }
+        CameraTransform camera_transform = getCameraTransform(camera);
+        main_camera_jt_cam_bind.transform.localPosition = camera_transform.position;
+        main_camera_jt_cam_bind.transform.localRotation = camera_transform.rotation;
 
+        //Set the sampled animation
         if (camera.animation != null)
         {
-            AnimationClip anim_clip = AnimationManager.loadAnimationClip(camera.animation, camera_model, null, null, null, is_camera:true).anim_clip;
+            AnimationClip anim_clip = AnimationManager.loadAnimationClip(
+                camera.animation, camera_model, null, null, null, is_camera: true).anim_clip;
             anim_clip.SampleAnimation(main_camera_holder.gameObject, 0.0f);
-        }
-
-        if (camera.position != null)
-        {
-            if (camera.position.Length != 0)
-                main_camera_jt_cam_bind.transform.localPosition = new Vector3(camera.position[0] * 0.01f, camera.position[1] * 0.01f, camera.position[2] * 0.01f);
-        }
-        if (camera.rotation != null)
-        {
-            if (camera.rotation.Length != 0)
-            {
-                main_camera_jt_cam_bind.transform.rotation = Quaternion.identity;
-                main_camera_jt_cam_bind.transform.Rotate(new Vector3(0, 0, camera.rotation[2]));
-                main_camera_jt_cam_bind.transform.Rotate(new Vector3(0, camera.rotation[1], 0));
-                main_camera_jt_cam_bind.transform.Rotate(new Vector3(camera.rotation[0], 0, 0));
-            }
         }
 
         //Game defined Field of View is often pretty bad. Usually looks better if its constant.
         if (camera.verticalAOV != 0.0f)
-        {
             main_camera.GetComponent<Camera>().fieldOfView = camera.verticalAOV * 1.35f;
-        }
 
-        simple_camera_controller.enabled = true;
         return camera;
     }
 
-    public ConfigScene._Scene.Camera focusCam(string camera_name, float time)
+    //Lerps the camera between two scene cameras over a time in seconds
+    //Player cannot be moved by the player
+    private ConfigScene._Scene.Camera lerpFocusCam(string camera_name, float time)
     {
+        Debug.Log("Lerp cam");
+
+        setCameraState(CameraState.StateLerp);
+
+        //Get Camera
         if (!Scene.current.camera_dict.ContainsKey(camera_name))
             return null;
         ConfigScene._Scene.Camera camera = Scene.current.camera_dict[camera_name];
 
-        Vector3 end_position = Vector3.zero;
-        Quaternion end_rotation = Quaternion.identity;
+        CameraTransform camera_transform = getCameraTransform(camera);
+        Vector3 end_position = camera_transform.position;
+        Quaternion end_rotation = camera_transform.rotation;
 
-        if (camera.rotation != null)
-        {
-            end_rotation *= Quaternion.Euler(new Vector3(0, 0, camera.rotation[2]));
-            end_rotation *= Quaternion.Euler(new Vector3(0, camera.rotation[1], 0));
-            end_rotation *= Quaternion.Euler(new Vector3(camera.rotation[0], 0, 0));
-        }
-        if (camera.fullRoomCam_rotation != null)
-        {
-            end_rotation *= Quaternion.Euler(new Vector3(0, 0, camera.fullRoomCam_rotation[2]));
-            end_rotation *= Quaternion.Euler(new Vector3(0, camera.fullRoomCam_rotation[1], 0));
-            end_rotation *= Quaternion.Euler(new Vector3(camera.fullRoomCam_rotation[0], 0, 0));
-        }
-
-        if (camera.position != null)
-            end_position = new Vector3(camera.position[0] * 0.01f, camera.position[1] * 0.01f, camera.position[2] * 0.01f);
-
-        if (camera.fullRoomCam_position != null)
-            end_position = new Vector3(camera.fullRoomCam_position[0] * 0.01f, camera.fullRoomCam_position[1] * 0.01f, camera.fullRoomCam_position[2] * 0.01f);
-
-        startLerpCamera(main_camera_jt_cam_bind.transform.localPosition, main_camera_jt_cam_bind.transform.localRotation, end_position, end_rotation, time);
+        playLerpCamera(main_camera_jt_cam_bind.transform.localPosition, main_camera_jt_cam_bind.transform.localRotation, end_position, end_rotation, time);
         return camera;
     }
 
-    public ConfigScene._Scene.Camera focusCam(ref string[] action_params) { //action param 1 is probably lerp transition time
-        if (camera_state == CameraState.StateLerp)
-        {
-            main_camera.localPosition = Vector3.zero;
-            main_camera.localEulerAngles = new Vector3(0, 180, 0);
-        }     
-        
-        if (camera_state == CameraState.StatePanCamOnTrack)
-            main_camera_holder.GetComponent<Animation>().Stop();
+    /*----------        Coroutines      ----------*/
 
-        camera_state = CameraState.StateFree;
-
-        ConfigScene._Scene.Camera last_camera = null;
-        
-        simple_camera_controller.enabled = false;
-        if (action_params.Length > 1)
-        {
-            if (action_params.Length > 2)
-            {
-                last_camera = focusCam(action_params[0]);
-                Debug.LogError("Camera what the fuck? why do you have more than 2 params?");
-                simple_camera_controller.enabled = true;
-            }
-            if (action_params[1] == "0")
-            {
-                last_camera = focusCam(action_params[0]);
-                simple_camera_controller.enabled = true;
-            }
-            else
-            {
-                if (float.TryParse(action_params[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float time))
-                    last_camera = focusCam(action_params[0], time);
-                else
-                    Debug.LogError("Unknown focuscam string, string");
-            }
-        }
-        return last_camera;
-    }
-
-    private IEnumerator LerpCamera(Vector3 start_position, Quaternion start_rotation, Vector3 end_position, Quaternion end_rotation, float length)
+    private IEnumerator waitLerpCamera(Vector3 start_position, Quaternion start_rotation, Vector3 end_position, Quaternion end_rotation, float length)
     {
         float start_time = Time.realtimeSinceStartup;
         while (Time.realtimeSinceStartup < length + start_time)
@@ -257,18 +300,24 @@ public class CameraManager : MonoBehaviour
             main_camera_jt_cam_bind.transform.localPosition = Vector3.Lerp(start_position, end_position, progress);
             main_camera_jt_cam_bind.transform.localRotation = Quaternion.Lerp(start_rotation, end_rotation, progress);
             yield return null;
-
         }
         main_camera_jt_cam_bind.transform.localPosition = end_position;
         main_camera_jt_cam_bind.transform.localRotation = end_rotation;
-        main_camera.GetComponent<SimpleCameraController>().enabled = true;
     }
 
-    public void startLerpCamera(Vector3 start_position, Quaternion start_rotation, Vector3 end_position, Quaternion end_rotation, float length)
+    private IEnumerator waitCameraAnimation(float length, string animation)
     {
-        camera_state = CameraState.StateLerp;
-        if (lerpCoroutine != null) StopCoroutine(lerpCoroutine);
-        lerpCoroutine = LerpCamera(start_position, start_rotation, end_position, end_rotation, length);
-        StartCoroutine(lerpCoroutine);
+        GameStart.event_manager.setLastCamAnim(""); //Not entirely sure this is necessary
+
+        yield return new WaitForSeconds(length + 0.1f);
+
+        setCameraState(CameraState.StateStatic);
+        GameStart.event_manager.notifyCamAnimFinished(animation);
+    }
+
+    private IEnumerator waitPanCam(float length)
+    {
+        yield return new WaitForSeconds(length);
+        setCameraState(CameraState.StateStatic);
     }
 }

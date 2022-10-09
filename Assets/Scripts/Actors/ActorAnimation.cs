@@ -3,33 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class ActorAnimation : MonoBehaviour
+public partial class ActorController : Node
 {
-    public ActorController actor_controller;
+    public HPAnimation animation_current_intro;
+    public HPAnimation animation_current_loop;
+    public HPAnimation animation_current_exit;
+    public string animation_current_name;
+    public ActorState animation_current_state;
 
-    public bool blocked = false;
+    public HPAnimation animation_previous_intro;
+    public HPAnimation animation_previous_loop;
+    public HPAnimation animation_previous_exit;
+    public string animation_previous_name;
+
+
+    private string idle_queued_animate = null;
+    public string idle_animation = null;
+    public string idle_animation_sequence = null;
+
+    private string walk_animation = null;
+
 
     HPAnimation default_anim;
 
-    private event Action onBlockedFinish;
 
-    public HPAnimation animation1_intro;
-    public HPAnimation animation1_loop;
-    public HPAnimation animation1_exit;
-    public string animation1_name;
-
-    public HPAnimation animation2_intro;
-    public HPAnimation animation2_loop;
-    public HPAnimation animation2_exit;
-    public string animation2_name;
-
-
-    public string anim_state = "loop";
-    public string animId_idle = "";
-    public string queued_anim = "";
-    public int queued_anim_delay = 0;
-    public string next_outro = "";
-    public string anim_sequence_idle = "";
+    private string anim_state = "loop";
 
     public string delayed_anim;
 
@@ -37,203 +35,252 @@ public class ActorAnimation : MonoBehaviour
 
     private IEnumerator waitForAnimation;
 
-    private ConfigHPActorInfo._HPActorInfo actor_info { get { return actor_controller.actor_info; } }
-    private ActorState actor_state { 
-        get { return actor_controller.actor_state; } 
-        set { actor_controller.actor_state = value; }
+    public void initializeAnimations()
+    {
+        default_anim = new HPAnimation(Resources.Load("default") as AnimationClip);
+        default_anim.anim_clip.legacy = true;
+        idle_animation = actor_info.animId_idle;
+        walk_animation = actor_info.animId_walk;
+    }
+
+
+
+    public void playIdleAnimation()
+    {
+        cleanupState();
+        if (idle_queued_animate != null)
+        {
+            playAnimateCharacter();
+        }
+        else if (idle_animation_sequence != null)
+        {
+            replaceCharacterIdleSequence(idle_animation_sequence);
+        }
+        else
+        {
+            Debug.Log("Returning to normal idle");
+            loadAnimationSet();
+            if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
+                anim_state = "outro";
+            else
+                anim_state = "intro";
+
+            Debug.Log(animation_current_loop != null);
+
+            updateAndPlayAnimationState();
+        }
+    }
+
+    public void playWalkAnimation()
+    {
+        Debug.Log("playWalkAnimation");
+        cleanupState();
+
+        loadAnimationSet();
+        if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
+            anim_state = "outro";
+        else
+            anim_state = "intro";
+        updateAndPlayAnimationState();
     }
 
 
     public void replaceCharacterIdle(string anim_name)
     {
-        if (animation1_loop != null && animId_idle == anim_name) //The same animation
-            return;
-
-        if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
-            anim_state = "outro";
-        else
-            anim_state = "intro";
-
-        animId_idle = anim_name;
+        idle_animation = anim_name;
+        idle_animation_sequence = null;
+        idle_queued_animate = null;
         if (actor_state == ActorState.Idle)
         {
-            loadAnimationSet();
-            if (blocked == false)
-            {
-                if (actor_controller.GetComponent<ActorAnimSequence>() != null)
-                    DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
-                updateAnimationState();
-                actor_controller.destroyProps();
-                foreach (GameObject particle in actor_controller.particles)
-                {
-                    GameObject.Destroy(particle);
-                }
-                actor_controller.particles = new List<GameObject>();
-            }
-            else
-                onBlockedFinish += setCharacterIdle;
+            playIdleAnimation();
         }
-        actor_controller.idle = animation1_loop;
     }
 
-    public void setCharacterIdle()
+    public void replaceCharacterIdleStaggered(string anim_name)
     {
-        actor_controller.destroyProps();
-        //actor_controller.actor_head.clearLookat();
-        //actor_controller.actor_head.clearTurnHeadAt();
-        foreach(GameObject particle in actor_controller.particles)
+        idle_animation = anim_name;
+        idle_animation_sequence = null;
+        idle_queued_animate = null;
+        if (actor_state == ActorState.Idle)
         {
-            GameObject.Destroy(particle);
+            playIdleAnimation();
+            anim_state = "loop";
+            updateAndPlayAnimationState();
         }
-        actor_controller.particles = new List<GameObject>();
-
-        updateAnimationState();
     }
 
-    public void setCharacterWalk(string _animation)
+    public void replaceCharacterWalk(string anim_name)
     {
-        actor_controller.destroyProps();
-        if (actor_controller.GetComponent<ActorAnimSequence>() != null)
+        walk_animation = anim_name;
+        if (actor_state == ActorState.Walk)
         {
-            if (actor_controller.GetComponent<ActorAnimSequence>().walk != true)
-            {
-                actor_controller.GetComponent<ActorAnimSequence>().enabled = false;
-                GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
-            }
-            else
-            {
-                actor_state = ActorState.Walk;
-                return;
-            }
+            playWalkAnimation();
         }
-        actor_state = ActorState.Walk;
-        loadAnimationSet(_animation);
-        anim_state = "loop";
-        updateAnimationState();
-        actor_controller.playAnimationOnComponent(animation1_loop);
     }
 
+
+    public void replaceCharacterIdleSequence(string sequence_id)
+    {
+        idle_animation_sequence = sequence_id;
+        if (actor_state == ActorState.Idle)
+        {
+            if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
+                DestroyImmediate(GetComponent<ActorAnimSequence>());
+
+            var seq_component = gameObject.AddComponent<ActorAnimSequence>();
+            seq_component.initAnimSequence(idle_animation_sequence, false);
+        }
+    }
+
+    //We cannot save the walk sequence
+    public void replaceCharacterWalkSequence(string sequence_id)
+    {
+        if (actor_state != ActorState.Walk)
+        {
+            throw new Exception("Tried to replace a characters walk sequence while not walking");
+        }
+        if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
+            DestroyImmediate(GetComponent<ActorAnimSequence>());
+        var seq_component = gameObject.AddComponent<ActorAnimSequence>();
+        seq_component.initAnimSequence(sequence_id, true);
+    }
+
+
+    //Animate character plays once actor is idle
+    //If the animation is clamped, it is discarded at end and returns to regular idle anim
     public void animateCharacter(string anim_name)
     {
-        if (waitForAnimation != null)
-            actor_controller.StopCoroutine(waitForAnimation);
-        anim_state = "loop";
+        cleanupState();
+        Debug.Log("animateCharacter " + gameObject.name + " with anim " + anim_name);
         if (!Configs.config_animation.Animation3D.ContainsKey(anim_name))
         {
             Debug.LogError("Couldn't find animation " + anim_name);
             return;
         }
-        animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, null, bone_mods:bone_mods);
-        blocked = true;
-
-        if (actor_controller.actor_state == ActorState.Walk)
+        //It seems we can't animate a character while they're walking
+        //Instead it gets queued
+        idle_queued_animate = anim_name;
+        if (actor_state == ActorState.Idle)
         {
-            return;
+            playAnimateCharacter();
         }
-
-        GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
-        actor_controller.playAnimationOnComponent(animation1_loop);
-        StartCoroutine(WaitForAnimateCharacterFinished(animation1_loop));
     }
 
-    public void loadAnimationSet(string _animation = "")
+    private void playAnimateCharacter()
     {
-        if (default_anim == null)
+        if (waitForAnimation != null)
+            StopCoroutine(waitForAnimation);
+        anim_state = "loop";
+
+        var new_anim = AnimationManager.loadAnimationClip(idle_queued_animate, model, actor_info, null, bone_mods: bone_mods);
+        idle_queued_animate = null;
+        playAnimationOnComponent(new_anim);
+        Debug.Log("Starting WaitForAnimateCharacterFinished");
+
+        StartCoroutine(WaitForAnimateCharacterFinished(new_anim));
+    }
+
+    private void loadAnimationSet()
+    {
+        string animation_id;
+        switch (actor_state)
         {
-            default_anim = new HPAnimation(Resources.Load("default") as AnimationClip);
-            default_anim.anim_clip.legacy = true;
+            case ActorState.Walk:
+                animation_id = walk_animation;
+                break;
+            case ActorState.Idle:
+                animation_id = idle_animation;
+                break;
+            default:
+                throw new Exception("Unknown actor state.");
         }
 
-        animation2_intro = animation1_intro;
-        animation2_loop = animation1_loop;
-        animation2_exit = animation1_exit;
-        animation2_name = animation1_name;
+        Debug.Log("loadAnimationSet " + animation_id);
 
-        if (animation2_intro == null)
-            animation2_intro = new HPAnimation(Resources.Load("default") as AnimationClip);
-        if (animation2_loop == null)
-            animation2_loop = new HPAnimation(Resources.Load("default") as AnimationClip);
-        if (animation2_exit == null)
-            animation2_exit = new HPAnimation(Resources.Load("default") as AnimationClip);
-
-        animation1_intro = default_anim;
-        animation1_loop = default_anim;
-        animation1_exit = default_anim;
-
-        string anim_name = "";
-        if (actor_state == ActorState.Idle)
-            anim_name = animId_idle;
-        else if (actor_state == ActorState.Walk)
+        if (!Configs.config_animation.Animation3D.ContainsKey(animation_id))
         {
-            if (_animation != "")
-                anim_name = _animation;
-            else
-                anim_name = actor_info.animId_walk;
-        }
-        else if (actor_state == ActorState.Run)
-            anim_name = actor_info.animId_run;
-        else if (actor_state == ActorState.SittingIdle)
-            anim_name = actor_info.animId_sitting_idle;
-        else if (actor_state == ActorState.Success)
-            anim_name = actor_info.animId_success;
-        else if (actor_state == ActorState.RenownBoard)
-            anim_name = actor_info.animId_renownboard;
-
-        animation1_name = anim_name;
-
-        if (!Configs.config_animation.Animation3D.ContainsKey(anim_name))
-        {
-            Debug.LogError("Couldn't find animation " + anim_name);
+            Debug.LogError("Couldn't find animation " + animation_id);
             return;
         }
-        ConfigAnimation._Animation3D animation = Configs.config_animation.Animation3D[anim_name];
-
-        animation1_loop = AnimationManager.loadAnimationClip(anim_name, actor_controller.model, actor_info, null, bone_mods:bone_mods);
-        if (animation1_loop == null)
+        //Not sure if we needs to save animation states of old actor states
+        //Same actor state, so mesh between old and new anims
+        if (animation_current_state == actor_state)
         {
-            Debug.LogError("Animation1_Loop was null somehow");
-            return;
+            animation_previous_intro = animation_current_intro;
+            animation_previous_loop = animation_current_loop;
+            animation_previous_exit = animation_current_exit;
+            animation_previous_name = animation_current_name;
+            //Switch all the old anims
+
+            if (animation_previous_intro == null) animation_previous_intro = default_anim;
+            if (animation_previous_loop == null) animation_previous_loop = default_anim;
+            if (animation_previous_exit == null) animation_previous_exit = default_anim;
         }
-        animation1_loop.anim_clip.wrapMode = WrapMode.Loop; //Always loop even if the animation config says clamp
+        else //Otherwise just wipe
+        {
+            animation_previous_intro = default_anim;
+            animation_previous_loop = default_anim;
+            animation_previous_exit = default_anim;
+            animation_previous_name = "";
+        }
+
+        animation_current_intro = default_anim;
+        animation_current_loop = default_anim;
+        animation_current_exit = default_anim;
+
+        animation_current_state = actor_state;
+        animation_current_name = animation_id;
+
+        var animation = Configs.config_animation.Animation3D[animation_id];
+
+        animation_current_loop = AnimationManager.loadAnimationClip(animation_id, model, actor_info, null, bone_mods:bone_mods);
+        animation_current_loop.anim_clip.wrapMode = WrapMode.Loop; //Always loop even if the animation config says clamp
 
         if (animation.introAnim != null)
-            animation1_intro = AnimationManager.loadAnimationClip(animation.introAnim, actor_controller.model, actor_info, null, bone_mods: bone_mods);
+            animation_current_intro = AnimationManager.loadAnimationClip(animation.introAnim, model, actor_info, null, bone_mods: bone_mods);
         if (animation.outroAnim != null)
-            animation1_exit = AnimationManager.loadAnimationClip(animation.outroAnim, actor_controller.model, actor_info, null, bone_mods: bone_mods);
+            animation_current_exit = AnimationManager.loadAnimationClip(animation.outroAnim, model, actor_info, null, bone_mods: bone_mods);
 
     }
 
-    public void updateAnimationState()
+    //Animation state is intro, loop and outro
+    //Plays the actual animations
+    public void updateAndPlayAnimationState()
     {
         if (waitForAnimation != null)
-            actor_controller.StopCoroutine(waitForAnimation);
-        if (actor_controller.GetComponent<ActorAnimSequence>() != null)
+            StopCoroutine(waitForAnimation);
+        if (GetComponent<ActorAnimSequence>() != null)
         {
-            if (actor_controller.GetComponent<ActorAnimSequence>().enabled == true && actor_controller.GetComponent<ActorAnimSequence>().walk == false)
+            if (GetComponent<ActorAnimSequence>().enabled == true && GetComponent<ActorAnimSequence>().walk == false)
             {
-                Debug.Log("did not update animation state due to actor anim sequence");
                 return;
             }
         }
 
-        if (anim_state == "intro")
-            actor_controller.playAnimationOnComponent(animation1_intro);
-        else if (anim_state == "loop")
-            actor_controller.playAnimationOnComponent(animation1_loop);
-        else if (anim_state == "outro")
-            actor_controller.playAnimationOnComponent(animation2_exit);
+        if (anim_state == "intro" && animation_current_intro != null)
+            playAnimationOnComponent(animation_current_intro);
+        else if (anim_state == "outro" && animation_previous_exit != null)
+            playAnimationOnComponent(animation_previous_exit);
+        else
+        {
+            playAnimationOnComponent(animation_current_loop);
+            anim_state = "loop";
+        }
 
         if (anim_state == "intro")
         {
-            waitForAnimation = WaitForAnimation(animation1_intro, "intro");
-            actor_controller.StartCoroutine(waitForAnimation);
+            waitForAnimation = WaitForAnimation(animation_current_intro, "intro");
+            StartCoroutine(waitForAnimation);
         }
         else if (anim_state == "outro")
         {
-            waitForAnimation = WaitForAnimation(animation2_exit, "outro");
-            actor_controller.StartCoroutine(waitForAnimation);
+            waitForAnimation = WaitForAnimation(animation_previous_exit, "outro");
+            StartCoroutine(waitForAnimation);
         }
     }
+
+
+    /*----------        Coroutines      ----------*/
 
     private IEnumerator WaitForAnimation(HPAnimation animation, string current)
     {
@@ -247,40 +294,30 @@ public class ActorAnimation : MonoBehaviour
         if (current == "intro")
         {
             anim_state = "loop";
-            updateAnimationState();
+            updateAndPlayAnimationState();
         }
         else if (current == "outro")
         {
             anim_state = "intro";
-            updateAnimationState();
+            updateAndPlayAnimationState();
         }
         else
         {
             if (animation.anim_clip.wrapMode == WrapMode.ClampForever)
-                updateAnimationState();
+                updateAndPlayAnimationState();
         }
     }
 
     public IEnumerator WaitForAnimateCharacterFinished(HPAnimation animation)
     {
         yield return new WaitForSeconds(animation.anim_clip.length);
-        if (animation.anim_clip.wrapMode == WrapMode.Clamp)
+        Debug.Log("Finished WaitForAnimateCharacterFinished");
+        if (animation.anim_clip.wrapMode != WrapMode.Loop)
         {
-            onBlockedFinish -= setCharacterIdle;
-            onBlockedFinish += setCharacterIdle;
+            playIdleAnimation(); //This should trigger the regular idle to play
         }
-
-        unblock();
 
     }
     
-    public void unblock()
-    {
-        blocked = false;
-        if (onBlockedFinish == null)
-            replaceCharacterIdle(actor_info.animId_idle);
 
-        onBlockedFinish?.Invoke();
-        onBlockedFinish = null;
-    }
 }

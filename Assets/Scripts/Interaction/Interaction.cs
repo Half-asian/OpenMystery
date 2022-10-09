@@ -85,13 +85,15 @@ public abstract class Interaction : MonoBehaviour
 
             if (config_interaction.enterEvents != null)
             {
-                GameStart.event_manager.main_event_player.addEvent(config_interaction.enterEvents);
+                GameStart.event_manager.main_event_player.addEvents(config_interaction.enterEvents);
             }
         }
         EventManager.all_script_events_finished_event += onFinishedEnterEvents;
     }
     public void interactionComplete(bool success = true)
     {
+        Scenario.completeInteraction(config_interaction.id);
+
         if (!destroyed)
             addExitEvents(success);
     }
@@ -102,21 +104,21 @@ public abstract class Interaction : MonoBehaviour
         Debug.Log("Finished interaction " + config_interaction.id);
 
         if (config_interaction.exitEvents != null)
-            GameStart.event_manager.main_event_player.addEvent(config_interaction.exitEvents);
+            GameStart.event_manager.main_event_player.addEvents(config_interaction.exitEvents);
 
         if (success == true)
         {
             if (config_interaction.successEvents != null)
-                GameStart.event_manager.main_event_player.addEvent(config_interaction.successEvents);
+                GameStart.event_manager.main_event_player.addEvents(config_interaction.successEvents);
             if (config_interaction.qteSuccessEvents != null)
-                GameStart.event_manager.main_event_player.addEvent(config_interaction.qteSuccessEvents);
+                GameStart.event_manager.main_event_player.addEvents(config_interaction.qteSuccessEvents);
         }
         else
         {
             if (config_interaction.failEvents != null)
-                GameStart.event_manager.main_event_player.addEvent(config_interaction.failEvents);
+                GameStart.event_manager.main_event_player.addEvents(config_interaction.failEvents);
             if (config_interaction.qteFailEvents != null)
-                GameStart.event_manager.main_event_player.addEvent(config_interaction.qteFailEvents);
+                GameStart.event_manager.main_event_player.addEvents(config_interaction.qteFailEvents);
         }
 
         EventManager.all_script_events_finished_event += onFinishedExitEvents;
@@ -125,8 +127,6 @@ public abstract class Interaction : MonoBehaviour
     protected virtual void onFinishedExitEvents()
     {
         EventManager.all_script_events_finished_event -= onFinishedExitEvents;
-
-        Scenario.completeInteraction(config_interaction.id);
 
         if (config_interaction.leadsTo != null)
         {

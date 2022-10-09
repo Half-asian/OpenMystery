@@ -66,9 +66,8 @@ public class Actor
                 throw new System.Exception("Failed to load actor model " + config_actor.modelId);
 
             actor_controller = model.game_object.AddComponent<ActorController>();
-            actor_controller.setup(model);
             actor_controller.actor_info = config_actor;
-            actor_controller.actor_animation.animId_idle = config_actor.animId_idle;
+            actor_controller.setup(model);
 
             if (config_actor.quidditchMaterialOptions != null)
             {
@@ -99,8 +98,7 @@ public class Actor
 
         if (Scene.scene_model != null)
             actor_controller.model.game_object.transform.parent = Scene.scene_model.game_object.transform;
-        actor_controller.actor_animation.replaceCharacterIdle(actor_controller.actor_info.animId_idle);
-        actor_controller.actor_animation.setCharacterIdle();
+        actor_controller.replaceCharacterIdle(actor_controller.actor_info.animId_idle);
         actor_controllers_pool.Add(actor_controller);
         return actor_controller;
     }
@@ -137,7 +135,7 @@ public class Actor
 
             Enum.TryParse(serialized_actor[12], out am.actor_state);
             am.actor_movement.destination_waypoint = serialized_actor[13];
-            am.actor_animation.replaceCharacterIdle(serialized_actor[14]);
+            am.replaceCharacterIdle(serialized_actor[14]);
         }
     }
 
@@ -176,7 +174,7 @@ public class Actor
                 }
                 else
                 {
-                    actor_controllers[spawn.spawnId].actor_animation.replaceCharacterIdle(spawn.validSequences[random_sequence]);
+                    actor_controllers[spawn.spawnId].replaceCharacterIdle(spawn.validSequences[random_sequence]);
                 }
             }
         }

@@ -34,7 +34,6 @@ public class ConfigLocalData : Config<ConfigLocalData>
         stopwatch.Start();
         List<ConfigLocalData> configs = getConfigList(type);
         configs[0].combine(configs);
-        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
         return configs[0];
     }
 

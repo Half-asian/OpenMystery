@@ -40,6 +40,22 @@ public class ModelInspector : MonoBehaviour
 
         Scene.current.Lighting.lights["amb"] = amb_light;
         Scene.spawnLights();
+
+
+        ConfigScene._Scene.WayPoint waypoint1 = new ConfigScene._Scene.WayPoint();
+        waypoint1.position = new float[] { 20f, 0, 20f };
+
+        ConfigScene._Scene.WayPoint waypoint2 = new ConfigScene._Scene.WayPoint();
+        waypoint2.position = new float[] { 0, 0, 0 };
+
+        ConfigScene._Scene.WayPoint waypoint3 = new ConfigScene._Scene.WayPoint();
+        waypoint3.position = new float[] { 200, 0, 200 };
+
+        Scene.current.waypoint_dict = new Dictionary<string, ConfigScene._Scene.WayPoint>();
+        Scene.current.waypoint_dict["waypoint1"] = waypoint1;
+        Scene.current.waypoint_dict["waypoint2"] = waypoint2;
+        Scene.current.waypoint_dict["waypoint3"] = waypoint3;
+
     }
 
     private void Update()
@@ -72,7 +88,7 @@ public class ModelInspector : MonoBehaviour
         {
             if (Configs.config_animation.Animation3D.ContainsKey(animation_input.text))
             {
-                actor_controller.actor_animation.replaceCharacterIdle(animation_input.text);
+                actor_controller.replaceCharacterIdle(animation_input.text);
             }
             else
             {
@@ -136,7 +152,6 @@ public class ModelInspector : MonoBehaviour
         actor_controller = Actor.spawnActor(actor_input.text, null, "test");
         model = actor_controller.model;
         actor_controller.model.game_object.transform.position = Vector3.zero;
-        actor_controller.model.game_object.AddComponent<Animation>();
     }
 
     public void toggleLight()

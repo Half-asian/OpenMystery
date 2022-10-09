@@ -172,8 +172,8 @@ namespace ModelLoading
 				if (material.shaderName == "ubershader")
 				{
 
-					bool cutout = false;
-					if (material.intSettingIds != null)
+					//bool cutout = false;
+					/*if (material.intSettingIds != null)
 					{
 						for (int i = 0; i < material.intSettingIds.Length; i++)
 						{
@@ -182,7 +182,7 @@ namespace ModelLoading
 								cutout = true;
 							}
 						}
-					}
+					}*/
 
 					mat.SetFloat("u_opacityAmount", 1.0f);
 					mat.SetFloat("u_flatness", 1.0f);

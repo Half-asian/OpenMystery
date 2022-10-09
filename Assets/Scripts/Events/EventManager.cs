@@ -46,10 +46,20 @@ public class EventManager : MonoBehaviour
 
     public void notifyCamAnimFinished(string animation)
     {
+        setLastCamAnim(animation);
         main_event_player.notifyCamAnimFinished(animation);
         foreach (EventPlayer sequential_event_player in sequential_event_players)
         {
             sequential_event_player.notifyCamAnimFinished(animation);
+        }
+    }
+
+    public void setLastCamAnim(string animation)
+    {
+        main_event_player.last_finished_animation = animation;
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.last_finished_animation = animation;
         }
     }
 
@@ -89,26 +99,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public IEnumerator waitCameraAnimation(float length, string animation)
-    {
-        main_event_player.last_finished_animation = "";
-        foreach (EventPlayer sequential_event_player in sequential_event_players)
-        {
-            sequential_event_player.last_finished_animation = "";
-        }
 
-        yield return new WaitForSeconds(length);
-
-        CameraManager.current.freeCamera();
-        GameStart.event_manager.notifyCamAnimFinished(animation);
-
-        CameraManager.current.simple_camera_controller.enabled = true;
-        main_event_player.last_finished_animation = animation;
-        foreach (EventPlayer sequential_event_player in sequential_event_players)
-        {
-            sequential_event_player.last_finished_animation = animation;
-        }
-    }
 
     public IEnumerator lookAtCountdown(string character, float time)
     {
@@ -125,7 +116,7 @@ public class EventManager : MonoBehaviour
     {
         EventPlayer new_event_player = gameObject.AddComponent<EventPlayer>();
         new_event_player.is_sequential_player = true;
-        new_event_player.addEvent(events);
+        new_event_player.addEvents(events);
         sequential_event_players.Add(new_event_player);
     }
 

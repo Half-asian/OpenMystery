@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\ModelViewerScreenShot.cs" />
     <Compile Include="Assets\Scripts\UI\CanvasImageLoader.cs" />
-    <Compile Include="Assets\Scripts\Actors\ActorText.cs" />
     <Compile Include="Assets\Scripts\Graduation\GraduationUI.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentHands.cs" />
     <Compile Include="Assets\Scripts\Sound\Sound.cs" />
@@ -69,6 +68,7 @@
     <Compile Include="Assets\Scripts\Objectives\HubNPC.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigScenarioLoader.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentEyes.cs" />
+    <Compile Include="Assets\Scripts\Node\NodeChildren.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveInteractionComplete.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionTitleCard.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentLegs.cs" />
@@ -213,6 +213,7 @@
     <Compile Include="Assets\Scripts\Reward\Reward.cs" />
     <Compile Include="Assets\Scripts\Player\CustomizeAvatarPreviewImages.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigProjectLoader.cs" />
+    <Compile Include="Assets\Scripts\Node\NodeBase.cs" />
     <Compile Include="Assets\Scripts\3DModels\Model.cs" />
     <Compile Include="Assets\Scripts\Mods\ModLoader.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigSceneLoader.cs" />
@@ -236,7 +237,6 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
-    <Compile Include="Assets\Scripts\Node\NodeBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

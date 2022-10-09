@@ -19,9 +19,9 @@ public class MenuBackgroundHalloween : MonoBehaviour, IMenuBackground
         postProcessDefault.SetActive(false);
         postProcessHalloweenMenu.SetActive(true);
 
-        CameraManager.current.main_camera.transform.position = new Vector3(-11.816085815429688f, 0.7540035247802734f, 24.68346405029297f);
-        CameraManager.current.main_camera.transform.rotation = new Quaternion(0.002704386366531253f, -0.9186273813247681f, -0.004992018453776836f, -0.39508432149887087f);
-        CameraManager.current.main_camera.GetComponent<Camera>().fieldOfView = 43.50319f;
+        //CameraManager.current.main_camera.transform.position = new Vector3(-11.816085815429688f, 0.7540035247802734f, 24.68346405029297f);
+        //CameraManager.current.main_camera.transform.rotation = new Quaternion(0.002704386366531253f, -0.9186273813247681f, -0.004992018453776836f, -0.39508432149887087f);
+        //CameraManager.current.main_camera.GetComponent<Camera>().fieldOfView = 43.50319f;
 
         background_model = ModelManager.loadModel("b_GodricsHollow_Graveyard_skin");
         Texture2D new_lightmap = Resources.Load("menulightmap") as Texture2D;
@@ -45,8 +45,7 @@ public class MenuBackgroundHalloween : MonoBehaviour, IMenuBackground
         ismelda.transform.position = new Vector3(-9.3739996f, 0, 20.6919994f);
         ismelda.transform.eulerAngles = new Vector3(0, 38.4808159f, 0);
 
-        merula_manager.actor_animation.replaceCharacterIdle("c_Stu_SpellCastingStanding01_lumosLoop");
-        merula_manager.actor_animation.updateAnimationState();
+        merula_manager.replaceCharacterIdle("c_Stu_SpellCastingStanding01_lumosLoop");
 
         GameObject merula_wand_light_gameobject = Instantiate(Resources.Load("merula_wand_light") as GameObject);
         Transform wand_tip = merula.gameObject.transform.Find("Armature/jt_all_bind/jt_wandTip_bind");
@@ -58,8 +57,7 @@ public class MenuBackgroundHalloween : MonoBehaviour, IMenuBackground
         merula_wand_light_gameobject.transform.localPosition = new Vector3(-0.0799999982f, 0.0500000007f, -2.22000003f);
         merula_wand_light_gameobject.transform.localEulerAngles = Vector3.zero;
 
-        ismelda_manager.actor_animation.replaceCharacterIdle("c_Stu_Searching01_Idle01");
-        ismelda_manager.actor_animation.updateAnimationState();
+        ismelda_manager.replaceCharacterIdle("c_Stu_Searching01_Idle01");
         GameObject ismelda_wand_light_gameobject = Instantiate(Resources.Load("merula_wand_light") as GameObject);
         Transform ismelda_wand_tip = ismelda.gameObject.transform.Find("Armature/jt_all_bind/jt_wandTip_bind");
         if (ismelda_wand_tip == null)

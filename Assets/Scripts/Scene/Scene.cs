@@ -118,7 +118,6 @@ public class Scene
                     Matrix4x4 scale = Matrix4x4.Scale(new Vector3(1, 1, 1));
 
                     Matrix4x4 m = translation * rotation * scale;
-                    Matrix4x4 view_matrix = CameraManager.current.main_camera.GetComponent<Camera>().worldToCameraMatrix;
                     // m = m * view_matrix;
 
                     DirLight d = new DirLight();

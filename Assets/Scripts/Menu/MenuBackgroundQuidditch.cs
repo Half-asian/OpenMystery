@@ -21,8 +21,8 @@ public class MenuBackgroundQuidditch : MonoBehaviour, IMenuBackground
     {
         postProcessDefault.SetActive(false);
         postProcessHalloweenMenu.SetActive(true);
-        CameraManager.current.main_camera.transform.localPosition = new Vector3(-14.7869997f, -18.1630001f, 82.9499969f);
-        CameraManager.current.main_camera.transform.localRotation = Quaternion.Euler(new Vector3(1.24213919e-08f, 3.91365266f, 2.71203842e-08f));
+        //CameraManager.current.main_camera.transform.localPosition = new Vector3(-14.7869997f, -18.1630001f, 82.9499969f);
+        //CameraManager.current.main_camera.transform.localRotation = Quaternion.Euler(new Vector3(1.24213919e-08f, 3.91365266f, 2.71203842e-08f));
         background_model = ModelManager.loadModel("b_GodricsHollow_Graveyard_skin");
 
 

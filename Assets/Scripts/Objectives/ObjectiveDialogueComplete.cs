@@ -9,7 +9,7 @@ public class ObjectiveDialogueComplete : Objective
         objective_config = _objective;
         Assert.IsNotNull(objective_config.keys, "ObjectiveDialogueComplete(): objective.keys cannot be null.");
         keys = new List<string>(objective_config.keys);
-        DialogueManager.onDialogueFinishedEvent += dialogueCallback;
+        DialogueManager.onDialogueFinishedEventSecondary += dialogueCallback;
     }
 
     public void dialogueCallback(string dialogue_id)
@@ -21,7 +21,7 @@ public class ObjectiveDialogueComplete : Objective
         }
         if (keys_completed >= objective_config.required_count)
         {
-            DialogueManager.onDialogueFinishedEvent -= dialogueCallback;
+            DialogueManager.onDialogueFinishedEventSecondary -= dialogueCallback;
             objectiveCompleted();
         }
     }

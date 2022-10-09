@@ -269,7 +269,7 @@ public static partial class AnimationManager
 			}
 			else
 			{
-				Vector3 current_rotation = CameraManager.current.main_camera_jt_cam_bind.transform.localEulerAngles;
+				Vector3 current_rotation = CameraManager.current.main_camera_jt_cam_bind.localEulerAngles;
 				Quaternion cam_bind_anim_quaternion = new Quaternion(keyframe.rotation[0], keyframe.rotation[1], keyframe.rotation[2], keyframe.rotation[3]);
 				Vector3 cam_bind_anim_euler = cam_bind_anim_quaternion.eulerAngles;
 				Vector3 combined_euler = new Vector3(cam_bind_anim_euler.x, current_rotation.y, cam_bind_anim_euler.z);

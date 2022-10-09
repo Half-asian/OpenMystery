@@ -20,7 +20,7 @@ public class InteractionGoalDialog : Interaction
     public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
-        DialogueManager.onDialogueFinishedEvent += dialogueFinishedListener;
+        DialogueManager.onDialogueFinishedEventPrimary += dialogueFinishedListener;
         GameStart.dialogue_manager.activateDialogue(config_interaction.dialogId);
     }
 
@@ -29,7 +29,7 @@ public class InteractionGoalDialog : Interaction
         //if (dialogue == interaction.dialogId)
         //We probably don't need to care about what dialogue actually finishes. Just that dialogue did end. Dialogues can lead to new dialogues, which wouldn't match.
 
-        DialogueManager.onDialogueFinishedEvent -= dialogueFinishedListener;
+        DialogueManager.onDialogueFinishedEventPrimary -= dialogueFinishedListener;
         interactionComplete();
     }
 }

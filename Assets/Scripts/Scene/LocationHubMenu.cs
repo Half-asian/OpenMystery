@@ -24,7 +24,6 @@ public class LocationHubMenu : MonoBehaviour
 
     public void loadButtons()
     {
-        Debug.Log("LOADBUTTONS");
         dropdown.ClearOptions();
          
         List<string> options = new List<string>();

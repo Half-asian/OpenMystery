@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 270.0332, g: 206.97363, b: 252.37158, a: 1}
+  m_IndirectSpecularColor: {r: 213.25, g: 213.25, b: 213.25, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -134,11 +134,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a85e9fccafdda9443a9e403ca82d93a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &17661809 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7339653516881549044, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
-  m_PrefabInstance: {fileID: 1937005754}
-  m_PrefabAsset: {fileID: 0}
 --- !u!82 &17661811 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 7339653516881549046, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
@@ -342,15 +337,19 @@ PrefabInstance:
     - target: {fileID: 3973814961134888847, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: BGMusicPlayer
       value: 
-      objectReference: {fileID: 17661809}
+      objectReference: {fileID: 17661811}
     - target: {fileID: 3973814961134888847, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: AMBAudioPlayer
       value: 
-      objectReference: {fileID: 2112738669}
+      objectReference: {fileID: 2112738671}
     - target: {fileID: 3973814961134888847, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: SoundEffectPlayer
       value: 
-      objectReference: {fileID: 126153070}
+      objectReference: {fileID: 126153072}
+    - target: {fileID: 3973814961134888847, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
+      propertyPath: main_camera_audiosource
+      value: 
+      objectReference: {fileID: 579679049}
     - target: {fileID: 3973814962162939600, guid: 940b443529b909a46b3c7b34324b7740, type: 3}
       propertyPath: m_Name
       value: Managers
@@ -883,11 +882,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23c1ce4fb46143f46bc5cb5224c934f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!20 &579679053 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 7339653518560060798, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
-  m_PrefabInstance: {fileID: 1937005754}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &579679054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -901,7 +895,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameradata: {fileID: 579679050}
-  camera: {fileID: 579679053}
 --- !u!4 &877350089 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4272762625650524973, guid: 87a05fb0a0a9ab243b9344d919a63b24, type: 3}
@@ -1013,6 +1006,10 @@ PrefabInstance:
     - target: {fileID: 1742555745196033757, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_RootOrder
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959040263234025347, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2795667811393919741, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_RootOrder
@@ -1140,7 +1137,7 @@ PrefabInstance:
       objectReference: {fileID: 965586128}
     - target: {fileID: 5235073168471083382, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_Text
-      value: BUILD 8.3.1
+      value: BUILD 8.4
       objectReference: {fileID: 0}
     - target: {fileID: 5422768078852317515, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1252,7 +1249,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7760846749486851940, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_Text
-      value: BUILD 8.3.1
+      value: BUILD 8.4
       objectReference: {fileID: 0}
     - target: {fileID: 7879890938707277791, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1516,6 +1513,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2df9ac6b4aed91a45875d4af64081a22, type: 3}
+--- !u!1 &1267122230 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7339653517382173703, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+  m_PrefabInstance: {fileID: 1937005754}
+  m_PrefabAsset: {fileID: 0}
+--- !u!111 &1267122234
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1267122230}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!223 &1369756774 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 4350646969949533112, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
@@ -1952,6 +1969,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera Holder
       objectReference: {fileID: 0}
+    - target: {fileID: 7339653518560060794, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7339653518560060799, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_Version
       value: 8
@@ -1966,11 +1987,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
---- !u!1 &2112738669 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7339653518786129236, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
-  m_PrefabInstance: {fileID: 1937005754}
-  m_PrefabAsset: {fileID: 0}
 --- !u!82 &2112738671 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 7339653518786129238, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}

@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System;
+
 public class Quidditch
 {
-    public List<ObjectiveMatchComplete> objective_callbacks = new List<ObjectiveMatchComplete>();
-
+    public event Action<string> match_finished_event = delegate { };
 
     int match_pivotal_play_index;
 
@@ -64,7 +65,7 @@ public class Quidditch
             }
         }
 
-        string randomKey = real_keys[Random.Range(0, real_keys.Count)];
+        string randomKey = real_keys[UnityEngine.Random.Range(0, real_keys.Count)];
 
         moves_already_played.Add(randomKey);
 
@@ -290,7 +291,6 @@ public class Quidditch
             Scenario.Activate(current_match.scenarioId, Scenario.current.objective);
             Scenario.Load(current_match.outroScenarioId);
         }
-        Debug.Log("finished match");
     }
 
     public void activatePivotalPlayIntroPhases(string pivotal_play_name)
@@ -329,10 +329,8 @@ public class Quidditch
         }
         if (Configs.config_play_phase.PlayPhase[play_phase_name].enterEvents != null)
         {
-            foreach (string enter_event in Configs.config_play_phase.PlayPhase[play_phase_name].enterEvents)
-            {
-                GameStart.event_manager.main_event_player.addEvent(enter_event);
-            }
+            Debug.Log("Adding playphase " + play_phase_name + " enter events.");
+            GameStart.event_manager.main_event_player.addEvents(Configs.config_play_phase.PlayPhase[play_phase_name].enterEvents);
         }
         state = State.state_waiting_enter_events;
         EventManager.all_script_events_finished_event += enterEventsCallback;
@@ -359,22 +357,19 @@ public class Quidditch
             }
 
             Debug.Log("Activating dialogue " + Configs.config_play_phase.PlayPhase[play_phase_name].dialogueId);
-            DialogueManager.onDialogueFinishedEvent += dialogueCallback;
+            DialogueManager.onDialogueFinishedEventPrimary += dialogueCallback;
             GameStart.dialogue_manager.activateDialogue(Configs.config_play_phase.PlayPhase[play_phase_name].dialogueId);
         }
     }
 
     public void dialogueCallback(string dialogue_id)
     {
-        DialogueManager.onDialogueFinishedEvent -= dialogueCallback;
+        DialogueManager.onDialogueFinishedEventPrimary -= dialogueCallback;
 
         Debug.Log("DialogueCallback");
         if (Configs.config_play_phase.PlayPhase[play_phase_name].exitEvents != null)
         {
-            foreach (string enter_event in Configs.config_play_phase.PlayPhase[play_phase_name].exitEvents)
-            {
-                GameStart.event_manager.main_event_player.addEvent(enter_event);
-            }
+            GameStart.event_manager.main_event_player.addEvents(Configs.config_play_phase.PlayPhase[play_phase_name].exitEvents);
             state = State.state_waiting_exit_events;
 
             EventManager.all_script_events_finished_event += exitEventsCallback;
@@ -405,7 +400,6 @@ public class Quidditch
             }
             else if (phase == "success")
             {
-                Debug.Log("GOT TO THE OUTRO PHASE");
                 phase = "outro";
                 play_phase_name = current_pivotal_play.outroPhases[0];
                 activatePlayPhase();
@@ -479,10 +473,8 @@ public class Quidditch
             writer.WriteLine("matchWon(\"" + current_match.matchId + "\")");
             writer.Close();
         }
-        foreach (ObjectiveMatchComplete objective in objective_callbacks)
-        {
-            objective.quidditchMatchFinishedCheck(current_match.matchId);
-        }
+
+        match_finished_event.Invoke(current_match.matchId);
     }
 
 }

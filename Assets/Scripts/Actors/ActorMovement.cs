@@ -23,7 +23,6 @@ public class ActorMovement
 
     private Transform transform { get { return actor_controller.transform; } }
     private GameObject gameObject { get { return actor_controller.gameObject; } }
-    private ActorAnimation actor_animation { get { return actor_controller.actor_animation; } }
     private ActorState actor_state { get { return actor_controller.actor_state; } set { actor_controller.actor_state = value; } }
     private ActorHead actor_head { get { return actor_controller.actor_head; } }
     private ConfigHPActorInfo._HPActorInfo actor_info { get { return actor_controller.actor_info; } }
@@ -60,6 +59,7 @@ public class ActorMovement
     {
         return destination_waypoint;
     }
+
 
     private IEnumerator RotateOverTime()
     {
@@ -111,50 +111,17 @@ public class ActorMovement
                 yield return null;
             }
         }
-        if (actor_controller.GetComponent<ActorAnimSequence>() != null)
-        {
-            if (actor_controller.GetComponent<ActorAnimSequence>().walk == true)
-            {
-                if (actor_animation.anim_sequence_idle != "")
-                {
-                    actor_controller.GetComponent<ActorAnimSequence>().initAnimSequence(actor_controller.actor_animation.anim_sequence_idle, false);
-                }
-                else
-                {
-                    GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
-                }
-            }
-        }
 
-
-        actor_state = ActorState.Idle;
-        goal_rotation = destination_rotation;
-
-        //gameObject.transform.rotation = destination_rotation;
+        actor_controller.setCharacterIdle();
         actor_controller.StartCoroutine(RotateOverTime());
-
-        if (actor_animation.blocked == true)
-        {
-            GameObject.DestroyImmediate(actor_controller.GetComponent<ActorAnimSequence>());
-            actor_controller.playAnimationOnComponent(actor_animation.animation1_loop);
-            actor_animation.StartCoroutine(actor_animation.WaitForAnimateCharacterFinished(actor_animation.animation1_loop));
-            yield break;
-        }
-
-        if (actor_controller.GetComponent<ActorAnimSequence>() != null)
-            yield break;
-
-        actor_animation.anim_state = "intro";
-        actor_animation.loadAnimationSet();
-        actor_animation.updateAnimationState();
     }
 
-    public void moveCharacter(List<string> _path, string animation = "")
+    public void moveCharacter(List<string> _path, string animation = null)
     {
+        Debug.Log("moveCharacter");
         actor_head.clearLookat();
         actor_head.clearTurnHeadAt();
 
-        actor_state = ActorState.Walk;
         if (coroutine_walk != null)
         {
             actor_controller.StopCoroutine(coroutine_walk);
@@ -183,7 +150,9 @@ public class ActorMovement
         {
             coroutine_walk = WaitForMove(0.0f);
         }
-        actor_animation.setCharacterWalk(animation);
+
+        actor_controller.setCharacterWalk();
+        if (animation != null) actor_controller.replaceCharacterWalk(animation);
         actor_controller.StartCoroutine(coroutine_walk);
     }
 
@@ -234,9 +203,6 @@ public class ActorMovement
 
         actor_controller.creation_time = Time.realtimeSinceStartup;
 
-        actor_state = ActorState.Idle;
-        actor_animation.loadAnimationSet(); //This basically restarts the current animation
-        actor_animation.anim_state = "outro";
-        actor_animation.updateAnimationState();
+        actor_controller.setCharacterIdle();
     }
 }

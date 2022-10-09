@@ -73,18 +73,18 @@ public class EncounterDate : Encounter
 
         Actor.spawnActor(companion_id, date_prompt.dateSpawn, "opponent");
 
-        DialogueManager.onDialogueFinishedEvent += dialogueCallback;
+        DialogueManager.onDialogueFinishedEventPrimary += dialogueCallback;
 
         GameStart.dialogue_manager.activateDialogue(date_prompt.dialogue);
         
     }
     public void dialogueCallback(string dialogue)
     {
-        DialogueManager.onDialogueFinishedEvent -= dialogueCallback;
+        DialogueManager.onDialogueFinishedEventPrimary -= dialogueCallback;
 
         if (dialogue == Configs.config_date_prompt.DatePrompt[config_encounter.datePromptIds[date_prompt_counter]].dialogue)
         {
-            DialogueManager.onDialogueFinishedEvent -= dialogueCallback;
+            DialogueManager.onDialogueFinishedEventPrimary -= dialogueCallback;
             Debug.Log("Encounter Dialogue Callback");
             date_prompt_counter++;
             if (date_prompt_counter >= config_encounter.datePromptIds.Length)
@@ -117,7 +117,7 @@ public class EncounterDate : Encounter
 
                 Actor.actor_controllers["opponent"].actor_movement.teleportCharacter(position, rotation);
 
-                DialogueManager.onDialogueFinishedEvent += dialogueCallback;
+                DialogueManager.onDialogueFinishedEventPrimary += dialogueCallback;
                 
                 GameStart.dialogue_manager.activateDialogue(date_prompt.dialogue);
             }

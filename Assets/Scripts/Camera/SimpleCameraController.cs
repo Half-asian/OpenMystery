@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class SimpleCameraController : MonoBehaviour
 {
     public GameObject camera_armature;
-
+    public Animation camera_animation;
     class CameraState
     {
         public float yaw;
@@ -116,18 +116,16 @@ public class SimpleCameraController : MonoBehaviour
         
     void Update()
     {
+        m_TargetCameraState.SetFromTransform(transform);
+        m_InterpolatingCameraState.SetFromTransform(transform);
+
+        if (!CameraManager.current.getCameraControllable())
+            return;
+
         GameObject current = EventSystem.current.currentSelectedGameObject;
         if (current != null && current.gameObject != null && current.gameObject.GetComponent<InputField>() != null)
         {
             return;
-        }
-
-        if (camera_armature.GetComponent<Animation>() != null)
-        {
-            if (camera_armature.GetComponent<Animation>().isPlaying)
-            {
-                return;
-            }
         }
 
         Vector3 translation = Vector3.zero;
@@ -142,6 +140,9 @@ public class SimpleCameraController : MonoBehaviour
 			UnityEditor.EditorApplication.isPlaying = false; 
 			#endif
         }*/
+
+
+
         // Hide and lock cursor when right mouse button pressed
         if (Input.GetMouseButtonDown(1))
         {

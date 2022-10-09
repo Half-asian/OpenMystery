@@ -75,7 +75,6 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
         stopwatch.Start();
         List<ConfigHPDialogueLine> configs = getConfigList(type);
         configs[0].combine(configs);
-        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
         return configs[0];
     }
 }
@@ -133,7 +132,6 @@ public class ConfigDialogueChoice : Config<ConfigDialogueChoice>
         stopwatch.Start();
         List<ConfigDialogueChoice> configs = getConfigList(type);
         configs[0].combine(configs);
-        GameStart.logWrite(type + ": " + stopwatch.Elapsed);
         return configs[0];
     }
 }

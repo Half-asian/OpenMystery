@@ -16,12 +16,11 @@ public class MenuBackgroundYear1 : MonoBehaviour, IMenuBackground
         PostProcessYear1.SetActive(true);
         GameStart.post_process_manager.PostProcessDefault.SetActive(false);
 
-        CameraManager.current.main_camera.transform.localPosition = new Vector3(0.930000007f, 0.75f, 4.80999994f);
-        CameraManager.current.main_camera.transform.localRotation = new Quaternion(-0.0118420422f, -0.98382771f, -0.0710394531f, 0.164000839f);
-        CameraManager.current.main_camera.GetComponent<Camera>().fieldOfView = 58.3f;
+        CameraManager.current.setMainLockedCamera(new Vector3(0.930000007f, 0.75f, 4.80999994f), new Quaternion(-0.0118420422f, -0.98382771f, -0.0710394531f, 0.164000839f));
+        CameraManager.current.setFOV(58.3f);
 
         Merula = Actor.spawnActor("c_Merula_Normal_skin", null, "Merula");
-        Merula.actor_animation.replaceCharacterIdle("c_Stu_DialogueSerious01sitting");
+        Merula.replaceCharacterIdle("c_Stu_DialogueSerious01sitting");
         Merula.model.game_object.transform.position = new Vector3(2.32399988f, 0.119999997f, 0.550000012f);
         Merula.model.game_object.transform.rotation = new Quaternion(0, 0.980171442f, 0, 0.198151663f);
         background_model = ModelManager.loadModel("b_Lakeshore_skin");
