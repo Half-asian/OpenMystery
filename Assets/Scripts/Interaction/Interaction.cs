@@ -103,6 +103,13 @@ public abstract class Interaction : MonoBehaviour
 
         Debug.Log("Finished interaction " + config_interaction.id);
 
+        //This interaction has an immediate exit.
+        if (config_interaction.exitEvents == null && config_interaction.successEvents == null && config_interaction.failEvents == null)
+        {
+            onFinishedExitEvents();
+            return;
+        }
+
         if (config_interaction.exitEvents != null)
             GameStart.event_manager.main_event_player.addEvents(config_interaction.exitEvents);
 

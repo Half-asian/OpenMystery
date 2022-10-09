@@ -415,6 +415,7 @@ public static class Events
                 if (!Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
                     Debug.LogError("Couldn't find actor " + action_params[0]);
+                    return;
                 }
 
                 Debug.Log("CharacterIdleSequence " + action_params[0] + " " + action_params[1]);

@@ -221,6 +221,23 @@ public class InteractionManager : MonoBehaviour {
         active_interactions = new List<Interaction>();
     }
 
+    public void reloadGroups()
+    {
+        List<string> groups = new List<string>();
+        foreach (Interaction i in active_interactions)
+        {
+            if (i is InteractionGroup)
+            {
+                groups.Add(i.config_interaction.id);
+            }
+        }
+        destroyAllInteractions();
+        foreach(string i in groups)
+        {
+            spawnInteraction(i);
+        }
+    }
+
     public string[][] serializeInteractions()
     {
         string[][] serialized_interactions = new string[active_interactions.Count][];

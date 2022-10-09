@@ -113,11 +113,7 @@ public class Scenario
 
         if (current != null && activated_scenario.scenarioId == current.scenario_config.scenarioId) //We are trying to activate a scenario that we're already in.
         {
-            GameStart.interaction_manager.destroyAllInteractions();
-            if (current.scenario_config.firstAction != null)
-            {
-                GameStart.interaction_manager.spawnInteraction(current.scenario_config.firstAction);
-            }
+            GameStart.interaction_manager.reloadGroups();
 
             Debug.Log("Didn't activate the scenario, as it is the one we're in.");
             return;
@@ -171,11 +167,7 @@ public class Scenario
             {
                 Debug.Log("Didn't load the scenario, as it is the one we're in.");
 
-                GameStart.interaction_manager.destroyAllInteractions();
-                if (current.scenario_config.firstAction != null)
-                {
-                    GameStart.interaction_manager.spawnInteraction(current.scenario_config.firstAction);
-                }
+                GameStart.interaction_manager.reloadGroups();
 
                 return; //We are already in the right scenario
             }
