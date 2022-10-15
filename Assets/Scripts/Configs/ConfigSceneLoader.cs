@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using System.Numerics;
 
 public class ConfigScene : Config<ConfigScene>
 {
@@ -68,6 +69,23 @@ public class ConfigScene : Config<ConfigScene>
             public string reference;
             public string animationType;
             public string[] lightLayerOverride;
+
+            public UnityEngine.Vector3 getRotation()
+            {
+                if (rotation != null)
+                {
+                    return new UnityEngine.Vector3(0, rotation[1] * -1, 0);
+                }
+                return UnityEngine.Vector3.zero;
+            }
+
+            public UnityEngine.Vector3 getWorldPosition()
+            {
+                if (position != null)
+                    return new UnityEngine.Vector3(position[0] * -0.01f, position[1] * 0.01f, position[2] * 0.01f);
+                return UnityEngine.Vector3.zero;
+            }
+
         }
         public WayPoint[] waypoints;
         public Dictionary<string, WayPoint> waypoint_dict;

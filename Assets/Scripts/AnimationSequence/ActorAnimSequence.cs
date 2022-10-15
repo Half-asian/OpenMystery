@@ -19,7 +19,7 @@ public class ActorAnimSequence : AnimationSequence
     protected override void finishSequence()
     {
         if (walk == false)
-            actor_controller.idle_animation_sequence = "";
+            actor_controller.idle_animation_sequence = null;
         base.finishSequence();
 
         if (config_sequence.isOneShot)

@@ -1,208 +1,133 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class ActorMovement
+public partial class ActorController : Node
 {
 
-    public IEnumerator coroutine_walk;
-    public Quaternion goal_rotation;
-
-    public string destination_waypoint;
-    public Vector3 destination_position;
-    public Quaternion destination_rotation;
-    public List<string> path;
-    const float RUN_SPEED = 1.3f;
-
-    ActorController actor_controller;
-
-    public ActorMovement(ActorController _actor_manager)
-    {
-        actor_controller = _actor_manager;
-    }
-
-    private Transform transform { get { return actor_controller.transform; } }
-    private GameObject gameObject { get { return actor_controller.gameObject; } }
-    private ActorState actor_state { get { return actor_controller.actor_state; } set { actor_controller.actor_state = value; } }
-    private ActorHead actor_head { get { return actor_controller.actor_head; } }
-    private ConfigHPActorInfo._HPActorInfo actor_info { get { return actor_controller.actor_info; } }
-
-    public void setDestinationWaypoint(string _waypoint)
-    {
-
-        if (!Scene.current.waypoint_dict.ContainsKey(_waypoint))
-        {
-            Debug.LogError("Could not set character destination waypoint to " + _waypoint + " because it doesn't exist in scene.");
-            return;
-        }
-        destination_waypoint = _waypoint;
-        ConfigScene._Scene.WayPoint waypoint = Scene.current.waypoint_dict[destination_waypoint];
-        destination_position = new Vector3(waypoint.position[0] * -0.01f, waypoint.position[1] * 0.01f, waypoint.position[2] * 0.01f);
-        if (waypoint.rotation != null)
-        {
-            destination_rotation = Quaternion.Euler(new Vector3(waypoint.rotation[0], waypoint.rotation[1] * -1, waypoint.rotation[2]));
-        }
-        else
-        {
-            destination_rotation = Quaternion.Euler(Vector3.zero);
-        }
-    }
-
-    public void setWaypoint(string _waypoint)
-    {
-        setDestinationWaypoint(_waypoint);
-        transform.position = destination_position;
-        transform.rotation = destination_rotation;
-    }
+    private IEnumerator coroutine_move;
+    private ConfigScene._Scene.WayPoint destination_waypoint;
+    private bool is_moving = false;
 
     public string getDestinationWaypoint()
     {
-        return destination_waypoint;
-    }
-
-
-    private IEnumerator RotateOverTime()
-    {
-        yield return null;
-        while (transform.rotation.eulerAngles != destination_rotation.eulerAngles)
+        if (destination_waypoint == null)
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, goal_rotation, Time.deltaTime * 500);
-            yield return null;
+            Debug.LogError("DESTINATION WAYPOINT WAS NULL");
+            return null;
+
         }
-        GameStart.current.GetComponent<EventManager>().notifyMoveComplete(gameObject.name);
+        return destination_waypoint.name;
+    }
+
+    public void finishMovement()
+    {
+        if (is_moving == false)
+            return;
+        is_moving = false;
+
+        if (coroutine_move != null) //Early finish
+        {
+            StopCoroutine(coroutine_move);
+            applyWaypoint();
+            if (GameStart.current != null)
+                GameStart.current.GetComponent<EventManager>().notifyMoveComplete(gameObject.name);
+            coroutine_move = null;
+        }
     }
 
 
-
-    private IEnumerator WaitForMove(float speed)
+    public void moveCharacter(List<string> path, float speed)
     {
-        while (path.Count != 0 || gameObject.transform.position != destination_position)
+        finishMovement();
+
+        destination_waypoint = Scene.current.waypoint_dict[path.Last()];
+
+        actor_head.clearLookat();
+        actor_head.clearTurnHeadAt();
+
+        coroutine_move = MoveCoroutine(path, speed);
+        StartCoroutine(coroutine_move);
+        setCharacterWalk();
+    }
+
+    public void teleportCharacter(string waypoint_id)
+    {
+        if (waypoint_id == null || !Scene.current.waypoint_dict.ContainsKey(waypoint_id))
+            return;
+
+        finishMovement();
+
+        destination_waypoint = Scene.current.waypoint_dict[waypoint_id];
+
+        applyWaypoint();
+
+        setCharacterIdle();
+    }
+
+    private void applyWaypoint()
+    {
+        if (destination_waypoint == null)
+            return;
+        Vector3 position = Vector3.zero;
+        Vector3 rotation = Vector3.zero;
+
+        if (destination_waypoint.position != null)
+            position = destination_waypoint.getWorldPosition();
+        gameObject.transform.position = position;
+
+        if (destination_waypoint.rotation != null)
+            rotation = new Vector3(destination_waypoint.rotation[0], destination_waypoint.rotation[1], destination_waypoint.rotation[2]);
+
+        gameObject.transform.rotation = Quaternion.identity;
+        gameObject.transform.Rotate(new Vector3(0, 0, -rotation[2]));
+        gameObject.transform.Rotate(new Vector3(0, -rotation[1], 0));
+        gameObject.transform.Rotate(new Vector3(rotation[0], 0, 0));
+
+        if (destination_waypoint.scale != null)
+            gameObject.transform.localScale = new Vector3(destination_waypoint.scale[0] * 0.01f, destination_waypoint.scale[1] * 0.01f, destination_waypoint.scale[2] * 0.01f);
+    }
+
+
+    /*----------        COROUTINES      ----------*/
+
+    private IEnumerator MoveCoroutine(List<string> path, float speed)
+    {
+        is_moving = true;
+
+        ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[path[0]];
+            
+        while (path.Count != 0 || gameObject.transform.position != destination_waypoint.getWorldPosition())
         {
-            if (gameObject.transform.position != destination_position)
+            if (gameObject.transform.position != next_waypoint.getWorldPosition())
             {
-                Vector3 targetDirection = transform.position - destination_position;
+                Vector3 targetDirection = transform.position - next_waypoint.getWorldPosition();
                 transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
                 transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
-                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, destination_position, (0.4f + speed) * Time.deltaTime);
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (0.4f + speed) * Time.deltaTime);
                 yield return null;
             }
             else
             {
-                destination_waypoint = path[0];
+                next_waypoint = Scene.current.waypoint_dict[path[0]];
                 path.RemoveAt(0);
-                ConfigScene._Scene.WayPoint waypoint = Scene.current.waypoint_dict[destination_waypoint];
-                destination_position = new Vector3(waypoint.position[0] * -0.01f, waypoint.position[1] * 0.01f, waypoint.position[2] * 0.01f);
-                if (waypoint.rotation != null)
-                {
-                    //destination_rotation = Quaternion.Euler(new Vector3(waypoint.rotation[0], waypoint.rotation[1] * -1, waypoint.rotation[2]));
-                    destination_rotation = Quaternion.Euler(0, waypoint.rotation[1] * -1, 0); //Ignore X AND Z
-                }
-                else
-                {
-                    destination_rotation = Quaternion.Euler(Vector3.zero);
-                }
-                Vector3 targetDirection = transform.position - destination_position;
-
-                if (gameObject.transform.position != destination_position) //!(Vector3.Distance(gameObject.transform.position, destination_position) < 0.1f))
-                {
-                    transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
-                    transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
-                }
-                yield return null;
             }
         }
 
-        actor_controller.setCharacterIdle();
-        actor_controller.StartCoroutine(RotateOverTime());
+        yield return null;
+
+        //Rotate towards the final facing
+        Quaternion rotation = Quaternion.identity;
+        if (destination_waypoint.rotation != null)
+            rotation = Quaternion.Euler(destination_waypoint.getRotation());
+
+        while (transform.rotation != rotation) //Quaternions can have multiple variations for one facing
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, Time.deltaTime * 500);
+            yield return null;
+        }
+        setCharacterIdle();
     }
 
-    public void moveCharacter(List<string> _path, string animation = null)
-    {
-        Debug.Log("moveCharacter");
-        actor_head.clearLookat();
-        actor_head.clearTurnHeadAt();
-
-        if (coroutine_walk != null)
-        {
-            actor_controller.StopCoroutine(coroutine_walk);
-            if (path != null)
-            {
-                if (path.Count != 0)
-                {
-                    destination_waypoint = path[0];
-                }
-            }
-        }
-        path = _path;
-        string path_string = "";
-        foreach (string s in path)
-        {
-            path_string += s + " ";
-        }
-
-        setDestinationWaypoint(path[0]);
-        path.RemoveAt(0);
-        if (animation == actor_info.animId_run || animation == "c_Stu_Jog01")
-        {
-            coroutine_walk = WaitForMove(RUN_SPEED);
-        }
-        else
-        {
-            coroutine_walk = WaitForMove(0.0f);
-        }
-
-        actor_controller.setCharacterWalk();
-        if (animation != null) actor_controller.replaceCharacterWalk(animation);
-        actor_controller.StartCoroutine(coroutine_walk);
-    }
-
-    public void moveCharacterNoAnimation(List<string> _path, float speed)
-    {
-        actor_head.clearTurnHeadAt();
-        actor_head.clearLookat();
-
-        actor_state = ActorState.Walk;
-        if (coroutine_walk != null)
-        {
-            actor_controller.StopCoroutine(coroutine_walk);
-            if (path != null)
-            {
-                if (path.Count != 0)
-                {
-                    destination_waypoint = path[0];
-                }
-            }
-        }
-        path = _path;
-        string path_string = "";
-        foreach (string s in path)
-        {
-            path_string += s + " ";
-        }
-
-        setDestinationWaypoint(path[0]);
-        path.RemoveAt(0);
-
-        coroutine_walk = WaitForMove(speed);
-        actor_controller.StartCoroutine(coroutine_walk);
-    }
-
-    public void teleportCharacter(Vector3 destination_position, Vector3 destination_rotation)
-    {
-        if (coroutine_walk != null)
-        {
-            actor_controller.StopCoroutine(coroutine_walk);
-        }
-        path = null;
-        gameObject.transform.position = destination_position;
-
-        gameObject.transform.rotation = Quaternion.identity;
-        gameObject.transform.Rotate(new Vector3(0, 0, -destination_rotation[2]));
-        gameObject.transform.Rotate(new Vector3(0, -destination_rotation[1], 0));
-        gameObject.transform.Rotate(new Vector3(destination_rotation[0], 0, 0));
-
-        actor_controller.creation_time = Time.realtimeSinceStartup;
-
-        actor_controller.setCharacterIdle();
-    }
 }

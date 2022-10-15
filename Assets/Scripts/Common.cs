@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.IO;
+using System;
+using System.Globalization;
 
 public class Common
 {
@@ -181,4 +183,9 @@ public class Common
         }
         return bounds;
     }
+
+    static TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+    public static string titleCase(string input) => textInfo.ToTitleCase(input);
+
+
 }

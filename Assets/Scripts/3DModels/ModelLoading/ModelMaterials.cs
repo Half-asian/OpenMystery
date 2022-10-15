@@ -11,11 +11,11 @@ namespace ModelLoading
     {
 		public static string lighting_phase = "CHARACTER";
 
-		static string[] known_shaders_array = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "simpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "panningfalloff", "eyeballshader", "SimpleTexture", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "eyeshader", "dustmotes_vfx", "houseubershader", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
+		static string[] known_shaders_array = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "houseubershader", "clothshader", "SimpleColor", "simpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "panningfalloff", "eyeballshader", "SimpleTexture", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "eyeshader", "dustmotes_vfx", "houseubershader", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
 
 		public static List<string> known_shaders = new List<string>(known_shaders_array);
 
-		static string[] real_shaders = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "clothshader", "SimpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "SimpleTexture", "panningfalloff", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
+		static string[] real_shaders = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "houseubershader", "clothshader", "SimpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "SimpleTexture", "panningfalloff", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
 
 		static string[] transparent_shaders_array = {"SimpleColor", "simpleColor", "ocean_vfx", "shadowplane_vfx", "vertecolor_vfx", "panningb_vfx", "fire02_vfx", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "SimpleColor", "panningbfresnel_vfx", "ghost_vfx", "ghostfade_vfx", "warp2_vfx", "scaleuv_vfx", "SimpleTexture", "foammiddle_vfx", "foamedge_vfx" };
 		static List<string> transparent_shaders = new List<string>(transparent_shaders_array);
@@ -274,7 +274,6 @@ namespace ModelLoading
 			if (material.shaderName == "houserobeshader" || material.shaderName == "houseclothshader" || material.shaderName == "quidditchshader" || material.shaderName == "houseubershader")
 			{
                 string house = "";
-
                 if (material.intSettingIds == null || !material.intSettingIds.Contains("TeamId"))
                     house = Player.local_avatar_house;
                 else
@@ -285,20 +284,49 @@ namespace ModelLoading
                     switch (value)
                     {
                         case 0:
-                            house = "gryffindor";
+								house = Player.local_avatar_house;
                             break;
                         case 1:
-                            house = "hufflepuff";
+							switch (Player.local_avatar_house)
+							{
+								case "gryffindor":
+								case "hufflepuff":
+                                case "slytherin":
+                                    house = "ravenclaw";
+									break;
+								case "ravenclaw":
+									house = "slytherin";
+									break;
+							}
                             break;
                         case 2:
-                            house = "ravenclaw";
+                            switch (Player.local_avatar_house)
+                            {
+                                case "gryffindor":
+                                    house = "hufflepuff";
+                                    break;
+                                case "hufflepuff":
+                                case "ravenclaw":
+                                case "slytherin":
+                                    house = "gryffindor";
+                                    break;
+                            }
                             break;
                         case 3:
-                            house = "slytherin";
+                            switch (Player.local_avatar_house)
+                            {
+                                case "gryffindor":
+                                case "hufflepuff":
+                                    house = "slytherin";
+                                    break;
+                                case "ravenclaw":
+                                case "slytherin":
+                                    house = "hufflepuff";
+                                    break;
+                            }
                             break;
                     }
                 }
-
                 setHouseUniforms(mat, house);
                 int skin_color_id = PlayerManager.current.customization_categories["faces"].int_parameters["skinColor"];
                 int[] skin_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].codes;
@@ -325,17 +353,16 @@ namespace ModelLoading
                     break;
                 case "gryffindor":
                     mat.SetInt("is_gryffindor", 1);
-                    mat.SetColor("u_robeColor", new Color(0.761f, 0.549f, 0.102f));
+                    mat.SetColor("u_robeColor", new Color(0.49f, 0.129f, 0.114f));
                     mat.SetVector("u_emblemTexOffset", new Vector2(0f, 0f));
                     mat.SetFloat("u_houseSet", 1.0f);
                     mat.SetColor("u_primaryColor", new Color(0.706f, 0.15f, 0.15f));
                     mat.SetColor("u_secondaryColor", new Color(0.722f, 0.635f, 0.166f));
-                    mat.SetVector("u_emblemTexOffset", new Vector2(0.0f, 0.0f));
                     break;
                 case "slytherin":
                     mat.SetInt("is_slytherin", 1);
                     mat.SetColor("u_robeColor", new Color(0.056f, 0.433f, 0.191f));
-                    mat.SetVector("u_emblemTexOffset", new Vector2(0.5f, 0.0f));
+                    mat.SetVector("u_emblemTexOffset", new Vector2(0.5f, 0.5f));
                     mat.SetFloat("u_houseSet", 1.0f);
                     mat.SetColor("u_primaryColor", new Color(0.056f, 0.433f, 0.191f));
                     mat.SetColor("u_secondaryColor", new Color(0.822f, 0.822f, 0.822f));
@@ -343,7 +370,7 @@ namespace ModelLoading
                 case "hufflepuff":
                     mat.SetInt("is_hufflepuff", 1);
                     mat.SetColor("u_robeColor", new Color(0.761f, 0.549f, 0.102f));
-                    mat.SetVector("u_emblemTexOffset", new Vector2(0.5f, 0.5f));
+                    mat.SetVector("u_emblemTexOffset", new Vector2(0.5f, 0.0f));
                     mat.SetFloat("u_houseSet", 1.0f);
                     mat.SetColor("u_primaryColor", new Color(0.833f, 0.72f, 0.239f));
                     mat.SetColor("u_secondaryColor", new Color(0.101f, 0.096f, 0.075f));

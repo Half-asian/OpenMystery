@@ -107,31 +107,27 @@ public partial class Node : MonoBehaviour
 
             foreach (var anim in shaderAnimations)
             {
-                if (mesh_renderers.ContainsKey(anim.mesh_id))
+                if (!mesh_renderers.ContainsKey(anim.mesh_id))
                 {
-                    SkinnedMeshRenderer smr = mesh_renderers[anim.mesh_id];
-
-                    if (anim is ShaderAnimationFloat)
-                    {
-                        float divider = delta_time / anim_clip.length;
-                        ShaderAnimationFloat animf = (ShaderAnimationFloat)anim;
-
-                        if (divider < animf.start || divider > animf.end)
-                            continue;
-
-                        divider += animf.start;
-                        divider += 1.0f - animf.end;
-                        divider = Mathf.Min(1.0f, divider);
-                        float val = Mathf.Lerp(animf.start_value, animf.end_value, divider);
-
-                        smr.material.SetFloat(animf.value_id, val);
-                    }
+                    continue;
                 }
-                else
+                SkinnedMeshRenderer smr = mesh_renderers[anim.mesh_id];
+
+                if (anim is ShaderAnimationFloat)
                 {
-                    Debug.LogError("Could not find mesh renderer " + anim.mesh_id + " in model");
-                }
+                    float divider = delta_time / anim_clip.length;
+                    ShaderAnimationFloat animf = (ShaderAnimationFloat)anim;
 
+                    if (divider < animf.start || divider > animf.end)
+                        continue;
+
+                    divider += animf.start;
+                    divider += 1.0f - animf.end;
+                    divider = Mathf.Min(1.0f, divider);
+                    float val = Mathf.Lerp(animf.start_value, animf.end_value, divider);
+
+                    smr.material.SetFloat(animf.value_id, val);
+                }
             }
 
 

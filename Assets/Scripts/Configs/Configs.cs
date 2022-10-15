@@ -147,6 +147,7 @@ public class Configs{
     public static ConfigAvatarAttributeColors config_avatar_attribute_colors;
     public static ConfigAvatarOutfitData config_avatar_outfit_data;
     public static ConfigAvatarPatchConfig config_avatar_patch_config;
+    public static ConfigScriptedClothingSet config_scripted_clothing_set;
     public static ConfigReward config_reward;
     public static ConfigPredicateAlias config_predicate_alias;
     public static ConfigDialogueSpeakers config_dialogue_speakers;
@@ -437,11 +438,14 @@ public class Configs{
         config_avatar_attribute_colors = ConfigAvatarAttributeColors.getJObjectsConfigsListST("AvatarAttributeColors");
         config_avatar_outfit_data = ConfigAvatarOutfitData.getJObjectsConfigsListST("AvatarOutfitData");
         config_avatar_patch_config = ConfigAvatarPatchConfig.getJObjectsConfigsListST("AvatarPatchConfig");
+        config_scripted_clothing_set = ConfigScriptedClothingSet.getJObjectsConfigsListST("ScriptedClothingSet");
         config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
         config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
         config_house = ConfigHouse.getJObjectsConfigsListST("House");
         config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
         config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
+        config_quidditch_broom_info = ConfigQuidditchBroomInfo.getJObjectsConfigsListST("QuidditchBroomInfo");
+        config_local_data = ConfigLocalData.getConfig();
         Configs.config_3dmodel.createMaterialDict();
     }
 
@@ -455,6 +459,7 @@ public class Configs{
         config_avatar_attribute_colors = ConfigAvatarAttributeColors.getJObjectsConfigsListST("AvatarAttributeColors");
         config_avatar_outfit_data = ConfigAvatarOutfitData.getJObjectsConfigsListST("AvatarOutfitData");
         config_avatar_patch_config = ConfigAvatarPatchConfig.getJObjectsConfigsListST("AvatarPatchConfig");
+        config_scripted_clothing_set = ConfigScriptedClothingSet.getJObjectsConfigsListST("ScriptedClothingSet");
         config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
         config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
         config_house = ConfigHouse.getJObjectsConfigsListST("House");

@@ -25,6 +25,7 @@ public class Scenario
     public Dictionary<string, List<string>> scenario_interactions_completed = new Dictionary<string, List<string>>();
     public Dictionary<string, Dictionary<string, int>> contentVars = new Dictionary<string, Dictionary<string, int>>();
 
+    public static List<string> appliedClothes = null; //This is stored in the scenario, because it probably resets on scenario change
 
     #region non-statics
 
@@ -168,6 +169,7 @@ public class Scenario
                 Debug.Log("Didn't load the scenario, as it is the one we're in.");
 
                 GameStart.interaction_manager.reloadGroups();
+                onScenarioLoaded.Invoke();
 
                 return; //We are already in the right scenario
             }
@@ -190,7 +192,11 @@ public class Scenario
         GameStart.ui_manager.closePopup();
         GameStart.ui_manager.next_area_button.SetActive(false);
         GameStart.ui_manager.exit_to_menu_button.SetActive(false);
-
+        if (appliedClothes != null)
+        {
+            Debug.Log("Resetting the applied clothes robes! it was: " + appliedClothes);
+        }
+        appliedClothes = null;
 
         //Set the scene
         string chosen_scene = current.scenario_config.scene;
@@ -218,9 +224,9 @@ public class Scenario
         //Events
 
         if (current.scenario_config.enterEvents != null)
-        {
             GameStart.event_manager.main_event_player.addEvents(current.scenario_config.enterEvents);
-        }
+        if (current.scenario_config.resumeEvents != null)
+            GameStart.event_manager.main_event_player.addEvents(current.scenario_config.resumeEvents); //Not sure how these work. Maybe if a player leaves and comes back to a scenario?
 
         /*if (current.scenario_config.scenarioId == "NUX_TrainScene")
         {
@@ -229,6 +235,7 @@ public class Scenario
             CameraManager.focusCam(ref a);
         }*/
         //Interactions
+        onScenarioLoaded.Invoke();
 
         EventManager.all_script_events_finished_event += onScenarioLoadScriptEventsFinished;
 
@@ -252,7 +259,99 @@ public class Scenario
             }
         }
 
-        onScenarioLoaded.Invoke();
+    }
+
+    //This is basically local to the scenario
+    public static void changeClothes(string clothing_type, string secondary_clothing_option)
+    {
+        switch (clothing_type)
+        {
+            case "Scripted":
+                if (!Configs.config_scripted_clothing_set.ScriptedClothingSet.ContainsKey(secondary_clothing_option))
+                {
+                    Debug.LogError("Unknown scripted clothing set " + secondary_clothing_option);
+                    return;
+                }
+                if (Player.local_avatar_gender == "male")
+                    appliedClothes = new List<string>(Configs.config_scripted_clothing_set.ScriptedClothingSet[secondary_clothing_option].maleComponents);
+                else
+                    appliedClothes = new List<string>(Configs.config_scripted_clothing_set.ScriptedClothingSet[secondary_clothing_option].femaleComponents);
+                break;
+            case "Base":
+                appliedClothes = null;
+                break;
+            case "ClassRobes":
+                if (Player.local_avatar_gender == "male")
+                    appliedClothes = new List<string>() { "robeMale" };
+                else
+                    appliedClothes = new List<string>() { "robeFemale" };
+                break;
+            case "QuidditchRobesWalk":
+                switch (secondary_clothing_option)
+                {
+                    case "houseCup":
+                        appliedClothes = new List<string>() { "o_quidditchHouseCupRobesWalk" };
+                        break;
+                    case "friendly":
+                        appliedClothes = new List<string>() { "o_quidditchPracticeRobesWalk" };
+                        break;
+                    case "preTryout":
+                        appliedClothes = new List<string>() { "o_quidditchPreTryoutRobesWalk" };
+                        break;
+                }
+                break;
+
+            case "QuidditchRobesFly":
+                switch (secondary_clothing_option)
+                {
+                    case "houseCup":
+                        appliedClothes = new List<string>() { "o_quidditchHouseCupRobesFly" };
+                        break;
+                    case "friendly":
+                        appliedClothes = new List<string>() { "o_quidditchPracticeRobesFly" };
+                        break;
+                    case "preTryout":
+                        appliedClothes = new List<string>() { "o_quidditchPreTryoutRobesFly" };
+                        break;
+                }
+                break;
+            default:
+                throw new Exception("Unknown changeClothes type: " + clothing_type);
+        }
+
+        if (Actor.actor_controllers.ContainsKey(Player.local_avatar_onscreen_name))
+        {
+            if (appliedClothes == null)
+            {
+                Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.resetFromPlayerFile();
+                Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.spawnComponents();
+            }
+            else
+                foreach (var component in appliedClothes)
+                {
+                    Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.equipAvatarComponent(component);
+                }
+        }
+        else
+        {
+            Debug.Log("AVATAR WAS NOT SPAWNED FOR REPLACED CLOTHES/ROBES");
+        }
+    }
+
+    public static void setQuidditchHelmet(string predicate)
+    {
+        if (Actor.actor_controllers.ContainsKey(Player.local_avatar_onscreen_name))
+        {
+            if (predicate.ToLower() == "true")
+            {
+                Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.equipAvatarComponent("o_quidditchHouseCupHelmet"); //These helmets all seem to be the same across components
+            }
+            else
+            {
+                string avatar_hair_id = PlayerManager.current.customization_categories["hair"].component_id;
+                Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.equipAvatarComponent(avatar_hair_id);
+            }
+        }
     }
 
     public static void restartScenario()

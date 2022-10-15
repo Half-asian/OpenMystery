@@ -109,7 +109,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
                 public bool blocking;
                 public bool allowRootTransforms;
                 public int minLoops; //unimplemented
-                public int maxLoops; //unimplemented
+                public int maxLoops;
             }
             public node[] nodes;
 

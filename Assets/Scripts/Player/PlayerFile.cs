@@ -43,10 +43,4 @@ public class PlayerFile
         File.WriteAllText(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"), json_file);
     }
 
-    public static void respawnAvatar()
-    {
-        string waypointId = Actor.actor_controllers["Avatar"].actor_movement.destination_waypoint;
-        Actor.despawnCharacterInScene("Avatar");
-        Actor.spawnActor("Avatar", waypointId, "Avatar");
-    }
 }

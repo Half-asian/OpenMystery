@@ -58,18 +58,7 @@ public class EncounterDate : Encounter
 
         ConfigDatePrompt._DatePrompt date_prompt = Configs.config_date_prompt.DatePrompt[config_encounter.datePromptIds[0]];
 
-        ConfigScene._Scene.WayPoint waypoint = Scene.current.waypoint_dict[date_prompt.avatarSpawn];
-
-        Vector3 position = Vector3.zero;
-        Vector3 rotation = Vector3.zero;
-
-        if (waypoint.position != null)
-            position = new Vector3(waypoint.position[0], waypoint.position[1], waypoint.position[2]);
-        if (waypoint.rotation != null)
-            rotation = new Vector3(waypoint.rotation[0], waypoint.rotation[1], waypoint.rotation[2]);
-
-
-        Actor.actor_controllers["Avatar"].actor_movement.teleportCharacter(position, rotation);
+        Actor.actor_controllers[Player.local_avatar_onscreen_name].teleportCharacter(date_prompt.avatarSpawn);
 
         Actor.spawnActor(companion_id, date_prompt.dateSpawn, "opponent");
 
@@ -93,29 +82,10 @@ public class EncounterDate : Encounter
             {
                 ConfigDatePrompt._DatePrompt date_prompt = Configs.config_date_prompt.DatePrompt[config_encounter.datePromptIds[date_prompt_counter]];
 
-                ConfigScene._Scene.WayPoint waypoint = Scene.current.waypoint_dict[date_prompt.avatarSpawn];
 
-                Vector3 position = Vector3.zero;
-                Vector3 rotation = Vector3.zero;
+                Actor.actor_controllers[Player.local_avatar_onscreen_name].teleportCharacter(date_prompt.avatarSpawn);
 
-                if (waypoint.position != null)
-                    position = new Vector3(waypoint.position[0], waypoint.position[1], waypoint.position[2]);
-                if (waypoint.rotation != null)
-                    rotation = new Vector3(waypoint.rotation[0], waypoint.rotation[1], waypoint.rotation[2]);
-
-                Actor.actor_controllers["Avatar"].actor_movement.teleportCharacter(position, rotation);
-
-                waypoint = Scene.current.waypoint_dict[date_prompt.dateSpawn];
-
-                position = Vector3.zero;
-                rotation = Vector3.zero;
-
-                if (waypoint.position != null)
-                    position = new Vector3(waypoint.position[0], waypoint.position[1], waypoint.position[2]);
-                if (waypoint.rotation != null)
-                    rotation = new Vector3(waypoint.rotation[0], waypoint.rotation[1], waypoint.rotation[2]);
-
-                Actor.actor_controllers["opponent"].actor_movement.teleportCharacter(position, rotation);
+                Actor.actor_controllers["opponent"].teleportCharacter(date_prompt.dateSpawn);
 
                 DialogueManager.onDialogueFinishedEventPrimary += dialogueCallback;
                 

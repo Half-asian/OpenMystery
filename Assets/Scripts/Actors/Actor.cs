@@ -53,10 +53,6 @@ public class Actor
 
             Player.local_avatar_onscreen_name = character_name;
             actor_controller = StaticAvatarSpawner.spawnStaticAvatar(config_actor);
-            if (Player.local_avatar_clothing_type != null)
-            {
-                Player.changeClothes(Player.local_avatar_clothing_type, Player.local_avatar_secondary_clothing_option);
-            }
         }
         else
         {
@@ -90,11 +86,7 @@ public class Actor
         if (actor_controllers != null)
             actor_controllers[character_name] = actor_controller;
 
-        if (waypoint_id != null)
-        {
-            Scene.setGameObjectToWaypoint(actor_controller.model.game_object, waypoint_id);
-        }
-        actor_controller.actor_movement.destination_waypoint = waypoint_id;
+        actor_controller.teleportCharacter(waypoint_id);
 
         if (Scene.scene_model != null)
             actor_controller.model.game_object.transform.parent = Scene.scene_model.game_object.transform;
@@ -134,7 +126,7 @@ public class Actor
             am.gameObject.transform.localScale = new Vector3(float.Parse(serialized_actor[9], CultureInfo.InvariantCulture), float.Parse(serialized_actor[10], CultureInfo.InvariantCulture), float.Parse(serialized_actor[11], CultureInfo.InvariantCulture));
 
             Enum.TryParse(serialized_actor[12], out am.actor_state);
-            am.actor_movement.destination_waypoint = serialized_actor[13];
+            am.teleportCharacter(serialized_actor[13]);
             am.replaceCharacterIdle(serialized_actor[14]);
         }
     }

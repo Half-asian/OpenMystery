@@ -23,8 +23,10 @@ public class InteractionMatch : Interaction
     {
         base.onFinishedEnterEvents();
 
-        GameObject.DestroyImmediate(interaction_gameobject);
+        GameStart.quidditch_manager.startMatch(config_interaction.matchId);
 
-        GameStart.quidditch_manager.startMatch(config_interaction.matchId, this); //Finished is called from a callback at the end of a match
+        interactionComplete();
+
+ //       addExitEvents(true); //Probably not gonna happen idk
     }
 }

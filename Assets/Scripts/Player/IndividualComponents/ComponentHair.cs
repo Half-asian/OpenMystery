@@ -53,8 +53,11 @@ namespace IndividualComponents
                 int[] hair_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["hairColor"].colorConfigs[hair_color_id].codes;
 
                 Color c = new Color(hair_color_codes[0] / 255.0f, hair_color_codes[1] / 255.0f, hair_color_codes[2] / 255.0f, 1.0f);
-                SkinnedMeshRenderer smr = component_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>();
-                smr.material.SetColor("u_hairColor", c);
+                foreach (var smr in component_model.game_object.GetComponentsInChildren<SkinnedMeshRenderer>())
+                {
+                    if (smr.material.HasColor("u_hairColor"))
+                        smr.material.SetColor("u_hairColor", c);
+                }
             }
         }
     }

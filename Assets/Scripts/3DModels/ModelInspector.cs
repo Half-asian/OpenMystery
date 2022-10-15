@@ -46,15 +46,19 @@ public class ModelInspector : MonoBehaviour
         waypoint1.position = new float[] { 20f, 0, 20f };
 
         ConfigScene._Scene.WayPoint waypoint2 = new ConfigScene._Scene.WayPoint();
-        waypoint2.position = new float[] { 0, 0, 0 };
+        waypoint2.position = new float[] { 0, 0, 50 };
+        waypoint2.rotation = new float[] { 0, 162.99f, 0 };
 
         ConfigScene._Scene.WayPoint waypoint3 = new ConfigScene._Scene.WayPoint();
-        waypoint3.position = new float[] { 200, 0, 200 };
+        waypoint3.position = new float[] { 0, 0, 100 };
+        waypoint3.rotation = new float[] { 0, 177.28f, 0 };
 
         Scene.current.waypoint_dict = new Dictionary<string, ConfigScene._Scene.WayPoint>();
         Scene.current.waypoint_dict["waypoint1"] = waypoint1;
         Scene.current.waypoint_dict["waypoint2"] = waypoint2;
         Scene.current.waypoint_dict["waypoint3"] = waypoint3;
+
+        Debug.LogError(LocalData.getLine("TEST_QuidditchRivalHouse"));
 
     }
 
@@ -108,14 +112,18 @@ public class ModelInspector : MonoBehaviour
 
     public void advanceAnimSequence()
     {
-        if (model != null)
+        if (actor_controller != null)
         {
-            if (model.game_object.GetComponent<PropAnimSequence>() != null)
-                model.game_object.GetComponent<PropAnimSequence>().advanceAnimSequence();
-        }
-        else {
             if (actor_controller.gameObject.GetComponent<ActorAnimSequence>() != null)
                 actor_controller.gameObject.GetComponent<ActorAnimSequence>().advanceAnimSequence();
+            else
+                Debug.LogError("Failed to advance");
+        }
+        else {
+            if (model.game_object.GetComponent<PropAnimSequence>() != null)
+                model.game_object.GetComponent<PropAnimSequence>().advanceAnimSequence();
+            else
+                Debug.LogError("Failed to advance");
         }
 
     }
@@ -149,7 +157,7 @@ public class ModelInspector : MonoBehaviour
         if (actor_controller != null)
             actor_controller.destroy();
 
-        actor_controller = Actor.spawnActor(actor_input.text, null, "test");
+        actor_controller = Actor.spawnActor(actor_input.text, null, actor_input.text);
         model = actor_controller.model;
         actor_controller.model.game_object.transform.position = Vector3.zero;
     }

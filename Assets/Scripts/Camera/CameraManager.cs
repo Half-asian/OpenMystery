@@ -59,14 +59,14 @@ public class CameraManager : MonoBehaviour
     public void setMainLockedCamera(Vector3 position, Vector3 rotation)
     {
         setCameraState(CameraState.StateLocked);
-
+        resetCamera();
         main_camera.localPosition = position;
         main_camera.localEulerAngles = rotation;
     }
     public void setMainLockedCamera(Vector3 position, Quaternion rotation)
     {
         setCameraState(CameraState.StateLocked);
-
+        resetCamera();
         main_camera.localPosition = position;
         main_camera.localRotation = rotation;
     }

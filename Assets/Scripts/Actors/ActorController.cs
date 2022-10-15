@@ -4,7 +4,6 @@ using ModelLoading;
 public partial class ActorController : Node
 {
     public ActorHead actor_head;
-    public ActorMovement actor_movement;
     public List<Model> patches;
 
     private ConfigHPActorInfo._HPActorInfo _actor_info;
@@ -39,7 +38,6 @@ public partial class ActorController : Node
 
         actor_head = new ActorHead(this);
         initializeAnimations();
-        actor_movement = new ActorMovement(this);
         patches = new List<Model>();
 
     }
@@ -54,6 +52,10 @@ public partial class ActorController : Node
             GameObject.Destroy(particle);
         }
         particles = new List<GameObject>();
+        //Some animations change these
+        model.jt_all_bind.localPosition = Vector3.zero;
+        model.jt_all_bind.localRotation = Quaternion.identity;
+
     }
 
     public void setActorState(ActorState _actor_state)
@@ -69,6 +71,8 @@ public partial class ActorController : Node
 
     public void setCharacterIdle()
     {
+        finishMovement();
+
         setActorState(ActorState.Idle);
         playIdleAnimation();
     }
@@ -144,7 +148,7 @@ public partial class ActorController : Node
             gameObject.transform.localScale.z.ToString(),//11
 
             actor_state.ToString(),                     //12
-            actor_movement.getDestinationWaypoint(),    //13
+            getDestinationWaypoint(),    //13
             idle_animation,             //14
         };
 

@@ -21,6 +21,7 @@ public class ConfigScenario : Config<ConfigScenario>
         public CharSpawn[] charSpawns;
         public List<string[]> randomSpawns;
         public string[] enterEvents;
+        public string[] resumeEvents; //What is this?
         public string[] tappies;
         public string firstAction;
         public string mapLocationId;

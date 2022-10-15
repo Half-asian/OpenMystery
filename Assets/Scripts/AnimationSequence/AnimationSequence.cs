@@ -8,10 +8,9 @@ public abstract partial class AnimationSequence : MonoBehaviour
     public ConfigCharAnimSequence._CharAnimSequence config_sequence;
 
     protected Animation animation_component;
-
+    //the anim sequence node
     public int node_index = 0;
-
-    public bool waiting = false;
+    int node_repeated = 0;
 
     public IEnumerator wait_for_animation = null;
 
@@ -21,6 +20,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     string current_animation_name;
 
+    //Not the anim sequence node
     protected Node base_node;
 
     public virtual void initAnimSequence(string _anim_sequence, bool _walk)
@@ -31,8 +31,6 @@ public abstract partial class AnimationSequence : MonoBehaviour
         //Find the animation sequence in the config
 
         animation_component = GetComponent<Animation>();
-
-        waiting = false;
 
         if (wait_for_animation != null)
         {
@@ -61,13 +59,14 @@ public abstract partial class AnimationSequence : MonoBehaviour
             foreach (ConfigCharAnimSequence._CharAnimSequence._data.action action in config_sequence.data.startEdge.actions)
                 processAction(action);
 
-        activateNode(node_index);
+        activateNode();
 
         return;
     }
 
     public void advanceAnimSequence()
     {
+        node_repeated = 0;
         //Find the new node
         int edge_index = -1;
 
@@ -98,18 +97,18 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 processAction(action);
         }
 
-        activateNode(new_node_index);
+        node_index = new_node_index;
+        activateNode();
     }
 
-    public void activateNode(int node_index)
+    public void activateNode()
     {
+        node_repeated++;
         if (node_index == -1) //We have reached TheEnd
         {
             finishSequence();
             return;
         }
-
-        this.node_index = node_index;
 
         //Activate the actions
 
@@ -119,7 +118,6 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
 
         //Play the main animation
-        //if (walk)
         if (config_sequence.data.nodes[this.node_index].walkAnimName != null)
             current_animation_name = config_sequence.data.nodes[this.node_index].walkAnimName;
         else
@@ -129,8 +127,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
         if (config_sequence.data.nodes[this.node_index].blocking == false)
         {
-            waiting = true;
-            wait_for_animation = WaitForAnimation(animation_length, current_animation_name);
+            wait_for_animation = WaitForAnimation(animation_length);
             StartCoroutine(wait_for_animation);
         }
     }
@@ -141,22 +138,17 @@ public abstract partial class AnimationSequence : MonoBehaviour
         return;
     }
 
-    protected IEnumerator WaitForAnimation(float clip_time, string animation_name)
+    protected IEnumerator WaitForAnimation(float clip_time)
     {
         yield return new WaitForSeconds(clip_time);
 
         // at this point, the animation has completed
-        // so at this point, do whatever you wish...
-
-        if (waiting == true)
-        {
-            waiting = false;
+        // min loops unimplemented. No idea how it works.
+        if (node_repeated >= config_sequence.data.nodes[this.node_index].maxLoops)
             advanceAnimSequence();
-        }
         else
-        {
-            Debug.Log("Wtf");
-        }
+            activateNode();
+
     }
     public void safeAdvanceAnimSequenceTo(string destination) //THIS IS USED ONCE IN THE GAME. NO CLUE. THIS IS A STUB TO PREVENT A SOFT LOCK.
     {

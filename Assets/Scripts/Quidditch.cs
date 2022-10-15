@@ -9,9 +9,9 @@ public class Quidditch
     public event Action<string> match_finished_event = delegate { };
 
     int match_pivotal_play_index;
+    int match_pivotal_play_outro_index;
 
-    InteractionMatch interaction_callback;
-
+    bool has_played_pivotal_outro;
     public enum State
     {
         state_not_waiting,
@@ -31,51 +31,14 @@ public class Quidditch
 
     List<string> moves_already_played;
 
-    public void startMatch(string match_name, InteractionMatch _interaction_callback)
-    {
-        moves_already_played = new List<string>();
-        state = State.state_not_waiting;
-        interaction_callback = _interaction_callback;
-        startMatch(match_name);        
-    }
-
-
-    public ConfigPivotalPlay._PivotalPlay getPivotalPlayFromBucket(string pivotal_play_name)
-    {
-        Debug.Log("getPivotalPlayFromBucket");
-        List<string> keyList = new List<string>(Configs.config_pivotal_play_bucket.PivotalPlayBucket[pivotal_play_name].pivotalPlays.Keys);
-
-        List<string> real_keys = new List<string>();
-
-        foreach (string pivotal_play in keyList)
-        {
-            if (!moves_already_played.Contains(pivotal_play))  //Don't play the same move again.
-            {
-                if (Configs.config_pivotal_play.PivotalPlay[pivotal_play].availablePredicate != null)
-                {
-                    if (Predicate.parsePredicate(Configs.config_pivotal_play.PivotalPlay[pivotal_play].availablePredicate))
-                    {
-                        real_keys.Add(pivotal_play);
-                    }
-                }
-                else
-                {
-                    real_keys.Add(pivotal_play);
-                }
-            }
-        }
-
-        string randomKey = real_keys[UnityEngine.Random.Range(0, real_keys.Count)];
-
-        moves_already_played.Add(randomKey);
-
-        return Configs.config_pivotal_play.PivotalPlay[randomKey];
-    }
-
     public void startMatch(string match_name)
     {
-        match_pivotal_play_index = -1;
-
+        Debug.Log("Starting match " + match_name);
+        moves_already_played = new List<string>();
+        state = State.state_not_waiting;
+        match_pivotal_play_index = 0;
+        match_pivotal_play_outro_index = 0;
+        has_played_pivotal_outro = false;
         CameraManager.current.resetCamera();
 
 
@@ -109,7 +72,8 @@ public class Quidditch
         string team_player = null;
         string opponent_player = null;
 
-        switch (Player.local_avatar_house) {
+        switch (Player.local_avatar_house)
+        {
             case "gryffindor":
                 team_player = current_match.teamId_gPlayer;
                 opponent_player = current_match.teamId_gOpponent;
@@ -165,11 +129,41 @@ public class Quidditch
         Actor.spawnActor(teamIdToActorId(opponent_player, "chaser3"), "way_opponent_chaser3", "opponent_chaser3");
         Actor.spawnActor(teamIdToActorId(opponent_player, "beater1"), "way_opponent_beater1", "opponent_beater1");
         Actor.spawnActor(teamIdToActorId(opponent_player, "beater2"), "way_opponent_beater2", "opponent_beater2");
-
-        Player.changeClothes(Player.local_avatar_clothing_type, Player.local_avatar_secondary_clothing_option);
-
         nextMatchPivotalPlay();
     }
+
+    public ConfigPivotalPlay._PivotalPlay getPivotalPlayFromBucket(string pivotal_play_name)
+    {
+        Debug.Log("getPivotalPlayFromBucket");
+        List<string> keyList = new List<string>(Configs.config_pivotal_play_bucket.PivotalPlayBucket[pivotal_play_name].pivotalPlays.Keys);
+
+        List<string> real_keys = new List<string>();
+
+        foreach (string pivotal_play in keyList)
+        {
+            if (!moves_already_played.Contains(pivotal_play))  //Don't play the same move again.
+            {
+                if (Configs.config_pivotal_play.PivotalPlay[pivotal_play].availablePredicate != null)
+                {
+                    if (Predicate.parsePredicate(Configs.config_pivotal_play.PivotalPlay[pivotal_play].availablePredicate))
+                    {
+                        real_keys.Add(pivotal_play);
+                    }
+                }
+                else
+                {
+                    real_keys.Add(pivotal_play);
+                }
+            }
+        }
+
+        string randomKey = real_keys[UnityEngine.Random.Range(0, real_keys.Count)];
+
+        moves_already_played.Add(randomKey);
+
+        return Configs.config_pivotal_play.PivotalPlay[randomKey];
+    }
+
 
     public string teamIdToActorId(string teamId, string position)
     {
@@ -275,19 +269,21 @@ public class Quidditch
 
     public void nextMatchPivotalPlay()
     {
-        match_pivotal_play_index += 1;
         phase = "intro";
         if (match_pivotal_play_index < current_match.pivotalPlaySlots.Length)
         {
             activatePivotalPlayIntroPhases(current_match.pivotalPlaySlots[match_pivotal_play_index]);
+            match_pivotal_play_index += 1;
+        }
+        else if (has_played_pivotal_outro == false && match_pivotal_play_outro_index < current_match.outroPlays.Length)
+        {
+            activatePivotalPlayOutroPhases(current_match.outroPlays[match_pivotal_play_outro_index]);
+            match_pivotal_play_outro_index += 1;
         }
         else
         {
-
-
             finishMatch();
 
-            //GameStart.current.GetComponent<DungeonMaster>().checkObjective(current_match.matchId, "matchComplete");
             Scenario.Activate(current_match.scenarioId, Scenario.current.objective);
             Scenario.Load(current_match.outroScenarioId);
         }
@@ -313,11 +309,46 @@ public class Quidditch
             moves_already_played.Add(pivotal_play_name);
         }
 
+        if (current_pivotal_play.availablePredicate != null && !NewPredicate.parsePredicate(current_pivotal_play.availablePredicate)) //Failed the predicate, skip
+        {
+            nextMatchPivotalPlay();
+            return;
+        }
 
         play_phase_name = current_pivotal_play.introPhases[0];
         activatePlayPhase();
     }
 
+    public void activatePivotalPlayOutroPhases(string pivotal_play_name)
+    {
+        if (!Configs.config_pivotal_play.PivotalPlay.ContainsKey(pivotal_play_name))
+        {
+            if (!Configs.config_pivotal_play_bucket.PivotalPlayBucket.ContainsKey(pivotal_play_name))
+            {
+                Debug.LogError("Quidditch:activatePlayPhase - Config empty for id " + pivotal_play_name + "in PivotalPlay/PivotalPlayBucket");
+                return;
+            }
+            else
+            {
+                current_pivotal_play = getPivotalPlayFromBucket(pivotal_play_name);
+            }
+        }
+        else
+        {
+            current_pivotal_play = Configs.config_pivotal_play.PivotalPlay[pivotal_play_name];
+            moves_already_played.Add(pivotal_play_name);
+        }
+
+        if (current_pivotal_play.availablePredicate != null && !NewPredicate.parsePredicate(current_pivotal_play.availablePredicate)) //Failed the predicate, skip
+        {
+            nextMatchPivotalPlay();
+            return;
+        }
+
+        has_played_pivotal_outro = true;
+        play_phase_name = current_pivotal_play.introPhases[0];
+        activatePlayPhase();
+    }
 
 
     public void activatePlayPhase()

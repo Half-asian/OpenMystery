@@ -39,8 +39,11 @@ public partial class ActorController : Node
     {
         default_anim = new HPAnimation(Resources.Load("default") as AnimationClip);
         default_anim.anim_clip.legacy = true;
-        idle_animation = actor_info.animId_idle;
-        walk_animation = actor_info.animId_walk;
+        if (actor_info is not null)
+        {
+            idle_animation = actor_info.animId_idle;
+            walk_animation = actor_info.animId_walk;
+        }
     }
 
 
@@ -58,14 +61,11 @@ public partial class ActorController : Node
         }
         else
         {
-            Debug.Log("Returning to normal idle");
             loadAnimationSet();
             if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
                 anim_state = "outro";
             else
                 anim_state = "intro";
-
-            Debug.Log(animation_current_loop != null);
 
             updateAndPlayAnimationState();
         }
@@ -73,7 +73,6 @@ public partial class ActorController : Node
 
     public void playWalkAnimation()
     {
-        Debug.Log("playWalkAnimation");
         cleanupState();
 
         loadAnimationSet();
@@ -151,7 +150,6 @@ public partial class ActorController : Node
     public void animateCharacter(string anim_name)
     {
         cleanupState();
-        Debug.Log("animateCharacter " + gameObject.name + " with anim " + anim_name);
         if (!Configs.config_animation.Animation3D.ContainsKey(anim_name))
         {
             Debug.LogError("Couldn't find animation " + anim_name);
@@ -175,7 +173,6 @@ public partial class ActorController : Node
         var new_anim = AnimationManager.loadAnimationClip(idle_queued_animate, model, actor_info, null, bone_mods: bone_mods);
         idle_queued_animate = null;
         playAnimationOnComponent(new_anim);
-        Debug.Log("Starting WaitForAnimateCharacterFinished");
 
         StartCoroutine(WaitForAnimateCharacterFinished(new_anim));
     }
@@ -195,7 +192,6 @@ public partial class ActorController : Node
                 throw new Exception("Unknown actor state.");
         }
 
-        Debug.Log("loadAnimationSet " + animation_id);
 
         if (!Configs.config_animation.Animation3D.ContainsKey(animation_id))
         {
@@ -311,7 +307,6 @@ public partial class ActorController : Node
     public IEnumerator WaitForAnimateCharacterFinished(HPAnimation animation)
     {
         yield return new WaitForSeconds(animation.anim_clip.length);
-        Debug.Log("Finished WaitForAnimateCharacterFinished");
         if (animation.anim_clip.wrapMode != WrapMode.Loop)
         {
             playIdleAnimation(); //This should trigger the regular idle to play

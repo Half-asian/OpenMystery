@@ -53,26 +53,6 @@ public class GameStart : MonoBehaviour
         }
     }
 
-
-    public void removePatchFromCharacter(string character_name, Model patch) //DONT USE THIS
-    {
-        return;
-        if (patch == null) {
-            return;
-        }
-        if (Actor.actor_controllers.ContainsKey(character_name)){
-
-            if (Actor.actor_controllers[character_name].patches.Contains(patch))
-            {
-
-            }
-            else
-            {
-                Debug.LogWarning("Could not find patch " + patch.game_object.name);
-            }
-        }
-    }
-
     public Model addPatchToCharacter(string character_name, string patch_name, Dictionary<string, Transform> parent_bones)
     {
         Debug.Log("add patch " + patch_name + " to " + character_name );
@@ -170,9 +150,6 @@ public class GameStart : MonoBehaviour
         main_menu.state = MainMenu.State.stateLoadingScreenLoading;
 
         ScreenFade.fadeFrom(1.0f, Color.black);
-
-        Player.local_avatar_clothing_type = null;
-        Player.local_avatar_secondary_clothing_option = null;
 
         System.IO.FileStream oFileStream = null;
 

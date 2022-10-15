@@ -38,7 +38,6 @@ public class ScreenFade : MonoBehaviour
 
     public static void fadeFrom(float time, Color color)
     {
-        Debug.Log("fadeFrom " + time);
         if (fallback != null)
             current.StopCoroutine(fallback);
         current.image.color = color;
@@ -57,7 +56,6 @@ public class ScreenFade : MonoBehaviour
 
     public static void fadeTo(float time, Color color)
     {
-        Debug.Log("fadeTo " + time);
         current.image.color = color;
         AnimationClip anim_clip = new AnimationClip();
         anim_clip.legacy = true;

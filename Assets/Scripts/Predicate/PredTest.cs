@@ -9,18 +9,6 @@ public class PredTest : MonoBehaviour
         //NewPredicate.startupTest();
         //NewPredicate.parsePredicate("  -5     ==    10     -    15");
         //NewPredicate.parsePredicate("falseTrue()");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-        Predicate.parsePredicate("random() < .8");
-
     }
 
 }

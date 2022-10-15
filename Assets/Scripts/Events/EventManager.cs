@@ -17,7 +17,7 @@ public class EventManager : MonoBehaviour
 
     public EventPlayer main_event_player;
     public List<EventPlayer> sequential_event_players;
-
+    List<EventPlayer> sequential_event_players_to_add = new List<EventPlayer>();
     public GameObject main_camera;
 
     //public string blocking_message;
@@ -65,6 +65,7 @@ public class EventManager : MonoBehaviour
 
     public void notifyMoveComplete(string character)
     {
+        Debug.Log("Move complete " + character);
         main_event_player.notifyMoveComplete(character);
         foreach (EventPlayer sequential_event_player in sequential_event_players)
         {
@@ -117,10 +118,19 @@ public class EventManager : MonoBehaviour
         EventPlayer new_event_player = gameObject.AddComponent<EventPlayer>();
         new_event_player.is_sequential_player = true;
         new_event_player.addEvents(events);
-        sequential_event_players.Add(new_event_player);
+        sequential_event_players_to_add.Add(new_event_player);
     }
 
-    public void removeSequentialPlayers()
+    private void addSequentialPlayers()
+    {
+        foreach(var sequential_player in sequential_event_players_to_add)
+        {
+            sequential_event_players.Add(sequential_player);
+        }
+        sequential_event_players_to_add.Clear();
+    }
+
+    private void removeSequentialPlayers()
     {
         List<EventPlayer> to_remove = new List<EventPlayer>();
         foreach(var sequential_player in sequential_event_players)
@@ -192,6 +202,7 @@ public class EventManager : MonoBehaviour
         {
             sequential_event_player.runImmediateEvents();
         }
+        addSequentialPlayers();
         removeSequentialPlayers();
     }
 
@@ -224,7 +235,12 @@ public class EventManager : MonoBehaviour
         {
             Destroy(sequential_event_player);
         }
+        foreach (EventPlayer sequential_event_player in sequential_event_players_to_add)
+        {
+            Destroy(sequential_event_player);
+        }
         sequential_event_players = new List<EventPlayer>();
+        sequential_event_players_to_add = new List<EventPlayer>();
 
     }
 

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using ModelLoading;
 using System.Globalization;
+using static CocosModel;
+
 public static class Events
 {
 
@@ -77,7 +79,7 @@ public static class Events
                 }
                 else
                 {
-                    Actor.actor_controllers[action_params[0]].actor_movement.setWaypoint(waypoint_connector);
+                    Actor.actor_controllers[action_params[0]].teleportCharacter(waypoint_connector);
                 }
                 moveCharacter(action_params);
                 break;
@@ -101,28 +103,16 @@ public static class Events
                     break;
                 }
 
-                ConfigScene._Scene.WayPoint waypoint_b = Scene.current.waypoint_dict[action_params[1]];
-
                 if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
                 {
                     Debug.Log("Couldn't find character " + action_params[0] + " in characters.");
                     break;
                 }
 
-                Vector3 position = Vector3.zero;
-                Vector3 rotation = Vector3.zero;
-
-                if (waypoint_b.position != null)
-                    position = new Vector3(waypoint_b.position[0] * -0.01f, waypoint_b.position[1] * 0.01f, waypoint_b.position[2] * 0.01f);
-                if (waypoint_b.rotation != null)
-                    rotation = new Vector3(waypoint_b.rotation[0], waypoint_b.rotation[1], waypoint_b.rotation[2]);
-
-
-                Actor.actor_controllers[action_params[0]].actor_movement.teleportCharacter(position, rotation);
+                Actor.actor_controllers[action_params[0]].teleportCharacter(action_params[1]);
 
                 Actor.actor_controllers[action_params[0]].actor_head.clearTurnHeadAt();
                 Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
-                Actor.actor_controllers[action_params[0]].actor_movement.destination_waypoint = waypoint_b.name;
                 break;
 
             case "teleportProp":
@@ -431,7 +421,7 @@ public static class Events
                     Debug.LogError("Couldn't find actor " + action_params[0]);
                     return;
                 }
-                moveCharacter(action_params, false, false);
+                moveCharacter(action_params);
                 Actor.actor_controllers[action_params[0]].replaceCharacterWalkSequence(action_params[2]);
                 break;
 
@@ -470,14 +460,14 @@ public static class Events
 
                 break;
             case "wearClothingType":
-                Debug.Log("wearClothingType");
-                Player.local_avatar_clothing_type = action_params[0];
-                Player.local_avatar_secondary_clothing_option = action_params[1];
-                //GetComponent<Player>().changeClothes(action_params[0], action_params[1], DialogueManager.local_avatar_onscreen_name);
+                Debug.Log("wearClothingType " + action_params[0]);
+                if (action_params.Length < 2)
+                    Scenario.changeClothes(action_params[0], null);
+                else
+                    Scenario.changeClothes(action_params[0], action_params[1]);
                 break;
             case "setQuidditchHelmetEquipped":
-                //if (Predicate.parsePredicate(action_params[0]))
-                //GetComponent<Player>().setQuidditchHelmet();
+                Scenario.setQuidditchHelmet(action_params[0]);
                 break;
             case "setForcedQuidditchPosition":
                 Player.local_avatar_quidditch_position = action_params[0];
@@ -617,13 +607,15 @@ public static class Events
         public Vector3 position;
         public Quaternion rotation;
     }
-    public static void moveCharacter(string[] action_params, bool walking = true, bool set_animation = true)
+    public static void moveCharacter(string[] action_params)
     {
         if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
         {
             Debug.LogError("Couldn't find character " + action_params[0] + " in characters.");
             return;
         }
+
+        ActorController actor_controller = Actor.actor_controllers[action_params[0]];
 
         if (!Scene.current.waypoint_dict.ContainsKey(action_params[1]))
         {
@@ -632,9 +624,13 @@ public static class Events
         }
 
         List<string> visited = new List<string>();
-        visited.Add(Actor.actor_controllers[action_params[0]].actor_movement.getDestinationWaypoint());
-        if (visited[0] == action_params[1]) //We are already at the destination
-            return;
+        string current_waypoint = actor_controller.getDestinationWaypoint();
+        if (current_waypoint != null)
+        {
+            visited.Add(current_waypoint);
+            if (current_waypoint == action_params[1]) //We are already at the destination
+                return;
+        }
 
         List<string> path = carvePath(visited, action_params[1]);
 
@@ -643,11 +639,13 @@ public static class Events
         {
             s_path += s + " ";
         }
-        Debug.Log(action_params[0] + " Walking: " + s_path + ". Starting at " + Actor.actor_controllers[action_params[0]].actor_movement.getDestinationWaypoint() + " going to " + action_params[1]);
+
+        Debug.Log(action_params[0] + " Walking: " + s_path + ". Starting at " + actor_controller.getDestinationWaypoint() + " going to " + action_params[1]);
+
         if (path.Count != 0)
         {
-            if (path[path.Count - 1] != action_params[1])
-            {   //Did not find a path
+            if (path[path.Count - 1] != action_params[1])//Did not find a path
+            {   
                 path.Clear();
                 path.Add(action_params[1]); //Change to a direct route
             }
@@ -658,30 +656,10 @@ public static class Events
             path.Add(action_params[1]); //Change to a direct route
         }
 
-
-
-        if (set_animation)
-        {
-            if (action_params.Length > 2)
-            {
-                //Unknown what fourth action_param does. It is usually set to 1
-                Actor.actor_controllers[action_params[0]].actor_movement.moveCharacter(path, action_params[2]);
-            }
-            else
-            {
-                if (walking)
-                    Actor.actor_controllers[action_params[0]].actor_movement.moveCharacter(path);
-                else
-                    Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 0.0f);
-            }
-        }
+        if (action_params.Length > 2 && (action_params[2] == "walk_wheelchairStudent" || action_params[2] == "c_Stu_Jog01" || action_params[2].Contains("flyingOnBroom")))
+            actor_controller.moveCharacter(path, 1.3f);
         else
-        {
-            if (action_params[2] == "walk_wheelchairStudent" || action_params[2] == "c_Stu_Jog01" || action_params[2].Contains("flyingOnBroom"))
-                Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 1.3f);
-            else
-                Actor.actor_controllers[action_params[0]].actor_movement.moveCharacterNoAnimation(path, 0.0f);
-        }
+            actor_controller.moveCharacter(path, 0.0f);
     }
     public class Looking
     {

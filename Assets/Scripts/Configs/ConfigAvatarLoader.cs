@@ -157,3 +157,32 @@ public class ConfigAvatarPatchConfig : Config<ConfigAvatarPatchConfig>
         Configs.config_avatar_patch_config = getJObjectsConfigsListST("AvatarPatchConfig");
     }
 }
+
+public class ConfigScriptedClothingSet : Config<ConfigScriptedClothingSet>
+{
+    [System.Serializable]
+    public class _ScriptedClothingSet
+    {
+        public string[] femaleComponents;
+        public string[] maleComponents;
+        public string setId;
+        public bool removeVanityItems; //Not sure the specs of this, probably not too important. Used in Y6C35P3
+    }
+
+    public Dictionary<string, _ScriptedClothingSet> ScriptedClothingSet;
+    public override ConfigScriptedClothingSet combine(List<ConfigScriptedClothingSet> other_list)
+    {
+        for (int i = 1; i < other_list.Count; i++)
+        {
+            foreach (string key in other_list[i].ScriptedClothingSet.Keys)
+            {
+                ScriptedClothingSet[key] = other_list[i].ScriptedClothingSet[key];
+            }
+        }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_scripted_clothing_set = getJObjectsConfigsListST("ScriptedClothingSet");
+    }
+}

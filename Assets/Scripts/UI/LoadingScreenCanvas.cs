@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class LoadingScreenCanvas : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class LoadingScreenCanvas : MonoBehaviour
     private GameObject image;
 
     public static LoadingScreenCanvas current;
+
+    private IEnumerator waitHideImage;
 
     private void Awake()
     {
@@ -19,12 +22,23 @@ public class LoadingScreenCanvas : MonoBehaviour
 
     public void showImage()
     {
+        if (waitHideImage != null)
+            StopCoroutine(waitHideImage);
         image.SetActive(true);
     }
 
     private void hideImage()
     {
+        waitHideImage = waitHideImageCoroutine();
+        StartCoroutine(waitHideImage);
+    }
+
+    //Hides the ugly parts of loading
+    IEnumerator waitHideImageCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
         image.SetActive(false);
+        waitHideImage = null;
     }
 
 }

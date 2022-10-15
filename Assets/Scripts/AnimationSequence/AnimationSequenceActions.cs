@@ -29,6 +29,10 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 stopPropAnim(action.id);
                 break;
 
+            case "RemoveProp":
+                removeChildNode(action.id); //action.target is bone to move from. doesnt seem so useful
+                break;
+
             default:
                 Debug.LogWarning("Unknown animation sequence action type of " + action.type + " in action " + action.id);
                 break;
@@ -62,6 +66,12 @@ public abstract partial class AnimationSequence : MonoBehaviour
     {
         base_node.attachChildNode(prop_model_id, alias, target);
     }
+
+    protected void removeChildNode(string prop_id)
+    {
+        base_node.removeProp(prop_id);
+    }
+
     protected abstract void attachBroom(string prop_model_id, string alias, string target);
     protected void playBroomAnim(string target)
     {
