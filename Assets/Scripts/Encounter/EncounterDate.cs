@@ -4,17 +4,13 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using System;
 
-public abstract class Encounter
-{
-    public ConfigEncounter._Encounter config_encounter { get; protected set; }
-    public abstract void activate();
-}
+
 
 public class EncounterDate : Encounter
 {
     public static string companion;
-    private static EncounterDate current; 
-
+    private static EncounterDate current;
+    private ConfigDatePrompt._DatePrompt date_prompt;
     public static event Action<bool> toggleCompanionCanvas = delegate { };
 
     int date_prompt_counter = 0;
@@ -23,6 +19,7 @@ public class EncounterDate : Encounter
         Assert.IsNotNull(_encounter, "EncounterDate() encounter cannot be null");
         config_encounter = _encounter;
         current = this;
+        finishedSuccesfully = true;
         showCompanionCanvas();
     }
 
@@ -31,13 +28,13 @@ public class EncounterDate : Encounter
         toggleCompanionCanvas.Invoke(true);
     }
 
-    public static void setCompanion(string companion)
+    public static void setCompanion(string _companion)
     {
-        EncounterDate.companion = companion;
+        companion = _companion;
 
-        if (!Configs.config_companion.Companion.ContainsKey(EncounterDate.companion))
+        if (!Configs.config_companion.Companion.ContainsKey(companion))
         {
-            Debug.LogError("Could not find companion " + EncounterDate.companion);
+            Debug.LogError("Could not find companion " + companion);
             return;
         }
 
@@ -47,26 +44,32 @@ public class EncounterDate : Encounter
 
     public override void activate()
     {
-        ConfigCompanion._Companion companion = Configs.config_companion.Companion[EncounterDate.companion];
-        string companion_id = null;
-        if (companion.specialActorIds != null)
-            companion_id = companion.specialActorIds["date"];
+        ConfigCompanion._Companion _companion = Configs.config_companion.Companion[companion];
+        string companion_id;
+        if (_companion.specialActorIds != null)
+            companion_id = _companion.specialActorIds["date"];
         else
-            companion_id = companion.actorId;
+            companion_id = _companion.actorId;
 
-        //GameStart.dialogue_manager.activateDialogue((string)encounter.conditionalIntroDialogs[0][1]);
 
-        ConfigDatePrompt._DatePrompt date_prompt = Configs.config_date_prompt.DatePrompt[config_encounter.datePromptIds[0]];
+        date_prompt = Configs.config_date_prompt.DatePrompt[config_encounter.datePromptIds[0]];
 
         Actor.actor_controllers[Player.local_avatar_onscreen_name].teleportCharacter(date_prompt.avatarSpawn);
 
         Actor.spawnActor(companion_id, date_prompt.dateSpawn, "opponent");
 
+        base.activate();
+    }
+
+    public override void onFinishedEnterEvents()
+    {
+        base.activate();
+
         DialogueManager.onDialogueFinishedEventPrimary += dialogueCallback;
 
         GameStart.dialogue_manager.activateDialogue(date_prompt.dialogue);
-        
     }
+
     public void dialogueCallback(string dialogue)
     {
         DialogueManager.onDialogueFinishedEventPrimary -= dialogueCallback;
@@ -77,7 +80,7 @@ public class EncounterDate : Encounter
             Debug.Log("Encounter Dialogue Callback");
             date_prompt_counter++;
             if (date_prompt_counter >= config_encounter.datePromptIds.Length)
-                finished();
+                finishedMainEncounter();
             else
             {
                 ConfigDatePrompt._DatePrompt date_prompt = Configs.config_date_prompt.DatePrompt[config_encounter.datePromptIds[date_prompt_counter]];
@@ -94,8 +97,4 @@ public class EncounterDate : Encounter
         }
     }
 
-    void finished()
-    {
-        EncounterManager.onEncounterComplete(config_encounter.encounterId);
-    }
 }

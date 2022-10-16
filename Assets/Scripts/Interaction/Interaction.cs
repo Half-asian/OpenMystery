@@ -71,11 +71,6 @@ public abstract class Interaction : MonoBehaviour
         return this;
     }
 
-    public virtual void onFinishedEnterEvents()
-    {
-        EventManager.all_script_events_finished_event -= onFinishedEnterEvents;
-    }
-
     public void activate()
     {
         activated = true;
@@ -89,6 +84,10 @@ public abstract class Interaction : MonoBehaviour
             }
         }
         EventManager.all_script_events_finished_event += onFinishedEnterEvents;
+    }
+    public virtual void onFinishedEnterEvents()
+    {
+        EventManager.all_script_events_finished_event -= onFinishedEnterEvents;
     }
     public void interactionComplete(bool success = true)
     {

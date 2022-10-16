@@ -10,27 +10,41 @@ public class ConfigEncounter : Config<ConfigEncounter>
     [System.Serializable]
     public class _Encounter
     {
+        public string companionId;
         public string className;
-        public dynamic conditionalIntroDialogs; //string or string[]
         public string encounterDesc;
         public string encounterId;
         public string encounterName;
-        public string[] exitEvents;
-        public string[] failEvents;
-        public string[] successEvents;
         public string icon;
-        public int maxCompanionYear;
-        public int maxRomXpBar;
-        public int numPrompts;
         public string opponentWaypoint;
+        public string oppositionId;
         public string participationRewardId;
         public string playlistId;
         public string specialActorId;
         public string startPrice;
         public string tagSet;
-        public int turnLimit;
         public string type;
         public string unlockPredicate;
+
+        public string[] companionTagsRequired;
+        public string[] companionTagsRestricted;
+        public string[] enterEvents;
+        public string[] exitEvents;
+        public string[] failEvents;
+        public string[] successEvents;
+        public string[] idleScripts; //Seems to be anim sequences
+        public string[] playerChoices;
+        public string[] thresholdRewards;
+
+        public int maxCompanionYear;
+        public int maxRomXpBar;
+        public int numPrompts;
+        public int turnLimit;
+        public int minThresholdsToPass;
+
+        public bool repeatable;
+
+        public dynamic conditionalIntroDialogs; //string or string[]
 
         /*Dating exclusive*/
         public string[] datePartnerIds;
@@ -38,6 +52,12 @@ public class ConfigEncounter : Config<ConfigEncounter>
         public string[][] outroDateScriptEvents;
         public int romLevelReqd;
 
+        /*Social exclusive*/
+        public string failDialogue;
+        public string successDialogue;
+        public float stanceEndMargin;
+        public string[] stanceOrder;
+        public string[] stanceThresholds;
     }
 
     public Dictionary<string, _Encounter> Encounter;
@@ -127,5 +147,41 @@ public class ConfigDatePrompt : Config<ConfigDatePrompt>
     public static void getConfig()
     {
         Configs.config_date_prompt = getJObjectsConfigsListST("DatePrompt");
+    }
+}
+
+public class ConfigEncounterOpposition : Config<ConfigEncounterOpposition>
+{
+    [System.Serializable]
+    public class _EncounterOpposition
+    {
+        public string oppositionId;
+        public string startModalAnim;
+        public string successModalAnim;
+        public string failModalAnim;
+        public string negativeIntroDialogue;
+        public string neutralIntroDialogue;
+        public string positiveIntroDialogue;
+        public float tooltipHeight;
+        public string[][] negativeMoods;
+        public string[][] neutralMoods;
+        public string[][] positiveMoods;
+    }
+
+    public Dictionary<string, _EncounterOpposition> EncounterOpposition;
+    public override ConfigEncounterOpposition combine(List<ConfigEncounterOpposition> other_list)
+    {
+        for (int i = 1; i < other_list.Count; i++)
+        {
+            foreach (string key in other_list[i].EncounterOpposition.Keys)
+            {
+                EncounterOpposition[key] = other_list[i].EncounterOpposition[key];
+            }
+        }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_encounter_opposition = getJObjectsConfigsListST("EncounterOpposition");
     }
 }

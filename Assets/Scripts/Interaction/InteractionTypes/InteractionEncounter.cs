@@ -22,7 +22,7 @@ public class InteractionEncounter : Interaction
     public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
-        if (Configs.config_encounter.Encounter[config_interaction.encounterId].type != "Date")
+        if (Configs.config_encounter.Encounter[config_interaction.encounterId].type != "Date" && Configs.config_encounter.Encounter[config_interaction.encounterId].type != "Social")
         {
             interactionComplete();
         }
@@ -31,16 +31,21 @@ public class InteractionEncounter : Interaction
             EncounterManager.onEncounterFinished += encounterComplete;
             GameStart.encounter_manager.activateEncounter(config_interaction.encounterId);
         }
+
         //Interaction is called from a callback.
         //finished();
     }
 
-    public void encounterComplete(string encounter_id)
+    public void encounterComplete(string encounter_id, bool succeeded)
     {
         if (encounter_id == config_interaction.encounterId)
         {
+            Debug.Log("Encounter complete");
             EncounterManager.onEncounterFinished -= encounterComplete;
-            interactionComplete();
+            if (succeeded)
+                interactionComplete();
+            else
+                interaction_gameobject.GetComponent<InteractionButton>().is_active = true;
         }
     }
 
