@@ -23,17 +23,17 @@ public static partial class AnimationManager
 
 	static Dictionary<string, Vector3> boneMODDefault_position = new Dictionary<string, Vector3>
 	{
-		["chin_MOD_Joint_bind"] = new Vector3(1.400244e-16f, -3.916735f, 2.928557f),
-		["jawCorners_MOD_Joint_bind"] = new Vector3(0.00242094f, -1.961419f, -0.2943561f),
-		["jt_lowLipParent_MOD_bind"] = new Vector3(-1.387779e-16f, 1.961419f, 0.294366f),
-		["jt_nose_MOD_bind"] = new Vector3(-0.4869505f, 3.511287e-14f, 4.476315f),
-		["jt_noseParent_MOD_bind"] = new Vector3(-3.489662e-14f, -0.4869505f, -4.476315f),
-		["jt_noseBridge_MOD_bind"] = new Vector3(-2.376049f, 3.61496e-14f, 4.345019f),
-		["jt_L_eye_MOD_bind"] = new Vector3(-2.574324f, -1.844644f, 3.032392f),
-		["jt_L_eyeParent_MOD_bind"] = new Vector3(1.844644f, -2.574573f, -3.023612f),
-		["jt_R_eye_MOD_bind"] = new Vector3(-2.574324f, 1.844644f, 3.032392f),
-		["jt_R_eyeParent_MOD_bind"] = new Vector3(-1.844644f, 2.574573f, 3.023612f),
-		["jt_mouth_MOD_bind"] = new Vector3(0.9160487f, -2.145447e-15f, 4.235064f),
+		["chin_MOD_Joint_bind"] = new Vector3(1.400244e-16f, -0.03916735f, 0.02928557f),
+		["jawCorners_MOD_Joint_bind"] = new Vector3(0.0000242094f, -0.01961419f, -0.002943561f),
+		["jt_lowLipParent_MOD_bind"] = new Vector3(-1.387779e-16f, 0.01961419f, 0.00294366f),
+		["jt_nose_MOD_bind"] = new Vector3(-0.004869505f, 3.511287e-14f, 0.04476315f),
+		["jt_noseParent_MOD_bind"] = new Vector3(-3.489662e-14f, -0.004869505f, -0.04476315f),
+		["jt_noseBridge_MOD_bind"] = new Vector3(-0.02376049f, 3.61496e-14f, 0.04345019f),
+		["jt_L_eye_MOD_bind"] = new Vector3(-0.02574324f, -0.01844644f, 0.03032392f),
+		["jt_L_eyeParent_MOD_bind"] = new Vector3(0.01844644f, -0.02574573f, -0.03023612f),
+		["jt_R_eye_MOD_bind"] = new Vector3(-0.02574324f, 0.01844644f, 0.03032392f),
+		["jt_R_eyeParent_MOD_bind"] = new Vector3(-0.01844644f, 0.02574573f, 0.03023612f),
+		["jt_mouth_MOD_bind"] = new Vector3(0.009160487f, -2.145447e-15f, 0.04235064f),
 	};
 
 	static Dictionary<string, Quaternion> boneMODDefault_rotation = new Dictionary<string, Quaternion>
@@ -78,11 +78,9 @@ public static partial class AnimationManager
 				List<Keyframe> key_frames_scale_y = new List<Keyframe>();
 				List<Keyframe> key_frames_scale_z = new List<Keyframe>();
 
-				key_frames_pos_x.Add(new Keyframe(0, bone_mods[key].translation[0] + boneMODDefault_position[key].x));
-				key_frames_pos_y.Add(new Keyframe(0, bone_mods[key].translation[1] + boneMODDefault_position[key].y));
-				key_frames_pos_z.Add(new Keyframe(0, bone_mods[key].translation[2] + boneMODDefault_position[key].z));
-
-
+				key_frames_pos_x.Add(new Keyframe(0, bone_mods[key].translation[0] * 0.01f + boneMODDefault_position[key].x));
+				key_frames_pos_y.Add(new Keyframe(0, bone_mods[key].translation[1] * 0.01f + boneMODDefault_position[key].y));
+				key_frames_pos_z.Add(new Keyframe(0, bone_mods[key].translation[2] * 0.01f + boneMODDefault_position[key].z));
 
 				Quaternion resulting_quaternion = bone_mods[key].rotation * boneMODDefault_rotation[key];
 

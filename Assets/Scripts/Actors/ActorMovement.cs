@@ -64,6 +64,7 @@ public partial class ActorController : Node
 
     private void applyWaypoint()
     {
+        Debug.Log("applying waypoint for " + name + " waypoint: " + destination_waypoint.name);
         if (destination_waypoint == null)
             return;
         Vector3 position = Vector3.zero;
@@ -82,7 +83,10 @@ public partial class ActorController : Node
         gameObject.transform.Rotate(new Vector3(rotation[0], 0, 0));
 
         if (destination_waypoint.scale != null)
-            gameObject.transform.localScale = new Vector3(destination_waypoint.scale[0] * 0.01f, destination_waypoint.scale[1] * 0.01f, destination_waypoint.scale[2] * 0.01f);
+        {
+            gameObject.transform.localScale = new Vector3(destination_waypoint.scale[0], destination_waypoint.scale[1], destination_waypoint.scale[2]);
+        }
+
     }
 
 

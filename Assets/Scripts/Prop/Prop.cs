@@ -115,7 +115,7 @@ public class Prop : Node
     {
         Model model = ModelManager.loadModel(prop_locator.reference);
 
-        Common.setWaypointTransform(ref model.game_object, prop_locator);
+        Common.setPropLocatorTransform(ref model.game_object, prop_locator);
 
         if (model == null)
         {
@@ -123,7 +123,7 @@ public class Prop : Node
             return;
         }
 
-        model.game_object.transform.parent = Scene.scene_model.game_object.transform;
+        model.game_object.transform.SetParent(GameStart.current.props_holder);
         model.game_object.gameObject.name = prop_locator.name;
         Prop prop = model.game_object.AddComponent<Prop>();
         prop.setup(prop_locator.name, model, Prop.spawner.Scene, "");

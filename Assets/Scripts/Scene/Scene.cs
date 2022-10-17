@@ -449,9 +449,7 @@ public class Scene
                     }
                     if (w.scale != null)
                     {
-                        //The whole scene is actually set to 0.01 * scale
-                        //We can only set localscale, so need to adjust
-                        actor_gameobject.transform.localScale = new Vector3(w.scale[0] / 100.0f, w.scale[1] / 100.0f, w.scale[2] / 100.0f); 
+                        actor_gameobject.transform.localScale = new Vector3(w.scale[0], w.scale[1], w.scale[2]); 
                     }
                 }
             }

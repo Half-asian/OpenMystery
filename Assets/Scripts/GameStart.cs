@@ -32,6 +32,8 @@ public class GameStart : MonoBehaviour
     public bool model_inspector;
     public AudioClip music;
 
+    public Transform actors_holder;
+    public Transform props_holder;
     void Update()
     {
         onUpdate.Invoke();

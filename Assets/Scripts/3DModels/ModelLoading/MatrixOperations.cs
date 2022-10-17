@@ -7,9 +7,9 @@ namespace ModelLoading
 		public static Vector3 ExtractTranslationFromMatrix(ref Matrix4x4 matrix)
 		{
 			Vector3 translate;
-			translate.x = matrix.m03;
-			translate.y = matrix.m13;
-			translate.z = matrix.m23;
+			translate.x = matrix.m03 * 0.01f;
+			translate.y = matrix.m13 * 0.01f;
+			translate.z = matrix.m23 * 0.01f;
 			return translate;
 		}
 		public static Quaternion ExtractRotationFromMatrix(ref Matrix4x4 matrix)

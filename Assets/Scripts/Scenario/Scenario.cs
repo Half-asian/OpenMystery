@@ -8,6 +8,7 @@ public class SerializedScenario
 {
     public string[][] interactions;
     public string[][] actors;
+    public List<string> appliedClothes = null;
     public Dictionary<string, Dictionary<string, int>> contentVars;
 }
 
@@ -25,7 +26,7 @@ public class Scenario
     public Dictionary<string, List<string>> scenario_interactions_completed = new Dictionary<string, List<string>>();
     public Dictionary<string, Dictionary<string, int>> contentVars = new Dictionary<string, Dictionary<string, int>>();
 
-    public static List<string> appliedClothes = null; //This is stored in the scenario, because it probably resets on scenario change
+    public List<string> appliedClothes = null; //This is stored in the scenario, because it probably resets on scenario change
 
     #region non-statics
 
@@ -191,12 +192,7 @@ public class Scenario
         GameStart.interaction_manager.destroyAllInteractions();
         GameStart.ui_manager.closePopup();
         GameStart.ui_manager.next_area_button.SetActive(false);
-        GameStart.ui_manager.exit_to_menu_button.SetActive(false);
-        if (appliedClothes != null)
-        {
-            Debug.Log("Resetting the applied clothes robes! it was: " + appliedClothes);
-        }
-        appliedClothes = null;
+        GameStart.ui_manager.exit_to_menu_button.SetActive(false);        
 
         //Set the scene
         string chosen_scene = current.scenario_config.scene;
@@ -211,13 +207,16 @@ public class Scenario
 
         if (scenarios_serialized.ContainsKey(current.scenario_config.scenarioId))
         {
-            Actor.spawnSerializedActors(scenarios_serialized[current.scenario_config.scenarioId].actors);
-            current.contentVars = scenarios_serialized[current.scenario_config.scenarioId].contentVars;
+            var serialized = scenarios_serialized[current.scenario_config.scenarioId];
+            Actor.spawnSerializedActors(serialized.actors);
+            current.contentVars = serialized.contentVars;
+            current.appliedClothes = serialized.appliedClothes;
         }
         else
         {
             Actor.spawnScenarioActors();
             current.contentVars = new Dictionary<string, Dictionary<string, int>>();
+            current.appliedClothes = null;
         }
         Prop.spawnScenarioProps();
         Tappie.spawnTappies();
@@ -228,12 +227,11 @@ public class Scenario
         if (current.scenario_config.resumeEvents != null)
             GameStart.event_manager.main_event_player.addEvents(current.scenario_config.resumeEvents); //Not sure how these work. Maybe if a player leaves and comes back to a scenario?
 
-        /*if (current.scenario_config.scenarioId == "NUX_TrainScene")
-        {
-            Debug.Log("choo choo");
-            string[] a = new string[] { "cam_shotA", "0" };
-            CameraManager.focusCam(ref a);
-        }*/
+        //Constant screenfade event
+        //screen always fades from black on scenario change
+        //some scenario enter events write never ending ftbs erroneously. This should override them.
+        GameStart.event_manager.main_event_player.addEvents(new string[] { "ffb_Halfs" });
+
         //Interactions
         onScenarioLoaded.Invoke();
 
@@ -273,30 +271,30 @@ public class Scenario
                     return;
                 }
                 if (Player.local_avatar_gender == "male")
-                    appliedClothes = new List<string>(Configs.config_scripted_clothing_set.ScriptedClothingSet[secondary_clothing_option].maleComponents);
+                    current.appliedClothes = new List<string>(Configs.config_scripted_clothing_set.ScriptedClothingSet[secondary_clothing_option].maleComponents);
                 else
-                    appliedClothes = new List<string>(Configs.config_scripted_clothing_set.ScriptedClothingSet[secondary_clothing_option].femaleComponents);
+                    current.appliedClothes = new List<string>(Configs.config_scripted_clothing_set.ScriptedClothingSet[secondary_clothing_option].femaleComponents);
                 break;
             case "Base":
-                appliedClothes = null;
+                current.appliedClothes = null;
                 break;
             case "ClassRobes":
                 if (Player.local_avatar_gender == "male")
-                    appliedClothes = new List<string>() { "robeMale" };
+                    current.appliedClothes = new List<string>() { "robeMale" };
                 else
-                    appliedClothes = new List<string>() { "robeFemale" };
+                    current.appliedClothes = new List<string>() { "robeFemale" };
                 break;
             case "QuidditchRobesWalk":
                 switch (secondary_clothing_option)
                 {
                     case "houseCup":
-                        appliedClothes = new List<string>() { "o_quidditchHouseCupRobesWalk" };
+                        current.appliedClothes = new List<string>() { "o_quidditchHouseCupRobesWalk" };
                         break;
                     case "friendly":
-                        appliedClothes = new List<string>() { "o_quidditchPracticeRobesWalk" };
+                        current.appliedClothes = new List<string>() { "o_quidditchPracticeRobesWalk" };
                         break;
                     case "preTryout":
-                        appliedClothes = new List<string>() { "o_quidditchPreTryoutRobesWalk" };
+                        current.appliedClothes = new List<string>() { "o_quidditchPreTryoutRobesWalk" };
                         break;
                 }
                 break;
@@ -305,13 +303,13 @@ public class Scenario
                 switch (secondary_clothing_option)
                 {
                     case "houseCup":
-                        appliedClothes = new List<string>() { "o_quidditchHouseCupRobesFly" };
+                        current.appliedClothes = new List<string>() { "o_quidditchHouseCupRobesFly" };
                         break;
                     case "friendly":
-                        appliedClothes = new List<string>() { "o_quidditchPracticeRobesFly" };
+                        current.appliedClothes = new List<string>() { "o_quidditchPracticeRobesFly" };
                         break;
                     case "preTryout":
-                        appliedClothes = new List<string>() { "o_quidditchPreTryoutRobesFly" };
+                        current.appliedClothes = new List<string>() { "o_quidditchPreTryoutRobesFly" };
                         break;
                 }
                 break;
@@ -321,13 +319,13 @@ public class Scenario
 
         if (Actor.actor_controllers.ContainsKey(Player.local_avatar_onscreen_name))
         {
-            if (appliedClothes == null)
+            if (current.appliedClothes == null)
             {
                 Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.resetFromPlayerFile();
                 Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.spawnComponents();
             }
             else
-                foreach (var component in appliedClothes)
+                foreach (var component in current.appliedClothes)
                 {
                     Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.equipAvatarComponent(component);
                 }
@@ -367,6 +365,7 @@ public class Scenario
         serialized_scenario.interactions = GameStart.interaction_manager.serializeInteractions();
         serialized_scenario.actors = Actor.serializeActors();
         serialized_scenario.contentVars = current.contentVars;
+        serialized_scenario.appliedClothes = current.appliedClothes;
         scenarios_serialized[current.scenario_config.scenarioId] = serialized_scenario;
     }
 }

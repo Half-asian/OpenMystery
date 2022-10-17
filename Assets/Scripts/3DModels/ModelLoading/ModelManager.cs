@@ -55,26 +55,6 @@ namespace ModelLoading {
 		}
 
 
-		public static void applyBoneTransforms(Transform base_transform, Dictionary<string, BoneTransform> bone_transform_modifiers = null)
-		{
-			Debug.Log("applyBoneTransforms");
-			SkinnedMeshRenderer[] smrs = base_transform.GetComponentsInChildren<SkinnedMeshRenderer>();
-
-			foreach (SkinnedMeshRenderer smr in smrs)
-			{
-				Matrix4x4[] matrices = smr.sharedMesh.bindposes;
-				for (int i = 0; i < smr.bones.Length; i++)
-				{
-					if (bone_transform_modifiers.ContainsKey(smr.bones[i].name))
-					{
-						Debug.Log("Applying");
-						bone_transform_modifiers[smr.bones[i].name].apply(ref smr.bones[i]);
-					}
-				}
-				smr.sharedMesh.bindposes = matrices;
-			}
-		}
-
 		private static void processMesh(CocosModel.Mesh mesh)
         {
 			int stride = 0;
@@ -127,7 +107,7 @@ namespace ModelLoading {
 					switch (attrib.attribute)
 					{
 						case "VERTEX_ATTRIB_POSITION":
-							mesh.VERTEX_ATTRIB_POSITION.Add(new Vector3(mesh.vertices[v + offset] * -1, mesh.vertices[v + offset + 1], mesh.vertices[v + offset + 2]));
+							mesh.VERTEX_ATTRIB_POSITION.Add(new Vector3(mesh.vertices[v + offset] * -0.01f, mesh.vertices[v + offset + 1] *0.01f, mesh.vertices[v + offset + 2] *0.01f));
 							break;
 						case "VERTEX_ATTRIB_NORMAL":
 							mesh.VERTEX_ATTRIB_NORMAL.Add(new Vector3(-mesh.vertices[v + offset], mesh.vertices[v + offset + 1], mesh.vertices[v + offset + 2]));
@@ -355,8 +335,11 @@ namespace ModelLoading {
 						bones.Add(pose_bone_dict[b.node]);
 
 					Matrix4x4 new_bindpose = new Matrix4x4(new Vector4(b.transform[0], -b.transform[1], -b.transform[2], b.transform[3]), new Vector4(-b.transform[4], b.transform[5], b.transform[6], b.transform[7]), new Vector4(-b.transform[8], b.transform[9], b.transform[10], b.transform[11]), new Vector4(-b.transform[12], b.transform[13], b.transform[14], b.transform[15]));
+					new_bindpose[0, 3] *= 0.01f;
+                    new_bindpose[1, 3] *= 0.01f;
+                    new_bindpose[2, 3] *= 0.01f;
 
-					localBindPosesList.Add(new_bindpose);
+                    localBindPosesList.Add(new_bindpose);
 				}
 
 				skinned_mesh_renderer.bones = bones.ToArray();
@@ -421,8 +404,6 @@ namespace ModelLoading {
 				processNode(node, force_transparent);
 
 			}
-
-			model_game_object.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
 			if (parent_bones != null)
 				GameObject.Destroy(model_game_object.transform.Find("Armature").gameObject);

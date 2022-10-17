@@ -211,13 +211,13 @@ public static partial class AnimationManager
 		Keyframe keyframe_pos_y;
 		Keyframe keyframe_pos_z;
 
-		if (use_bone_mod == true)
+		if (use_bone_mod == true) //Not even used?
 		{
 			if (!bone_mods[bone_name].CameraHack)
 			{
-				keyframe_pos_x = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -1 + bone_mods[bone_name].translation.x);
-				keyframe_pos_y = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] + bone_mods[bone_name].translation.y);
-				keyframe_pos_z = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] + bone_mods[bone_name].translation.z);
+				keyframe_pos_x = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -0.01f + bone_mods[bone_name].translation.x * 0.01f);
+				keyframe_pos_y = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] * 0.01f + bone_mods[bone_name].translation.y * 0.01f);
+				keyframe_pos_z = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] * 0.01f + bone_mods[bone_name].translation.z * 0.01f);
 			}
 			else
 				return;
@@ -226,9 +226,9 @@ public static partial class AnimationManager
 		{
 			if (!is_camera)
 			{
-				keyframe_pos_x = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -1);
-				keyframe_pos_y = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1]);
-				keyframe_pos_z = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2]);
+				keyframe_pos_x = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[0] * -0.01f);
+				keyframe_pos_y = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[1] * 0.01f);
+				keyframe_pos_z = new Keyframe(keyframe.keytime * animation_length, keyframe.translation[2] * 0.01f);
 			}
 			else
 			{

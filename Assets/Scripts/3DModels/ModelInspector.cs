@@ -57,9 +57,6 @@ public class ModelInspector : MonoBehaviour
         Scene.current.waypoint_dict["waypoint1"] = waypoint1;
         Scene.current.waypoint_dict["waypoint2"] = waypoint2;
         Scene.current.waypoint_dict["waypoint3"] = waypoint3;
-
-        Debug.LogError(LocalData.getLine("TEST_QuidditchRivalHouse"));
-
     }
 
     private void Update()

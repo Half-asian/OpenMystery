@@ -73,15 +73,11 @@ class StaticAvatarSpawner
 
         c.bone_mods = avatar_components.bonemods;
 
-        if (Scenario.appliedClothes != null) //Apply scenario clothes
+        if (Scenario.current != null && Scenario.current.appliedClothes != null) //Apply scenario clothes
         {
             Debug.Log("SPAWNING APPLIED CLOTHES/ROBES");
-            foreach (var component in Scenario.appliedClothes)
+            foreach (var component in Scenario.current.appliedClothes)
                 c.avatar_components.equipAvatarComponent(component);
-        }
-        else
-        {
-            Debug.Log("NO APPLIED CLOTHES/ROBES!");
         }
 
         return c;

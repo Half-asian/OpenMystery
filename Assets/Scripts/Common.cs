@@ -32,7 +32,7 @@ public class Common
         return -1;
     }
 
-    public static void setWaypointTransform(ref GameObject prop, ConfigScene._Scene.PropLocator prop_locator)
+    public static void setPropLocatorTransform(ref GameObject prop, ConfigScene._Scene.PropLocator prop_locator)
     {
         if (prop_locator.position != null)
         {
@@ -47,7 +47,7 @@ public class Common
         }
         if (prop_locator.scale != null)
         {
-            prop.transform.localScale = new Vector3(prop_locator.scale[0] * 0.01f, prop_locator.scale[1] * 0.01f, prop_locator.scale[2] * 0.01f);
+            prop.transform.localScale = new Vector3(prop_locator.scale[0], prop_locator.scale[1], prop_locator.scale[2]);
         }
     }
 

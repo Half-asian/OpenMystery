@@ -89,7 +89,7 @@ public class Actor
         actor_controller.teleportCharacter(waypoint_id);
 
         if (Scene.scene_model != null)
-            actor_controller.model.game_object.transform.parent = Scene.scene_model.game_object.transform;
+            actor_controller.model.game_object.transform.SetParent(GameStart.current.actors_holder);
         actor_controller.replaceCharacterIdle(actor_controller.actor_info.animId_idle);
         actor_controllers_pool.Add(actor_controller);
         return actor_controller;
