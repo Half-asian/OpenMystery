@@ -107,7 +107,6 @@ public class LocalData : MonoBehaviour
             string word = text.Substring(firstidx, secndidx - firstidx);
             string replacementWord = replaceToken(word);
             text = text.Replace(word, replacementWord);
-            Debug.Log(text);
             counter++;
             if (counter > 100)
             {

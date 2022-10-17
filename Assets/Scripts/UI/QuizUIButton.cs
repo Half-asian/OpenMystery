@@ -5,10 +5,18 @@ using UnityEngine;
 public class QuizUIButton : MonoBehaviour
 {
     public string choice_id;
+    public bool is_social_quiz;
 
     public void buttonClicked()
     {
-        QuizUI.onButtonClicked(choice_id);
+        if (is_social_quiz)
+        {
+            SocialQuizUI.onButtonClicked(choice_id);
+        }
+        else
+        { 
+            QuizUI.onButtonClicked(choice_id);
+        }
     }
 
 }

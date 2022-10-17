@@ -63,7 +63,7 @@ public class EncounterDate : Encounter
 
     public override void onFinishedEnterEvents()
     {
-        base.activate();
+        base.onFinishedEnterEvents();
 
         DialogueManager.onDialogueFinishedEventPrimary += dialogueCallback;
 

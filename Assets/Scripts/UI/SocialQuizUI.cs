@@ -5,14 +5,12 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class QuizUI : MonoBehaviour
+public class SocialQuizUI : MonoBehaviour
 {
-    static QuizUI current;
+    static SocialQuizUI current;
 
-    public static event Action<bool> onQuizGameFinished = delegate { };
+    public static event Action<bool> onSocialQuizGameFinished = delegate { };
 
-    [SerializeField]
-    private Image black_fade;
     [SerializeField]
     private TMPro.TMP_Text question_text;
 
@@ -23,7 +21,8 @@ public class QuizUI : MonoBehaviour
 
     private static bool waiting_for_button_press = false;
     private static string selected_choice_id = "";
-    private static string correct_choice_id = "";
+    private static List<string> correct_choice_ids = new List<string>();
+    private static List<string> okay_choice_ids = new List<string>();
     private static List<string> active_choices;
 
     [SerializeField]
@@ -37,7 +36,6 @@ public class QuizUI : MonoBehaviour
     {
         current = this;
         question_text.gameObject.SetActive(false);
-        black_fade.gameObject.SetActive(false);
         waiting_for_button_press = true;
         selected_choice_id = "";
     }
@@ -55,24 +53,24 @@ public class QuizUI : MonoBehaviour
         }
     }
 
-    public static void startQuizGame(string question, string correct_choice, List<string> wrong_choices)
+    public static void startSocialQuiz(string question, List<string> correct_choices, List<string> okay_choices, List<string> incorrect_choices)
     {
         active_choices = new List<string>();
-        active_choices.Add(correct_choice);
-        active_choices.AddRange(wrong_choices);
+        active_choices.AddRange(correct_choices);
+        active_choices.AddRange(okay_choices);
+        active_choices.AddRange(incorrect_choices);
+        correct_choice_ids = correct_choices;
+        okay_choice_ids = okay_choices;
         Shuffle(active_choices);
 
-        correct_choice_id = correct_choice;
-
         current.question_text.gameObject.SetActive(true);
-        current.black_fade.gameObject.SetActive(true);
 
         current.question_text.text = LocalData.getLine(question);
 
         Vector3 position = new Vector3(210, 50, 0);
         foreach(var choice_id in active_choices)
         {
-            var choice = Instantiate(Resources.Load<GameObject>("UI/Quiz/Choice"));
+            var choice = Instantiate(Resources.Load<GameObject>("UI/SocialQuiz/Choice"));
             choice.name = "Choice: " + choice_id;
             choice.GetComponentInChildren<TMP_Text>().text = LocalData.getLine(choice_id);
             var quiz_ui_button = choice.GetComponent<QuizUIButton>();
@@ -107,13 +105,13 @@ public class QuizUI : MonoBehaviour
         foreach (var choice_id in active_choices)
         {
             GameObject result;
-            if (choice_id == correct_choice_id)
+            if (correct_choice_ids.Contains(choice_id))
             {
-                result = Instantiate(Resources.Load<GameObject>("UI/Quiz/CorrectChoiceResult"));
+                result = Instantiate(Resources.Load<GameObject>("UI/SocialQuiz/CorrectChoiceResult"));
             }
             else
             {
-                result = Instantiate(Resources.Load<GameObject>("UI/Quiz/IncorrectChoiceResult"));
+                result = Instantiate(Resources.Load<GameObject>("UI/SocialQuiz/IncorrectChoiceResult"));
             }
 
             result.transform.SetParent(current.transform);
@@ -134,9 +132,8 @@ public class QuizUI : MonoBehaviour
         }
 
         current.question_text.gameObject.SetActive(false);
-        current.black_fade.gameObject.SetActive(false);
 
-        if (selected_choice_id == correct_choice_id)
+        if (correct_choice_ids.Contains(selected_choice_id)  || okay_choice_ids.Contains(selected_choice_id))
             current.StartCoroutine(current.showSuccessText());
         else
             current.StartCoroutine(current.showFailText());
@@ -160,7 +157,7 @@ public class QuizUI : MonoBehaviour
         SuccessText.transform.localScale = new Vector3(1, 1, 1);
         yield return new WaitForSeconds(3f);
         SuccessText.SetActive(false);
-        onQuizGameFinished.Invoke(true);
+        onSocialQuizGameFinished.Invoke(true);
     }
 
     IEnumerator showFailText()
@@ -180,7 +177,7 @@ public class QuizUI : MonoBehaviour
         FailText.transform.localScale = new Vector3(1, 1, 1);
         yield return new WaitForSeconds(3f);
         FailText.SetActive(false);
-        onQuizGameFinished.Invoke(false);
+        onSocialQuizGameFinished.Invoke(false);
     }
 
 }

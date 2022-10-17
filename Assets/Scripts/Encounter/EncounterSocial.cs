@@ -50,28 +50,72 @@ public class EncounterSocial : Encounter
     {
         base.onFinishedEnterEvents();
 
-        DialogueManager.onDialogueFinishedEventSecondary += onDialogueMoodFinished;
+        DialogueManager.onDialogueFinishedEventPrimary += onDialogueFinished;
         GameStart.dialogue_manager.activateDialogue(config_opposition.negativeIntroDialogue);
 
         //EventManager.all_script_events_finished_event += finished;
 
     }
 
-    private void onDialogueMoodFinished(string dialogue_id)
+    private void onDialogueFinished(string dialogue_id)
     {
+        DialogueManager.onDialogueFinishedEventPrimary -= onDialogueFinished;
+
+        string mood_id = "";
+        switch (current_mood)
+        {
+            case "negative":
+                mood_id = config_opposition.negativeMoods[0][0];
+                break;
+            case "neutral":
+                mood_id = config_opposition.neutralMoods[0][0];
+                break;
+            case "positive":
+                mood_id = config_opposition.positiveMoods[0][0];
+                break;
+        }
+        var config_mood = Configs.config_encounter_mood.EncounterMood[mood_id];
+
+        var answer_pool = new List<string>(config_encounter.playerChoices);
+
+        //Lets do only index 0 for now
+        string question_id = config_mood.choices[0][0];
+
+        var config_question = Configs.config_encounter_choice.EncounterChoice[question_id];
+
+        foreach(var choice in config_question.playerChoiceBlacklist){
+            answer_pool.Remove(choice);
+        }
+
+        var correct_pool = new List<string>() { answer_pool[0] };
+        var okay_pool = new List<string>() { answer_pool[1] };
+        var incorrect_pool = new List<string>() { answer_pool[2] };
+
+
+        SocialQuizUI.onSocialQuizGameFinished += onQuizQuestionFinished;
+        SocialQuizUI.startSocialQuiz(config_question.choiceId, correct_pool, okay_pool, incorrect_pool);
+
+
+    }
+
+    private void onQuizQuestionFinished(bool succeeded)
+    {
+        SocialQuizUI.onSocialQuizGameFinished -= onQuizQuestionFinished;
+
         switch (current_mood)
         {
             case "negative":
                 current_mood = "neutral";
+                DialogueManager.onDialogueFinishedEventPrimary += onDialogueFinished;
                 GameStart.dialogue_manager.activateDialogue(config_opposition.neutralIntroDialogue);
                 break;
             case "neutral":
                 current_mood = "positive";
+                DialogueManager.onDialogueFinishedEventPrimary += onDialogueFinished;
                 GameStart.dialogue_manager.activateDialogue(config_opposition.positiveIntroDialogue);
                 break;
             case "positive":
-                DialogueManager.onDialogueFinishedEventSecondary -= onDialogueMoodFinished;
-                finishedSuccesfully = false;
+                finishedSuccesfully = true;
                 finishedMainEncounter();
                 break;
         }

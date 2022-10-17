@@ -185,3 +185,63 @@ public class ConfigEncounterOpposition : Config<ConfigEncounterOpposition>
         Configs.config_encounter_opposition = getJObjectsConfigsListST("EncounterOpposition");
     }
 }
+
+public class ConfigEncounterMood : Config<ConfigEncounterMood>
+{
+    [System.Serializable]
+    public class _EncounterMood
+    {
+        public string moodId;
+        public string[][] choices;
+        public string description;
+        public string failureDescription;
+        public string successDescription;
+    }
+
+    public Dictionary<string, _EncounterMood> EncounterMood;
+    public override ConfigEncounterMood combine(List<ConfigEncounterMood> other_list)
+    {
+        for (int i = 1; i < other_list.Count; i++)
+        {
+            foreach (string key in other_list[i].EncounterMood.Keys)
+            {
+                EncounterMood[key] = other_list[i].EncounterMood[key];
+            }
+        }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_encounter_mood = getJObjectsConfigsListST("EncounterMood");
+    }
+}
+
+public class ConfigEncounterChoice : Config<ConfigEncounterChoice>
+{
+    [System.Serializable]
+    public class _EncounterChoice
+    {
+        public string choiceId;
+        public string name;
+        public string[] playbackScripts;
+        public string[] playerChoiceBlacklist;
+        public int unlockLevel;
+    }
+
+    public Dictionary<string, _EncounterChoice> EncounterChoice;
+    public override ConfigEncounterChoice combine(List<ConfigEncounterChoice> other_list)
+    {
+        for (int i = 1; i < other_list.Count; i++)
+        {
+            foreach (string key in other_list[i].EncounterChoice.Keys)
+            {
+                EncounterChoice[key] = other_list[i].EncounterChoice[key];
+            }
+        }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_encounter_choice = getJObjectsConfigsListST("EncounterChoice");
+    }
+}

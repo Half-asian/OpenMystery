@@ -118,6 +118,8 @@ public class Configs{
     public static ConfigHPActorInfo config_hp_actor_info;
     public static ConfigEncounter config_encounter;
     public static ConfigEncounterOpposition config_encounter_opposition;
+    public static ConfigEncounterMood config_encounter_mood;
+    public static ConfigEncounterChoice config_encounter_choice;
     public static ConfigHouse config_house;
     public static ConfigActorMapping config_actor_mapping;
     public static ConfigLocation config_location;
@@ -474,6 +476,8 @@ public class Configs{
         config_date_prompt = ConfigDatePrompt.getJObjectsConfigsListST("DatePrompt");
         config_encounter = ConfigEncounter.getJObjectsConfigsListST("Encounter");
         config_encounter_opposition = ConfigEncounterOpposition.getJObjectsConfigsListST("EncounterOpposition");
+        config_encounter_mood = ConfigEncounterMood.getJObjectsConfigsListST("EncounterMood");
+        config_encounter_choice = ConfigEncounterChoice.getJObjectsConfigsListST("EncounterChoice");
         config_objective = ConfigObjective.getJObjectsConfigsListST("Objectives");
         config_goal_chain = ConfigGoalChain.getJObjectsConfigsListST("GoalChain");
         config_goal = ConfigGoal.getJObjectsConfigsListST("Goals");

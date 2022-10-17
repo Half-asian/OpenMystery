@@ -175,6 +175,7 @@
     <Compile Include="Assets\Scripts\Particle\Particle.cs" />
     <Compile Include="Assets\Scripts\AnimationSequence\ActorAnimSequence.cs" />
     <Compile Include="Assets\Scripts\AnimationSequence\PropAnimSequence.cs" />
+    <Compile Include="Assets\Scripts\Encounter\EncounterSocial.cs" />
     <Compile Include="Assets\Scripts\Cocos3D\CocosModel.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionAutotuneGroup.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentFacepaint.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="Assets\Scripts\Objectives\ObjectiveOutfitChanged.cs" />
     <Compile Include="Assets\Scripts\Actors\ActorMovement.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionQuiz.cs" />
+    <Compile Include="Assets\Scripts\UI\SocialQuizUI.cs" />
     <Compile Include="Assets\Scripts\UI\UiManager.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionActivityComplete.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionManager.cs" />
@@ -237,7 +239,6 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
-    <Compile Include="Assets\Scripts\Encounter\EncounterSocial.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
