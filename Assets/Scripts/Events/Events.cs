@@ -645,7 +645,7 @@ public static class Events
         if (path.Count != 0)
         {
             if (path[path.Count - 1] != action_params[1])//Did not find a path
-            {   
+            {
                 path.Clear();
                 path.Add(action_params[1]); //Change to a direct route
             }
@@ -656,10 +656,23 @@ public static class Events
             path.Add(action_params[1]); //Change to a direct route
         }
 
-        if (action_params.Length > 2 && (action_params[2] == "walk_wheelchairStudent" || action_params[2] == "c_Stu_Jog01" || action_params[2].Contains("flyingOnBroom")))
-            actor_controller.moveCharacter(path, 1.3f);
-        else
+        if (action_params.Length < 3)
+        {
             actor_controller.moveCharacter(path, 0.0f);
+            return;
+        }
+
+        if (action_params[2] != "")
+        {
+            //There is an animation included
+            if (action_params[2] == "walk_wheelchairStudent" || action_params[2] == "c_Stu_Jog01" || action_params[2].Contains("flyingOnBroom"))
+                actor_controller.moveCharacter(path, 1.3f);
+            else
+                actor_controller.moveCharacter(path, 0.0f);
+            actor_controller.replaceCharacterWalk(action_params[2]);
+        }
+
+        //action_params[3] int unknown
     }
     public class Looking
     {

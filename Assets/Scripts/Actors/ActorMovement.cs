@@ -9,17 +9,9 @@ public partial class ActorController : Node
     private IEnumerator coroutine_move;
     private ConfigScene._Scene.WayPoint destination_waypoint;
     private bool is_moving = false;
-
-    public string getDestinationWaypoint()
-    {
-        if (destination_waypoint == null)
-        {
-            Debug.LogError("DESTINATION WAYPOINT WAS NULL");
-            return null;
-
-        }
-        return destination_waypoint.name;
-    }
+    List<string> movement_path = new List<string>();
+    public string getDestinationWaypoint() => 
+        (destination_waypoint == null) ? null : destination_waypoint.name;
 
     public void finishMovement()
     {
@@ -35,21 +27,25 @@ public partial class ActorController : Node
                 GameStart.current.GetComponent<EventManager>().notifyMoveComplete(gameObject.name);
             coroutine_move = null;
         }
+
+        movement_path.Clear();
     }
 
 
     public void moveCharacter(List<string> path, float speed)
     {
-        finishMovement();
-
         destination_waypoint = Scene.current.waypoint_dict[path.Last()];
 
-        actor_head.clearLookat();
-        actor_head.clearTurnHeadAt();
+        movement_path.AddRange(path);
 
-        coroutine_move = MoveCoroutine(path, speed);
-        StartCoroutine(coroutine_move);
-        setCharacterWalk();
+        if (is_moving == false)
+        {
+            actor_head.clearLookat();
+            actor_head.clearTurnHeadAt();
+            coroutine_move = MoveCoroutine(speed);
+            StartCoroutine(coroutine_move);
+            setCharacterWalk();
+        }
     }
 
     public void teleportCharacter(string waypoint_id)
@@ -92,13 +88,13 @@ public partial class ActorController : Node
 
     /*----------        COROUTINES      ----------*/
 
-    private IEnumerator MoveCoroutine(List<string> path, float speed)
+    private IEnumerator MoveCoroutine(float speed)
     {
         is_moving = true;
 
-        ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[path[0]];
+        ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
             
-        while (path.Count != 0 || gameObject.transform.position != destination_waypoint.getWorldPosition())
+        while (movement_path.Count != 0 || gameObject.transform.position != destination_waypoint.getWorldPosition())
         {
             if (gameObject.transform.position != next_waypoint.getWorldPosition())
             {
@@ -110,8 +106,8 @@ public partial class ActorController : Node
             }
             else
             {
-                next_waypoint = Scene.current.waypoint_dict[path[0]];
-                path.RemoveAt(0);
+                next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
+                movement_path.RemoveAt(0);
             }
         }
 
@@ -122,7 +118,7 @@ public partial class ActorController : Node
         if (destination_waypoint.rotation != null)
             rotation = Quaternion.Euler(destination_waypoint.getRotation());
 
-        while (transform.rotation != rotation) //Quaternions can have multiple variations for one facing
+        while (transform.rotation != rotation)
         {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, Time.deltaTime * 500);
             yield return null;
