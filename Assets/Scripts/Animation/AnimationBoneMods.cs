@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using static AnimationManager;
+using static ConfigAvatarComponents;
+
 public static partial class AnimationManager
 {
 	static Dictionary<string, string> boneMODName_to_skeleton = new Dictionary<string, string>
@@ -19,7 +22,14 @@ public static partial class AnimationManager
 		["jt_R_eye_MOD_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/jt_R_eye_MOD_bind",
 		["jt_R_eyeParent_MOD_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/jt_R_eye_MOD_bind/jt_R_eyeParent_MOD_bind",
 		["jt_mouth_MOD_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/jt_mouth_MOD_bind",
-	};
+        ["leftInBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/leftInBrow1_Joint_bind",
+        ["leftMidBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/leftMidBrow1_Joint_bind",
+        ["leftOutBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/leftOutBrow1_Joint_bind",
+        ["rightInBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/rightInBrow1_Joint_bind",
+        ["rightMidBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/rightMidBrow1_Joint_bind",
+        ["rightOutBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/rightOutBrow1_Joint_bind",
+
+    };
 
 	static Dictionary<string, Vector3> boneMODDefault_position = new Dictionary<string, Vector3>
 	{
@@ -61,44 +71,51 @@ public static partial class AnimationManager
 	};
 	public static void setBoneMODMods(ref AnimationClip anim_clip, ref Dictionary<string, BoneMod> bone_mods)
 	{
+		
 		foreach (string key in bone_mods.Keys)
 		{
-			if (key.Contains("MOD"))
+			bool do_position = false;
+			bool do_rotation = false;
+
+			List<Keyframe> key_frames_pos_x = new List<Keyframe>();
+			List<Keyframe> key_frames_pos_y = new List<Keyframe>();
+			List<Keyframe> key_frames_pos_z = new List<Keyframe>();
+
+			List<Keyframe> key_frames_rot_x = new List<Keyframe>();
+			List<Keyframe> key_frames_rot_y = new List<Keyframe>();
+			List<Keyframe> key_frames_rot_z = new List<Keyframe>();
+			List<Keyframe> key_frames_rot_w = new List<Keyframe>();
+
+			List<Keyframe> key_frames_scale_x = new List<Keyframe>();
+			List<Keyframe> key_frames_scale_y = new List<Keyframe>();
+			List<Keyframe> key_frames_scale_z = new List<Keyframe>();
+
+			if (boneMODDefault_position.ContainsKey(key))
 			{
-				List<Keyframe> key_frames_pos_x = new List<Keyframe>();
-				List<Keyframe> key_frames_pos_y = new List<Keyframe>();
-				List<Keyframe> key_frames_pos_z = new List<Keyframe>();
+				do_position = true;
+				key_frames_pos_x.Add(new Keyframe(0, bone_mods[key].translation[0] + boneMODDefault_position[key].x));
+				key_frames_pos_y.Add(new Keyframe(0, bone_mods[key].translation[1] + boneMODDefault_position[key].y));
+				key_frames_pos_z.Add(new Keyframe(0, bone_mods[key].translation[2] + boneMODDefault_position[key].z));
+			}
 
-				List<Keyframe> key_frames_rot_x = new List<Keyframe>();
-				List<Keyframe> key_frames_rot_y = new List<Keyframe>();
-				List<Keyframe> key_frames_rot_z = new List<Keyframe>();
-				List<Keyframe> key_frames_rot_w = new List<Keyframe>();
-
-				List<Keyframe> key_frames_scale_x = new List<Keyframe>();
-				List<Keyframe> key_frames_scale_y = new List<Keyframe>();
-				List<Keyframe> key_frames_scale_z = new List<Keyframe>();
-
-				key_frames_pos_x.Add(new Keyframe(0, bone_mods[key].translation[0] * 0.01f + boneMODDefault_position[key].x));
-				key_frames_pos_y.Add(new Keyframe(0, bone_mods[key].translation[1] * 0.01f + boneMODDefault_position[key].y));
-				key_frames_pos_z.Add(new Keyframe(0, bone_mods[key].translation[2] * 0.01f + boneMODDefault_position[key].z));
-
+			if (boneMODDefault_rotation.ContainsKey(key))
+			{
+				do_rotation = true;
 				Quaternion resulting_quaternion = bone_mods[key].rotation * boneMODDefault_rotation[key];
-
 				key_frames_rot_x.Add(new Keyframe(0, resulting_quaternion.x));
 				key_frames_rot_y.Add(new Keyframe(0, resulting_quaternion.y));
 				key_frames_rot_z.Add(new Keyframe(0, resulting_quaternion.z));
 				key_frames_rot_w.Add(new Keyframe(0, resulting_quaternion.w));
+			}
 
+			key_frames_scale_x.Add(new Keyframe(0, bone_mods[key].scale[0]));
+			key_frames_scale_y.Add(new Keyframe(0, bone_mods[key].scale[1]));
+			key_frames_scale_z.Add(new Keyframe(0, bone_mods[key].scale[2]));
 
+			string bone_full_name = boneMODName_to_skeleton[key];
 
-				key_frames_scale_x.Add(new Keyframe(0, bone_mods[key].scale[0]));
-				key_frames_scale_y.Add(new Keyframe(0, bone_mods[key].scale[1]));
-				key_frames_scale_z.Add(new Keyframe(0, bone_mods[key].scale[2]));
-
-
-
-				string bone_full_name = boneMODName_to_skeleton[key];
-
+			if (do_position)
+			{
 				AnimationCurve curve_pos_x = new AnimationCurve(key_frames_pos_x.ToArray());
 				anim_clip.SetCurve(bone_full_name, typeof(Transform), "localPosition.x", curve_pos_x);
 
@@ -107,7 +124,9 @@ public static partial class AnimationManager
 
 				AnimationCurve curve_pos_z = new AnimationCurve(key_frames_pos_z.ToArray());
 				anim_clip.SetCurve(bone_full_name, typeof(Transform), "localPosition.z", curve_pos_z);
-
+			}
+			if (do_rotation)
+			{
 				AnimationCurve curve_rot_w = new AnimationCurve(key_frames_rot_w.ToArray());
 				anim_clip.SetCurve(bone_full_name, typeof(Transform), "localRotation.w", curve_rot_w);
 
@@ -119,16 +138,16 @@ public static partial class AnimationManager
 
 				AnimationCurve curve_rot_x = new AnimationCurve(key_frames_rot_x.ToArray());
 				anim_clip.SetCurve(bone_full_name, typeof(Transform), "localRotation.x", curve_rot_x);
-
-				AnimationCurve curve_scale_x = new AnimationCurve(key_frames_scale_x.ToArray());
-				anim_clip.SetCurve(bone_full_name, typeof(Transform), "localScale.x", curve_scale_x);
-
-				AnimationCurve curve_scale_y = new AnimationCurve(key_frames_scale_y.ToArray());
-				anim_clip.SetCurve(bone_full_name, typeof(Transform), "localScale.y", curve_scale_y);
-
-				AnimationCurve curve_scale_z = new AnimationCurve(key_frames_scale_z.ToArray());
-				anim_clip.SetCurve(bone_full_name, typeof(Transform), "localScale.z", curve_scale_z);
 			}
+
+			AnimationCurve curve_scale_x = new AnimationCurve(key_frames_scale_x.ToArray());
+			anim_clip.SetCurve(bone_full_name, typeof(Transform), "localScale.x", curve_scale_x);
+
+			AnimationCurve curve_scale_y = new AnimationCurve(key_frames_scale_y.ToArray());
+			anim_clip.SetCurve(bone_full_name, typeof(Transform), "localScale.y", curve_scale_y);
+
+			AnimationCurve curve_scale_z = new AnimationCurve(key_frames_scale_z.ToArray());
+			anim_clip.SetCurve(bone_full_name, typeof(Transform), "localScale.z", curve_scale_z);
 		}
 
 

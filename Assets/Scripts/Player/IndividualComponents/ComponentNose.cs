@@ -57,13 +57,13 @@ namespace IndividualComponents
 
             if (category.float_parameters.ContainsKey("noseBridgeHeight"))
             {
-                Vector3 translation = new Vector3(0, Mathf.Lerp(noseBridgeHeight_translate_y_range.x, noseBridgeHeight_translate_y_range.y, category.float_parameters["noseBridgeHeight"]), 0);
-                avatar_components.bonemods["jt_noseBridge_MOD_bind"].translation += translation;    
+                float translation_y = Mathf.Lerp(noseBridgeHeight_translate_y_range.x, noseBridgeHeight_translate_y_range.y, category.float_parameters["noseBridgeHeight"]);
+                avatar_components.bonemods["jt_noseBridge_MOD_bind"].translation.x -= translation_y;    
             }
             if (category.float_parameters.ContainsKey("noseBridgeLength"))
             {
-                Vector3 translation = new Vector3(0, 0, Mathf.Lerp(noseBridgeLength_translate_z_range.x, noseBridgeLength_translate_z_range.y, category.float_parameters["noseBridgeLength"]));
-                avatar_components.bonemods["jt_noseBridge_MOD_bind"].translation += translation;
+                float translation_z = Mathf.Lerp(noseBridgeLength_translate_z_range.x, noseBridgeLength_translate_z_range.y, category.float_parameters["noseBridgeLength"]);
+                avatar_components.bonemods["jt_noseBridge_MOD_bind"].translation.z += translation_z;
             }
             if (category.float_parameters.ContainsKey("noseBridgeWidth"))
             {
@@ -90,12 +90,12 @@ namespace IndividualComponents
             if (category.float_parameters.ContainsKey("noseHeight"))
             {
                 float translate_y = Mathf.Lerp(noseHeight_translate_y_range.x, noseHeight_translate_y_range.y, category.float_parameters["noseHeight"]);
-                avatar_components.bonemods["jt_nose_MOD_bind"].translation.y += translate_y;
+                avatar_components.bonemods["jt_nose_MOD_bind"].translation.x -= translate_y;
             }
             if (category.float_parameters.ContainsKey("noseTwist"))
             {
                 float rotate_x = Mathf.Lerp(noseTwist_rotation_x_range.x, noseTwist_rotation_x_range.y, category.float_parameters["noseTwist"]);
-                avatar_components.bonemods["jt_nose_MOD_bind"].rotation = Quaternion.Euler(new Vector3(rotate_x, 0, 0));
+                avatar_components.bonemods["jt_nose_MOD_bind"].rotation = Quaternion.Euler(new Vector3(0, rotate_x, 0));
             }
 
             if (avatar_components.customization_categories["faces"].int_parameters.ContainsKey("skinColor"))

@@ -57,10 +57,10 @@ namespace IndividualComponents
 
             if (category.float_parameters.ContainsKey("eyeCloseness"))
             {
-                Vector3 translationL = new Vector3(Mathf.Lerp(eyeCloseness_translate_z_range.x, eyeCloseness_translate_z_range.y, category.float_parameters["eyeCloseness"]), 0, 0);
-                Vector3 translationR = new Vector3(Mathf.Lerp(eyeCloseness_translate_z_range.x, eyeCloseness_translate_z_range.y, 1 - category.float_parameters["eyeCloseness"]), 0, 0);
-                avatar_components.bonemods["jt_L_eye_MOD_bind"].translation += translationL;
-                avatar_components.bonemods["jt_R_eye_MOD_bind"].translation += translationR;
+                Vector3 translationL = new Vector3(0, Mathf.Lerp(eyeCloseness_translate_z_range.x, eyeCloseness_translate_z_range.y, category.float_parameters["eyeCloseness"]), 0);
+                Vector3 translationR = new Vector3(0, Mathf.Lerp(eyeCloseness_translate_z_range.x, eyeCloseness_translate_z_range.y, 1 - category.float_parameters["eyeCloseness"]), 0);
+                avatar_components.bonemods["jt_L_eye_MOD_bind"].translation -= translationL;
+                avatar_components.bonemods["jt_R_eye_MOD_bind"].translation -= translationR;
             }
             if (category.float_parameters.ContainsKey("eyeSize"))
             {
@@ -72,10 +72,10 @@ namespace IndividualComponents
 
             if (category.float_parameters.ContainsKey("eyeY"))
             {
-                Vector3 translationL = new Vector3(0, Mathf.Lerp(eyeY_translate_y_range.x, eyeY_translate_y_range.y, category.float_parameters["eyeY"]), 0);
-                Vector3 translationR = new Vector3(0, Mathf.Lerp(eyeY_translate_y_range.x, eyeY_translate_y_range.y, category.float_parameters["eyeY"]), 0);
-                avatar_components.bonemods["jt_L_eye_MOD_bind"].translation += translationL;
-                avatar_components.bonemods["jt_R_eye_MOD_bind"].translation += translationR;
+                Vector3 translationL = new Vector3(Mathf.Lerp(eyeY_translate_y_range.x, eyeY_translate_y_range.y, category.float_parameters["eyeY"]), 0, 0);
+                Vector3 translationR = new Vector3(Mathf.Lerp(eyeY_translate_y_range.x, eyeY_translate_y_range.y, category.float_parameters["eyeY"]), 0, 0);
+                avatar_components.bonemods["jt_L_eye_MOD_bind"].translation -= translationL;
+                avatar_components.bonemods["jt_R_eye_MOD_bind"].translation -= translationR;
             }
 
             if (avatar_components.customization_categories["faces"].int_parameters.ContainsKey("skinColor"))

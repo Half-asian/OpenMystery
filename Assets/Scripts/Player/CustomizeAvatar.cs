@@ -38,6 +38,10 @@ public class CustomizeAvatar : MonoBehaviour
 
         createCustomizableAvatar();
 
+        _camera_preview.transform.position = new Vector3(0, 0.773000002f - 10f, 0.338999987f);
+        _camera_preview.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+        _camera_preview_depth.transform.position = new Vector3(0, 0.773000002f - 10f, 0.338999987f);
+        _camera_preview_depth.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
         createCustomizablePreviewAvatar();
     }
 
@@ -55,9 +59,6 @@ public class CustomizeAvatar : MonoBehaviour
     {
         avatar_components = new AvatarComponents(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"));
 
-        //_camera.transform.position = new Vector3(0, 0.773000002f, 0.338999987f);
-        //_camera.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
-
         customizable_avatar = CustomizableAvatarSpawner.spawnCustomizableAvatar(avatar_components.actor_id, "CustomizableAvatar");
         ConfigHPActorInfo._HPActorInfo reference_character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id]; //We use this as a base to apply transforms to
 
@@ -65,61 +66,58 @@ public class CustomizeAvatar : MonoBehaviour
 
         reference_model = ModelManager.loadModel(reference_character.modelId);
 
-        reference_model.game_object.transform.position = new Vector3(-0.24f, 0.55f, 1.32f);
+        
         reference_model.game_object.transform.eulerAngles = new Vector3(0, 160f, 0);
         reference_model.game_object.AddComponent<Animation>();
         reference_model.game_object.GetComponent<Animation>().AddClip(AnimationManager.loadAnimationClip("c_Stu_DialogueIdle01", reference_model, reference_character).anim_clip, "default");
         reference_model.game_object.GetComponent<Animation>().Play("default");
+        reference_model.game_object.name = "Reference Model";
 
 
         customizable_avatar_modified_bones = new Dictionary<string, Transform>();
-
         avatar_components.setCharacterManager(customizable_avatar);
-
         avatar_components.base_model = customizable_avatar.model;
-
         avatar_components.spawnComponents();
-
 
         foreach (string bonemod in BonemodMap.bonemod_map.Keys)
         {
             customizable_avatar_modified_bones[bonemod] = avatar_components.base_model.pose_bones[bonemod];
         }
+
+        customizable_avatar.transform.position = new Vector3(-0.24f, 0.55f, 1.32f);
+        customizable_avatar.transform.eulerAngles = new Vector3(0, 160, 0);
     }
 
     void createCustomizablePreviewAvatar()
     {
         avatar_components_preview = new AvatarComponents(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"));
 
-        _camera_preview.transform.position = new Vector3(0, 0.773000002f - 10f, 0.338999987f);
-        _camera_preview.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
-        _camera_preview_depth.transform.position = new Vector3(0, 0.773000002f - 10f, 0.338999987f);
-        _camera_preview_depth.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
-        customizable_avatar_preview = CustomizableAvatarSpawner.spawnCustomizableAvatar(avatar_components_preview.actor_id, "CustomizableAvatar");
+        customizable_avatar_preview = CustomizableAvatarSpawner.spawnCustomizableAvatar(avatar_components_preview.actor_id, "CustomizableAvatarPreview");
         ConfigHPActorInfo._HPActorInfo reference_character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id]; //We use this as a base to apply transforms to
         customizable_avatar_preview.replaceCharacterIdle("c_Stu_DialogueIdle01");
 
         reference_model_preview = ModelManager.loadModel(reference_character.modelId);
-        customizable_avatar_preview.animation_component["default"].time = 0.01f;
+        /*customizable_avatar_preview.animation_component["default"].time = 0.01f;
         customizable_avatar_preview.animation_component["default"].enabled = true;
         customizable_avatar_preview.animation_component["default"].weight = 1;
         customizable_avatar_preview.animation_component.Sample();
-        customizable_avatar_preview.animation_component["default"].enabled = false;
+        customizable_avatar_preview.animation_component["default"].enabled = false;*/
 
-        reference_model_preview.game_object.transform.position = new Vector3(0, -10, 0);
-        reference_model_preview.game_object.transform.rotation = Quaternion.identity;
+        reference_model_preview.game_object.name = "reference model preview";
+
         customizable_avatar_modified_bones_preview = new Dictionary<string, Transform>();
-
         avatar_components_preview.setCharacterManager(customizable_avatar_preview);
-
         avatar_components_preview.base_model = customizable_avatar_preview.model;
-
         avatar_components_preview.spawnComponents();
 
         foreach (string bonemod in BonemodMap.bonemod_map.Keys)
         {
             customizable_avatar_modified_bones_preview[bonemod] = avatar_components_preview.base_model.pose_bones[bonemod];
         }
+
+
+        customizable_avatar_preview.transform.position = new Vector3(0, -10, 0);
+        customizable_avatar_preview.transform.rotation = Quaternion.identity;
     }
 
     private void LateUpdate()
@@ -127,8 +125,8 @@ public class CustomizeAvatar : MonoBehaviour
         //Resets bones to reference.
         foreach (string bone in reference_model.pose_bones.Keys)
         {
-            avatar_components.base_model.pose_bones[bone].transform.position = reference_model.pose_bones[bone].position;
-            avatar_components.base_model.pose_bones[bone].transform.rotation = reference_model.pose_bones[bone].rotation;
+            avatar_components.base_model.pose_bones[bone].transform.localPosition = reference_model.pose_bones[bone].localPosition;
+            avatar_components.base_model.pose_bones[bone].transform.localRotation = reference_model.pose_bones[bone].localRotation;
             avatar_components.base_model.pose_bones[bone].transform.localScale = reference_model.pose_bones[bone].localScale;
         }
 
@@ -136,8 +134,11 @@ public class CustomizeAvatar : MonoBehaviour
         {
             foreach (string bone_mod in avatar_components.bonemods.Keys)
             {
-                customizable_avatar_modified_bones[bone_mod].transform.position = reference_model.pose_bones[bone_mod].position + avatar_components.bonemods[bone_mod].translation;
-                customizable_avatar_modified_bones[bone_mod].transform.rotation = reference_model.pose_bones[bone_mod].rotation * avatar_components.bonemods[bone_mod].rotation;
+
+
+                customizable_avatar_modified_bones[bone_mod].transform.localPosition = reference_model.pose_bones[bone_mod].localPosition + avatar_components.bonemods[bone_mod].translation;
+                customizable_avatar_modified_bones[bone_mod].transform.localRotation = avatar_components.bonemods[bone_mod].rotation * reference_model.pose_bones[bone_mod].localRotation;
+
                 Vector3 new_scale = reference_model.pose_bones[bone_mod].localScale;
                 new_scale.x *= avatar_components.bonemods[bone_mod].scale.x;
                 new_scale.y *= avatar_components.bonemods[bone_mod].scale.y;
@@ -151,8 +152,8 @@ public class CustomizeAvatar : MonoBehaviour
 
         foreach (string bone in reference_model_preview.pose_bones.Keys)
         {
-            avatar_components_preview.base_model.pose_bones[bone].transform.position = reference_model_preview.pose_bones[bone].position;
-            avatar_components_preview.base_model.pose_bones[bone].transform.rotation = reference_model_preview.pose_bones[bone].rotation;
+            avatar_components_preview.base_model.pose_bones[bone].transform.localPosition = reference_model_preview.pose_bones[bone].localPosition;
+            avatar_components_preview.base_model.pose_bones[bone].transform.localRotation = reference_model_preview.pose_bones[bone].localRotation;
             avatar_components_preview.base_model.pose_bones[bone].transform.localScale = reference_model_preview.pose_bones[bone].localScale;
         }
 
@@ -160,8 +161,8 @@ public class CustomizeAvatar : MonoBehaviour
         {
             foreach (string bone_mod in avatar_components_preview.bonemods.Keys)
             {
-                customizable_avatar_modified_bones_preview[bone_mod].transform.position = reference_model_preview.pose_bones[bone_mod].position + avatar_components_preview.bonemods[bone_mod].translation;
-                customizable_avatar_modified_bones_preview[bone_mod].transform.rotation = reference_model_preview.pose_bones[bone_mod].rotation * avatar_components_preview.bonemods[bone_mod].rotation;
+                customizable_avatar_modified_bones_preview[bone_mod].transform.localPosition = reference_model_preview.pose_bones[bone_mod].localPosition + avatar_components_preview.bonemods[bone_mod].translation;
+                customizable_avatar_modified_bones_preview[bone_mod].transform.localRotation = avatar_components_preview.bonemods[bone_mod].rotation * reference_model_preview.pose_bones[bone_mod].localRotation;
                 Vector3 new_scale = reference_model_preview.pose_bones[bone_mod].localScale;
                 new_scale.x *= avatar_components_preview.bonemods[bone_mod].scale.x;
                 new_scale.y *= avatar_components_preview.bonemods[bone_mod].scale.y;
