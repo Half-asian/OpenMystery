@@ -664,12 +664,17 @@ public static class Events
 
         if (action_params[2] != "")
         {
+            List<string> running_anims =new List<string> { "walk_wheelchairStudent", "c_Stu_Jog01", "flyingOnBroom", "c_Stu_Run01" };
             //There is an animation included
-            if (action_params[2] == "walk_wheelchairStudent" || action_params[2] == "c_Stu_Jog01" || action_params[2].Contains("flyingOnBroom"))
+            if (running_anims.Contains(action_params[2])) 
                 actor_controller.moveCharacter(path, 1.3f);
             else
                 actor_controller.moveCharacter(path, 0.0f);
             actor_controller.replaceCharacterWalk(action_params[2]);
+        }
+        else
+        {
+            actor_controller.moveCharacter(path, 0.0f);
         }
 
         //action_params[3] int unknown

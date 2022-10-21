@@ -40,6 +40,7 @@ public partial class ActorController : Node
 
         if (is_moving == false)
         {
+            walk_animation = actor_info.animId_walk;
             actor_head.clearLookat();
             actor_head.clearTurnHeadAt();
             coroutine_move = MoveCoroutine(speed);
