@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.IO;
+using UnityEngine.TextCore.Text;
 
 public class HPAnimation {
 	public AnimationClip anim_clip;
@@ -66,6 +67,7 @@ public static partial class AnimationManager
 		return _loadAnimationClip();
 	}
 
+
 	public static HPAnimation _loadAnimationClip()
 	{
 		if (string.IsNullOrEmpty(animation_name))
@@ -73,27 +75,39 @@ public static partial class AnimationManager
 			Debug.LogError("loadAnimatonClip name is null or empty.");
 			return null;
 		}
-		if (!Configs.config_animation.Animation3D.ContainsKey(animation_name))
+
+		ConfigAnimation._Animation3D animation_config;
+		CocosModel animation_c3t;
+
+        if (Resources.Load(animation_name) != null)
+		{
+			animation_config = new ConfigAnimation._Animation3D();
+			animation_config.wrapMode = "loop";
+            UnityEngine.TextAsset asset = Resources.Load(animation_name) as UnityEngine.TextAsset;
+            animation_c3t = C3B.loadC3B(asset.bytes);
+		}
+		else if (!Configs.config_animation.Animation3D.ContainsKey(animation_name))
 		{
 			Debug.LogError("Animation " + animation_name + " does not exist.");
 			return null;
 		}
-
-		ConfigAnimation._Animation3D animation_config = Configs.config_animation.Animation3D[animation_name];
-
-		//Load anim file
-		string filename = animation_config.fileName;
-		CocosModel animation_c3t = C3B.loadC3B(filename, GlobalEngineVariables.animations_folder);
-
-		if (animation_c3t == null)
+		else
 		{
-			Debug.Log("Couldn't find " + "animations\\" + animation_name + ". Skipping.");
-			return null;
-		}
+            animation_config = Configs.config_animation.Animation3D[animation_name];
+            //Load anim file
+            string filename = animation_config.fileName;
+            animation_c3t = C3B.loadC3B(filename, GlobalEngineVariables.animations_folder);
+        }
 
-		//Generate Animations
-		animation_length = animation_c3t.animations[0].length;
-		anim_clip = new AnimationClip();
+        if (animation_c3t == null)
+        {
+            Debug.Log("Couldn't find " + "animations\\" + animation_name + ". Skipping.");
+            return null;
+        }
+        //Generate Animations
+        animation_length = animation_c3t.animations[0].length;
+
+        anim_clip = new AnimationClip();
 		anim_clip.legacy = true;
 		bone_fullname_dict = Common.GetTransformFullNameDict(model.jt_all_bind);
 

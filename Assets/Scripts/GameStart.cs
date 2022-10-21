@@ -85,7 +85,6 @@ public class GameStart : MonoBehaviour
         interaction_manager.destroyAllInteractions();
         Scene.destroyScenePrefab();
         CameraManager.current.cleanup();
-        menu_background.spawnMenuBackground();
         GraduationUI.current.hideGraduation();
 
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("hud_dialog"))
@@ -98,6 +97,7 @@ public class GameStart : MonoBehaviour
         }
 
         onReturnToMenu.Invoke();
+        menu_background.spawnMenuBackground();
     }
 
     public void Awake()

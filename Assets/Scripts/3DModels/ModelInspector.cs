@@ -91,6 +91,11 @@ public class ModelInspector : MonoBehaviour
             {
                 actor_controller.replaceCharacterIdle(animation_input.text);
             }
+            else if (Resources.Load(animation_input.text) != null)
+            {
+                Debug.Log("Custom!");
+                actor_controller.customAnimationCharacter(animation_input.text);
+            }
             else
             {
 

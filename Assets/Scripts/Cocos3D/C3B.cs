@@ -329,10 +329,13 @@ public class C3B
 		return pointer;
 	}
 
-
 	public static CocosModel readC3B(string file_name)
 	{
-		byte[] file = File.ReadAllBytes(file_name);
+        return readC3B(File.ReadAllBytes(file_name));
+    }
+
+    public static CocosModel readC3B(byte[] file)
+	{
 		CocosModel model_C3B = new CocosModel();
 		int pointer = 6;
 		int num_unknown = System.BitConverter.ToInt32(file, pointer);
@@ -408,6 +411,11 @@ public class C3B
 		}
 
 		return model_C3B;
+	}
+
+	public static CocosModel loadC3B(byte[] file)
+	{
+		return readC3B(file);
 	}
 
 	public static CocosModel loadC3B(string file_name, string root_folder)

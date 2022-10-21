@@ -145,6 +145,12 @@ public partial class ActorController : Node
     }
 
 
+    public void customAnimationCharacter(string anim_name)
+    {
+        var new_anim = AnimationManager.loadAnimationClip(anim_name, model, actor_info, null, bone_mods: bone_mods);
+        playAnimationOnComponent(new_anim);
+    }
+
     //Animate character plays once actor is idle
     //If the animation is clamped, it is discarded at end and returns to regular idle anim
     public void animateCharacter(string anim_name)
