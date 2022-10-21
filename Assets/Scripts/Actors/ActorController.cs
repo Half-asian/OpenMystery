@@ -152,6 +152,11 @@ public partial class ActorController : Node
             idle_animation,             //14
         };
 
+        if (avatar_components != null) //Actually an avatar
+        {
+            array[1] = "Avatar";
+        }
+
         return array;
 
     }
