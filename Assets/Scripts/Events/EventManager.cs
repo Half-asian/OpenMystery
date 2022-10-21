@@ -204,6 +204,11 @@ public class EventManager : MonoBehaviour
         }
         addSequentialPlayers();
         removeSequentialPlayers();
+
+        if (Scenario.block_screenfades) //Block screenfades in a scenario. Have them auto complete
+        {
+            notifyScreenFadeComplete();
+        }
     }
 
     public void checkEventsActive()

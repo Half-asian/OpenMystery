@@ -19,6 +19,8 @@ public class Scenario
     public static event Action onScenarioCallClear = delegate { };
     public static event Action onScenarioLoaded = delegate { };
 
+    public static bool block_screenfades = false;
+
     public static Dictionary<string, SerializedScenario> scenarios_serialized = new Dictionary<string, SerializedScenario>();
 
     public ConfigScenario._Scenario scenario_config;
@@ -159,6 +161,7 @@ public class Scenario
         if (!Configs.config_scenario.Scenario.ContainsKey(scenario_id))
             throw new System.Exception("Load Scenario - invalid scenario name: " + scenario_id);
 
+        block_screenfades = true;
         onScenarioLoading.Invoke();
 
         Scenario preactivated_scenario = Location.getScenarioById(scenario_id);
@@ -222,15 +225,12 @@ public class Scenario
         Tappie.spawnTappies();
         //Events
 
+        ScreenFade.fadeFrom(1, Color.black);
+
         if (current.scenario_config.enterEvents != null)
             GameStart.event_manager.main_event_player.addEvents(current.scenario_config.enterEvents);
         if (current.scenario_config.resumeEvents != null)
             GameStart.event_manager.main_event_player.addEvents(current.scenario_config.resumeEvents); //Not sure how these work. Maybe if a player leaves and comes back to a scenario?
-
-        //Constant screenfade event
-        //screen always fades from black on scenario change
-        //some scenario enter events write never ending ftbs erroneously. This should override them.
-        GameStart.event_manager.main_event_player.addEvents(new string[] { "ffb_Halfs" });
 
         //Interactions
         onScenarioLoaded.Invoke();
@@ -242,6 +242,8 @@ public class Scenario
 
     private static void onScenarioLoadScriptEventsFinished()
     {
+        block_screenfades = false;
+
         Debug.Log("onScenarioLoadScriptEventsFinished");
         EventManager.all_script_events_finished_event -= onScenarioLoadScriptEventsFinished;
 

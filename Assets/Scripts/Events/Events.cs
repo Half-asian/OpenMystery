@@ -318,6 +318,10 @@ public static class Events
                 break;
 
             case "screenFadeTo":
+                if (Scenario.block_screenfades == true)
+                {
+                    break;
+                }
                 float ffade_to_time = 1.0f;
                 if (action_params.Length >= 1)
                     ffade_to_time = float.Parse(action_params[0], CultureInfo.InvariantCulture);
@@ -329,6 +333,10 @@ public static class Events
                 break;
 
             case "fadeToBlack":
+                if (Scenario.block_screenfades == true)
+                {
+                    break;
+                }
                 float fade_to_time = 1.0f;
                 if (action_params.Length >= 1)
                 {
@@ -343,6 +351,10 @@ public static class Events
 
             case "screenFadeFrom":
             case "fadeFromBlack":
+                if (Scenario.block_screenfades == true)
+                {
+                    break;
+                }
                 float fade_from_time = 1.0f;
                 if (action_params.Length >= 1)
                 {
