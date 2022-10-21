@@ -28,6 +28,7 @@ public static partial class AnimationManager
         ["rightInBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/rightInBrow1_Joint_bind",
         ["rightMidBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/rightMidBrow1_Joint_bind",
         ["rightOutBrow1_Joint_bind"] = "Armature/jt_all_bind/jt_hips_bind/spine1_loResSpine2_bind/spine1_loResSpine3_bind/head1_neck_bind/jt_head_bind/rightOutBrow1_Joint_bind",
+        ["jt_cam_bind"] = "Armature/jt_all_bind/jt_cam_bind",
 
     };
 
