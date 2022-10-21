@@ -36,7 +36,7 @@ public class LoadingScreenCanvas : MonoBehaviour
     //Hides the ugly parts of loading
     IEnumerator waitHideImageCoroutine()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.05f);
         image.SetActive(false);
         waitHideImage = null;
     }
