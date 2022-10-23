@@ -4,6 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 public class ScreenFade : MonoBehaviour
 {
+    public enum FadeState {
+        faded,
+        unfaded,
+    }
+
 
     private static ScreenFade current;
     [SerializeField]
@@ -13,8 +18,12 @@ public class ScreenFade : MonoBehaviour
     [SerializeField]
     private Image image;
 
+    private FadeState fade_state = FadeState.faded;
+
     static Coroutine fallback;
     static Coroutine waitfade;
+
+
 
     public void Awake()
     {
@@ -25,7 +34,7 @@ public class ScreenFade : MonoBehaviour
     static IEnumerator fadeFallback()
     {
         yield return new WaitForSeconds(5);
-        fadeFrom(0.01f, Color.black);
+        fadeFrom(0.01f, Color.black, true);
         current.StopCoroutine(waitfade);
         GameStart.event_manager.notifyScreenFadeComplete();
     }
@@ -36,8 +45,15 @@ public class ScreenFade : MonoBehaviour
         GameStart.event_manager.notifyScreenFadeComplete();
     }
 
-    public static void fadeFrom(float time, Color color)
+    public static void fadeFrom(float time, Color color, bool force = false)
     {
+        if (force == false && current.fade_state == FadeState.unfaded)
+        {
+            waitfade = current.StartCoroutine(waitFade(0.01f));
+            return;
+        }
+        current.fade_state = FadeState.unfaded;
+
         if (fallback != null)
             current.StopCoroutine(fallback);
         current.image.color = color;
@@ -54,8 +70,16 @@ public class ScreenFade : MonoBehaviour
         waitfade = current.StartCoroutine(waitFade(time));
     }
 
-    public static void fadeTo(float time, Color color)
+    public static void fadeTo(float time, Color color, bool force = false)
     {
+        if (force == false && current.fade_state == FadeState.faded)
+        {
+            waitfade = current.StartCoroutine(waitFade(0.01f));
+            return;
+        }
+
+        current.fade_state = FadeState.faded;
+
         current.image.color = color;
         AnimationClip anim_clip = new AnimationClip();
         anim_clip.legacy = true;

@@ -151,7 +151,7 @@ public class GameStart : MonoBehaviour
 
         main_menu.state = MainMenu.State.stateLoadingScreenLoading;
 
-        ScreenFade.fadeFrom(1.0f, Color.black);
+        ScreenFade.fadeFrom(1.0f, Color.black, true);
 
         System.IO.FileStream oFileStream = null;
 

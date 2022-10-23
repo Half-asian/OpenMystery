@@ -225,7 +225,7 @@ public class Scenario
         Tappie.spawnTappies();
         //Events
 
-        ScreenFade.fadeFrom(1, Color.black);
+        ScreenFade.fadeFrom(1, Color.black, true);
 
         if (current.scenario_config.enterEvents != null)
             GameStart.event_manager.main_event_player.addEvents(current.scenario_config.enterEvents);

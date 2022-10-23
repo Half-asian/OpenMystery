@@ -117,7 +117,7 @@ public class MainMenu : MonoBehaviour
     {
         float start_time = Time.realtimeSinceStartup;
 
-        ScreenFade.fadeTo(1.0f, Color.black);
+        ScreenFade.fadeTo(1.0f, Color.black, true);
 
         while (Time.realtimeSinceStartup < start_time + 1)
         {
@@ -129,7 +129,7 @@ public class MainMenu : MonoBehaviour
         {
             yield return null;
         }
-        ScreenFade.fadeFrom(1.0f, Color.black);
+        ScreenFade.fadeFrom(1.0f, Color.black, true);
 
     }
 
@@ -139,7 +139,7 @@ public class MainMenu : MonoBehaviour
     {
         state = State.stateMenu;
         float start_time = Time.realtimeSinceStartup;
-        ScreenFade.fadeTo(1.0f, Color.black);
+        ScreenFade.fadeTo(1.0f, Color.black, true);
         while (Time.realtimeSinceStartup < start_time + 1)
         {
             yield return null;
@@ -149,7 +149,7 @@ public class MainMenu : MonoBehaviour
         {
             yield return null;
         }
-        ScreenFade.fadeFrom(1.0f, Color.black);
+        ScreenFade.fadeFrom(1.0f, Color.black, true);
 
     }
 

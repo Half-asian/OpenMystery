@@ -22,7 +22,7 @@ public class Graduation
 
     static IEnumerator GraduateCoroutine()
     {
-        ScreenFade.fadeTo(1.0f, Color.black);
+        ScreenFade.fadeTo(1.0f, Color.black, true);
 
         yield return new WaitForSeconds(1);
 
@@ -41,7 +41,7 @@ public class Graduation
 
         yield return new WaitForSeconds(1);
 
-        ScreenFade.fadeFrom(1.0f, Color.black);
+        ScreenFade.fadeFrom(1.0f, Color.black, true);
 
         yield return new WaitForSeconds(2);
 
