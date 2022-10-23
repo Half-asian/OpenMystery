@@ -14,6 +14,8 @@ public partial class NewPredicate
         {"interactionComplete"          , new Func<SymbolConstantString, SymbolConstantBool>(interactionComplete) },
         {"isGoalComplete"               , new Func<SymbolConstantString, SymbolConstantBool>(isGoalComplete) },
         {"goalChainComplete"            , new Func<SymbolConstantString, SymbolConstantBool>(goalChainComplete) },
+        {"isTLSQComplete"               , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQComplete) },
+        {"isTLSQFailed"                 , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQFailed) },
         {"isTimedPromoExpired"          , new Func<SymbolConstantString, SymbolConstantBool>(isTimedPromoExpired) },
         {"matchWon"                     , new Func<SymbolConstantString, SymbolConstantBool>(matchWon) },
         {"quidditchPosition"            , new Func<SymbolConstantString>(quidditchPosition) },
@@ -85,6 +87,16 @@ public partial class NewPredicate
             return new SymbolConstantBool(true);
         if (File.ReadAllText(GlobalEngineVariables.player_folder + "\\goalchains_complete.txt").Contains("goalChainComplete(\"" + goalchain_id.value + "\")"))
             return new SymbolConstantBool(true);
+        return new SymbolConstantBool(false);
+    }
+
+    static SymbolConstantBool isTLSQComplete(SymbolConstantString tlsq_id) //Affects two quidditch dialogues
+    {
+        return new SymbolConstantBool(true);
+    }
+
+    static SymbolConstantBool isTLSQFailed(SymbolConstantString tlsq_id) //Affects nothing
+    {
         return new SymbolConstantBool(false);
     }
 
