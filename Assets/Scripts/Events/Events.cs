@@ -734,7 +734,10 @@ public static class Events
         if (action_params.Length > 2)
         {
             float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out float action_params_2_float);
-            GameStart.event_manager.StartCoroutine(GameStart.event_manager.lookAtCountdown(action_params[0], action_params_2_float));
+
+            //QuidditchS1C10P3_hoochSlowLookOrion
+            //Action param 2 refers how long to lerp to looking at character.
+            //TODO
         }
     }
 

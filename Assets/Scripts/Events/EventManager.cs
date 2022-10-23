@@ -100,19 +100,6 @@ public class EventManager : MonoBehaviour
         }
     }
 
-
-
-    public IEnumerator lookAtCountdown(string character, float time)
-    {
-        float start_time = Time.realtimeSinceStartup;
-        while(Time.realtimeSinceStartup < start_time + time)
-        {
-            yield return null;
-        }
-        if (Actor.actor_controllers.ContainsKey(character))
-            Actor.actor_controllers[character].actor_head.clearLookat();
-    }
-
     public void startSequentialPlayer(string[] events)
     {
         EventPlayer new_event_player = gameObject.AddComponent<EventPlayer>();
