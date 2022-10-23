@@ -115,8 +115,8 @@ public partial class ActorController : Node
 
                 //Do this here, if a character is set to idle in the same frame as them moving, their destination waypoint isn't changed
                 //Reference Year 3 chapter 3 bowtruckle, Y4C3P1_bowtruckle_feedToFocus_dialog Ismelda
-
-                destination_waypoint = Scene.current.waypoint_dict[movement_path.Last()];
+                if (movement_path.Count != 0)
+                    destination_waypoint = Scene.current.waypoint_dict[movement_path.Last()];
             }
             else
             {

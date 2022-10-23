@@ -103,7 +103,11 @@ public abstract class Interaction : MonoBehaviour
         Debug.Log("Finished interaction " + config_interaction.id);
 
         //This interaction has an immediate exit.
-        if (config_interaction.exitEvents == null && config_interaction.successEvents == null && config_interaction.failEvents == null)
+        if (config_interaction.exitEvents == null
+            && config_interaction.successEvents == null
+            && config_interaction.failEvents == null
+            && config_interaction.qteSuccessEvents == null
+            && config_interaction.qteFailEvents == null)
         {
             onFinishedExitEvents();
             return;
