@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -8,7 +7,6 @@ public partial class ActorController : Node
 {
 
     private IEnumerator coroutine_move;
-    [SerializeField]
     private ConfigScene._Scene.WayPoint destination_waypoint;
     private bool is_moving = false;
     List<string> movement_path = new List<string>();
@@ -36,6 +34,8 @@ public partial class ActorController : Node
 
     public void moveCharacter(List<string> path, float speed)
     {
+        destination_waypoint = Scene.current.waypoint_dict[path.Last()];
+
         movement_path.AddRange(path);
 
         if (is_moving == false)
@@ -97,26 +97,17 @@ public partial class ActorController : Node
     {
         is_moving = true;
 
-
-
         ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
             
         while (movement_path.Count != 0 || gameObject.transform.position != destination_waypoint.getWorldPosition())
         {
             if (gameObject.transform.position != next_waypoint.getWorldPosition())
             {
-                //Rotations occur over time in the game.
-                //Currently they perform instantly.
-                //It seems rotations aren't instantly canceled, they rotator can remain even if the characters state is changed to idle
-                StartCoroutine(RotateCoroutine(transform.position - next_waypoint.getWorldPosition()));
-
+                Vector3 targetDirection = transform.position - next_waypoint.getWorldPosition();
+                transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
+                transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
                 gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (0.4f + speed) * Time.deltaTime);
                 yield return null;
-
-                //Do this here, if a character is set to idle in the same frame as them moving, their destination waypoint isn't changed
-                //Reference Year 3 chapter 3 bowtruckle, Y4C3P1_bowtruckle_feedToFocus_dialog Ismelda
-                if (movement_path.Count != 0)
-                    destination_waypoint = Scene.current.waypoint_dict[movement_path.Last()];
             }
             else
             {
@@ -138,13 +129,6 @@ public partial class ActorController : Node
             yield return null;
         }
         setCharacterIdle();
-    }
-
-    private IEnumerator RotateCoroutine(Vector3 targetDirection)
-    {
-        yield return null;
-        transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
-        transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
     }
 
 }

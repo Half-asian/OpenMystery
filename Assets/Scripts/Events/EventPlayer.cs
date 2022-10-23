@@ -1,9 +1,75 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EventPlayer : MonoBehaviour
 {
+    [Serializable]
+    public class ActiveMessageKeys
+    {
+        [Serializable]
+        public class MessageKey {
+            public MessageKey(string _message, List<string> _keys)
+            {
+                message = _message;
+                keys = _keys;
+            }
+            public string message;
+            public List<string> keys;
+        }
+        public List<MessageKey> message_key_set = new List<MessageKey>();
+
+        public void add(List<string> strings)
+        {
+            string message = strings[0];
+            List<string> keys = strings.GetRange(1, strings.Count - 1);
+            message_key_set.Add(new MessageKey(message, keys));
+        }
+
+        public bool checkRemoveMessageKey(string message, string key)
+        {
+            if (key == null)
+                return checkRemoveMessageKey(message);
+                
+            MessageKey found_message_key = null;
+            foreach (var message_key in message_key_set)
+            {
+                if (message_key.message == message && message_key.keys.Contains(key))
+                {
+                    found_message_key = message_key;
+                    break;
+                }
+            }
+            if (found_message_key != null)
+            {
+                message_key_set.Remove(found_message_key);
+                return true;
+            }
+            return false;
+        }
+        private bool checkRemoveMessageKey(string message)
+        {
+            MessageKey found_message_key = null;
+            foreach (var message_key in message_key_set)
+            {
+                if (message_key.message == message)
+                    found_message_key = message_key;
+            }
+            if (found_message_key != null)
+            {
+                message_key_set.Remove(found_message_key);
+                return true;
+            }
+            return false;
+        }
+        public int Count => message_key_set.Count;
+    }
+
+    [SerializeField]
+    private List<(ActiveMessageKeys, string[])> awaiting_sequential_players = new List<(ActiveMessageKeys, string[])>();
+    [SerializeField]
+    ActiveMessageKeys blocking_message_keys = new ActiveMessageKeys();
 
     public List<string> event_stack = new List<string>();
     public List<string[]> anim_sequences_to_add = new List<string[]>();
@@ -11,13 +77,13 @@ public class EventPlayer : MonoBehaviour
 
     public string last_finished_animation = "";
     public float block_duration = 0.0f;
-    public string blocking_message;
-    public string blocking_key;
     public bool total_block = false;
 
-    private int missed_blocking_key_count = 0;
 
     public bool is_sequential_player;
+    int anim_block_miss_count = 0;
+
+
 
     public void addEvents(IEnumerable<string> events_ids)
     {
@@ -38,25 +104,27 @@ public class EventPlayer : MonoBehaviour
             }
         }
 
-        Debug.Log("Activating Event " + event_name + " is sequential player: " + is_sequential_player);
-
-        float event_time = 0.0f;
         if (!Configs.config_script_events.ScriptEvents.ContainsKey(event_name))
         {
             Debug.Log("Couldn't find event " + event_name);
             return 0.0f;
         }
 
-        if (Configs.config_script_events.ScriptEvents[event_name].action != null)
-        {
+        Debug.Log("Activating Event " + event_name + " is sequential player: " + is_sequential_player);
 
-            for (int event_index = 0; event_index < Configs.config_script_events.ScriptEvents[event_name].action.Length; event_index++)
+        float event_time = 0.0f;
+        var script_event = Configs.config_script_events.ScriptEvents[event_name];
+
+
+        if (script_event.action != null)
+        {
+            for (int event_index = 0; event_index < script_event.action.Length; event_index++)
             {
 
                 string[] action_params;
-                if (Configs.config_script_events.ScriptEvents[event_name].param != null)
-                    if (event_index < Configs.config_script_events.ScriptEvents[event_name].param.Length)
-                        action_params = Configs.config_script_events.ScriptEvents[event_name].param[event_index].Split(':');
+                if (script_event.param != null)
+                    if (event_index < script_event.param.Length)
+                        action_params = script_event.param[event_index].Split(':');
                     else
                         continue;
                 else
@@ -66,40 +134,40 @@ public class EventPlayer : MonoBehaviour
             }
         }
 
-        if (Configs.config_script_events.ScriptEvents[event_name].type == "Blocking" && Configs.config_script_events.ScriptEvents[event_name].Duration == 0.0f && Configs.config_script_events.ScriptEvents[event_name].messageAndKeys != null) //There are some blocking events with no way to exit and no time. Just leftover junk maybe?
+        if (script_event.type == "Blocking" && script_event.Duration == 0.0f && script_event.messageAndKeys != null) //There are some blocking events with no way to exit and no time. Just leftover junk maybe?
         {
             total_block = true;
         }
 
-        if (Configs.config_script_events.ScriptEvents[event_name].type == "Blocking")
+        if (script_event.type == "Blocking")
         {
-            event_time = Configs.config_script_events.ScriptEvents[event_name].Duration;
+            event_time = script_event.Duration;
 
-            if (Configs.config_script_events.ScriptEvents[event_name].messageAndKeys != null)
+            if (script_event.messageAndKeys != null)
             {
-                blocking_message = Configs.config_script_events.ScriptEvents[event_name].messageAndKeys[0][0];
-                if (Configs.config_script_events.ScriptEvents[event_name].messageAndKeys[0].Length >= 2)
+                anim_block_miss_count = 0;
+                foreach (var message_key_sets in script_event.messageAndKeys)
                 {
-                    blocking_key = Configs.config_script_events.ScriptEvents[event_name].messageAndKeys[0][1];
+                    blocking_message_keys.add(new List<string>(message_key_sets));
                 }
-                else
-                {
-                    blocking_key = blocking_message;
-                }
-                missed_blocking_key_count = 0;
             }
 
         }
 
-
-        if (Configs.config_script_events.ScriptEvents[event_name].type == "Sequential")
+        if (script_event.type == "Sequential")
         {
             Debug.Log("Starting sequential");
-            //StartCoroutine(waitSequentialEvents(Configs.config_script_events.ScriptEvents[event_name].sequenceIds, Configs.config_script_events.ScriptEvents[event_name].messageAndKeys)); //We need to complete message and keys before activating sequences
-            if (Configs.config_script_events.ScriptEvents[event_name].sequenceIds != null)
+            if (script_event.messageAndKeys != null)
             {
-                GameStart.event_manager.startSequentialPlayer(Configs.config_script_events.ScriptEvents[event_name].sequenceIds);
+                ActiveMessageKeys sequential_queue_message_keys = new ActiveMessageKeys();
+                foreach (var message_key_sets in script_event.messageAndKeys)
+                {
+                    sequential_queue_message_keys.add(new List<string>(message_key_sets));
+                }
+                awaiting_sequential_players.Add((sequential_queue_message_keys, script_event.sequenceIds));
             }
+            else
+                GameStart.event_manager.startSequentialPlayer(script_event.sequenceIds);
         }
         return event_time;
     }
@@ -132,13 +200,8 @@ public class EventPlayer : MonoBehaviour
 
         }
 
-        if (blocking_message == "CamAnimFinished") //Sometimes, a blocking key is called after the animation has finished playing. May be related to very precise timing.
-        {
-            if (blocking_key == last_finished_animation)
-            {
-                removeBlock();
-            }
-        }
+        //Sometimes, a blocking key is called after the animation has finished playing. May be related to very precise timing.
+        blocking_message_keys.checkRemoveMessageKey("CamAnimFinished", last_finished_animation);
 
         for (int i = anim_sequences_to_add.Count - 1; i >= 0; i--)
         {
@@ -182,8 +245,13 @@ public class EventPlayer : MonoBehaviour
         event_stack.Clear();
         total_block = false;
         block_duration = 0.0f;
-        blocking_message = "";
-        blocking_key = "";
+        blocking_message_keys = new ActiveMessageKeys();
+        awaiting_sequential_players = new List<(ActiveMessageKeys, string[])>();
+    }
+
+    public void addCustomBlocking(List<string> strings)
+    {
+        blocking_message_keys.add(strings);
     }
 
     public IEnumerator waitSafeAdvanceAnimSequenceToCoroutine(string destination) //This is a stub
@@ -192,71 +260,81 @@ public class EventPlayer : MonoBehaviour
         notifySequenceNodeExited(destination);
     }
 
-    public void notifyMoveComplete(string character)
+
+    private void processSequentialBlocks(string message, string key)
     {
-        if (blocking_message == "CharMovementEnded" && blocking_key == character)
+        List<(ActiveMessageKeys, string[])> to_remove = new List<(ActiveMessageKeys, string[])>();
+        foreach (var awaiting in awaiting_sequential_players)
+        {
+            awaiting.Item1.checkRemoveMessageKey(message, key);
+            if (awaiting.Item1.Count == 0)
+            {
+                GameStart.event_manager.startSequentialPlayer(awaiting.Item2);
+                to_remove.Add(awaiting);
+            }
+        }
+        foreach (var remove in to_remove)
+        {
+            awaiting_sequential_players.Remove(remove);
+        }
+    }
+
+    private void processNotifyBlocks(string message, string key)
+    {
+        processSequentialBlocks(message, key);
+
+        if (blocking_message_keys.Count == 0)
+            return;
+
+        blocking_message_keys.checkRemoveMessageKey(message, key);
+        if (blocking_message_keys.Count == 0)
         {
             removeBlock();
         }
     }
 
-    public void notifyCamAnimFinished(string animation)
+    public void notifyCharacterAnimationComplete(string character, string animation)
     {
-        if (blocking_message == "CamAnimFinished" && blocking_key == animation)
+        processSequentialBlocks("CharAnimEnded", character + ":" + animation);
+
+        if (blocking_message_keys.Count == 0)
+            return;
+        bool removed = blocking_message_keys.checkRemoveMessageKey("CharAnimEnded", character + ":" + animation);
+        if (blocking_message_keys.Count == 0)
         {
             removeBlock();
         }
-    }
-    public void notifyCharacterAnimationComplete(string character, string animation) //The actual animation parameter appears to not matter
-    {
-        if (blocking_message == "CharAnimEnded" && blocking_key == character + ":" + animation)
+        if (removed == true)
         {
-            removeBlock();
+            return;
         }
-        else if (blocking_message == "CharAnimEnded")
+
+        /*Hack*/
+        /*It seems that if the animation misses 3 times, then remove block anyway*/
+
+        foreach (ActiveMessageKeys.MessageKey a in blocking_message_keys.message_key_set)
         {
-            if (blocking_key.Split(':')[0] == character) //If the block is missed 3 times, we break out
-                missed_blocking_key_count++;
-            if (missed_blocking_key_count >= 3)
+            if (a.message == "CharAnimEnded")
             {
-                removeBlock();
-                missed_blocking_key_count = 0;
+                if (a.keys[0].Split(':')[0] == character)
+                {
+                    anim_block_miss_count++;
+                    if (anim_block_miss_count >= 3)
+                    {
+                        anim_block_miss_count = 0;
+                        blocking_message_keys.checkRemoveMessageKey("CharAnimEnded", a.keys[0]);
+                    }
+                    break;
+                }
             }
         }
     }
-
-    public void notifyPropAnimationComplete(string prop, string animation)
-    {
-        if (blocking_message == "PropAnimEnded" && blocking_key == prop + ":" + animation)
-        {
-            removeBlock();
-        }
-    }
-
-    public void notifySequenceNodeExited(string node_name)
-    {
-        if (blocking_message == "SequenceNodeExited" && blocking_key == node_name)
-        {
-            removeBlock();
-        }
-    }
-
-    public void notifyScriptTrigger(string trigger)
-    {
-        if (blocking_message == "AnimationScriptTriggerHit" && blocking_key == trigger)
-        {
-            removeBlock();
-        }
-    }
-
-    public void notifyScreenFadeComplete()
-    {
-        if (blocking_message == "ScreenFadeComplete")
-        {
-            removeBlock();
-        }
-    }
-
+    public void notifyMoveComplete(string character) => processNotifyBlocks("CharMovementEnded", character);
+    public void notifyCamAnimFinished(string animation) => processNotifyBlocks("CamAnimFinished", animation);
+    public void notifyPropAnimationComplete(string prop, string animation) => processNotifyBlocks("PropAnimEnded", prop + ":" + animation);
+    public void notifySequenceNodeExited(string node_name) => processNotifyBlocks("SequenceNodeExited", node_name);
+    public void notifyScriptTrigger(string trigger) => processNotifyBlocks("AnimationScriptTriggerHit", trigger);
+    public void notifyScreenFadeComplete() => processNotifyBlocks("ScreenFadeComplete", null);
     private void removeBlock()
     {
         if (is_sequential_player)
@@ -267,9 +345,8 @@ public class EventPlayer : MonoBehaviour
         {
             Debug.Log("Remove block");
         }
+        anim_block_miss_count = 0;
         total_block = false;
-        blocking_message = "";
-        blocking_key = "";
         block_duration = 0.00f;
         runImmediateEvents();
     }

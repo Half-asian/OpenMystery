@@ -504,8 +504,7 @@ public static class Events
                 if (action_params[0] == "YearEndViewController")
                 {
                     GameStart.event_manager.main_event_player.total_block = true;
-                    GameStart.event_manager.main_event_player.blocking_message = "graduate";
-                    GameStart.event_manager.main_event_player.blocking_key = "graduate";
+                    GameStart.event_manager.main_event_player.addCustomBlocking(new List<string> { "graduation", "graduation" });
                     Graduation.Graduate();
                 }
                 break;
