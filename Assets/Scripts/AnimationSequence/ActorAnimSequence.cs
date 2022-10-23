@@ -18,14 +18,16 @@ public class ActorAnimSequence : AnimationSequence
 
     protected override void finishSequence()
     {
-        if (walk == false)
-            actor_controller.idle_animation_sequence = null;
         base.finishSequence();
 
         if (config_sequence.isOneShot)
         {
             actor_controller.setCharacterIdle();
         }
+        //If not one shot, freeze
+        //Reference Y5 Chapter 22 P6 Charlie prefect bath, charlies frozen
+        //If one shot, repeat
+        //Reference Y4 Capter 3 bowtruckle class, bowtruckle feeding bug
     }
 
     protected override void attachBroom(string prop_model_id, string alias, string target)

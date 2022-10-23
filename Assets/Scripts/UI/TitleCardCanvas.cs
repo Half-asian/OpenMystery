@@ -48,7 +48,6 @@ public class TitleCardCanvas : MonoBehaviour
         while (Time.realtimeSinceStartup - startime < fadetime)
         {
             float difference = (Time.realtimeSinceStartup - startime) / fadetime;
-            Debug.Log(difference);
             divider1.color = new Color(1.0f, 1.0f, 1.0f, difference);
             divider2.color = new Color(1.0f, 1.0f, 1.0f, difference);
             bg.color = new Color(1.0f, 1.0f, 1.0f, difference);
