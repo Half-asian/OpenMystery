@@ -420,8 +420,6 @@ public static class Events
                     return;
                 }
 
-                Debug.Log("CharacterIdleSequence " + action_params[0] + " " + action_params[1]);
-
                 Actor.actor_controllers[action_params[0]].replaceCharacterIdleSequence(action_params[1]);
 
                 break;
