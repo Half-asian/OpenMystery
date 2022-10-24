@@ -39,6 +39,8 @@ public class CameraManager : MonoBehaviour
     private IEnumerator lerpCoroutine;
     private Animation camera_animation;
 
+    private IEnumerator wait_camera_coroutine;
+
     /*----------        Public        ----------*/
     public void initialise()
     {
@@ -128,6 +130,7 @@ public class CameraManager : MonoBehaviour
 
     public void playCameraAnimation(string animation, bool disable_jt_cam_bind)
     {
+        if (wait_camera_coroutine != null) StopCoroutine(wait_camera_coroutine);
         setCameraState(CameraState.StateAnimation);
 
         Dictionary<string, AnimationManager.BoneMod> bone_mods = new Dictionary<string, AnimationManager.BoneMod>();
@@ -143,7 +146,8 @@ public class CameraManager : MonoBehaviour
         camera_animation.AddClip(anim_clip, "default");
         camera_animation.Play("default");
 
-        GameStart.event_manager.StartCoroutine(waitCameraAnimation(anim_clip.length, animation));
+        wait_camera_coroutine = waitCameraAnimation(anim_clip.length, animation);
+        StartCoroutine(wait_camera_coroutine);
     }
 
     //Plays a camera lerp between two scene cameras
