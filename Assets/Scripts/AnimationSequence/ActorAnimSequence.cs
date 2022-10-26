@@ -31,10 +31,16 @@ public class ActorAnimSequence : AnimationSequence
         //Reference Y4 Capter 3 bowtruckle class, bowtruckle feeding bug
     }
 
-    protected override void attachBroom(string alias, string target)
+    protected override void attachBroom(string target)
     {
         string broom_skin_name = getBroomSkinName(actor_controller.actor_info.actorId);
-        attachChildNode(broom_skin_name, alias, target);
+        attachChildNode(broom_skin_name, null, target);
+    }
+
+    protected override void playBroomAnim(string target)
+    {
+        string broom_skin_name = getBroomSkinName(actor_controller.actor_info.actorId);
+        playChildNodeAnim(broom_skin_name, target, config_sequence.data.triggerReplacement);
     }
 
     protected override void OnDestroy()

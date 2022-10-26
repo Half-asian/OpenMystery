@@ -13,7 +13,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 break;
 
             case "AttachBroom":
-                attachBroom("broom", action.target);
+                attachBroom(action.target);
                 break;
 
             case "PlayBroomAnim":
@@ -63,6 +63,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
     }
     protected void attachChildNode(string prop_model_id, string alias, string target)
     {
+        Debug.Log("attachChildNode " + prop_model_id + " " + alias + " " + target);
         base_node.attachChildNode(prop_model_id, alias, target);
     }
 
@@ -71,11 +72,8 @@ public abstract partial class AnimationSequence : MonoBehaviour
         base_node.removeProp(prop_id);
     }
 
-    protected abstract void attachBroom(string alias, string target);
-    protected void playBroomAnim(string target)
-    {
-        playChildNodeAnim("broom", target, config_sequence.data.triggerReplacement);
-    }
+    protected abstract void attachBroom(string target);
+    protected abstract void playBroomAnim(string target);
     protected void playChildNodeAnim(string id, string target, Dictionary<string, string> triggerReplacement)
     {
         base_node.playPropAnim(id, target, triggerReplacement);

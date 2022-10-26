@@ -16,7 +16,12 @@ public class PropAnimSequence : AnimationSequence
         base.initAnimSequence(_anim_sequence, _walk);
     }
 
-    protected override void attachBroom(string alias, string target)
+    protected override void attachBroom(string target)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void playBroomAnim(string target)
     {
         throw new System.NotImplementedException();
     }
