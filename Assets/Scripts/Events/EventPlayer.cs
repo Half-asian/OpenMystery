@@ -204,7 +204,7 @@ public class EventPlayer : MonoBehaviour
         if (script_event.type == "Sequential")
         {
             Debug.Log("Starting sequential");
-            /*if (script_event.messageAndKeys != null)
+            if (script_event.messageAndKeys != null)
             {
                 ActiveMessageKeys sequential_queue_message_keys = new ActiveMessageKeys();
                 foreach (var message_key_sets in script_event.messageAndKeys)
@@ -213,7 +213,7 @@ public class EventPlayer : MonoBehaviour
                 }
                 awaiting_sequential_players.Add((sequential_queue_message_keys, script_event.sequenceIds));
             }
-            else*/
+            else
                 GameStart.event_manager.startSequentialPlayer(script_event.sequenceIds);
         }
 
@@ -344,7 +344,6 @@ public class EventPlayer : MonoBehaviour
 
     public void notifyCharacterAnimationComplete(string character, string animation)
     {
-        //Debug.Log("EVENT_PLAYER: CharAnimEnded " + character + animation);
         processSequentialBlocks("CharAnimEnded", character + ":" + animation);
 
         if (blocking_message_keys.Count == 0)
@@ -380,18 +379,8 @@ public class EventPlayer : MonoBehaviour
         }
     }
     public void notifyMoveComplete(string character) => processNotifyBlocks("CharMovementEnded", character);
-    public void notifyCamAnimFinished(string animation)
-    {
-
-        processNotifyBlocks("CamAnimFinished", animation);
-
-    }
-    public void notifyPropAnimationComplete(string prop, string animation) {
-        //Debug.Log("EVENT_PLAYER: PropAnimEnded " + prop + animation);
-
-        processNotifyBlocks("PropAnimEnded", prop + ":" + animation);
-
-    }
+    public void notifyCamAnimFinished(string animation) => processNotifyBlocks("CamAnimFinished", animation);
+    public void notifyPropAnimationComplete(string prop, string animation) => processNotifyBlocks("PropAnimEnded", prop + ":" + animation);
     public void notifySequenceNodeExited(string node_name) => processNotifyBlocks("SequenceNodeExited", node_name);
     public void notifyScriptTrigger(string trigger) => processNotifyBlocks("AnimationScriptTriggerHit", trigger);
     public void notifyScreenFadeComplete() => processNotifyBlocks("ScreenFadeComplete", null);
