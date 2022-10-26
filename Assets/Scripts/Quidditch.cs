@@ -275,14 +275,15 @@ public class Quidditch
     public void nextMatchPivotalPlay()
     {
         phase = "intro";
+        bool success = true;
         if (match_pivotal_play_index < current_match.pivotalPlaySlots.Length)
         {
-            activatePivotalPlayIntroPhases(current_match.pivotalPlaySlots[match_pivotal_play_index]);
+            success = activatePivotalPlayIntroPhases(current_match.pivotalPlaySlots[match_pivotal_play_index]);
             match_pivotal_play_index += 1;
         }
         else if (has_played_pivotal_outro == false && match_pivotal_play_outro_index < current_match.outroPlays.Length)
         {
-            activatePivotalPlayOutroPhases(current_match.outroPlays[match_pivotal_play_outro_index]);
+            success = activatePivotalPlayOutroPhases(current_match.outroPlays[match_pivotal_play_outro_index]);
             match_pivotal_play_outro_index += 1;
         }
         else
@@ -292,16 +293,19 @@ public class Quidditch
             Scenario.Activate(current_match.scenarioId, Scenario.current.objective);
             Scenario.Load(current_match.outroScenarioId);
         }
+        if (success == false)
+            nextMatchPivotalPlay();
     }
 
-    public void activatePivotalPlayIntroPhases(string pivotal_play_name)
+    //Returns true if succesfully activated, otherwise false if failed predicate or other
+    public bool activatePivotalPlayIntroPhases(string pivotal_play_name)
     {
         if (!Configs.config_pivotal_play.PivotalPlay.ContainsKey(pivotal_play_name))
         {
             if (!Configs.config_pivotal_play_bucket.PivotalPlayBucket.ContainsKey(pivotal_play_name))
             {
                 Debug.LogError("Quidditch:activatePlayPhase - Config empty for id " + pivotal_play_name + "in PivotalPlay/PivotalPlayBucket");
-                return;
+                return false;
             }
             else
             {
@@ -316,22 +320,23 @@ public class Quidditch
 
         if (current_pivotal_play.availablePredicate != null && !NewPredicate.parsePredicate(current_pivotal_play.availablePredicate)) //Failed the predicate, skip
         {
-            nextMatchPivotalPlay();
-            return;
+            return false;
         }
 
         play_phase_name = current_pivotal_play.introPhases[0];
         activatePlayPhase();
+        return true;
     }
 
-    public void activatePivotalPlayOutroPhases(string pivotal_play_name)
+    //Returns true if succesfully activated, otherwise false if failed predicate or other
+    public bool activatePivotalPlayOutroPhases(string pivotal_play_name)
     {
         if (!Configs.config_pivotal_play.PivotalPlay.ContainsKey(pivotal_play_name))
         {
             if (!Configs.config_pivotal_play_bucket.PivotalPlayBucket.ContainsKey(pivotal_play_name))
             {
                 Debug.LogError("Quidditch:activatePlayPhase - Config empty for id " + pivotal_play_name + "in PivotalPlay/PivotalPlayBucket");
-                return;
+                return false;
             }
             else
             {
@@ -346,13 +351,13 @@ public class Quidditch
 
         if (current_pivotal_play.availablePredicate != null && !NewPredicate.parsePredicate(current_pivotal_play.availablePredicate)) //Failed the predicate, skip
         {
-            nextMatchPivotalPlay();
-            return;
+            return false;
         }
 
         has_played_pivotal_outro = true;
         play_phase_name = current_pivotal_play.introPhases[0];
         activatePlayPhase();
+        return true;
     }
 
 
