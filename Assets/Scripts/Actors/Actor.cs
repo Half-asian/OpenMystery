@@ -53,6 +53,7 @@ public class Actor
 
             Player.local_avatar_onscreen_name = character_name;
             actor_controller = StaticAvatarSpawner.spawnStaticAvatar(config_actor);
+            actor_controller.name = character_name;
         }
         else
         {

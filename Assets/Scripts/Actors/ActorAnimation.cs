@@ -46,7 +46,20 @@ public partial class ActorController : Node
         }
     }
 
+    protected override IEnumerator animationAlert(AnimationClip clip)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(clip.length);
+            raiseOnAnimationFinished(clip.name);
 
+            GameStart.event_manager.notifyCharacterAnimationComplete(name, clip.name);
+            if (clip.wrapMode != WrapMode.Loop)
+            {
+                yield break;
+            }
+        }
+    }
 
     public void playIdleAnimation()
     {

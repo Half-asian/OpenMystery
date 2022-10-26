@@ -61,6 +61,9 @@ public class Console : MonoBehaviour
             case "loadscenario":
                 Scenario.Load(parameters[1]);
                 break;
+            case "loadmatch":
+                GameStart.quidditch_manager.startMatch(parameters[1]);
+                break;
             case "loadscene":
                 Scene.setCurrentScene(parameters[1]);
                 Scenario.cleanup();

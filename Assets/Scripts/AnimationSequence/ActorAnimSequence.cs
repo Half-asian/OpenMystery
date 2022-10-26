@@ -11,13 +11,14 @@ public class ActorAnimSequence : AnimationSequence
         actor_controller = GetComponent<ActorController>();
         base_node = actor_controller;
 
-        Debug.Log("Activating animSequence " + _anim_sequence + " for actor " + actor_controller.name + " walk: " + _walk);
+        //Debug.Log("ACTOR_ANIM_SEQUENCE: Activating animSequence " + _anim_sequence + " for actor " + actor_controller.name + " walk: " + _walk);
 
         base.initAnimSequence(_anim_sequence, _walk);
     }
 
     protected override void finishSequence()
     {
+        //Debug.Log("ACTOR_ANIM_SEQUENCE: " + actor_controller.name + " has finished sequence.");
         base.finishSequence();
 
         if (config_sequence.isOneShot)
@@ -30,9 +31,14 @@ public class ActorAnimSequence : AnimationSequence
         //Reference Y4 Capter 3 bowtruckle class, bowtruckle feeding bug
     }
 
-    protected override void attachBroom(string prop_model_id, string alias, string target)
+    protected override void attachBroom(string alias, string target)
     {
         string broom_skin_name = getBroomSkinName(actor_controller.actor_info.actorId);
         attachChildNode(broom_skin_name, alias, target);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
     }
 }

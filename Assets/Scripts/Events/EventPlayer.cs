@@ -344,7 +344,7 @@ public class EventPlayer : MonoBehaviour
 
     public void notifyCharacterAnimationComplete(string character, string animation)
     {
-
+        //Debug.Log("EVENT_PLAYER: CharAnimEnded " + character + animation);
         processSequentialBlocks("CharAnimEnded", character + ":" + animation);
 
         if (blocking_message_keys.Count == 0)
@@ -387,6 +387,8 @@ public class EventPlayer : MonoBehaviour
 
     }
     public void notifyPropAnimationComplete(string prop, string animation) {
+        //Debug.Log("EVENT_PLAYER: PropAnimEnded " + prop + animation);
+
         processNotifyBlocks("PropAnimEnded", prop + ":" + animation);
 
     }

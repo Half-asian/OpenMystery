@@ -569,6 +569,8 @@ public partial class NewPredicate
         predicate = predicate.Replace('\'', '"');
         predicate = predicate.Replace("\n", "");
 
+        predicate = predicate.Replace("Regular", "true"); //Dumb mistake in script event QuidditchS1C10P5_centerCamOutro
+
         while (string_pointer < predicate.Length)
         {
             char_buf += predicate[string_pointer];

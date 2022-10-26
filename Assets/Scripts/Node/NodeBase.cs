@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 
-public partial class Node : MonoBehaviour
+public abstract partial class Node : MonoBehaviour
 {
+    public event Action<string> onAnimationFinished = delegate { };
+
     public Model model;
 
     public Animation animation_component;
@@ -32,6 +35,11 @@ public partial class Node : MonoBehaviour
             if (smr != null)
                 mesh_renderers[smr.name] = smr;
         }
+    }
+
+    protected void raiseOnAnimationFinished(string animation_name)
+    {
+        onAnimationFinished.Invoke(animation_name);
     }
 
     public void OnDestroy()
@@ -75,26 +83,7 @@ public partial class Node : MonoBehaviour
         }
     }
 
-    public void changeOpaqueMaterialToTransparent()
-    {
-
-    }
-
-    IEnumerator animationAlert(AnimationClip clip)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(clip.length);
-            GameStart.event_manager.notifyCharacterAnimationComplete(name, clip.name);
-            if (clip.wrapMode != WrapMode.Loop)
-            {
-                //yield return null;
-                //yield return null;
-                //playAnimationOnComponent(idle);
-                yield break;
-            }
-        }
-    }
+    protected abstract IEnumerator animationAlert(AnimationClip clip);
 
     IEnumerator shaderAnimPlayer(List<ShaderAnimation> shaderAnimations, AnimationClip anim_clip)
     {

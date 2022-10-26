@@ -65,7 +65,7 @@ public partial class ActorController : Node
 
     private void applyWaypoint()
     {
-        Debug.Log("applying waypoint for " + name + " waypoint: " + destination_waypoint.name);
+        //Debug.Log("applying waypoint for " + name + " waypoint: " + destination_waypoint.name);
         if (destination_waypoint == null)
             return;
         Vector3 position = Vector3.zero;

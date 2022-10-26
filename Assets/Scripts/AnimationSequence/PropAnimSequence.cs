@@ -16,8 +16,13 @@ public class PropAnimSequence : AnimationSequence
         base.initAnimSequence(_anim_sequence, _walk);
     }
 
-    protected override void attachBroom(string prop_model_id, string alias, string target)
+    protected override void attachBroom(string alias, string target)
     {
         throw new System.NotImplementedException();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
     }
 }

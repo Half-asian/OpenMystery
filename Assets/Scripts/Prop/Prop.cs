@@ -45,10 +45,21 @@ public class Prop : Node
         gameObject.GetComponent<PropAnimSequence>().initAnimSequence(sequence_name, false);
     }
 
-    public void onAnimationFinished(string animation_name)
+    protected override IEnumerator animationAlert(AnimationClip clip)
     {
-        GameStart.event_manager.notifyPropAnimationComplete(_name, animation_name);
+        while (true)
+        {
+            yield return new WaitForSeconds(clip.length);
+            raiseOnAnimationFinished(clip.name);
+
+            GameStart.event_manager.notifyPropAnimationComplete(name, clip.name);
+            if (clip.wrapMode != WrapMode.Loop)
+            {
+                yield break;
+            }
+        }
     }
+
 
     public List<GameObject> particles = new List<GameObject>();
 
@@ -69,7 +80,7 @@ public class Prop : Node
             prop_name = split[2];
             if (childNodes.ContainsKey(prop_name))
             {
-                Transform bone = childNodes[prop_name].GetComponent<Node>().model.pose_bones[bone_name];
+                Transform bone = childNodes[prop_name].GetComponent<Prop>().model.pose_bones[bone_name];
                 particle = Particle.AttachParticleSystem(particle_name, bone);
             }
         }

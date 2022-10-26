@@ -13,8 +13,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 break;
 
             case "AttachBroom":
-                string broom_skin_name = getBroomSkinName(GetComponent<ActorController>().actor_info.actorId);
-                attachBroom(broom_skin_name, "broom", action.target);
+                attachBroom("broom", action.target);
                 break;
 
             case "PlayBroomAnim":
@@ -72,7 +71,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         base_node.removeProp(prop_id);
     }
 
-    protected abstract void attachBroom(string prop_model_id, string alias, string target);
+    protected abstract void attachBroom(string alias, string target);
     protected void playBroomAnim(string target)
     {
         playChildNodeAnim("broom", target, config_sequence.data.triggerReplacement);

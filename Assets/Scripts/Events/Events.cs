@@ -431,7 +431,8 @@ public static class Events
                     Debug.LogError("Couldn't find actor " + action_params[0]);
                     return;
                 }
-                moveCharacter(action_params);
+                string[] new_action_params = new string[] { action_params[0], action_params[1] };
+                moveCharacter(new_action_params);
                 Actor.actor_controllers[action_params[0]].replaceCharacterWalkSequence(action_params[2]);
                 break;
 

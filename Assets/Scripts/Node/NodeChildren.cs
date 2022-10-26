@@ -28,7 +28,7 @@ public partial class Node : MonoBehaviour
             return;
         }
 
-        Node prop = prop_model.game_object.AddComponent<Node>();
+        Prop prop = prop_model.game_object.AddComponent<Prop>();
         prop.setup(prop_model);
 
 

@@ -41,6 +41,11 @@ public class Quidditch
         has_played_pivotal_outro = false;
         CameraManager.current.resetCamera();
 
+        if (Player.local_avatar_opponent_house == null)
+        {
+            Player.local_avatar_opponent_house = "gryffindor";
+        }
+
 
         if (!Configs.config_match.Match.ContainsKey(match_name))
         {

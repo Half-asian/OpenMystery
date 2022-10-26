@@ -12,8 +12,6 @@ public abstract partial class AnimationSequence : MonoBehaviour
     public int node_index = 0;
     int node_repeated = 0;
 
-    public IEnumerator wait_for_animation = null;
-
     public Dictionary<string, HPAnimation> loadedAnimations = new Dictionary<string, HPAnimation>();
 
     public bool walk;
@@ -25,17 +23,13 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     public virtual void initAnimSequence(string _anim_sequence, bool _walk)
     {
+        base_node.onAnimationFinished += WaitForAnimation;
 
         destroyProps();
         walk = _walk;
         //Find the animation sequence in the config
 
         animation_component = GetComponent<Animation>();
-
-        if (wait_for_animation != null)
-        {
-            StopCoroutine(wait_for_animation);
-        }
 
         if (Configs.config_char_anim_sequence.CharAnimSequence.ContainsKey(_anim_sequence))
         {
@@ -123,24 +117,31 @@ public abstract partial class AnimationSequence : MonoBehaviour
         else
             current_animation_name = config_sequence.data.nodes[this.node_index].animName;
 
-        float animation_length = playAnimation(current_animation_name, config_sequence.sequenceId);
+        playAnimation(current_animation_name, config_sequence.sequenceId);
+    }
 
-        if (config_sequence.data.nodes[this.node_index].blocking == false)
-        {
-            wait_for_animation = WaitForAnimation(animation_length);
-            StartCoroutine(wait_for_animation);
-        }
+    private void cleanup()
+    {
+        destroyProps();
+        base_node.onAnimationFinished -= WaitForAnimation;
     }
 
     protected virtual void finishSequence()
     {
+        cleanup();
         Destroy(this);
-        return;
     }
 
-    protected IEnumerator WaitForAnimation(float clip_time)
+    protected virtual void OnDestroy()
     {
-        yield return new WaitForSeconds(clip_time);
+        cleanup();
+    }
+
+    private void WaitForAnimation(string animation_name)
+    {
+        if (config_sequence.data.nodes[this.node_index].blocking == true)
+            return;
+        //Debug.Log("ANIMATION_SEQUENCE: waitforanimation finished for " + base_node.name + " playing anim seq " + config_sequence.sequenceId);
 
         // at this point, the animation has completed
         // min loops unimplemented. No idea how it works.
