@@ -109,6 +109,13 @@ public class CameraManager : MonoBehaviour
         if (action_params.Length < 1)
             return last_camera;
 
+
+        if (action_params.Length < 2)
+        {
+            last_camera = staticFocusCam(action_params[0]);
+            return last_camera;
+        }
+
         if (action_params.Length > 2)
         {
             last_camera = staticFocusCam(action_params[0]);
