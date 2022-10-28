@@ -32,6 +32,21 @@ public class ConfigAnimation : Config<ConfigAnimation>
         public TriggerMap[] triggerMap;
 
         [System.Serializable]
+        public class Camerainfo
+        {
+            [System.Serializable]
+            public class VerticalAOV
+            {
+                public float start;
+                public float endVal;
+                public float end;
+                public float startVal;
+            }
+            public VerticalAOV[] verticalAOV;
+        }
+        public Camerainfo camerainfo;
+
+        [System.Serializable]
         public class EffectInfo
         {
             [System.Serializable]

@@ -36,8 +36,8 @@ public class Graduation
         CameraManager.current.setMainLockedCamera(new Vector3(0, 0, 0), new Vector3(0, -180, 0));
         GameStart.onReturnToMenu += Cleanup;
 
-        CameraManager.current.main_camera_jt_cam_bind.localPosition = new Vector3(5.593f, 1.905f, 7.171f);
-        CameraManager.current.main_camera_jt_cam_bind.localRotation = Quaternion.Euler(new Vector3(35.327f, 0, 0));
+        CameraManager.current.camera_jt_cam_bind_transform.localPosition = new Vector3(5.593f, 1.905f, 7.171f);
+        CameraManager.current.camera_jt_cam_bind_transform.localRotation = Quaternion.Euler(new Vector3(35.327f, 0, 0));
 
         yield return new WaitForSeconds(1);
 

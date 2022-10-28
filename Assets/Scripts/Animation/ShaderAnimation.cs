@@ -73,11 +73,11 @@ public static partial class AnimationManager
         return list;
     }
 
-    static List<ShaderAnimation> processEffects(ConfigAnimation._Animation3D.EffectInfo[] effectInfo)
+    static List<ShaderAnimation> processEffects(ConfigAnimation._Animation3D.EffectInfo[] effect_info)
     {
         List<ShaderAnimation> list = new List<ShaderAnimation>();
 
-        foreach (var effect in effectInfo)
+        foreach (var effect in effect_info)
         {
             if (effect.fades != null)
             {

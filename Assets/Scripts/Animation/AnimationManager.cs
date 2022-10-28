@@ -8,6 +8,7 @@ using UnityEngine.TextCore.Text;
 public class HPAnimation {
 	public AnimationClip anim_clip;
 	public List<ShaderAnimation> shaderAnimations;
+	public List<VerticalAOV> verticalAOVs;
 	public HPAnimation(AnimationClip _anim_clip = null)
     {
 		anim_clip = _anim_clip;
@@ -152,8 +153,17 @@ public static partial class AnimationManager
             }
         }
 
-		//Final settings
-		anim_clip.legacy = true;
+		if (animation_config.camerainfo != null)
+		{
+			if (animation_config.camerainfo.verticalAOV != null)
+			{
+				hpanimation.verticalAOVs = new List<VerticalAOV>();
+				hpanimation.verticalAOVs.AddRange(VerticalAOV.processVerticalAOV(animation_config.camerainfo));
+			}
+        }
+
+        //Final settings
+        anim_clip.legacy = true;
 		anim_clip.name = animation_name;
 		if (animation_config.wrapMode == "loop")
 			anim_clip.wrapMode = WrapMode.Loop;
@@ -283,7 +293,7 @@ public static partial class AnimationManager
 			}
 			else
 			{
-				Vector3 current_rotation = CameraManager.current.main_camera_jt_cam_bind.localEulerAngles;
+				Vector3 current_rotation = CameraManager.current.camera_jt_cam_bind_transform.localEulerAngles;
 				Quaternion cam_bind_anim_quaternion = new Quaternion(keyframe.rotation[0], keyframe.rotation[1], keyframe.rotation[2], keyframe.rotation[3]);
 				Vector3 cam_bind_anim_euler = cam_bind_anim_quaternion.eulerAngles;
 				Vector3 combined_euler = new Vector3(cam_bind_anim_euler.x, current_rotation.y, cam_bind_anim_euler.z);

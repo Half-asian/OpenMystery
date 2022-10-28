@@ -425,6 +425,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e969a28db6a524b90c95b2b4072d8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &220119771 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7339653517635367414, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+  m_PrefabInstance: {fileID: 1937005754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &231991791 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4880971377664202555, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
@@ -515,6 +520,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &399438286 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7339653516927554318, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+  m_PrefabInstance: {fileID: 1937005754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &429856292 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7211659572932065246, guid: 2df9ac6b4aed91a45875d4af64081a22, type: 3}
@@ -842,6 +852,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image_target: {fileID: 574197970}
   image_name: hp_button_dialogue@4x.png
+--- !u!4 &578593500 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7339653518232759276, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+  m_PrefabInstance: {fileID: 1937005754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &579679042 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7339653518560060797, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
@@ -881,6 +896,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameradata: {fileID: 579679050}
+--- !u!20 &579679057 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7339653518560060798, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+  m_PrefabInstance: {fileID: 1937005754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &877350089 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4272762625650524973, guid: 87a05fb0a0a9ab243b9344d919a63b24, type: 3}
@@ -1683,6 +1703,11 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!4 &1267122235 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7339653517382173702, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+  m_PrefabInstance: {fileID: 1937005754}
+  m_PrefabAsset: {fileID: 0}
 --- !u!223 &1369756774 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 4350646969949533112, guid: 884df50440b13c842bdebbbd6f569c1f, type: 3}
@@ -2145,9 +2170,65 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 471b05a6dca8b3245a9dac0aecebd060, type: 3}
     - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: main_camera
+      value: 
+      objectReference: {fileID: 579679057}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: depth_camera
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: camera_animation
+      value: 
+      objectReference: {fileID: 1267122234}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: camera_component
+      value: 
+      objectReference: {fileID: 579679057}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: camera_transform
+      value: 
+      objectReference: {fileID: 579679047}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: main_camera_transform
+      value: 
+      objectReference: {fileID: 579679047}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: camera_holder_transform
+      value: 
+      objectReference: {fileID: 1267122235}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: camera_jt_all_bind_transform
+      value: 
+      objectReference: {fileID: 399438286}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: camera_jt_cam_bind_transform
+      value: 
+      objectReference: {fileID: 578593500}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: main_camera_holder_transform
+      value: 
+      objectReference: {fileID: 1267122235}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: camera_jt_anim_bind_transform
+      value: 
+      objectReference: {fileID: 220119771}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: camera_holder_animation_component
+      value: 
+      objectReference: {fileID: 1267122234}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: main_camera_jt_all_bind_transform
+      value: 
+      objectReference: {fileID: 399438286}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: main_camera_jt_cam_bind_transform
+      value: 
+      objectReference: {fileID: 578593500}
+    - target: {fileID: 7339653517382173696, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: main_camera_jt_anim_bind_transform
+      value: 
+      objectReference: {fileID: 220119771}
     - target: {fileID: 7339653517382173702, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_RootOrder
       value: 4

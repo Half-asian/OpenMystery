@@ -23,34 +23,37 @@ public class CameraManager : MonoBehaviour
     public static CameraManager current;
 
     [SerializeField]
-    private Transform main_camera;
+    private Animation camera_holder_animation_component;
     [SerializeField]
-    private Transform main_camera_holder;
+    private Camera camera_component;
     [SerializeField]
-    private Transform main_camera_jt_all_bind;
+    private Transform camera_transform;
     [SerializeField]
-    public Transform main_camera_jt_cam_bind;
+    private Transform camera_holder_transform;
     [SerializeField]
-    private Transform main_camera_jt_anim_bind;
+    private Transform camera_jt_all_bind_transform;
+    [SerializeField]
+    public Transform camera_jt_cam_bind_transform;
+    [SerializeField]
+    private Transform camera_jt_anim_bind_transform;
     [SerializeField]
 
     private CameraState camera_state;
     private Model camera_model;
     private IEnumerator lerpCoroutine;
-    private Animation camera_animation;
 
     private IEnumerator wait_camera_coroutine;
+    private IEnumerator aov_player_coroutine;
 
     /*----------        Public        ----------*/
     public void initialise()
     {
-        camera_animation = main_camera_holder.GetComponent<Animation>();
         camera_model = new Model();
-        camera_model.game_object = main_camera_holder.gameObject;
-        camera_model.jt_all_bind = main_camera_jt_all_bind;
+        camera_model.game_object = camera_holder_transform.gameObject;
+        camera_model.jt_all_bind = camera_jt_all_bind_transform;
         setCameraState(CameraState.StateStatic);
-        main_camera.transform.localPosition = Vector3.zero;
-        main_camera.transform.localEulerAngles = Vector3.zero;
+        camera_transform.localPosition = Vector3.zero;
+        camera_transform.localEulerAngles = Vector3.zero;
     }
 
     public bool getCameraControllable()
@@ -62,44 +65,49 @@ public class CameraManager : MonoBehaviour
     {
         setCameraState(CameraState.StateLocked);
         resetCamera();
-        main_camera.localPosition = position;
-        main_camera.localEulerAngles = rotation;
+        camera_transform.localPosition = position;
+        camera_transform.localEulerAngles = rotation;
     }
     public void setMainLockedCamera(Vector3 position, Quaternion rotation)
     {
         setCameraState(CameraState.StateLocked);
         resetCamera();
-        main_camera.localPosition = position;
-        main_camera.localRotation = rotation;
+        camera_transform.localPosition = position;
+        camera_transform.localRotation = rotation;
+    }
+
+    public void setAOV(float aov)
+    {
+        camera_component.fieldOfView = aov * 1.35f;
     }
 
     public void setFOV(float fov)
     {
-        main_camera.GetComponent<Camera>().fieldOfView = fov;
+        camera_component.fieldOfView = fov;
     }
 
     public void cleanup()
     {
-        camera_animation.Stop();
+        camera_holder_animation_component.Stop();
     }
 
     public void resetCamera()
     {
-        main_camera_holder.transform.localScale = new Vector3(-1, 1, 1);
-        main_camera_jt_anim_bind.transform.localPosition = Vector3.zero;
-        main_camera_jt_anim_bind.transform.localEulerAngles = Vector3.zero;
-        main_camera_jt_cam_bind.transform.localPosition = Vector3.zero;
-        main_camera_jt_cam_bind.transform.localEulerAngles = Vector3.zero;
-        main_camera.transform.localEulerAngles = new Vector3(0, 180, 0);
-        main_camera.transform.position = Vector3.zero;//new Vector3(0, 0.05f, 0); //idk?
+        camera_holder_transform.transform.localScale = new Vector3(-1, 1, 1);
+        camera_jt_anim_bind_transform.transform.localPosition = Vector3.zero;
+        camera_jt_anim_bind_transform.transform.localEulerAngles = Vector3.zero;
+        camera_jt_cam_bind_transform.transform.localPosition = Vector3.zero;
+        camera_jt_cam_bind_transform.transform.localEulerAngles = Vector3.zero;
+        camera_transform.localEulerAngles = new Vector3(0, 180, 0);
+        camera_transform.position = Vector3.zero;//new Vector3(0, 0.05f, 0); //idk?
     }
 
     public ConfigScene._Scene.Camera focusCam(ref string[] action_params)
     {
         if (camera_state == CameraState.StateLerp)
         {
-            main_camera.localPosition = Vector3.zero;
-            main_camera.localEulerAngles = new Vector3(0, 180, 0);
+            camera_transform.localPosition = Vector3.zero;
+            camera_transform.localEulerAngles = new Vector3(0, 180, 0);
         }
 
         setCameraState(CameraState.StateStatic);
@@ -138,6 +146,8 @@ public class CameraManager : MonoBehaviour
     public void playCameraAnimation(string animation, bool disable_jt_cam_bind)
     {
         if (wait_camera_coroutine != null) StopCoroutine(wait_camera_coroutine);
+        if (aov_player_coroutine != null) StopCoroutine(aov_player_coroutine);
+
         setCameraState(CameraState.StateAnimation);
 
         Dictionary<string, AnimationManager.BoneMod> bone_mods = new Dictionary<string, AnimationManager.BoneMod>();
@@ -148,10 +158,17 @@ public class CameraManager : MonoBehaviour
             bone_mods["jt_cam_bind"].CameraHack = true;
         }
 
-        AnimationClip anim_clip = AnimationManager.loadAnimationClip(animation, camera_model, null, null, bone_mods: bone_mods, is_camera: true).anim_clip;
+        var hpanim = AnimationManager.loadAnimationClip(animation, camera_model, null, null, bone_mods: bone_mods, is_camera: true);
+        AnimationClip anim_clip = hpanim.anim_clip;
 
-        camera_animation.AddClip(anim_clip, "default");
-        camera_animation.Play("default");
+        camera_holder_animation_component.AddClip(anim_clip, "default");
+        camera_holder_animation_component.Play("default");
+
+        if (hpanim.verticalAOVs != null)
+        {
+            aov_player_coroutine = CameraAOVPlayer(hpanim.verticalAOVs, anim_clip);
+            StartCoroutine(aov_player_coroutine);
+        }
 
         wait_camera_coroutine = waitCameraAnimation(anim_clip.length, animation);
         StartCoroutine(wait_camera_coroutine);
@@ -176,8 +193,8 @@ public class CameraManager : MonoBehaviour
 
         AnimationClip anim_clip_pancam = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, is_camera: true).anim_clip;
         anim_clip_pancam.wrapMode = WrapMode.Once;
-        camera_animation.AddClip(anim_clip_pancam, "default");
-        camera_animation.Play("default");
+        camera_holder_animation_component.AddClip(anim_clip_pancam, "default");
+        camera_holder_animation_component.Play("default");
         StartCoroutine(waitPanCam(anim_clip_pancam.length));
     }
 
@@ -191,7 +208,7 @@ public class CameraManager : MonoBehaviour
     private void setCameraState(CameraState state)
     {
         if (lerpCoroutine != null) StopCoroutine(lerpCoroutine);
-        camera_animation.Stop();
+        camera_holder_animation_component.Stop();
         camera_state = state;
     }
 
@@ -257,20 +274,22 @@ public class CameraManager : MonoBehaviour
         resetCamera();
 
         CameraTransform camera_transform = getCameraTransform(camera);
-        main_camera_jt_cam_bind.transform.localPosition = camera_transform.position;
-        main_camera_jt_cam_bind.transform.localRotation = camera_transform.rotation;
+        camera_jt_cam_bind_transform.transform.localPosition = camera_transform.position;
+        camera_jt_cam_bind_transform.transform.localRotation = camera_transform.rotation;
 
         //Set the sampled animation
         if (camera.animation != null)
         {
             AnimationClip anim_clip = AnimationManager.loadAnimationClip(
                 camera.animation, camera_model, null, null, null, is_camera: true).anim_clip;
-            anim_clip.SampleAnimation(main_camera_holder.gameObject, 0.0f);
+            anim_clip.SampleAnimation(camera_holder_transform.gameObject, 0.0f);
         }
 
         //Game defined Field of View is often pretty bad. Usually looks better if its constant.
         if (camera.verticalAOV != 0.0f)
-            main_camera.GetComponent<Camera>().fieldOfView = camera.verticalAOV * 1.35f;
+        {
+            setAOV(camera.verticalAOV);
+        }
 
         return camera;
     }
@@ -292,7 +311,7 @@ public class CameraManager : MonoBehaviour
         Vector3 end_position = camera_transform.position;
         Quaternion end_rotation = camera_transform.rotation;
 
-        playLerpCamera(main_camera_jt_cam_bind.transform.localPosition, main_camera_jt_cam_bind.transform.localRotation, end_position, end_rotation, time);
+        playLerpCamera(camera_jt_cam_bind_transform.transform.localPosition, camera_jt_cam_bind_transform.transform.localRotation, end_position, end_rotation, time);
         return camera;
     }
 
@@ -308,12 +327,12 @@ public class CameraManager : MonoBehaviour
             float elapsed_time = Time.realtimeSinceStartup - start_time;
             float progress = elapsed_time / length;
 
-            main_camera_jt_cam_bind.transform.localPosition = Vector3.Lerp(start_position, end_position, progress);
-            main_camera_jt_cam_bind.transform.localRotation = Quaternion.Lerp(start_rotation, end_rotation, progress);
+            camera_jt_cam_bind_transform.transform.localPosition = Vector3.Lerp(start_position, end_position, progress);
+            camera_jt_cam_bind_transform.transform.localRotation = Quaternion.Lerp(start_rotation, end_rotation, progress);
             yield return null;
         }
-        main_camera_jt_cam_bind.transform.localPosition = end_position;
-        main_camera_jt_cam_bind.transform.localRotation = end_rotation;
+        camera_jt_cam_bind_transform.transform.localPosition = end_position;
+        camera_jt_cam_bind_transform.transform.localRotation = end_rotation;
     }
 
     private IEnumerator waitCameraAnimation(float length, string animation)
@@ -324,6 +343,37 @@ public class CameraManager : MonoBehaviour
 
         setCameraState(CameraState.StateStatic);
         GameStart.event_manager.notifyCamAnimFinished(animation);
+    }
+
+    IEnumerator CameraAOVPlayer(List<VerticalAOV> vertical_aovs, AnimationClip anim_clip)
+    {
+        float start_time = Time.realtimeSinceStartup;
+        float delta_time = 0.0f;
+
+        while (delta_time < anim_clip.length)
+        {
+            delta_time = (Time.realtimeSinceStartup - start_time);
+
+            foreach (var aov in vertical_aovs)
+            {
+
+                float divider = delta_time / anim_clip.length;
+
+                if (divider < aov.start || divider > aov.end)
+                    continue;
+
+                divider += aov.start;
+                divider += 1.0f - aov.end;
+                divider = Mathf.Min(1.0f, divider);
+                float val = Mathf.Lerp(aov.startVal, aov.endVal, divider);
+
+                if (val != 0.0f)
+                    setAOV(val);
+            }
+
+
+            yield return null;
+        }
     }
 
     private IEnumerator waitPanCam(float length)
