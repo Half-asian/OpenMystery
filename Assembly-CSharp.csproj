@@ -64,7 +64,6 @@
     <Compile Include="Assets\Scripts\Menu\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Scene\LocationHub.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueManager.cs" />
-    <Compile Include="Assets\Scripts\Animation\VerticalAOV.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelHolderProps.cs" />
     <Compile Include="Assets\Scripts\Objectives\HubNPC.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigScenarioLoader.cs" />
@@ -240,6 +239,7 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
+    <Compile Include="Assets\Scripts\Animation\VerticalAOV.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
