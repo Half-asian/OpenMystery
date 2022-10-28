@@ -10,10 +10,10 @@ Material:
   m_Name: opaque_base
   m_Shader: {fileID: -6465566751694194690, guid: f232c1383456291479fb586db0a08d0d, type: 3}
   m_ValidKeywords:
+  - _DISABLE_SSR_TRANSPARENT
+  m_InvalidKeywords:
   - _ALPHATEST_ON
   - _ALPHATOMASK_ON
-  - _DISABLE_SSR_TRANSPARENT
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -126,11 +126,23 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_rimMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_secondDiffuseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - u_specularMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_thirdDiffuseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_topDiffuseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -149,8 +161,21 @@ Material:
     m_Ints: []
     m_Floats:
     - BakedDiffuse: 0
+    - DirtMap_UvSet: 0
+    - EmissiveVertexColor_SWITCH: 0
     - Emissive_UvSet: 0
+    - HAS_DIFFUSE2_TEXTURE: 0
+    - HAS_DIFFUSE3_TEXTURE: 0
+    - HAS_DIFFUSE_TEXTURE: 0
+    - HAS_LIGHTMAP_TEXTURE: 0
     - Lightmap_UvSet: 1
+    - RimVertexColor_SWITCH: 0
+    - Rim_UvSet: 0
+    - SecondDiffuse_UvSet: 0
+    - ThirdDiffuse_UvSet: 0
+    - TopDiffuse_UvSet: 0
+    - USE_DIFFUSE_COLOR: 0
+    - USE_LIGHTMAP_COLOR: 0
     - UseAsCutout_SWITCH: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
@@ -267,8 +292,21 @@ Material:
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
+    - alpha: 0
+    - u_alphaTestReferenceValue: 0
+    - u_brightness: 0
+    - u_diffuseColorAdjust_Switch: 0
+    - u_flatness: 0
+    - u_lmExposure: 0
     - u_lmPower: 0
     - u_opacityAmount: 0
+    - u_rimAngle: 0
+    - u_rimFalloff: 0
+    - u_specMaxRadius: 0
+    - u_specMinRadius: 0
+    - u_topAlphaBoost: 0
+    - u_topAlphaContrast: 0
+    - u_topFalloffContrast: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
@@ -286,8 +324,20 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
+    - u_AmbientLightSourceColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceColor4: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_lightmapColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_rimColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_tintColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1251763847316541528
 MonoBehaviour:

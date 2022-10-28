@@ -27,6 +27,8 @@
 
 //#define USE_RIM
 
+#define USE_SCREENDOOR_TRANSPARENCY
+
 float4 v_vertColor;
 
 float4 tex_u_diffuseMap;
@@ -43,6 +45,7 @@ float4 tex_u_teamColorMask;
 
 float3 eyeDir;
 float3 normal;
+float4 gl_FragCoord;
 
 #ifdef HAS_TOP_DIFFUSE_TEXTURE
     float topContrastUtil(float value, float contrast) {
@@ -231,7 +234,7 @@ float4 main_float(){
                 #ifdef USE_ALPHA_TEST
                 if (UseAsCutout_SWITCH) {
                     if (diffuseTexColor.a < u_alphaTestReferenceValue) {
-                        discard;
+                        return float4(0, 0, 0, 0);
                     }
                 }
                 #endif
@@ -243,7 +246,7 @@ float4 main_float(){
             #if defined(USE_ALPHA_TEST)
                 diffuseTexColor = tex_u_diffuseMap;
                 if (diffuseTexColor.a < u_alphaTestReferenceValue) {
-                    discard;
+                    return float4(0, 0, 0, 0);
                 }
                 if (USE_DIFFUSE_COLOR == false) {
                     diffuseColor = diffuseTexColor.rgb;
@@ -849,31 +852,37 @@ float4 main_float(){
         finalColor = mix(finalColor, depthMixColor*opacity, depthMixT);
     #endif
 
+    float4 gl_FragColor;
+
     #ifdef USE_SCREENDOOR_TRANSPARENCY
+
+        float4x4 thresholdMatrix = {
+            1.0f / 17.0f,  9.0f / 17.0f,  3.0f / 17.0f, 11.0f / 17.0f,
+            13.0f / 17.0f,  5.0f / 17.0f, 15.0f / 17.0f,  7.0f / 17.0f,
+            4.0f / 17.0f, 12.0f / 17.0f,  2.0f / 17.0f, 10.0f / 17.0f,
+            16.0f / 17.0f,  8.0f / 17.0f, 14.0f / 17.0f,  6.0f / 17.0f
+        };
+
         float finalAlpha = opacity * alpha;
-        #ifdef RANDOM_DITHER_FALLBACK
-            if (HAS_DIFFUSE_TEXTURE == true) {
-                if (finalAlpha < rand(v_diffuseCoords)) {
-                    discard;
-                }
-            }
-        #else
-            if (alpha < thresholdMatrix[int(mod(gl_FragCoord.x, 4.0))][int(mod(gl_FragCoord.y, 4.0))]) {
-                discard;
-            }
-        #endif
-        else
-        {
-            gl_FragColor = vec4(finalColor, 1);
+
+        float threshold = thresholdMatrix[int(fmod(gl_FragCoord.x * 1000.0f, 4.0))][int(fmod(gl_FragCoord.y * 1000.0f, 4.0))];
+        if (alpha < threshold) {
+            gl_FragColor = float4(finalColor, 0);
         }
+        else {
+            gl_FragColor = float4(finalColor, opacity);
+        }
+
     #else
-        return float4(finalColor, opacity * alpha);
+        gl_FragColor = float4(finalColor, opacity * alpha);
     #endif
+
+    return gl_FragColor;
 
 }
 
 
-void ubershader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _u_thirdDiffuseMap, float3 _u_dirtMap, float3 _u_lightmapMap, float3 _u_emissiveMap, float4 _u_specularMap, float3 _u_rimMap, float4 _u_topDiffuseMap, float4 _v_vertColor, float3 _eyeDir, float3 _normal, out float4 gl_FragColor){
+void ubershader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _u_thirdDiffuseMap, float3 _u_dirtMap, float3 _u_lightmapMap, float3 _u_emissiveMap, float4 _u_specularMap, float3 _u_rimMap, float4 _u_topDiffuseMap, float4 _v_vertColor, float3 _eyeDir, float3 _normal, float4 _screen_position, out float4 gl_FragColor){
     tex_u_diffuseMap = _u_diffuseMap;
     tex_u_secondDiffuseMap = _u_secondDiffuseMap;
     tex_u_thirdDiffuseMap = _u_thirdDiffuseMap;
@@ -886,6 +895,7 @@ void ubershader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _
     v_vertColor = _v_vertColor;
     eyeDir = _eyeDir;
     normal = _normal;
+    gl_FragCoord = _screen_position;
     gl_FragColor = main_float();
 }
 

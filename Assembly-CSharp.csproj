@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\Menu\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Scene\LocationHub.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueManager.cs" />
+    <Compile Include="Assets\Scripts\Animation\VerticalAOV.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelHolderProps.cs" />
     <Compile Include="Assets\Scripts\Objectives\HubNPC.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigScenarioLoader.cs" />
@@ -239,7 +240,6 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
-    <Compile Include="Assets\Scripts\Animation\VerticalAOV.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -274,6 +274,7 @@
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\Resources\Animations\MerulaHalloween2022.txt" />
+    <None Include="Assets\Hlsl\screendoor.hlsl" />
     <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\neweyeshader.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>

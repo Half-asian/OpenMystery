@@ -261,19 +261,11 @@ namespace ModelLoading {
 			}
             Config3DModel._Config3DModel.JsonData.Material material = c3m.jsonData[0].material_dict[node.id];
 
-			bool unknown_shader = !known_shaders.Contains(material.shaderName);
+            Material mat = applyModelMaterial(material, force_transparent);
 
-            Material mat = new Material(shader_dict["ubershader"]);
+            mat.name = material.nodeName;
 
-            if (unknown_shader)
-			{
-				mat = Resources.Load("error_mat") as Material;
-			}
-
-
-			mat.name = material.nodeName;
-
-			SkinnedMeshRenderer skinned_mesh_renderer = null;
+            SkinnedMeshRenderer skinned_mesh_renderer = null;
 
 			if (c3m.name[0] == 'b')
 			{
@@ -350,8 +342,6 @@ namespace ModelLoading {
 			mesh.triangles = mesh.triangles.Reverse().ToArray();
 			mesh.Optimize();
 			mesh.RecalculateBounds();
-			if (!unknown_shader)
-				applyModelMaterial(mat, material, force_transparent);
 		}
 
 		public static Model loadModel(string name, Dictionary<string, Transform> _parent_bones = null, bool force_transparent = false)

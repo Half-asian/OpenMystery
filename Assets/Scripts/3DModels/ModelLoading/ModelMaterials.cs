@@ -11,24 +11,14 @@ namespace ModelLoading
     {
 		public static string lighting_phase = "CHARACTER";
 
-		static string[] known_shaders_array = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "houseubershader", "clothshader", "SimpleColor", "simpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "panningfalloff", "eyeballshader", "SimpleTexture", "lightrays_vfx", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "eyeshader", "dustmotes_vfx", "houseubershader", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
+		static string[] real_shaders = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "houseubershader", "clothshader", "simplecolor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "simpletexture", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "animateuv", "dustmotes_vfx", "falloffanimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
 
-		public static List<string> known_shaders = new List<string>(known_shaders_array);
-
-		static string[] real_shaders = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "houseubershader", "clothshader", "SimpleColor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "SimpleTexture", "panningfalloff", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx" };
-
-		static string[] transparent_shaders_array = {"SimpleColor", "simpleColor", "ocean_vfx", "shadowplane_vfx", "vertecolor_vfx", "panningb_vfx", "fire02_vfx", "AnimateUV", "dustmotes_vfx", "FalloffAnimated", "SimpleColor", "panningbfresnel_vfx", "ghost_vfx", "ghostfade_vfx", "warp2_vfx", "scaleuv_vfx", "SimpleTexture", "foammiddle_vfx", "foamedge_vfx" };
-		static List<string> transparent_shaders = new List<string>(transparent_shaders_array);
-
-		static string[] transparent_no_depth_write_shaders_array = { "glow_vfx", "lightrays_vfx", "panningfalloff" };
-		static List<string> transparent_no_depth_write_shaders = new List<string>(transparent_no_depth_write_shaders_array);
-
-		static Material transparent_material;
-		static Material transparent_no_depth_write_material;
-		static Material opaque_material;
-		static Material opaque_skin_material;
+		static Shader error_shader;
 		public static Dictionary<string, Shader> shader_dict;// = new Dictionary<string, Shader>();
-		//private static Dictionary<string, Texture2D> all_textures;
+															 //private static Dictionary<string, Texture2D> all_textures;
+
+		static Dictionary<string, Material> material_dict = new Dictionary<string, Material>();
+
 
 		private static void setLightData(Material mat)
         {
@@ -129,99 +119,52 @@ namespace ModelLoading
 					break;
 			}
 		}
-		public static void applyModelMaterial(Material mat, Config3DModel._Config3DModel.JsonData.Material material, bool force_transparent)
+		public static Material applyModelMaterial(Config3DModel._Config3DModel.JsonData.Material material, bool force_transparent)
         {
-			if (!known_shaders.Contains(material.shaderName))
-			{
-				Debug.LogWarning("No shader " + material.shaderName);
-				mat.SetVector("u_diffuseColor", new Vector3(255 / 255.0f, 20 / 255.0f, 147 / 255.0f));
-				return;
-			}
+			Material mat;
 
-			if (transparent_shaders.Contains(material.shaderName))
-			{
-				mat.CopyPropertiesFromMaterial(transparent_material);
-			}
 
-			else if (transparent_no_depth_write_shaders.Contains(material.shaderName))
-			{
-				mat.CopyPropertiesFromMaterial(transparent_no_depth_write_material);
-			}
+			string shader_name = material.shaderName.ToLower();
 
-			if (material.shaderName == "simpleColor")
-				material.shaderName = "SimpleColor";
 
-			Material default_material;
-			if ((force_transparent || material.transparent == 1) && material.shaderName == "ubershader")
+			Material default_material = null;
+			string material_name = shader_name;
+
+
+			if (force_transparent || material.transparent == 1)
 			{
-				default_material = Resources.Load<Material>("ShaderDefaults/" + material.shaderName + "_transparent");
+				material_name += "_transparent";
+            }
+			if (material_dict.ContainsKey(material_name))
+			{
+				default_material = material_dict[material_name];
 			}
 			else
 			{
-				default_material = Resources.Load<Material>("ShaderDefaults/" + material.shaderName);
+				Debug.Log("Failed to find material with mat name " + material_name);
 			}
 
-			if (default_material != null)
+			if (default_material != null && shader_dict.ContainsKey(shader_name))
 			{
-				mat.shader = shader_dict[material.shaderName];
-				mat.CopyPropertiesFromMaterial(default_material);
+				if (shader_dict[shader_name] == null)
+				{
+					throw new Exception("shader : " + shader_name + " was null");
+				}
+
+
+				mat = new Material(shader_dict[shader_name]);
+                mat.CopyPropertiesFromMaterial(default_material);
 				setLightData(mat);
 			}
 			else
 			{
-				if (material.shaderName == "ubershader")
-				{
+                return new Material(error_shader);
+				
+            }
 
-					//bool cutout = false;
-					/*if (material.intSettingIds != null)
-					{
-						for (int i = 0; i < material.intSettingIds.Length; i++)
-						{
-							if (material.intSettingIds[i] == "UseAsCutout_SWITCH" && material.intSettingValues[i] == 1)
-							{
-								cutout = true;
-							}
-						}
-					}*/
 
-					mat.SetFloat("u_opacityAmount", 1.0f);
-					mat.SetFloat("u_flatness", 1.0f);
-					mat.SetFloat("_Surface", 1.0f);
-				}
 
-				else if (material.shaderName == "simpleColor")
-				{
-					mat.shader = shader_dict["SimpleColor"];
-					mat.SetFloat("alpha", 1.0f);
-				}
-
-				else if (material.shaderName == "crowd_vfx")
-				{
-					mat.CopyPropertiesFromMaterial(opaque_material);
-					mat.shader = shader_dict[material.shaderName];
-				}
-				else if (material.shaderName == "skinshader" || material.shaderName == "clothshader" || material.shaderName == "neweyeshader")// || material.shaderName == "houserobeshader" || material.shaderName == "houseclothshader")
-				{
-					mat.CopyPropertiesFromMaterial(opaque_skin_material);
-					mat.shader = shader_dict[material.shaderName];
-
-					setLightData(mat);
-
-				}
-				else
-				{
-					if (shader_dict.ContainsKey(material.shaderName))
-					{
-						mat.shader = shader_dict[material.shaderName];
-					}
-					else
-					{
-						mat.shader = shader_dict["ubershader"];
-					}
-				}
-
-			}
-			if (material.shaderName == "avatarfaceshader")
+			if (shader_name == "avatarfaceshader")
 			{
 				mat.SetTexture("u_facePaintTexture", (Texture)Resources.Load("Shaders/transparent"));
 				mat.SetTexture("u_mask", (Texture)Resources.Load("Shaders/transparent"));
@@ -271,7 +214,7 @@ namespace ModelLoading
 
 				}
 			}
-			if (material.shaderName == "houserobeshader" || material.shaderName == "houseclothshader" || material.shaderName == "quidditchshader" || material.shaderName == "houseubershader")
+			if (shader_name == "houserobeshader" || shader_name == "houseclothshader" || shader_name == "quidditchshader" || shader_name == "houseubershader")
 			{
                 string house = "";
                 if (material.intSettingIds == null || !material.intSettingIds.Contains("TeamId"))
@@ -337,6 +280,7 @@ namespace ModelLoading
                 Color b = new Color(brow_color_codes[0] / 255.0f, brow_color_codes[1] / 255.0f, brow_color_codes[2] / 255.0f, 1.0f);
                 mat.SetColor("u_browColor", b);
             }
+			return mat;
 		}
 
 		public static void setHouseUniforms(Material mat, string house)
@@ -405,24 +349,34 @@ namespace ModelLoading
 
 		public static void Initialize()
         {
-			transparent_material = (Material)Resources.Load("transparent_base", typeof(Material));
-			opaque_material = (Material)Resources.Load("opaque_base", typeof(Material));
-			opaque_skin_material = (Material)Resources.Load("opaque_skin_base", typeof(Material));
-			transparent_no_depth_write_material = (Material)Resources.Load("transparent_no_depth_base", typeof(Material));
-
+			error_shader = Shader.Find("Shader Graphs/error_shader");
 			shader_dict = new Dictionary<string, Shader>();
 
-			foreach (string shader in real_shaders)
+			var materials = Resources.LoadAll("ShaderDefaults", typeof(Material));
+
+			foreach(var mat in materials)
 			{
-				shader_dict[shader] = Shader.Find("Shader Graphs/" + shader);
-				if (shader_dict[shader] == null)
+				material_dict[mat.name] = mat as Material;	
+			}
+
+
+            foreach (string shader in real_shaders)
+			{
+				Shader s = Shader.Find("Shader Graphs/" + shader);
+				if (s is not null)
 				{
-					GameObject crash = GameObject.Find("Canvas").transform.Find("Crash").gameObject;
-					crash.SetActive(true);
-					crash.transform.Find("Error").gameObject.GetComponent<Text>().text = "couldn't find " + shader;
+					shader_dict[shader] = s;
+                }
+				else
+				{
+					Debug.LogError("Failed to load real shader " + shader);
 				}
 			}
-		}
+
+			shader_dict["panningfalloff"] = Shader.Find("Shader Graphs/animateuvfalloff");
+
+
+        }
 
 
     }

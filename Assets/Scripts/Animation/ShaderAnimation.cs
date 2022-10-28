@@ -83,7 +83,6 @@ public static partial class AnimationManager
             {
                 foreach (var fade in effect.fades)
                 {
-                    //Debug.Log("ADDING EFFECT FADE");
                     ShaderAnimation shaderAnimation = new ShaderAnimationFloat(effect.name, "alpha", fade.start, fade.startVal, fade.end, fade.endVal);
                     list.Add(shaderAnimation);
                 }
