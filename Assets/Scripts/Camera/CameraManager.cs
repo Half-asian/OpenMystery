@@ -339,7 +339,7 @@ public class CameraManager : MonoBehaviour
     {
         GameStart.event_manager.setLastCamAnim(""); //Not entirely sure this is necessary
 
-        yield return new WaitForSeconds(length + 0.1f);
+        yield return new WaitForSeconds(length);
 
         setCameraState(CameraState.StateStatic);
         GameStart.event_manager.notifyCamAnimFinished(animation);
