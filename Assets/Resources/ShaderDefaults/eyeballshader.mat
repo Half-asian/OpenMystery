@@ -7,24 +7,19 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: avatarskinshader
-  m_Shader: {fileID: -6465566751694194690, guid: 1dbf5c2af67f9ea4f888423622294db8, type: 3}
+  m_Name: eyeballshader
+  m_Shader: {fileID: -6465566751694194690, guid: 6176e680ccd78524f9c64a86fe77d51f, type: 3}
   m_ValidKeywords:
-  - IS_AVATAR_SKIN_SHADER
-  - IS_SKIN_SHADER
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
-  - IS_AVATAR_FACE_SHADER
-  - _IS_AVATAR_SKIN_SHADER
-  - _IS_SKIN_SHADER
-  - _NORMALMAP_TANGENT_SPACE
-  - _USE_RIM
+  - _ALPHATEST_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2225
+  m_CustomRenderQueue: 2475
   stringTagMap:
     MotionVector: User
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -34,6 +29,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - CC_Texture0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _AnisotropyMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -110,27 +109,39 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _TransmissionMaskMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _TransmittanceColorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_colorMap:
+    - _u_reflectionCubeMap_1:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_facePaintTexture:
+    - u_cloudTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_mask:
+    - u_diffuseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_secondaryMaps:
+    - u_dustTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_foamTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_normalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_reflectionCubeMap:
+        m_Texture: {fileID: 8900000, guid: 8622d1cd6f87c494fb8a675541be52bf, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_reflectionCubeMap_1:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -148,23 +159,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - IS_AVATAR_FACE_SHADER: 1
-    - IS_AVATAR_SKIN_SHADER: 1
-    - IS_SKIN_SHADER: 1
-    - USE_RIM: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
     - _AlphaCutoff: 0.5
-    - _AlphaCutoffEnable: 0
+    - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
     - _AlphaDstBlend: 0
-    - _AlphaRemapMax: 1
-    - _AlphaRemapMin: 0
     - _AlphaSrcBlend: 1
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
@@ -205,8 +210,6 @@ Material:
     - _HeightPoMAmplitude: 2
     - _HeightTessAmplitude: 2
     - _HeightTessCenter: 0.5
-    - _IS_AVATAR_SKIN_SHADER: 1
-    - _IS_SKIN_SHADER: 1
     - _InvTilingScale: 1
     - _Ior: 1.5
     - _IridescenceMask: 1
@@ -218,8 +221,6 @@ Material:
     - _MetallicRemapMin: 0
     - _NormalMapSpace: 0
     - _NormalScale: 1
-    - _ObjectSpaceUVMapping: 0
-    - _ObjectSpaceUVMappingEmissive: 0
     - _OpaqueCullMode: 2
     - _PPDLodThreshold: 5
     - _PPDMaxSamples: 15
@@ -256,7 +257,6 @@ Material:
     - _TexWorldScaleEmissive: 1
     - _Thickness: 1
     - _TransmissionEnable: 1
-    - _TransmissionMask: 1
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentDepthPostpassEnable: 0
@@ -264,24 +264,29 @@ Material:
     - _TransparentSortPriority: 0
     - _TransparentWritingMotionVec: 0
     - _TransparentZWrite: 0
-    - _USE_RIM: 1
     - _UVBase: 0
     - _UVDetail: 0
     - _UVEmissive: 0
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 3
-    - _ZTestGBuffer: 4
+    - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
-    - _u_flatness: 0
-    - _u_lightAngleBoost: 0
-    - _u_specularity: 0
     - alpha: 1
-    - u_flatness: 1
-    - u_lightAngleBoost: 0.2
-    - u_rimAngle: 0
-    - u_specularity: 0
+    - offsetX: 0
+    - offsetY: 0
+    - speed: 0
+    - u_foamSpeed: 0
+    - u_mixer: 0
+    - u_normalMapHeight: 0
+    - u_reflectionAmount: 0
+    - u_reflectionAngle: 0
+    - u_specMaxRadius: 0
+    - u_specMinRadius: 0
+    - u_speed: 0
+    - u_transparency: 0
+    - u_waveSpeed: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
@@ -299,37 +304,11 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
-    - _u_AmbientLightSourceColor: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceColor4: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
-    - _u_rimColor: {r: 0, g: 0, b: 0, a: 0}
-    - _u_shadeColor: {r: 0, g: 0, b: 0, a: 0}
-    - _u_specColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_AmbientLightSourceColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor1: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor2: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor3: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor4: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
-    - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
-    - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
-    - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
-    - u_browColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
-    - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
-    - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
-    - u_skinColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_specColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_diffuseColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_dustColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_specColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &5571307314426355002
+--- !u!114 &613401650452732667
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

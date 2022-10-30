@@ -12,7 +12,6 @@ Material:
   m_ValidKeywords:
   - IS_AVATAR_FACE_SHADER
   - IS_SKIN_SHADER
-  - USE_RIM
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
   - _NORMALMAP_TANGENT_SPACE
@@ -147,7 +146,7 @@ Material:
     m_Floats:
     - IS_AVATAR_FACE_SHADER: 1
     - IS_SKIN_SHADER: 1
-    - USE_RIM: 1
+    - USE_RIM: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
