@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7671395128525145466
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 12
+  hdPluginSubTargetMaterialVersions:
+    m_Keys: []
+    m_Values: 
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -12,9 +28,6 @@ Material:
   m_ValidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
-  - IS_OUTFIT_SHADER
-  - IS_SKIN_SHADER
-  - _IS_CLOTH_SHADER
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -87,6 +100,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleCubemap_34d6f7be894c47afa37f5d8053fca016_Cube_1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecularColorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -116,10 +133,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - reflectTexel:
-        m_Texture: {fileID: 8900000, guid: 8622d1cd6f87c494fb8a675541be52bf, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - u_colorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -128,10 +141,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - u_mask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - u_secondaryMaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -149,9 +158,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - IS_OUTFIT_SHADER: 1
-    - IS_SKIN_SHADER: 1
-    - USE_RIM: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -205,7 +211,6 @@ Material:
     - _HeightPoMAmplitude: 2
     - _HeightTessAmplitude: 2
     - _HeightTessCenter: 0.5
-    - _IS_CLOTH_SHADER: 1
     - _InvTilingScale: 1
     - _Ior: 1.5
     - _IridescenceMask: 1
@@ -274,18 +279,12 @@ Material:
     - _ZWrite: 1
     - alpha: 1
     - u_flatness: 1
-    - u_lightAngleBoost: 0.2
     - u_reflectionAmount: 0
     - u_reflectionAngle: 0
-    - u_rimAngle: 0
-    - u_rimColor: 0
-    - u_shadeColor: 0
     - u_sideShadowEnd: 1
     - u_sideShadowStart: 0.1
-    - u_specColor: 0
     - u_specMaxRadius: 0
     - u_specMinRadius: 0
-    - u_specularity: 0
     - u_topShadowEnd: 1.2
     - u_topShadowStart: 0.4
     m_Colors:
@@ -305,37 +304,16 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
-    - u_AmbientLightSourceColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor1: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor2: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor3: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor4: {r: 1, g: 1, b: 1, a: 1}
+    - u_AmbientLightSourceColor: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor1: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor2: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor3: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor4: {r: 0, g: 0, b: 0, a: 1}
     - u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
-    - u_color1: {r: 0, g: 0, b: 0, a: 0}
-    - u_color2: {r: 0, g: 0, b: 0, a: 0}
-    - u_color3: {r: 0, g: 0, b: 0, a: 0}
-    - u_diffuseColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_reflectionTintColor: {r: 1, g: 1, b: 1, a: 0}
-    - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_shadeColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_specColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_diffuseColor: {r: 0, g: 0, b: 0, a: 1}
+    - u_reflectionTintColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_specColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &5571307314426355002
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 12
-  hdPluginSubTargetMaterialVersions:
-    m_Keys: []
-    m_Values: 

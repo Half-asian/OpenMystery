@@ -854,6 +854,8 @@ float4 main_float(){
 
     float4 gl_FragColor;
 
+    finalColor = pow(finalColor, 2.2);
+
     #ifdef USE_SCREENDOOR_TRANSPARENCY
 
         float4x4 thresholdMatrix = {
@@ -899,7 +901,7 @@ void ubershader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _
     gl_FragColor = main_float();
 }
 
-void quidditchshader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _u_thirdDiffuseMap, float3 _u_dirtMap, float3 _u_lightmapMap, float3 _u_emissiveMap, float4 _u_specularMap, float3 _u_rimMap, float4 _u_topDiffuseMap, float4 _u_emblemTexture, float4 _u_teamColorMask, float4 _v_vertColor, float3 _eyeDir, float3 _normal, out float4 gl_FragColor){
+void quidditchshader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, float4 _u_thirdDiffuseMap, float3 _u_dirtMap, float3 _u_lightmapMap, float3 _u_emissiveMap, float4 _u_specularMap, float3 _u_rimMap, float4 _u_topDiffuseMap, float4 _u_emblemTexture, float4 _u_teamColorMask, float4 _v_vertColor, float3 _eyeDir, float3 _normal, float4 _screen_position, out float4 gl_FragColor){
     tex_u_diffuseMap = _u_diffuseMap;
     tex_u_secondDiffuseMap = _u_secondDiffuseMap;
     tex_u_thirdDiffuseMap = _u_thirdDiffuseMap;
@@ -914,5 +916,6 @@ void quidditchshader_float(float4 _u_diffuseMap, float4 _u_secondDiffuseMap, flo
     v_vertColor = _v_vertColor;
     eyeDir = _eyeDir;
     normal = _normal;
+    gl_FragCoord = _screen_position;
     gl_FragColor = main_float();
 }

@@ -23,19 +23,9 @@ public class PauseMenu : MonoBehaviour
     public Canvas main_canvas;
     public Canvas dialogue_canvas;
 
-    int width;
-    int height;
-    bool fullscreen;
+
     int screenshot_num;
 
-
-    // Update is called once per frame
-    void Awake()
-    {
-        width = Screen.currentResolution.width;
-        height = Screen.currentResolution.height;
-        fullscreen = Screen.fullScreen;
-    }
 
     IEnumerator takeScreenshot()
     {

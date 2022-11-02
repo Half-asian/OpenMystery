@@ -118,6 +118,8 @@ Shader "UI/Remove_Depth"
                 clip (color.a - 0.001);
                 #endif
 
+                //color = pow(color,2.2);
+
                 return color;
             }
         ENDCG

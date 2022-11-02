@@ -311,11 +311,11 @@ Material:
     - _u_rimColor: {r: 0, g: 0, b: 0, a: 0}
     - _u_shadeColor: {r: 0, g: 0, b: 0, a: 0}
     - _u_specColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_AmbientLightSourceColor: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor1: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor2: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor3: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor4: {r: 1, g: 1, b: 1, a: 1}
+    - u_AmbientLightSourceColor: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor1: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor2: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor3: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor4: {r: 0, g: 0, b: 0, a: 1}
     - u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
@@ -324,10 +324,10 @@ Material:
     - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
     - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
     - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_rimColor: {r: 0, g: 0, b: 0, a: 1}
     - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
     - u_skinColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_specColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_specColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5571307314426355002
 MonoBehaviour:

@@ -26,8 +26,6 @@ public class UiImageLoader : MonoBehaviour
     public Image menu_tlsq_3; //hp_icon_notif_timer@2x.png
     public Image menu_tlsq_button; //hp_btn_cta_med@4x.png
 
-    public Image menu_settings_box;
-
     public Image goal_popup;
     public Image goal_popup_character_bg;
     public Image goal_popup_image2;
@@ -78,8 +76,6 @@ public class UiImageLoader : MonoBehaviour
         yield return null;
         menu_tlsq_3.sprite = loadSpriteFromApk("hp_icon_notif_timer@2x.png");
         menu_tlsq_button.sprite = menu_mq_button.sprite;
-
-        menu_settings_box.sprite = menu_tlsq_box.sprite;
 
         yield return null;
         goal_popup.sprite = loadSpriteFromApk("hp_bg_notif_lrg@4x.png");

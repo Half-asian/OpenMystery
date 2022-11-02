@@ -4,7 +4,27 @@
 #define USE_SPECULAR
 #define USE_EMISSIVE
 #define HAS_DYNAMIC_LIGHT
+//#define USE_UNLIT_DIFFUSE
 //#define USE_NEW_NORM
+
+float BlendMode_Overlay(float base, float blend)
+{
+    if (base <= 0.0)
+        return 0.0;
+    if (blend >= 1.0)
+        return 1.0;
+    else
+        return min(1.0, base / (1.0 - blend));
+}
+
+float3 BlendMode_Overlay(float3 base, float3 blend)
+{
+    return float3(BlendMode_Overlay(base.r, blend.r),
+        BlendMode_Overlay(base.g, blend.g),
+        BlendMode_Overlay(base.b, blend.b));
+}
+
+
 
 #if defined(HAS_DYNAMIC_LIGHT) && !defined(USE_VERTEX_LIGHTING)
 float3 computeLighting(float3 normalVector, float3 lightDirection, float3 lightColor, float attenuation)
@@ -233,31 +253,18 @@ float4 main_float(){
     #endif
     
     float3 lightColor =  float3(0.0, 0.0, 0.0);
-    #if defined(HAS_DYNAMIC_LIGHT) && defined(USE_VERTEX_LIGHTING)
-        lightColor += v_lightColor.rgb;
-        #if defined(USE_DIRLIGHT_SHADOWMAP)
-            vec3 shadowLight = u_DirLightSourceColor[0] * (v_lightColor.w * shadowVal);
-            lightColor += shadowLight;
-        #elif defined(USE_SPOTLIGHT_SHADOWMAP)
-            vec3 shadowLight = u_SpotLightSourceColor[0] * (v_lightColor.w * shadowVal);
-            lightColor += shadowLight;
-        #endif
-            
-        #ifdef USE_SPECULAR
-            specularColor = v_specColor.rgb;
-            #ifdef USE_SHADOWMAP
-                specularColor += (v_specColor.w) * shadowLight;
-            #endif
-        #endif
-    #endif
 
+    //This should all be gamma
+    #if defined(HAS_DYNAMIC_LIGHT)
+        //u_DirLightSourceColor1 = pow(u_DirLightSourceColor1, 1 / 2.2);
+        //u_DirLightSourceColor2 = pow(u_DirLightSourceColor2, 1 / 2.2);
+        //u_DirLightSourceColor3 = pow(u_DirLightSourceColor3, 1 / 2.2);
+        //u_DirLightSourceColor4 = pow(u_DirLightSourceColor4, 1 / 2.2);
 
-    #if defined(HAS_DYNAMIC_LIGHT) && !defined(USE_VERTEX_LIGHTING)
         float3 curLightColor;
         float3 ldir;
         float attenuation;
         #if (MAX_DIRECTIONAL_LIGHT_NUM > 0)
-            //Index 0 is the shadowcasting light.
     
             #ifdef HAS_NORMAL_TEXTURE
                 ldir = normalize(v_dirLightDirection[0]);
@@ -329,6 +336,7 @@ float4 main_float(){
     #ifdef USE_EMISSIVE
         float lambertR = 0.5 * lightColor.r;
         float shadeIntensity = smoothstep(0.0, 1.0, 1.0 - lambertR);
+        
         #if defined(IS_SKIN_SHADER)
             float shadeFactor = shadeIntensity * specTexel.r;
             float3 shadeColor = u_shadeColor * shadeFactor;
@@ -339,6 +347,7 @@ float4 main_float(){
         #elif defined(IS_HAIR_SHADER)
             float3 shadeColor = u_shadeColor * shadeIntensity;
         #endif
+
     #endif
     
     #ifndef USE_DIFFUSE
@@ -375,10 +384,13 @@ float4 main_float(){
         
     //Add ambient light at the end.
     #ifdef USE_AMBIENT_COLOR
+
+    //u_AmbientLightSourceColor = pow(u_AmbientLightSourceColor, 1 / 2.2);
+
     const float3 desaturateColor = float3(0.3, 0.6, 0.1);
     float amount = dot(u_AmbientLightSourceColor, desaturateColor);
     float3 desaturated = float3(amount, amount, amount);
-    
+
     lightColor += u_AmbientLightSourceColor*0.5 + desaturated*0.5;
     #endif
     
@@ -408,13 +420,24 @@ float4 main_float(){
     #endif
     
     #if defined(USE_EMISSIVE) && (defined(IS_HAIR_SHADER) || defined(IS_SKIN_SHADER))
-    diffuseColor += shadeColor;
+        //diffuseColor = lerp(olddiffuse, olddiffuse * 0.2 + (olddiffuse + shadeColor) * shadeColor * 20 + shadeColor * 10 * colormax, colormax * 15);
+
+        //diffuseColor = pow(diffuseColor, 1/ 2.2);
+        //shadeColor = pow(shadeColor,1/ 2.2);
+
+        diffuseColor += shadeColor;
+
+        //diffuseColor = pow(diffuseColor, 2.2);
     #endif
     
     #ifdef USE_UNLIT_DIFFUSE
     finalColor += diffuseColor;
     #else
+    //diffuseColor = pow(diffuseColor, 1 / 2.2);
+    //finalColor = pow(finalColor, 1 / 2.2);
     finalColor += diffuseColor * lightColor;
+    //finalColor = pow(finalColor, 2.2);
+
     #endif
     
     #ifdef USE_FOG
@@ -434,11 +457,37 @@ float4 main_float(){
         float depthMixT = mix(depthFogT, heightFogT, u_flipFogOrder);
         finalColor = mix(finalColor, depthMixColor, depthMixT);
     #endif
-    #ifdef USE_SCREENDOOR_TRANSPARENCY
+
+        /*float s;
+        if (finalColor.r <= 0.0031308) {
+            s = finalColor.r * 12.92;
+        }
+        else {
+            s = 1.055 * pow(finalColor.r, 1.0 / 2.4) - 0.055;
+        }
+        finalColor.r = s;
+
+        if (finalColor.g <= 0.0031308) {
+            s = finalColor.g * 12.92;
+        }
+        else {
+            s = 1.055 * pow(finalColor.g, 1.0 / 2.4) - 0.055;
+        }
+        finalColor.g = s;
+
+        if (finalColor.b <= 0.0031308) {
+            s = finalColor.b * 12.92;
+        }
+        else {
+            s = 1.055 * pow(finalColor.b, 1.0 / 2.4) - 0.055;
+        }
+        finalColor.b = s;
+
+        finalColor = pow(finalColor, 2.2);*/
+        finalColor = pow(finalColor, 2.2);
+
+
         return float4(finalColor, 1.0);
-    #else
-        return float4(finalColor, 1.0);
-    #endif
 }
 
 
@@ -448,7 +497,6 @@ void skinshader_float(float3 _u_colorMap, float3 _u_secondaryMaps, float3 _norma
     eyeDir = _eyeDir;
     tex_u_colorMap = _u_colorMap;
     tex_u_secondaryMaps = _u_secondaryMaps;
-
     gl_FragColor = main_float();
 }
 
