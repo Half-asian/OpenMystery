@@ -281,7 +281,7 @@ public class Quidditch
             success = activatePivotalPlayIntroPhases(current_match.pivotalPlaySlots[match_pivotal_play_index]);
             match_pivotal_play_index += 1;
         }
-        else if (has_played_pivotal_outro == false && match_pivotal_play_outro_index < current_match.outroPlays.Length)
+        else if (current_match.outroPlays != null && has_played_pivotal_outro == false && match_pivotal_play_outro_index < current_match.outroPlays.Length)
         {
             success = activatePivotalPlayOutroPhases(current_match.outroPlays[match_pivotal_play_outro_index]);
             match_pivotal_play_outro_index += 1;
