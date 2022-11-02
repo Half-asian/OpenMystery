@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,21 +37,36 @@ namespace UI
             if (goal.goal_name != null) _title.text = LocalData.getLine(goal.goal_name); else _title.text = "";
             if (goal.characterId != null) character = Actor.spawnActor(goal.characterId, null, goal.characterId);
 
-            if (character != null)
-            {
-                character.gameObject.transform.position = character_spawn_pos;
+            StartCoroutine(setPos());
+        }
 
-                Bounds b = Common.getBounds(character.gameObject);
+        private IEnumerator setPos()
+        {
+            yield return null;
+            character.gameObject.transform.position = new Vector3(0, -200, 0);
+            float new_height = -100f;
+            if (character != null && character.model.pose_bones.ContainsKey("jt_head_bind"))
+            {
+                Vector3 head_position = character.model.pose_bones["jt_head_bind"].position;
+
+                character.gameObject.transform.position = head_position;
+                new_height -= head_position.y + 200.0f;
+                /*Bounds b = Common.getBounds(character.gameObject);
                 Debug.Log(b);
                 //character.gameObject.transform.Translate(b.center - normal_center);
-                character.gameObject.transform.Translate(new Vector3(0, -(b.extents.y - normal_extents.y) * 2, -0.1f));
+                character.gameObject.transform.Translate(new Vector3(0, -(b.extents.y - normal_extents.y) * 2, -0.1f));*/
 
 
                 //character_gameobject.layer = 6; //3d Menu Layer
-                foreach (SkinnedMeshRenderer smr in character.gameObject.transform.GetComponentsInChildren<SkinnedMeshRenderer>())
-                {
-                    smr.renderingLayerMask = 2;
-                }
+
+            }
+            character.gameObject.transform.position = new Vector3(0, new_height, -0.5f - character.gameObject.transform.position.z);
+
+
+
+            foreach (SkinnedMeshRenderer smr in character.gameObject.transform.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                smr.renderingLayerMask = 2;
             }
         }
 

@@ -63,7 +63,6 @@ namespace UI
             {
                 _goal_dropdown.options.Clear();
                 List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-                Debug.Log(goal_chain_name);
                 for(int i = 0; i < Configs.config_goal_chain.GoalChain[goal_chain_name].goalIds.Count; i++)
                 {
                     options.Add(new Dropdown.OptionData("Part " + (i + 1)));

@@ -23,10 +23,13 @@ public class ConfigHPActorInfo : Config<ConfigHPActorInfo>
         public string[] loctags;
         public string modelId;
         public string[] modelPatches;
+        public string[] portraitModelOffset;
         public string nameFirst;
         public string nameLast;
         public float animationScale = 1.0f;
         public float headAnimationScale = 1.0f;
+        public float tooltipHeight;
+        public float portraitModelScale = 1.0f;
         public int startingYear;
         [System.Serializable]
         public class _quidditchMaterialOptions
