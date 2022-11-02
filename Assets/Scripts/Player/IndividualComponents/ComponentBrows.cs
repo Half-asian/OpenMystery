@@ -59,7 +59,7 @@ namespace IndividualComponents
 
                 int[] brow_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["browColor"].colorConfigs[brow_color_id].codes;
 
-                Color c = new Color(brow_color_codes[0] / 255.0f, brow_color_codes[1] / 255.0f, brow_color_codes[2] / 255.0f, 1.0f);
+                Color c = new Color(brow_color_codes[0] / 255.0f, brow_color_codes[1] / 255.0f, brow_color_codes[2] / 255.0f, 1.0f).gamma;
                 SkinnedMeshRenderer smr = avatar_components.base_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>();
                 smr.material.SetColor("u_browColor", c);
             }

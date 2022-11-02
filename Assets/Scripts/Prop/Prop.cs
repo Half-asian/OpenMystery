@@ -169,7 +169,7 @@ public class Prop : Node
                 {
                     for (int i = 0; i < material.vec3Ids.Length; i++)
                     {
-                        mat.SetVector(material.vec3Ids[i], new Vector3(material.vec3Values[i][0], material.vec3Values[i][1], material.vec3Values[i][2]));
+                        mat.SetColor(material.vec3Ids[i], new Color(material.vec3Values[i][0], material.vec3Values[i][1], material.vec3Values[i][2]).gamma);
                     }
                 }
                 if (material.vec4Ids != null)
@@ -177,7 +177,7 @@ public class Prop : Node
 
                     for (int i = 0; i < material.vec4Ids.Length; i++)
                     {
-                        mat.SetVector(material.vec4Ids[i], new Vector4(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]));
+                        mat.SetColor(material.vec4Ids[i], new Color(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]).gamma);
                     }
                 }
                 if (material.intSettingIds != null)

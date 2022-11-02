@@ -51,7 +51,7 @@ namespace IndividualComponents
             {
                 int skin_color_id = category.int_parameters["skinColor"];
                 int[] skin_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].codes;
-                Color c = new Color(skin_color_codes[0] / 255.0f, skin_color_codes[1] / 255.0f, skin_color_codes[2] / 255.0f, 1.0f);
+                Color c = new Color(skin_color_codes[0] / 255.0f, skin_color_codes[1] / 255.0f, skin_color_codes[2] / 255.0f, 1.0f).gamma;
                 SkinnedMeshRenderer smr = avatar_components.base_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>();
                 smr.material.SetColor("u_skinColor", c);
             }

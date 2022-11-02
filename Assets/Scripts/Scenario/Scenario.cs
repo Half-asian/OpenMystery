@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
+using ModelLoading;
 
 public class SerializedScenario
 {
@@ -207,6 +207,9 @@ public class Scenario
         Scene.setCurrentScene(chosen_scene);
 
         onScenarioCallClear.Invoke();
+        Prop.spawnScenarioProps();
+
+        ModelMaterials.lighting_phase = "CHARACTER";
 
         if (scenarios_serialized.ContainsKey(current.scenario_config.scenarioId))
         {
@@ -221,7 +224,6 @@ public class Scenario
             current.contentVars = new Dictionary<string, Dictionary<string, int>>();
             current.appliedClothes = null;
         }
-        Prop.spawnScenarioProps();
         Tappie.spawnTappies();
         //Events
 

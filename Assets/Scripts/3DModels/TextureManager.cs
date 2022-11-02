@@ -105,7 +105,7 @@ public class TextureManager
 
 		int height = ddsBytes[13] * 256 + ddsBytes[12];
 		int width = ddsBytes[17] * 256 + ddsBytes[16];
-		Texture2D tex = new Texture2D(width, height, TextureFormat.BC7, false);
+		Texture2D tex = new Texture2D(width, height, TextureFormat.BC7, false, true);
 
 		int DDS_HEADER_SIZE = 148;
 		buffer = new byte[ddsBytes.Length - DDS_HEADER_SIZE];

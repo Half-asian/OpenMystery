@@ -10,8 +10,6 @@ public class Scene
 
     public static ConfigScene._Scene current;
 
-    public static event Action onSceneChanged = delegate { };
-
     public static GameObject scene_postprocessing_and_lighting;
 
     public static Dictionary<string, SceneLight> scene_lights;
@@ -63,10 +61,7 @@ public class Scene
             ModelMaterials.lighting_phase = "ENV";
             scene_model = ModelManager.loadModel(current.envId);
             applySceneMaterials();
-            ModelMaterials.lighting_phase = "CHARACTER";
             setMainCamera();
-            onSceneChanged.Invoke();
-
         }
     }
 
@@ -80,11 +75,6 @@ public class Scene
         if (current.Lighting.layers == null)
         {
             Debug.LogError("NO LAYERS");
-            return;
-        }
-        if (!current.Lighting.layers.ContainsKey("CHARACTER"))
-        {
-            Debug.LogError("NO CHARACTER LIGHTING");
             return;
         }
 
@@ -222,7 +212,7 @@ public class Scene
             {
                 for (int i = 0; i < material.vec3Ids.Length; i++)
                 {
-                    mat.SetVector(material.vec3Ids[i], new Vector3(material.vec3Values[i][0], material.vec3Values[i][1], material.vec3Values[i][2]));
+                    mat.SetColor(material.vec3Ids[i], new Color(material.vec3Values[i][0], material.vec3Values[i][1], material.vec3Values[i][2]).gamma);
                 }
             }
             if (material.vec4Ids != null)
@@ -230,7 +220,7 @@ public class Scene
 
                 for (int i = 0; i < material.vec4Ids.Length; i++)
                 {
-                    mat.SetVector(material.vec4Ids[i], new Vector4(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]));
+                    mat.SetColor(material.vec4Ids[i], new Color(material.vec4Values[i][0], material.vec4Values[i][1], material.vec4Values[i][2], material.vec4Values[i][3]).gamma);
                 }
             }
             if (material.intSettingIds != null)
@@ -247,7 +237,8 @@ public class Scene
 
     public static void checkAddScenePrefab(string scene_id)
     {
-        string path = scene_id;// + ".prefab";
+        return;
+        /*string path = scene_id;// + ".prefab";
         GameObject resource_obj = Resources.Load<GameObject>(path);
 
         if (resource_obj != null)
@@ -255,7 +246,7 @@ public class Scene
             GameObject resource = GameObject.Instantiate(resource_obj);
             scene_postprocessing_and_lighting = resource;
             GameStart.post_process_manager.PostProcessDefaultLight.SetActive(false);
-        }
+        }*/
     }
 
     public static void destroyScenePrefab()
@@ -375,16 +366,13 @@ public class Scene
 
         if (Configs.config_scene.Scene[current_scene.masterSceneId].material_dict != null)
         {
-            Debug.Log("Found some env materials for " + current_scene.masterSceneId);
             if (current_scene.material_dict == null)
                 current_scene.material_dict = new Dictionary<string, ConfigScene._Scene.Material>();
 
             foreach (string material_name in Configs.config_scene.Scene[current_scene.masterSceneId].material_dict.Keys)
             {
-                Debug.Log("old scene has " + material_name);
                 if (!current_scene.material_dict.ContainsKey(material_name))
                 {
-                    Debug.Log("adding that material to the new scene");
                     current_scene.material_dict[material_name] = Configs.config_scene.Scene[current_scene.masterSceneId].material_dict[material_name];
                 }
             }

@@ -66,7 +66,7 @@ namespace IndividualComponents
                     for (int i = 0; i < patch.vec3Ids.Length; i++)
                     {
                         //if (mat.vec3Ids[i] != "u_housePrimary" && mat.vec3Ids[i] != "u_houseSecondary")
-                        smr.materials[0].SetColor(patch.vec3Ids[i], new Color(patch.vec3Values[i][0], patch.vec3Values[i][1], patch.vec3Values[i][2]));
+                        smr.materials[0].SetColor(patch.vec3Ids[i], new Color(patch.vec3Values[i][0], patch.vec3Values[i][1], patch.vec3Values[i][2]).gamma);
                     }
             }
 
