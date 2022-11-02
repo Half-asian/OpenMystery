@@ -28,9 +28,9 @@ public class GlobalEngineVariables
     [JsonProperty("active_mods")]
     public static string[] active_mods;
     [JsonProperty("goal_chains")]
-
     public static Dictionary<string, string> goal_chains;
-
+    [JsonProperty("exclusively_dating")]
+    public static string exclusively_dating;
     public static string models_folder => Path.Combine(assets_folder, "models");
 
     public static string animations_folder => Path.Combine(assets_folder, "animations");

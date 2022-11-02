@@ -25,7 +25,6 @@ class StaticAvatarSpawner
             character = actor;
         }
 
-        Debug.Log(character.modelId);
         Model parent_model;
 
         if (PlayerManager.current.gender == "male")

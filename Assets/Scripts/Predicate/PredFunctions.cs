@@ -265,19 +265,27 @@ public partial class NewPredicate
     }
     static SymbolConstantBool isRomanticallyBusy(SymbolConstantString friend)
     {
-        return new SymbolConstantBool(true);
+        if (friend.toString().ToLower() == GlobalEngineVariables.exclusively_dating.ToLower())
+            return new SymbolConstantBool(true);
+        return new SymbolConstantBool(false);
     }
     static SymbolConstantInteger romanceLevelWithPartner(SymbolConstantString friend)
     {
-        return new SymbolConstantInteger(999);
+        if (friend.toString().ToLower() == GlobalEngineVariables.exclusively_dating.ToLower())
+            return new SymbolConstantInteger(999);
+        return new SymbolConstantInteger(0);
     }
     static SymbolConstantBool isExclusiveEmpty()
     {
+        if (GlobalEngineVariables.exclusively_dating.ToLower() == "none")
+            return new SymbolConstantBool(true);
         return new SymbolConstantBool(false);
     }
     static SymbolConstantBool isExclusive(SymbolConstantString friend)
     {
-        return new SymbolConstantBool(true);
+        if (friend.toString().ToLower() == GlobalEngineVariables.exclusively_dating.ToLower())
+            return new SymbolConstantBool(true);
+        return new SymbolConstantBool(false);
     }
     static SymbolConstantBool isPetOwned(SymbolConstantString pet)
     {
