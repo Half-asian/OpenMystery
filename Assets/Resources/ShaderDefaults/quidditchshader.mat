@@ -8,15 +8,16 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: quidditchshader
-  m_Shader: {fileID: -6465566751694194690, guid: ed60c4e058ac72946bb4ee4999b17a65, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: f232c1383456291479fb586db0a08d0d, type: 3}
   m_ValidKeywords:
-  - IS_QUIDDITCH_SHADER
   - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
+  - IS_QUIDDITCH_SHADER
   - IS_SKIN_SHADER
   - USE_DIFFUSE_COLOR
   - USE_HOUSE_COLORS
+  - USE_HOUSE_COLORS_1
   - USE_RIM
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
@@ -107,6 +108,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ThicknessMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -116,6 +121,14 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TransmittanceColorMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _u_emblemTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _u_teamColorMask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -167,6 +180,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_tintMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_topDiffuseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -198,16 +215,20 @@ Material:
     - Lightmap_UvSet: 1
     - RimVertexColor_SWITCH: 0
     - Rim_UvSet: 0
+    - SecondDiffuse_UvSet: 0
     - TeamEmblemUVs: 0
     - TeamId: 0
     - ThirdDiffuse_UvSet: 0
+    - Tint_UvSet: 0
     - TopDiffuse_UvSet: 0
     - USE_BAKED_DIFFUSE: 0
-    - USE_DIFFUSE_COLOR: 1
-    - USE_HOUSE_COLORS: 1
+    - USE_DIFFUSE_COLOR: 0
+    - USE_HOUSE_COLORS: 0
+    - USE_HOUSE_COLORS_1: 1
     - USE_HOUSE_EMBLEM: 0
     - USE_LIGHTMAP_COLOR: 1
     - USE_RIM: 1
+    - USE_TRANSPARENCY_TEXTURE: 0
     - UseAsCutout_SWITCH: 0
     - UseTeamTexture_SWITCH: 0
     - _AORemapMax: 1
@@ -309,6 +330,7 @@ Material:
     - _SubsurfaceMask: 1
     - _SupportDecals: 1
     - _SurfaceType: 0
+    - _TeamId: 0
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
     - _Thickness: 1
@@ -321,25 +343,28 @@ Material:
     - _TransparentSortPriority: 0
     - _TransparentWritingMotionVec: 0
     - _TransparentZWrite: 0
+    - _USE_EMBLEM_IN_DIFFUSE: 1
     - _UVBase: 0
     - _UVDetail: 0
     - _UVEmissive: 0
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
+    - _UseTeamTexture_SWITCH: 0
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
+    - _u_houseSet: 0
     - alpha: 1
     - u_alphaTestReferenceValue: 0.5
     - u_brightness: 1
-    - u_diffuseColorAdjust_Switch: 0
+    - u_diffuseColorAdjust_Switch: 1
     - u_flatness: 1
     - u_houseSet: 0
     - u_lightAngleBoost: 0.2
     - u_lmExposure: 1
     - u_lmPower: 0
-    - u_opacityAmount: 0
+    - u_opacityAmount: 1
     - u_rimAngle: 0
     - u_rimFalloff: 0
     - u_specMaxRadius: 0
@@ -365,23 +390,29 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
+    - _u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _u_primaryColor: {r: 0, g: 0, b: 0, a: 0}
+    - _u_secondaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_AmbientLightSourceColor: {r: 0, g: 0, b: 0, a: 1}
-    - u_DirLightSourceColor1: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor2: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor3: {r: 1, g: 1, b: 1, a: 1}
-    - u_DirLightSourceColor4: {r: 1, g: 1, b: 1, a: 1}
+    - u_DirLightSourceColor1: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor2: {r: 0, g: 0, b: 0, a: 1}
+    - u_DirLightSourceColor3: {r: 0.066037714, g: 0.066037714, b: 0.066037714, a: 1}
+    - u_DirLightSourceColor4: {r: 0, g: 0, b: 0, a: 1}
     - u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 1, g: 1, b: 1, a: 0}
     - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
+    - u_firstTintColor: {r: 0, g: 0, b: 0, a: 0}
     - u_lightmapColor: {r: 0, g: 0, b: 0, a: 0}
     - u_primaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_secondTintColor: {r: 0, g: 0, b: 0, a: 0}
     - u_secondaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
     - u_specColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_thirdTintColor: {r: 0, g: 0, b: 0, a: 0}
     - u_tintColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5571307314426355002

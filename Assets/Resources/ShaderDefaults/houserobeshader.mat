@@ -8,13 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: houserobeshader
-  m_Shader: {fileID: -6465566751694194690, guid: 81a8a1796e1a44048a94db358067a9ac, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 90ae92c5fcb13ef4e8210ebea73a3c10, type: 3}
   m_ValidKeywords:
-  - IS_HOUSEROBE_SHADER
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
   - IS_HOUSECLOTH_SHADER
-  - IS_SKIN_SHADER
+  - IS_HOUSEROBE_SHADER
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -115,6 +114,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_beardTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_blushTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_colorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -123,7 +130,23 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_eyeShadowTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_facePaintTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_frecklesTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_moleTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -145,9 +168,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - IS_HOUSECLOTH_SHADER: 1
+    - IS_AVATAR_FACE_SHADER: 0
+    - IS_AVATAR_HAIR_SHADER: 0
+    - IS_AVATAR_SKIN_SHADER: 0
+    - IS_CLOTH_SHADER: 0
+    - IS_HAIR_SHADER: 0
+    - IS_HOUSECLOTH_SHADER: 0
     - IS_HOUSEROBE_SHADER: 1
-    - IS_SKIN_SHADER: 1
+    - IS_OUTFIT_SHADER: 0
+    - IS_SKIN_SHADER: 0
+    - USE_RIM: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -304,10 +334,21 @@ Material:
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
+    - u_browColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_color1: {r: 0, g: 0, b: 0, a: 0}
+    - u_color2: {r: 0, g: 0, b: 0, a: 0}
+    - u_color3: {r: 0, g: 0, b: 0, a: 0}
     - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
+    - u_hairColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
+    - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
+    - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_primaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 0, g: 0, b: 0, a: 1}
     - u_robeColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_secondaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
+    - u_skinColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5571307314426355002

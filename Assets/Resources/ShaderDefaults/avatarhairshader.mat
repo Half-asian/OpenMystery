@@ -8,14 +8,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: avatarhairshader
-  m_Shader: {fileID: -6465566751694194690, guid: e2753456c9d7f954d84de47de8945d01, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 90ae92c5fcb13ef4e8210ebea73a3c10, type: 3}
   m_ValidKeywords:
-  - IS_AVATAR_HAIR_SHADER
+  - USE_RIM
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
+  - IS_AVATAR_HAIR_SHADER
   - IS_HAIR_SHADER
   - IS_SKIN_SHADER
-  - USE_RIM
+  - SHADER_TYPE_IS_SKIN_SHADER
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -120,6 +121,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_facePaintTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_secondaryMaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -138,9 +147,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - IS_AVATAR_FACE_SHADER: 0
     - IS_AVATAR_HAIR_SHADER: 1
+    - IS_AVATAR_SKIN_SHADER: 0
+    - IS_CLOTH_SHADER: 0
     - IS_HAIR_SHADER: 1
-    - IS_SKIN_SHADER: 1
+    - IS_SKIN_SHADER: 0
+    - SHADER_TYPE: 0
     - USE_RIM: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
@@ -292,9 +305,15 @@ Material:
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
+    - u_browColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
     - u_hairColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
+    - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
+    - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 0, g: 0, b: 0, a: 1}
     - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
+    - u_skinColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5571307314426355002

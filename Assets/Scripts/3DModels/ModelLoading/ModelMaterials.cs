@@ -5,17 +5,15 @@ using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.Rendering;
 using System;
+using UnityEngine.Experimental.GlobalIllumination;
+
 namespace ModelLoading
 {
     public class ModelMaterials
     {
 		public static string lighting_phase = "CHARACTER";
 
-		static string[] real_shaders = { "ubershader", "ocean_vfx", "skinshader", "neweyeshader", "hairshader", "houserobeshader", "houseclothshader", "houseubershader", "clothshader", "simplecolor", "glow_vfx", "skyceilingshader_vfx", "fire02_vfx", "eyeshader", "lightrays_vfx", "simpletexture", "shadowplane_vfx", "vertecolor_vfx", "avatarfaceshader", "avatarskinshader", "avatarhairshader", "warpfloor_vfx", "ghost_vfx", "ghostfade_vfx", "outfitshader", "watershader", "panningb_vfx", "eyeballshader", "quidditchshader", "animateuv", "dustmotes_vfx", "falloffanimated", "patronusoutfit_vfx", "crowd_vfx", "transition_vfx", "panningbfresnel_vfx", "void_vfx", "dualpan", "opal_vfx", "warp2_vfx", "scaleuv_vfx", "foammiddle_vfx", "foamedge_vfx", "warp_vfx"};
-
 		static Shader error_shader;
-		public static Dictionary<string, Shader> shader_dict;// = new Dictionary<string, Shader>();
-															 //private static Dictionary<string, Texture2D> all_textures;
 
 		static Dictionary<string, Material> material_dict = new Dictionary<string, Material>();
 
@@ -27,35 +25,26 @@ namespace ModelLoading
 				return;
 			}
 
-			ConfigScene._Scene._Lighting.Layer lighting_layer = null;
-
-
-			if (lighting_phase == "CHARACTER")
+			if (lighting_phase == null)
 			{
+				mat.SetColor("u_AmbientLightSourceColor", Color.white.gamma);
+				return;
+			}
 
-				if (!Scene.current.Lighting.layers.ContainsKey(lighting_phase))
-				{
-					Debug.LogWarning("No light layer for current lighting phase " + lighting_phase);
-					return;
-				}
-				lighting_layer = Scene.current.Lighting.layers["CHARACTER"];
-			}
-			else
-			{
-				foreach (var layer in Scene.current.Lighting.layers.Values)
-				{
-					if (layer.name != "CHARACTER")
-						lighting_layer = layer;
-				}
-				if (lighting_layer == null)
-				{
-					Debug.LogWarning("Failed to find the env lighting layer ");
-					return;
-				}
-			}
+            ConfigScene._Scene._Lighting.Layer lighting_layer = null;
+
+            if (!Scene.current.Lighting.layers.ContainsKey(lighting_phase))
+            {
+                Debug.LogWarning("No light layer for current lighting phase " + lighting_phase);
+                return;
+            }
+
+            lighting_layer = Scene.current.Lighting.layers[lighting_phase];
 
 			int dirlight_count = 0;
-			foreach (string lightname in lighting_layer.lights)
+            int pointlight_count = 0;
+
+            foreach (string lightname in lighting_layer.lights)
             {
 				//if (!Scene.scene_lights.ContainsKey(lightname))
 				//	continue;
@@ -93,6 +82,18 @@ namespace ModelLoading
 					}
 					dirlight_count++;
 				}
+				else if (sceneLight is PointLight)
+				{
+                    Debug.LogError("SETTING POINTLIGHT ON MATERIAL!");
+                    PointLight pointLight = (PointLight)sceneLight;
+					if (pointlight_count == 0)
+					{
+                        mat.SetColor("u_PointLightSourceColor1", pointLight.color.gamma);
+						mat.SetVector("u_PointLightSourcePosition1", pointLight.position);
+                        mat.SetFloat("u_PointLightSourceRangeInverse1", 1.0f);
+                    }
+                    pointlight_count++;
+				}
 			}
 		}
 
@@ -116,9 +117,14 @@ namespace ModelLoading
 					break;
 				case "u_emblemTexture":
 					mat.SetFloat("USE_HOUSE_EMBLEM", 1);
+                    mat.SetFloat("USE_EMBLEM_IN_DIFFUSE", 0);
+                    break;
+				case "u_teamColorMask":
+                    mat.SetFloat("USE_HOUSE_COLORS", 1);
 					break;
-			}
-		}
+
+            }
+        }
 		public static Material applyModelMaterial(Config3DModel._Config3DModel.JsonData.Material material, bool force_transparent)
         {
 			Material mat;
@@ -139,34 +145,15 @@ namespace ModelLoading
 			{
 				default_material = material_dict[material_name];
 			}
-			else if (!shader_dict.ContainsKey(material_name))
-			{
-				Debug.LogError("shader not in dict " + shader_name);
-			}
 			else
 			{
 				Debug.LogError("Failed to find material with mat name " + material_name);
-			}
-
-			if (default_material != null && shader_dict.ContainsKey(shader_name))
-			{
-				if (shader_dict[shader_name] == null)
-				{
-					throw new Exception("shader : " + shader_name + " was null");
-				}
-
-
-				mat = new Material(shader_dict[shader_name]);
-                mat.CopyPropertiesFromMaterial(default_material);
-				setLightData(mat);
-			}
-			else
-			{
-				Debug.LogError("ERROR SHADER");
                 return new Material(error_shader);
-				
             }
 
+			mat = new Material(default_material);
+
+			setLightData(mat);
 
 
 			if (shader_name == "avatarfaceshader")
@@ -355,7 +342,6 @@ namespace ModelLoading
 		public static void Initialize()
         {
 			error_shader = Shader.Find("Shader Graphs/error_shader");
-			shader_dict = new Dictionary<string, Shader>();
 
 			var materials = Resources.LoadAll("ShaderDefaults", typeof(Material));
 
@@ -363,26 +349,6 @@ namespace ModelLoading
 			{
 				material_dict[mat.name] = mat as Material;	
 			}
-
-
-            foreach (string shader in real_shaders)
-			{
-				Shader s = Shader.Find("Shader Graphs/" + shader);
-				if (s is not null)
-				{
-					shader_dict[shader] = s;
-                }
-				else
-				{
-					Debug.LogError("Failed to load real shader " + shader);
-				}
-			}
-
-			shader_dict["panningfalloff"] = Shader.Find("Shader Graphs/animateuvfalloff");
-
-
         }
-
-
     }
 }

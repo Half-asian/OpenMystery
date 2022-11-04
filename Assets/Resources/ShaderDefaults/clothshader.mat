@@ -8,19 +8,21 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: clothshader
-  m_Shader: {fileID: -6465566751694194690, guid: 0bc8b246619459748a4662026f32ac5a, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 90ae92c5fcb13ef4e8210ebea73a3c10, type: 3}
   m_ValidKeywords:
   - _DISABLE_SSR_TRANSPARENT
-  - _IS_CLOTH_SHADER
   m_InvalidKeywords:
   - IS_SKIN_SHADER
+  - _ALPHATEST_ON
+  - _IS_CLOTH_SHADER
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2225
+  m_CustomRenderQueue: 2475
   stringTagMap:
     MotionVector: User
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -118,7 +120,19 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_facePaintTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_secondaryMaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_timingMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -136,7 +150,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - IS_SKIN_SHADER: 1
+    - IS_AVATAR_FACE_SHADER: 0
+    - IS_AVATAR_SKIN_SHADER: 0
+    - IS_CLOTH_SHADER: 1
+    - IS_HAIR_SHADER: 0
+    - IS_SKIN_SHADER: 0
     - USE_RIM: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
@@ -144,7 +162,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
     - _AlphaCutoff: 0.5
-    - _AlphaCutoffEnable: 0
+    - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
@@ -255,14 +273,20 @@ Material:
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 3
-    - _ZTestGBuffer: 4
+    - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
     - alpha: 1
+    - u_brightnessAmount: 0
+    - u_brightnessSpeed: 0
     - u_flatness: 1
+    - u_height: 0
+    - u_length: 0
     - u_lightAngleBoost: 0.2
     - u_rimAngle: 0
     - u_specularity: 0
+    - u_speedX: 0
+    - u_speedY: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
@@ -289,8 +313,14 @@ Material:
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
+    - u_browColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
+    - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
+    - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
+    - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 0, g: 0, b: 0, a: 1}
     - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
+    - u_skinColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5571307314426355002

@@ -8,13 +8,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: avatarskinshader
-  m_Shader: {fileID: -6465566751694194690, guid: 1dbf5c2af67f9ea4f888423622294db8, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 90ae92c5fcb13ef4e8210ebea73a3c10, type: 3}
   m_ValidKeywords:
-  - IS_AVATAR_SKIN_SHADER
-  - IS_SKIN_SHADER
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
   - IS_AVATAR_FACE_SHADER
+  - IS_AVATAR_SKIN_SHADER
+  - IS_SKIN_SHADER
+  - SHADER_TYPE_IS_SKIN_SHADER
   - _IS_AVATAR_SKIN_SHADER
   - _IS_SKIN_SHADER
   - _NORMALMAP_TANGENT_SPACE
@@ -148,9 +149,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - IS_AVATAR_FACE_SHADER: 1
+    - IS_AVATAR_FACE_SHADER: 0
     - IS_AVATAR_SKIN_SHADER: 1
+    - IS_CLOTH_SHADER: 0
+    - IS_HAIR_SHADER: 0
     - IS_SKIN_SHADER: 1
+    - SHADER_TYPE: 0
     - USE_RIM: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
@@ -321,6 +325,7 @@ Material:
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
     - u_browColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
     - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
     - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
     - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
