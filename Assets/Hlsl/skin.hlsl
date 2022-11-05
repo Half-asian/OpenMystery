@@ -1,4 +1,6 @@
 #define MAX_DIRECTIONAL_LIGHT_NUM 4
+#define MAX_POINT_LIGHT_NUM 1
+#define MAX_SPOT_LIGHT_NUM 0
 #define USE_DIFFUSE
 #define USE_AMBIENT_COLOR
 #define USE_SPECULAR
@@ -22,6 +24,7 @@ UnityTexture2D tex_u_moleTexture;
 
 float3 normal;
 float3 eyeDir;
+float3 v_eyeSpacePos;
 
 float2 v_texCoords;
 float2 v_texCoords1;
@@ -61,7 +64,6 @@ float computeSpecularAmount(float3 normalVector, float3 lightDirection, float3 e
 
 float4 main_float(){   
     eyeDir = -eyeDir;
-
 
     #ifdef USE_SCREENDOOR_TRANSPARENCY
         #ifdef RANDOM_DITHER_FALLBACK
@@ -172,6 +174,8 @@ float4 main_float(){
     float3 lightColor =  float3(0.0, 0.0, 0.0);
 
     #if defined(HAS_DYNAMIC_LIGHT)
+
+
         float3 curLightColor;
         float3 ldir;
         float attenuation;
@@ -240,7 +244,111 @@ float4 main_float(){
                 #endif
             #endif
         #endif
+        #if (MAX_POINT_LIGHT_NUM > 0)
+            float3 vertToLight = u_PointLightSourcePosition1 - v_eyeSpacePos;
+            ldir = vertToLight * u_PointLightSourceRangeInverse1;
+            attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
+            vertToLight = normalize(vertToLight);
+            curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor1, attenuation);
+            lightColor += curLightColor;
+    
+            #ifdef USE_SPECULAR
+            specularColor += computeSpecularAmount(normal, vertToLight, -eyeDir, specPower) * curLightColor;
+            #endif
+    
+            #if MAX_POINT_LIGHT_NUM > 1
+                ldir = v_vertexToPointLightDirection[1] * u_PointLightSourceRangeInverse[1];
+                attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
+                vertToLight = normalize(v_vertexToPointLightDirection[1]);
+                curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor[1], attenuation);
+                lightColor += curLightColor;
+    
+                #ifdef USE_SPECULAR
+                specularColor += computeSpecularAmount(normal, vertToLight, -eyeDir, specPower) * curLightColor;
+                #endif
+    
+                #if MAX_POINT_LIGHT_NUM > 2
+                    ldir = v_vertexToPointLightDirection[2] * u_PointLightSourceRangeInverse[2];
+                    attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
+                    vertToLight = normalize(v_vertexToPointLightDirection[2]);
+                    curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor[2], attenuation);
+                    lightColor += curLightColor;
+    
+                    #ifdef USE_SPECULAR
+                    specularColor += computeSpecularAmount(normal, vertToLight, -eyeDir, specPower) * curLightColor;
+                    #endif
+                #endif
+            #endif
+        #endif
+        #if (MAX_SPOT_LIGHT_NUM > 0)
+            float3 vertToSpotight = u_SpotLightSourcePosition1 - v_eyeSpacePos;
+            float3 spotlightLdir = vertToSpotight * u_SpotLightSourceRangeInverse1;
+            float spotlightAttenuation = clamp(1.0 - dot(spotlightLdir, spotlightLdir), 0.0, 1.0);
+            vertToSpotight = normalize(vertToLight);
 
+            float3 spotLightDirection = normalize(u_SpotLightSourceDirection1);
+
+            float spotCurrentAngleCos = dot(spotLightDirection, -vertToSpotight);
+            //spotlightAttenuation *= smoothstep(u_SpotLightSourceOuterAngleCos1, u_SpotLightSourceInnerAngleCos1, spotCurrentAngleCos);
+            float3 curLight = computeLighting(normal, vertToSpotight, u_SpotLightSourceColor1, spotlightAttenuation);
+            lightColor += curLight;
+                
+            #ifdef USE_SPECULAR
+            specularColor += computeSpecularAmount(normal, vertToSpotight, -eyeDir, specPower) * curLightColor;
+            #endif
+    
+            #if MAX_SPOT_LIGHT_NUM > 1
+                // Compute range attenuation
+                ldir = v_vertexToSpotLightDirection[1] * u_SpotLightSourceRangeInverse[1];
+                attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
+                vertexToSpotLightDirection = normalize(v_vertexToSpotLightDirection[1]);
+                
+                #ifdef HAS_NORMAL_TEXTURE
+                spotLightDirection = normalize(v_spotLightDirection[1]);
+                #else
+                spotLightDirection = normalize(u_SpotLightSourceDirection[1]);
+                #endif
+
+                // "-lightDirection" is used because light direction points in opposite direction to spot direction.
+                spotCurrentAngleCos = dot(spotLightDirection, -vertexToSpotLightDirection);
+
+                // Apply spot attenuation
+                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[1], u_SpotLightSourceInnerAngleCos[1], spotCurrentAngleCos);
+                
+                curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[1], attenuation);
+                lightColor += curLightColor;
+                
+                #ifdef USE_SPECULAR
+                specularColor += computeSpecularAmount(normal, vertexToSpotLightDirection, -eyeDir, specPower) * curLightColor;
+                #endif
+            #endif
+    
+            #if MAX_SPOT_LIGHT_NUM > 2
+                // Compute range attenuation
+                ldir = v_vertexToSpotLightDirection[2] * u_SpotLightSourceRangeInverse[2];
+                attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
+                vertexToSpotLightDirection = normalize(v_vertexToSpotLightDirection[2]);
+                
+                #ifdef HAS_NORMAL_TEXTURE
+                spotLightDirection = normalize(v_spotLightDirection[2]);
+                #else
+                spotLightDirection = normalize(u_SpotLightSourceDirection[2]);
+                #endif
+                
+                // "-lightDirection" is used because light direction points in opposite direction to spot direction.
+                spotCurrentAngleCos = dot(spotLightDirection, -vertexToSpotLightDirection);
+                
+                // Apply spot attenuation
+                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[2], u_SpotLightSourceInnerAngleCos[2], spotCurrentAngleCos);
+                
+                curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[2], attenuation);
+                lightColor += curLightColor;
+                
+                #ifdef USE_SPECULAR
+                specularColor += computeSpecularAmount(normal, vertexToSpotLightDirection, -eyeDir, specPower) * curLightColor;
+                #endif
+            #endif
+        #endif
 	#endif
 
 
@@ -385,11 +493,11 @@ void skin_float(
     UnityTexture2D _u_facePaintTexture,
     UnityTexture2D _u_frecklesTexture,
     UnityTexture2D _u_moleTexture,
-    
+
     //Data
     float3 _normal,
     float3 _eyeDir,
-
+    float3 _worldposition,
     //Uvs
     float2 uv0,
     float2 uv1,
@@ -411,6 +519,7 @@ void skin_float(
 
     normal = _normal;
     eyeDir = _eyeDir;
+    v_eyeSpacePos = _worldposition;
 
     v_texCoords = uv0;
     v_texCoords1 = uv1;

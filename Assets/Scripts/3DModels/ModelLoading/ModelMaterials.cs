@@ -43,6 +43,7 @@ namespace ModelLoading
 
 			int dirlight_count = 0;
             int pointlight_count = 0;
+            int spotlight_count = 0;
 
             foreach (string lightname in lighting_layer.lights)
             {
@@ -90,11 +91,29 @@ namespace ModelLoading
 					{
                         mat.SetColor("u_PointLightSourceColor1", pointLight.color.gamma);
 						mat.SetVector("u_PointLightSourcePosition1", pointLight.position);
-                        mat.SetFloat("u_PointLightSourceRangeInverse1", 1.0f);
+                        mat.SetFloat("u_PointLightSourceRangeInverse1", 1.0f / pointLight.range);
                     }
                     pointlight_count++;
 				}
-			}
+				else if (sceneLight is SpotLight)
+                {
+                    Debug.LogError("SETTING SPOTLIGHT ON MATERIAL!");
+
+					SpotLight spotLight = (SpotLight)sceneLight;
+                    if (pointlight_count == 0)
+                    {
+                        mat.SetColor("u_SpotLightSourceColor1", spotLight.color.gamma);
+                        mat.SetVector("u_SpotLightSourcePosition1", spotLight.position);
+                        mat.SetVector("u_SpotLightSourceDirection1", spotLight.direction);
+                        mat.SetFloat("u_SpotLightSourceRangeInverse1", 1.0f / spotLight.range);
+                        mat.SetFloat("u_SpotLightSourceInnerAngleCos1", spotLight.penumbraAngle);
+                        mat.SetFloat("u_SpotLightSourceOuterAngleCos1", spotLight.coneAngle);
+                    }
+
+                    spotlight_count++;
+
+                }
+            }
 		}
 
 		public static void setTexSwitches(Material mat, string tex_name)
