@@ -17,6 +17,7 @@ public partial class NewPredicate
         {"isTLSQComplete"               , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQComplete) },
         {"isTLSQFailed"                 , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQFailed) },
         {"isTimedPromoExpired"          , new Func<SymbolConstantString, SymbolConstantBool>(isTimedPromoExpired) },
+        {"featuredModalCompleteCount"   , new Func<SymbolConstantString, SymbolConstantInteger>(featuredModalCompleteCount) },
         {"matchWon"                     , new Func<SymbolConstantString, SymbolConstantBool>(matchWon) },
         {"quidditchPosition"            , new Func<SymbolConstantString>(quidditchPosition) },
         {"madeChoice"                   , new Func<SymbolConstantString, SymbolConstantBool>(madeChoice) },
@@ -49,6 +50,7 @@ public partial class NewPredicate
         {"goalViewed"                   , new Func<SymbolConstantString, SymbolConstantBool>(goalViewed) },
         {"creatureAffinityLevel"        , new Func<SymbolConstantString, SymbolConstantInteger>(creatureAffinityLevel) },
         {"random"                       , new Func<SymbolConstantFloat>(random) },
+        {"sessionRandom"                , new Func<SymbolConstantFloat>(random) },
         {"isVersionAtLeast"             , new Func<SymbolConstantString, SymbolConstantBool>(isVersionAtLeast) },
         {"companionLevel"               , new Func<SymbolConstantString, SymbolConstantInteger >(companionLevel) },
         {"numCompletedDatesWithPartner" , new Func<SymbolConstantString, SymbolConstantInteger>(numCompletedDatesWithPartner) },
@@ -103,6 +105,11 @@ public partial class NewPredicate
     static SymbolConstantBool isTimedPromoExpired(SymbolConstantString timed_promo_id)
     {
         return new SymbolConstantBool(true); //Always return true for now
+    }
+
+    static SymbolConstantInteger featuredModalCompleteCount(SymbolConstantString featured_modal)
+    {
+        return new SymbolConstantInteger(0);
     }
 
     static SymbolConstantBool matchWon(SymbolConstantString match_id)
@@ -306,7 +313,8 @@ public partial class NewPredicate
     static SymbolConstantFloat random()
     {
         System.Random r = new System.Random();
-        return new SymbolConstantFloat((float)r.NextDouble());
+        //return new SymbolConstantFloat((float)r.NextDouble());
+        return new SymbolConstantFloat(0.0f);
     }
     static SymbolConstantBool isVersionAtLeast(SymbolConstantString version)
     {
