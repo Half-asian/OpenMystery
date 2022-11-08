@@ -39,10 +39,10 @@ public partial class ActorController : Node
     {
         default_anim = new HPAnimation(Resources.Load("default") as AnimationClip);
         default_anim.anim_clip.legacy = true;
-        if (actor_info is not null)
+        if (config_hpactor is not null)
         {
-            idle_animation = actor_info.animId_idle;
-            walk_animation = actor_info.animId_walk;
+            idle_animation = config_hpactor.animId_idle;
+            walk_animation = config_hpactor.animId_walk;
         }
     }
 
@@ -160,7 +160,7 @@ public partial class ActorController : Node
 
     public void customAnimationCharacter(string anim_name)
     {
-        var new_anim = AnimationManager.loadAnimationClip(anim_name, model, actor_info, null, bone_mods: bone_mods);
+        var new_anim = AnimationManager.loadAnimationClip(anim_name, model, config_hpactor, null, bone_mods: bone_mods);
         playAnimationOnComponent(new_anim);
     }
 
@@ -189,7 +189,7 @@ public partial class ActorController : Node
             StopCoroutine(waitForAnimation);
         anim_state = "loop";
 
-        var new_anim = AnimationManager.loadAnimationClip(idle_queued_animate, model, actor_info, null, bone_mods: bone_mods);
+        var new_anim = AnimationManager.loadAnimationClip(idle_queued_animate, model, config_hpactor, null, bone_mods: bone_mods);
         idle_queued_animate = null;
         playAnimationOnComponent(new_anim);
 
@@ -248,13 +248,13 @@ public partial class ActorController : Node
 
         var animation = Configs.config_animation.Animation3D[animation_id];
 
-        animation_current_loop = AnimationManager.loadAnimationClip(animation_id, model, actor_info, null, bone_mods:bone_mods);
+        animation_current_loop = AnimationManager.loadAnimationClip(animation_id, model, config_hpactor, null, bone_mods:bone_mods);
         animation_current_loop.anim_clip.wrapMode = WrapMode.Loop; //Always loop even if the animation config says clamp
 
         if (animation.introAnim != null)
-            animation_current_intro = AnimationManager.loadAnimationClip(animation.introAnim, model, actor_info, null, bone_mods: bone_mods);
+            animation_current_intro = AnimationManager.loadAnimationClip(animation.introAnim, model, config_hpactor, null, bone_mods: bone_mods);
         if (animation.outroAnim != null)
-            animation_current_exit = AnimationManager.loadAnimationClip(animation.outroAnim, model, actor_info, null, bone_mods: bone_mods);
+            animation_current_exit = AnimationManager.loadAnimationClip(animation.outroAnim, model, config_hpactor, null, bone_mods: bone_mods);
 
     }
 

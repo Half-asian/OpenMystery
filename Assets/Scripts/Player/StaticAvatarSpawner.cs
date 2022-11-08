@@ -44,7 +44,7 @@ class StaticAvatarSpawner
 
 
         ActorController c = parent_model.game_object.AddComponent<ActorController>();
-        c.actor_info = character;
+        c.config_hpactor = character;
         c.setup(parent_model);
         c.patches = new List<Model>();
         c.avatar_components = avatar_components;

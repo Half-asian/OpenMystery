@@ -28,7 +28,7 @@ public class CustomizableAvatarSpawner : MonoBehaviour
 
         ActorController actor_controller = character_model.game_object.AddComponent<ActorController>();
         actor_controller.setup(character_model);
-        actor_controller.actor_info = character;
+        actor_controller.config_hpactor = character;
         actor_controller.replaceCharacterIdle(character.animId_idle);
         actor_controller.patches = new List<Model>();
         actor_controller.bone_mods = new Dictionary<string, AnimationManager.BoneMod>();
@@ -38,7 +38,7 @@ public class CustomizableAvatarSpawner : MonoBehaviour
             character_model.game_object.name = character_name;
         }
 
-        actor_controller.replaceCharacterIdle(actor_controller.actor_info.animId_idle);
+        actor_controller.replaceCharacterIdle(actor_controller.config_hpactor.animId_idle);
         return actor_controller;
     }
 }

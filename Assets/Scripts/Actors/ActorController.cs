@@ -6,17 +6,17 @@ public partial class ActorController : Node
     public ActorHead actor_head;
     public List<Model> patches;
 
-    private ConfigHPActorInfo._HPActorInfo _actor_info;
+    private ConfigHPActorInfo._HPActorInfo _config_hpactor;
 
-    public ConfigHPActorInfo._HPActorInfo actor_info
+    public ConfigHPActorInfo._HPActorInfo config_hpactor
     {
         get
         {
-            return _actor_info;
+            return _config_hpactor;
         }
         set
         {
-            _actor_info = value;
+            _config_hpactor = value;
         }
     }
 
@@ -133,7 +133,7 @@ public partial class ActorController : Node
         string[] array =
         {
             gameObject.name,                            //0
-            actor_info.actorId,                         //1
+            config_hpactor.actorId,                         //1
             gameObject.transform.position.x.ToString(), //2
             gameObject.transform.position.y.ToString(), //3
             gameObject.transform.position.z.ToString(), //4

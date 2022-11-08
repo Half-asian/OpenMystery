@@ -33,13 +33,13 @@ public class ActorAnimSequence : AnimationSequence
 
     protected override void attachBroom(string target)
     {
-        string broom_skin_name = getBroomSkinName(actor_controller.actor_info.actorId);
+        string broom_skin_name = getBroomSkinName(actor_controller.config_hpactor.actorId);
         attachChildNode(broom_skin_name, null, target);
     }
 
     protected override void playBroomAnim(string target)
     {
-        string broom_skin_name = getBroomSkinName(actor_controller.actor_info.actorId);
+        string broom_skin_name = getBroomSkinName(actor_controller.config_hpactor.actorId);
         playChildNodeAnim(broom_skin_name, target, config_sequence.data.triggerReplacement);
     }
 

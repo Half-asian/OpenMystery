@@ -40,7 +40,7 @@ public partial class ActorController : Node
 
         if (is_moving == false)
         {
-            walk_animation = actor_info.animId_walk;
+            walk_animation = config_hpactor.animId_walk;
             actor_head.clearLookat();
             actor_head.clearTurnHeadAt();
             coroutine_move = MoveCoroutine(speed);
@@ -99,7 +99,7 @@ public partial class ActorController : Node
 
         ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
             
-        while (movement_path.Count != 0 || gameObject.transform.position != destination_waypoint.getWorldPosition())
+        while (movement_path.Count != 0 && gameObject.transform.position != destination_waypoint.getWorldPosition())
         {
             if (gameObject.transform.position != next_waypoint.getWorldPosition())
             {
@@ -109,7 +109,7 @@ public partial class ActorController : Node
                 gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (0.4f + speed) * Time.deltaTime);
                 yield return null;
             }
-            else
+            else if (movement_path.Count != 0)
             {
                 next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
                 movement_path.RemoveAt(0);

@@ -674,7 +674,7 @@ public static class Events
 
         if (action_params[2] != "")
         {
-            List<string> running_anims =new List<string> { "walk_wheelchairStudent", "c_Stu_Jog01", "flyingOnBroom", "c_Stu_Run01" };
+            List<string> running_anims =new List<string> { "walk_wheelchairStudent", "c_Stu_Jog01", "flyingOnBroom", "c_Stu_Run01", "flyingOnBroom" };
             //There is an animation included
             if (running_anims.Contains(action_params[2])) 
                 actor_controller.moveCharacter(path, 1.3f);
