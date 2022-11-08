@@ -16,7 +16,6 @@ public class InteractionQuiz : Interaction
     public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     {
         base.setup(ref _interaction);
-        interaction_gameobject.SetActive(false);
 
         if (Configs.config_quiz_group.QuizGroup.ContainsKey(_interaction.quizOrGroupId))
             quizGroup = Configs.config_quiz_group.QuizGroup[_interaction.quizOrGroupId];

@@ -8,7 +8,6 @@ using UnityEngine.Assertions;
 public class InteractionAutotuneGroup : Interaction
 {
     int member_counter;
-    bool force_finish = false;
 
     public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     {
@@ -37,7 +36,9 @@ public class InteractionAutotuneGroup : Interaction
             member_interaction.destroy();
 
         Debug.Log("member Interaction Finished autotune ");
-        if (member_interaction != null)
+
+        //This would be the correct way to handle it
+        /*if (member_interaction != null)
         {
             Debug.Log("adding group progress " + group_progress);
             group_progress += member_interaction.config_interaction.GroupProgress;
@@ -51,7 +52,7 @@ public class InteractionAutotuneGroup : Interaction
                     return;
                 }
             }
-        }
+        }*/
 
         if (member_counter < config_interaction.groupMembers.Length)
         {
@@ -64,6 +65,7 @@ public class InteractionAutotuneGroup : Interaction
                     new_bubble = new_bubble_gameobject.GetComponent<Interaction>();
                     new_bubble.parent_autotune_group_interaction = this;
                     new_bubble.parent_autotune_group_guid = guid;
+                    new_bubble.can_add_project_progress = false;
                 }
                 member_counter++;
             }
@@ -72,18 +74,17 @@ public class InteractionAutotuneGroup : Interaction
                 new_bubble.parent_autotune_group_interaction = this;
                 new_bubble.parent_autotune_group_guid = guid;
                 new_bubble.interaction_gameobject.transform.parent = interaction_gameobject.transform;
+                new_bubble.can_add_project_progress = false;
             }
             else
             {
                 GameStart.dialogue_manager.finishBubbleDialogue();
-                force_finish = true;
                 interactionComplete(); //We are done
             }
         }
         else
         {
             GameStart.dialogue_manager.finishBubbleDialogue();
-            force_finish = true;
             interactionComplete(); //We are done
         }
     }
@@ -91,10 +92,11 @@ public class InteractionAutotuneGroup : Interaction
     //This is basically a mod of original game logic.
     //Usually the game will repeat the same bubble several times until the star goal has been met
     //We don't care about that, so instead we finish the project early once all bubbles have played once.
+    //Unless we are in a class, where there can be multiple autotunegroups.
     protected override void onFinishedExitEvents()
     {
-        if (force_finish)
-            Project.addProgress(9999);
+        Project.addProgress(config_interaction.MaxProgress);
+
         base.onFinishedExitEvents();
     }
 }

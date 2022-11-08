@@ -33,25 +33,16 @@ public class Project
     private static void onScenarioLoaded()
     {
         Scenario.onScenarioLoaded -= onScenarioLoaded;
-        InteractionManager.interaction_finished_event += onInteractionFinished; //callback for group progress
         if (project_config.startPlaylistIds != null)
             foreach (string playlistId in project_config.startPlaylistIds)
                 Sound.playBark(playlistId);
-        InteractionManager.all_interactions_destroyed_event += finishProject;
     }
 
     private static void cleanup()
     {
-        Debug.LogError("Project CLEANUP");
         InteractionManager.all_interactions_destroyed_event -= finishProject;
         current_progress = 0;
         project_config = null;
-    }
-
-    private static void onInteractionFinished(string interaction_id)
-    {
-        Debug.Log("onInteractionFinished Called");
-        addProgress(Configs.config_interaction.Interactions[interaction_id].ProjectProgress);
     }
 
     public static void addProgress(int progress)
@@ -68,6 +59,7 @@ public class Project
         if (stars >= project_config.progressForStars.Length - 1)
         {
             current_progress = -1;
+            InteractionManager.all_interactions_destroyed_event += finishProject;
         }
     }
 
@@ -78,11 +70,9 @@ public class Project
 
     public static void finishProject()
     {
-        Debug.LogError("Project finishProject");
         InteractionManager.all_interactions_destroyed_event -= finishProject;
 
         Debug.Log("Project was finished with id " + project_config.projectId);
-        InteractionManager.interaction_finished_event -= onInteractionFinished;
 
         if (project_config.rewardsForStars != null)
         {

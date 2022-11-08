@@ -193,7 +193,7 @@ public class InteractionManager : MonoBehaviour {
         bool all_finished = true;
         foreach(var i in active_interactions)
         {
-            if (i.config_interaction.type != "Exit")
+            if (i.config_interaction != null && i.config_interaction.type != "Exit")
                 all_finished = false;
         }
 

@@ -33,6 +33,7 @@ public abstract class Interaction : MonoBehaviour
     public int group_progress = 0;
     public bool is_active = true;
     public bool should_onFinishedEnterEvents_when_respawned = true;
+    public bool can_add_project_progress = true; //Autotune interactions are not allowed to add project progress. That is controlled by the autotune group.
 
     private void Update()
     {
@@ -166,17 +167,7 @@ public abstract class Interaction : MonoBehaviour
 
             Debug.Log("Activating a leads to " + config_interaction.leadsTo[best_match_leads_to]);
 
-            GameObject new_interaction = GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[best_match_leads_to]);
-
-            if (new_interaction != null)
-            {
-                if (parent_group_interaction != null)
-                {
-                    Interaction leads_to_interaction = new_interaction.GetComponent<Interaction>();
-
-                    parent_group_interaction.addMemberInteraction(leads_to_interaction);
-                }
-            }
+            GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[best_match_leads_to]);
         }
         else
         {
@@ -184,18 +175,7 @@ public abstract class Interaction : MonoBehaviour
             {
                 Debug.Log("Activating leads to " + config_interaction.leadsTo[0]);
 
-                GameObject leads_to_gameobject = GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[0]);
-                if (leads_to_gameobject == null)
-                {
-                    Debug.LogError(config_interaction.leadsTo[0] + " spawned a null gameobject ");
-                }
-                else {
-                    Interaction leads_to_interaction = leads_to_gameobject.GetComponent<Interaction>();
-                    if (parent_group_interaction != null)
-                    {
-                        parent_group_interaction.addMemberInteraction(leads_to_interaction);
-                    }
-                }
+                GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[0]);
             }
             Debug.Log("Activating leads to exit. We are done.");
         }
@@ -215,7 +195,10 @@ public abstract class Interaction : MonoBehaviour
             parent_group_interaction.memberInteractionFinished(this);
         if (parent_autotune_group_interaction != null)
             parent_autotune_group_interaction.memberInteractionComplete(this);
-        if (config_interaction.type == "Group" || config_interaction.type == "AutotuneGroup")
+        if (can_add_project_progress)
+            Project.addProgress(config_interaction.ProjectProgress);
+
+        if (parent_autotune_group_interaction == null && parent_autotune_group_interaction == null)
         {
             destroy();
         }

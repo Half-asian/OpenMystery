@@ -89,7 +89,6 @@ public class InteractionGroup : Interaction
         {
             foreach (Interaction i in member_interactions.Values)
             {
-                Debug.Log("Recheck pred " + i.name);
                 if (i != member_interaction)
                 {
                     if (i.config_interaction.filterPredicate != null)
