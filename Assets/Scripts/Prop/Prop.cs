@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations;
 using ModelLoading;
+
 public class Prop : Node
 {
     public static Dictionary<string, Prop> spawned_props = new Dictionary<string, Prop>();
@@ -132,13 +132,22 @@ public class Prop : Node
             {
                 if (layer.objects.Contains(prop_locator.name))
                 {
-                    Debug.LogError("FOUND A PROPLOCATOR LIGHTING LAYER " + prop_locator.name);
                     ModelMaterials.lighting_layers.Add( layer.name);
+                }
+            }
+            if (ModelMaterials.lighting_layers.Count == 0)
+            {
+                foreach (var layer in Scene.current.Lighting.layers.Values)
+                {
+                    if (layer.objects.Contains("ENVIRONMENT"))
+                    {
+                        ModelMaterials.lighting_layers.Add(layer.name);
+                    }
                 }
             }
         }
 
-        Debug.LogError("Spawning prop " + prop_locator.name + " with light layer counts: " + ModelMaterials.lighting_layers.Count);
+
 
         Model model = ModelManager.loadModel(prop_locator.reference);
 
@@ -220,6 +229,15 @@ public class Prop : Node
 
     public static void spawnPropFromEvent(string model_id, ConfigScene._Scene.WayPoint waypoint, string name, string group)
     {
+        ModelMaterials.lighting_layers = new List<string>();
+        if (waypoint != null)
+        {
+            if (waypoint.lightLayerOverride != null)
+            {
+                ModelMaterials.lighting_layers.AddRange(waypoint.lightLayerOverride); //Figure out if more than one light layer can be applied at once
+            }
+        }
+
         Prop prop = null;
         if (spawned_props.ContainsKey(name))
         {
