@@ -71,10 +71,9 @@ public partial class ActorController : Node
 
     public void setCharacterIdle()
     {
-        finishMovement();
-
         setActorState(ActorState.Idle);
         playIdleAnimation();
+        finishMovement();
     }
     public void setCharacterWalk()
     {

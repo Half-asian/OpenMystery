@@ -18,25 +18,33 @@ public partial class ActorController : Node
         if (is_moving == false)
             return;
         is_moving = false;
+        movement_path.Clear();
 
         if (coroutine_move != null) //Early finish
         {
             StopCoroutine(coroutine_move);
             applyWaypoint();
+            coroutine_move = null;
             if (GameStart.current != null)
                 GameStart.current.GetComponent<EventManager>().notifyMoveComplete(gameObject.name);
-            coroutine_move = null;
         }
 
-        movement_path.Clear();
     }
 
 
     public void moveCharacter(List<string> path, float speed)
     {
+        Debug.Log("moveCharacter: " + name);
         destination_waypoint = Scene.current.waypoint_dict[path.Last()];
 
         movement_path.AddRange(path);
+
+        /*if (is_moving == true)
+        {
+            StopCoroutine(coroutine_move);
+            coroutine_move = MoveCoroutine(speed);
+            StartCoroutine(coroutine_move);
+        }*/
 
         if (is_moving == false)
         {
@@ -99,21 +107,23 @@ public partial class ActorController : Node
 
         ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
             
-        while (movement_path.Count != 0 && gameObject.transform.position != destination_waypoint.getWorldPosition())
+        while (gameObject.transform.position != destination_waypoint.getWorldPosition())
         {
-            if (gameObject.transform.position != next_waypoint.getWorldPosition())
+            Vector3 targetDirection = transform.position - next_waypoint.getWorldPosition();
+            transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
+            transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (0.4f + speed) * Time.deltaTime);
+
+            if (gameObject.transform.position == next_waypoint.getWorldPosition())
             {
-                Vector3 targetDirection = transform.position - next_waypoint.getWorldPosition();
-                transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
-                transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
-                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (0.4f + speed) * Time.deltaTime);
-                yield return null;
+                if (movement_path.Count != 0)
+                {
+                    next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
+                    movement_path.RemoveAt(0);
+                }
             }
-            else if (movement_path.Count != 0)
-            {
-                next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
-                movement_path.RemoveAt(0);
-            }
+
+            yield return null;
         }
 
         yield return null;

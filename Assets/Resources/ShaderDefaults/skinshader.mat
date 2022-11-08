@@ -181,6 +181,7 @@ Material:
     - IS_OUTFIT_SHADER: 0
     - IS_SKIN_SHADER: 1
     - SHADER_TYPE: 0
+    - USE_FOG: 1
     - USE_RIM: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
@@ -315,8 +316,15 @@ Material:
     - u_SpotLightSourceRangeInverse2: 0
     - u_SpotLightSourceRangeInverse3: 0
     - u_flatness: 1
+    - u_flipFogOrder: 0
+    - u_heightFogDensity: 0
+    - u_heightFogEnd: 0
+    - u_heightFogStart: 0
     - u_houseSet: 0
     - u_lightAngleBoost: 0.2
+    - u_maxFog: 0
+    - u_maxFogDistance: 0
+    - u_minFogDistance: 0
     - u_moleScale: 0
     - u_rimAngle: 0
     - u_specularity: 0
@@ -366,7 +374,9 @@ Material:
     - u_color2: {r: 0, g: 0, b: 0, a: 0}
     - u_color3: {r: 0, g: 0, b: 0, a: 0}
     - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
+    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
     - u_hairColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
     - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
     - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
     - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
