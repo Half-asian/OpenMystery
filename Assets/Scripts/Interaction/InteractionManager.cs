@@ -17,16 +17,8 @@ public class InteractionManager : MonoBehaviour {
 
     public static List<Interaction> active_interactions = new List<Interaction>();
 
-    public static event Action all_interactions_finished_event;
+    public static event Action all_interactions_destroyed_event;
     public static event Action<string> interaction_finished_event;
-
-    public static void changeOptionInteractionsVisibility(bool show)
-    {
-        foreach (Interaction i in active_interactions)
-        {
-            i.gameObject.SetActive(show);
-        }
-    }
 
     public void spawnHubNPCInteraction(ref string dialogue_id, ref Vector3 location)
     {
@@ -47,15 +39,6 @@ public class InteractionManager : MonoBehaviour {
         ConfigInteraction.Interaction new_interaction = Configs.config_interaction.Interactions[interaction_name];
 
         Assert.IsNotNull(new_interaction);
-
-        if (Configs.config_interaction.Interactions[interaction_name].filterPredicate != null) //Is the interaction filtered by a predicate?
-        {
-            if (!Predicate.parsePredicate(Configs.config_interaction.Interactions[interaction_name].filterPredicate))
-            {
-                Debug.Log("Failed the predicate: " + Configs.config_interaction.Interactions[interaction_name].filterPredicate);
-                return null;
-            }
-        }
 
         //If the interaction is already active, destroy the old one.
         List<Interaction> to_destroy = new List<Interaction>();
@@ -193,12 +176,18 @@ public class InteractionManager : MonoBehaviour {
                 throw new Exception("Unknown interaction type " + new_interaction.type + " in " + new_interaction.id);
         }
 
+        if (Configs.config_interaction.Interactions[interaction_name].filterPredicate != null) //Is the interaction filtered by a predicate?
+        {
+            interaction_gameobject.GetComponent<Interaction>().is_active = Predicate.parsePredicate(Configs.config_interaction.Interactions[interaction_name].filterPredicate);
+        }
+
         return interaction_gameobject;
     }
 
 
-    public void finishInteraction(Interaction interaction)
+    public void onInteractionDestroyed(Interaction interaction)
     {
+        if (interaction.config_interaction == null) return; //Location Interaction
         interaction_finished_event?.Invoke(interaction.config_interaction.id);
 
         bool all_finished = true;
@@ -209,7 +198,11 @@ public class InteractionManager : MonoBehaviour {
         }
 
         if (all_finished)
-            all_interactions_finished_event?.Invoke();
+        {
+            Debug.Log("Everything is destroyed");
+            all_interactions_destroyed_event?.Invoke();
+        }
+
     }
 
     public void destroyAllInteractions()
@@ -219,23 +212,6 @@ public class InteractionManager : MonoBehaviour {
             i.destroy();
         }
         active_interactions = new List<Interaction>();
-    }
-
-    public void reloadGroups()
-    {
-        List<string> groups = new List<string>();
-        foreach (Interaction i in active_interactions)
-        {
-            if (i is InteractionGroup)
-            {
-                groups.Add(i.config_interaction.id);
-            }
-        }
-        destroyAllInteractions();
-        foreach(string i in groups)
-        {
-            spawnInteraction(i);
-        }
     }
 
     public string[][] serializeInteractions()
@@ -264,9 +240,8 @@ public class InteractionManager : MonoBehaviour {
             if (interaction_s[2] != null) interaction.parent_group_guid = System.Guid.Parse(interaction_s[2]);
             if (interaction_s[3] != null) interaction.parent_autotune_group_guid = System.Guid.Parse(interaction_s[3]);
             interaction.group_progress = int.Parse(interaction_s[4]);
-            interaction.shouldShow = bool.Parse(interaction_s[5]);
-            interaction.destroyed = bool.Parse(interaction_s[6]);
-            interaction.should_onFinishedEnterEvents_when_respawned = bool.Parse(interaction_s[7]);
+            interaction.is_active = bool.Parse(interaction_s[5]);
+            interaction.should_onFinishedEnterEvents_when_respawned = bool.Parse(interaction_s[6]);
             interaction.gameObject.SetActive(true);
 
             guid_to_interaction[interaction.guid] = interaction;

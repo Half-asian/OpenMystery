@@ -23,7 +23,7 @@ public class InteractionAutotuneGroup : Interaction
     public override void onFinishedEnterEvents() //Not really accurate. What would normally happen is all the children spawn on parent spawn, but are not visible because of active event actions.
     {
         base.onFinishedEnterEvents();
-        memberInteractionFinished(null);
+        memberInteractionComplete(null);
         return; 
     }
 
@@ -31,15 +31,18 @@ public class InteractionAutotuneGroup : Interaction
     //To try and get the "bubbles" to play one at a time.
     //Probably can eventually retire this whole thing and use a normal group at some stage.
 
-    public void memberInteractionFinished(ConfigInteraction.Interaction member_interaction)
+    public void memberInteractionComplete(Interaction member_interaction)
     {
+        if (member_interaction != null)
+            member_interaction.destroy();
+
         Debug.Log("member Interaction Finished autotune ");
         if (member_interaction != null)
         {
             Debug.Log("adding group progress " + group_progress);
-            group_progress += member_interaction.GroupProgress;
+            group_progress += member_interaction.config_interaction.GroupProgress;
 
-            if (member_interaction.GroupProgress != 0)
+            if (member_interaction.config_interaction.GroupProgress != 0)
             {
                 if (group_progress >= config_interaction.ProgressRequired)
                 {
@@ -84,8 +87,6 @@ public class InteractionAutotuneGroup : Interaction
             interactionComplete(); //We are done
         }
     }
-
-
 
     //This is basically a mod of original game logic.
     //Usually the game will repeat the same bubble several times until the star goal has been met

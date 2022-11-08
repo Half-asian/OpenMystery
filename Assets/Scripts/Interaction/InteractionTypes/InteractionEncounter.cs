@@ -42,10 +42,7 @@ public class InteractionEncounter : Interaction
         {
             Debug.Log("Encounter complete");
             EncounterManager.onEncounterFinished -= encounterComplete;
-            if (succeeded)
-                interactionComplete();
-            else
-                interaction_gameobject.GetComponent<InteractionButton>().is_active = true;
+            interactionComplete();
         }
     }
 

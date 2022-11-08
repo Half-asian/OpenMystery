@@ -24,7 +24,7 @@ public class InteractionExit : Interaction
     public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
-        shouldShow = true;
+        is_active = true;
         if (Scenario.current.scenario_config.mapLocationId != null) //We're in a location
         {
             Scenario.ExitSave();

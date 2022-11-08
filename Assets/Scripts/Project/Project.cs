@@ -17,7 +17,6 @@ public class Project
 
         GameStart.onReturnToMenu += cleanup;
 
-        InteractionManager.interaction_finished_event += onInteractionFinished; //callback for group progress
         if (!Configs.config_project.Project.ContainsKey(new_project))
         {
             throw new System.Exception("Invalid project id " + new_project);
@@ -26,18 +25,25 @@ public class Project
         project_config = Configs.config_project.Project[new_project];
         current_progress = 0;
 
+        Scenario.onScenarioLoaded += onScenarioLoaded;
         Scenario.Activate(project_config.scenarioId, Scenario.current.objective);
         Scenario.Load(project_config.scenarioId);
-        if (project_config.startPlaylistIds != null)
-            foreach(string playlistId in project_config.startPlaylistIds)
-                Sound.playBark(playlistId);
-        InteractionManager.all_interactions_finished_event += finishProject;
+    }
 
+    private static void onScenarioLoaded()
+    {
+        Scenario.onScenarioLoaded -= onScenarioLoaded;
+        InteractionManager.interaction_finished_event += onInteractionFinished; //callback for group progress
+        if (project_config.startPlaylistIds != null)
+            foreach (string playlistId in project_config.startPlaylistIds)
+                Sound.playBark(playlistId);
+        InteractionManager.all_interactions_destroyed_event += finishProject;
     }
 
     private static void cleanup()
     {
-        InteractionManager.all_interactions_finished_event -= finishProject;
+        Debug.LogError("Project CLEANUP");
+        InteractionManager.all_interactions_destroyed_event -= finishProject;
         current_progress = 0;
         project_config = null;
     }
@@ -72,7 +78,8 @@ public class Project
 
     public static void finishProject()
     {
-        InteractionManager.all_interactions_finished_event -= finishProject;
+        Debug.LogError("Project finishProject");
+        InteractionManager.all_interactions_destroyed_event -= finishProject;
 
         Debug.Log("Project was finished with id " + project_config.projectId);
         InteractionManager.interaction_finished_event -= onInteractionFinished;

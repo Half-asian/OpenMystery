@@ -77,38 +77,32 @@ public class InteractionGroup : Interaction
         Debug.Log("member interaction finished " + member_interaction.config_interaction.id);
         group_progress += member_interaction.config_interaction.GroupProgress;
 
-        List<string> keys_to_remove = new List<string>();
-        foreach (string key in member_interactions.Keys)
-        {
-            if (member_interactions[key] == member_interaction)
-                keys_to_remove.Add(key);
-        }
-        foreach (string key in keys_to_remove)
-        {
-
-            member_interactions.Remove(key);
-        }
-
         if (member_interaction.config_interaction.GroupProgress != 0 || (config_interaction.GroupProgress == 0 && member_interactions.Count == 0))
         {
             if (group_progress >= config_interaction.ProgressRequired)
             {
-
-                foreach (Interaction i in member_interactions.Values) //This seems sus?
-                {
-                    GameStart.interaction_manager.finishInteraction(i);
-                }
-
-
                 Debug.Log("Group complete." + config_interaction.id);
                 interactionComplete(); //No more member interactions.
-
             }
         }
-
-
-       // else //when was this useful?
-            //spawnMemberInteractions(); //PREDICATES SHOULD BE CULLING THIS OFF. NOT A DANGER IF PREDICATES ARE FUNCTIONING - OBJECTION!!! PREDICATES ARENT ALWAYS DEFINED!
+        else
+        {
+            foreach (Interaction i in member_interactions.Values)
+            {
+                Debug.Log("Recheck pred " + i.name);
+                if (i != member_interaction)
+                {
+                    if (i.config_interaction.filterPredicate != null)
+                    {
+                        i.is_active = Predicate.parsePredicate(i.config_interaction.filterPredicate);
+                    }
+                    else
+                    {
+                        i.is_active = true;
+                    }
+                }
+            }
+        }
     }
 
     public override void destroy()

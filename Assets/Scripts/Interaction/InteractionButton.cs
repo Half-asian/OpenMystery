@@ -7,7 +7,7 @@ public class InteractionButton : MonoBehaviour
     bool mouse_hover;
     public Interaction interaction;
     Transform camera_transform;
-    public bool is_active = false;
+    //public bool is_active = false;
     MeshRenderer mesh_renderer;
 
     void OnMouseEnter()
@@ -40,7 +40,7 @@ public class InteractionButton : MonoBehaviour
         while (GameStart.event_manager.areEventsActive())
             yield return null;
 
-        is_active = true;
+        //is_active = true;
     }
 
 
@@ -51,7 +51,7 @@ public class InteractionButton : MonoBehaviour
             if (mesh_renderer) mesh_renderer.enabled = false;
         }
 
-        else if (is_active)
+        else
         {
             FaceButtonToCamera(camera_transform);
 
@@ -60,51 +60,21 @@ public class InteractionButton : MonoBehaviour
             if ((Input.GetMouseButtonDown(0) && mouse_hover)) //Clicked on
             {
                 interaction.activate();
-                if (!interaction.shouldShow)
-                {
-                    is_active = false;
-                    if (this == null) return;
-                    if (mesh_renderer) mesh_renderer.enabled = false;
-                }
-                else
-                {
-                    if (this == null) return;
-                    if (mesh_renderer) mesh_renderer.enabled = true;
-                }
-            }
 
+            }
             if (Input.GetKeyDown("space") && interaction.config_interaction != null) //Project
             {
                 if (interaction.config_interaction.type == "AutotuneGroup" || interaction.config_interaction.type == null)
                 {
-                    is_active = false;
+                    //is_active = false;
                     interaction.interactionComplete();
                 }
             }
+            if (this == null) return;
 
-            if (interaction != null && interaction.config_interaction != null) //Real interaction
-            {
-                if (interaction.config_interaction.AutoSelect == true) //Autoselect
-                {
-                    //interaction.activate();
-                    is_active = false;
-                    if (mesh_renderer) mesh_renderer.enabled = false;
-                }
-                else
-                {
+            if (mesh_renderer) mesh_renderer.enabled = interaction.is_active;
 
-                    if (mesh_renderer) mesh_renderer.enabled = true;
-                }
-            }
-            else
-            {
-                if (mesh_renderer) mesh_renderer.enabled = true;
-            }
+
         }
-        else
-        {
-            if (mesh_renderer) mesh_renderer.enabled = false;
-        }
-
     }
 }

@@ -31,17 +31,14 @@ public abstract class Interaction : MonoBehaviour
 
     [SerializeField]
     public int group_progress = 0;
-    public bool shouldShow = false;
-    public bool destroyed = false;
+    public bool is_active = true;
     public bool should_onFinishedEnterEvents_when_respawned = true;
-
-    public bool activated = false;
 
     private void Update()
     {
         if (config_interaction != null) //Real interaction
         {
-            if (config_interaction.AutoSelect == true && activated == false) //Autoselect
+            if (config_interaction.AutoSelect == true && is_active == true) //Autoselect
             {
                 activate();
             }
@@ -50,14 +47,14 @@ public abstract class Interaction : MonoBehaviour
 
     public string[] toStringArray()
     {
+        Debug.Log("Serializing interaction " + name + " isactive: " + is_active);
         return new string[] {
             config_interaction.id,
             guid.ToString(),
             parent_group_guid.ToString(),
             parent_autotune_group_guid.ToString(),
             group_progress.ToString(),
-            shouldShow.ToString(),
-            destroyed.ToString(),
+            is_active.ToString(),
             should_onFinishedEnterEvents_when_respawned.ToString()
         };
     }
@@ -73,7 +70,7 @@ public abstract class Interaction : MonoBehaviour
 
     public void activate()
     {
-        activated = true;
+        is_active = false;
         if (config_interaction != null)
         {
             Debug.Log("Activating interaction " + config_interaction.id);
@@ -93,14 +90,13 @@ public abstract class Interaction : MonoBehaviour
     {
         Scenario.completeInteraction(config_interaction.id);
 
-        if (!destroyed)
-            addExitEvents(success);
+        addExitEvents(success);
     }
     protected void addExitEvents(bool success)
     {
         Assert.IsNotNull(config_interaction, "finished interaction was null");
 
-        Debug.Log("Finished interaction " + config_interaction.id);
+        Debug.Log("addExitEvents " + config_interaction.id);
 
         //This interaction has an immediate exit.
         if (config_interaction.exitEvents == null
@@ -144,7 +140,7 @@ public abstract class Interaction : MonoBehaviour
         }
         else
         {
-            finish();
+            complete();
         }
     }
     public void spawnLeadsTo()
@@ -181,7 +177,6 @@ public abstract class Interaction : MonoBehaviour
                     parent_group_interaction.addMemberInteraction(leads_to_interaction);
                 }
             }
-            finish();
         }
         else
         {
@@ -200,17 +195,14 @@ public abstract class Interaction : MonoBehaviour
                     {
                         parent_group_interaction.addMemberInteraction(leads_to_interaction);
                     }
-                    finish();
                 }
             }
-            else
-            {
-                finish();
-            }
+            Debug.Log("Activating leads to exit. We are done.");
         }
+        complete();
     }
 
-    public void finish()
+    public void complete()
     {
         if (config_interaction == null) return;
 
@@ -219,21 +211,21 @@ public abstract class Interaction : MonoBehaviour
             Reward.getReward(config_interaction.successReward);
         }
 
-        destroy();
-
-        GameStart.interaction_manager.finishInteraction(this);
-
         if (parent_group_interaction != null)
             parent_group_interaction.memberInteractionFinished(this);
         if (parent_autotune_group_interaction != null)
-            parent_autotune_group_interaction.memberInteractionFinished(config_interaction);
+            parent_autotune_group_interaction.memberInteractionComplete(this);
+        if (config_interaction.type == "Group" || config_interaction.type == "AutotuneGroup")
+        {
+            destroy();
+        }
     }
 
     public virtual void destroy()
     {
-        destroyed = true;
         InteractionManager.active_interactions.Remove(this);
         GameObject.DestroyImmediate(interaction_gameobject);
+        GameStart.interaction_manager.onInteractionDestroyed(this);
     }
 
     protected void setHotspot()

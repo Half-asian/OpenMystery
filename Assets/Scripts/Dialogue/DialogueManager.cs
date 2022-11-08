@@ -79,7 +79,6 @@ public class DialogueManager : MonoBehaviour
     public bool activateDialogue(string dialogue)
     {
         dialogue_id = dialogue;
-        InteractionManager.changeOptionInteractionsVisibility(false);
 
         string initial_dialogue_line = null;
 
@@ -552,7 +551,6 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("Dialogue finished " + dialogue_id);
 
         setDialogueUIActive(false);
-        InteractionManager.changeOptionInteractionsVisibility(true);
         current_dialogue_line = null;
 
         foreach (string character in Actor.actor_controllers.Keys)

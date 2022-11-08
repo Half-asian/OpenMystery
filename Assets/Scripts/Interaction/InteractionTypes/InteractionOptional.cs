@@ -17,7 +17,5 @@ public class InteractionOptional : Interaction
     public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
-        interaction_gameobject.GetComponent<InteractionButton>().is_active = true;
-
     }
 }

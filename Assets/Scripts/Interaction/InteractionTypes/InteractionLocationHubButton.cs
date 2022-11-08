@@ -18,7 +18,7 @@ public class InteractionLocationHubButton : Interaction
         interaction_gameobject.GetComponent<InteractionButton>().interaction = this;
         interaction_gameobject.transform.position = location;
         interaction_gameobject.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-        shouldShow = true;
+        is_active = true;
     }
 
     public override void onFinishedEnterEvents() {

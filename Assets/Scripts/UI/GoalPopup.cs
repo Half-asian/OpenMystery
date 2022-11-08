@@ -30,14 +30,15 @@ namespace UI
             latest_goal = goal;
 
             if (character != null)
-                Destroy(character.gameObject);
+                DestroyImmediate(character.gameObject);
             _popup.SetActive(true);
 
             if (goal.ready_text != null) _description.text = LocalData.getLine(goal.ready_text); else _description.text = "";
             if (goal.goal_name != null) _title.text = LocalData.getLine(goal.goal_name); else _title.text = "";
             if (goal.characterId != null) character = Actor.spawnActor(goal.characterId, null, goal.characterId);
 
-            StartCoroutine(setPos());
+            if (character != null)
+                StartCoroutine(setPos());
         }
 
         private IEnumerator setPos()
