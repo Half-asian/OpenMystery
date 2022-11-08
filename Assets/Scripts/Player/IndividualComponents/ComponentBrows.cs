@@ -57,11 +57,30 @@ namespace IndividualComponents
             {
                 int brow_color_id = category.int_parameters["browColor"];
 
-                int[] brow_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["browColor"].colorConfigs[brow_color_id].codes;
+                int[] brow_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["browColor"].colorConfigs[brow_color_id].sets[0];
 
                 Color c = new Color(brow_color_codes[0] / 255.0f, brow_color_codes[1] / 255.0f, brow_color_codes[2] / 255.0f, 1.0f).gamma;
                 SkinnedMeshRenderer smr = avatar_components.base_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>();
                 smr.material.SetColor("u_browColor", c);
+            }
+        }
+        public static void setExternalColorModifiers(IEnumerable<SkinnedMeshRenderer> skinnedMeshRenderers, AvatarComponents avatar_components)
+        {
+            PlayerFile.CustomizationCategory category = avatar_components.customization_categories["brows"];
+            if (!category.int_parameters.ContainsKey("browColor"))
+            {
+                return;
+            }
+
+            int brow_color_id = category.int_parameters["browColor"];
+
+            int[] brow_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["browColor"].colorConfigs[brow_color_id].sets[0];
+
+            Color c = new Color(brow_color_codes[0] / 255.0f, brow_color_codes[1] / 255.0f, brow_color_codes[2] / 255.0f, 1.0f).gamma;
+            foreach (var smr in skinnedMeshRenderers)
+            {
+                if (smr.material.HasColor("u_browColor"))
+                    smr.material.SetColor("u_browColor", c);
             }
         }
     }

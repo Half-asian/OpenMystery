@@ -50,7 +50,7 @@ namespace IndividualComponents
             {
                 int hair_color_id = category.int_parameters["hairColor"];
 
-                int[] hair_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["hairColor"].colorConfigs[hair_color_id].codes;
+                int[] hair_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["hairColor"].colorConfigs[hair_color_id].sets[0];
 
                 Color c = new Color(hair_color_codes[0] / 255.0f, hair_color_codes[1] / 255.0f, hair_color_codes[2] / 255.0f, 1.0f).gamma;
                 foreach (var smr in component_model.game_object.GetComponentsInChildren<SkinnedMeshRenderer>())
@@ -58,6 +58,26 @@ namespace IndividualComponents
                     if (smr.material.HasColor("u_hairColor"))
                         smr.material.SetColor("u_hairColor", c);
                 }
+            }
+        }
+
+        public static void setExternalColorModifiers(IEnumerable<SkinnedMeshRenderer> skinnedMeshRenderers, AvatarComponents avatar_components)
+        {
+            PlayerFile.CustomizationCategory category = avatar_components.customization_categories["hair"];
+            if (!category.int_parameters.ContainsKey("hairColor"))
+            {
+                return;
+            }
+
+            int hair_color_id = category.int_parameters["hairColor"];
+
+            int[] hair_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["hairColor"].colorConfigs[hair_color_id].sets[0];
+
+            Color c = new Color(hair_color_codes[0] / 255.0f, hair_color_codes[1] / 255.0f, hair_color_codes[2] / 255.0f, 1.0f).gamma;
+            foreach (var smr in skinnedMeshRenderers)
+            {
+                if (smr.material.HasColor("u_hairColor"))
+                    smr.material.SetColor("u_hairColor", c);
             }
         }
     }

@@ -24,6 +24,7 @@ public class ConfigHPActorInfo : Config<ConfigHPActorInfo>
         public string modelId;
         public string[] modelPatches;
         public string[] portraitModelOffset;
+        public string[] linkedComponentColorOverrides;
         public string nameFirst;
         public string nameLast;
         public float animationScale = 1.0f;

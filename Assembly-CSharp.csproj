@@ -158,7 +158,7 @@
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundYear1.cs" />
     <Compile Include="Assets\Scripts\Quidditch.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveSocialEncounterComplete.cs" />
-    <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentArms - Copy.cs" />
+    <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentArms.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundHalloween2022.cs" />
     <Compile Include="Assets\Scripts\Cocos3D\c3bLoader.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigEncounterLoader.cs" />
@@ -244,15 +244,12 @@
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
-    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\LitProperties.hlsl" />
     <None Include="Assets\Hlsl\neweyes.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
-    <None Include="Assets\Hlsl\skinshader.hlsl" />
+    <None Include="Assets\Hlsl\skin.hlsl" />
     <None Include="Assets\Resources\RenderTextures\ui_remove_depth.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
-    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\LitData.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
-    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\neweyeshader.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Resources\Animations\MCHalloween2022.txt" />
     <None Include="Assets\Resources\Animations\JaneHalloween2022.txt" />
@@ -262,7 +259,6 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
-    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\LitDataIndividualLayer.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\Hlsl\ubershader.hlsl" />
@@ -275,7 +271,6 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\Resources\Animations\MerulaHalloween2022.txt" />
     <None Include="Assets\Hlsl\screendoor.hlsl" />
-    <None Include="Assets\Resources\Shaders\CustomShaders\neweyeshader\neweyeshader.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
   <ItemGroup>

@@ -1,13 +1,15 @@
 #define MAX_DIRECTIONAL_LIGHT_NUM 4
-#define MAX_POINT_LIGHT_NUM 1
-#define MAX_SPOT_LIGHT_NUM 0
+#define MAX_POINT_LIGHT_NUM 2
+#define MAX_SPOT_LIGHT_NUM 3
 #define USE_DIFFUSE
 #define USE_AMBIENT_COLOR
 #define USE_SPECULAR
 #define USE_EMISSIVE
 #define HAS_DYNAMIC_LIGHT
+#define USE_SCREENDOOR_TRANSPARENCY
+//#define USE_RIM
 
-#define USE_FACE_PAINT
+//#define USE_FACE_PAINT
 
 //#define USE_UNLIT_DIFFUSE
 
@@ -24,7 +26,9 @@ UnityTexture2D tex_u_moleTexture;
 
 float3 normal;
 float3 eyeDir;
-float3 v_eyeSpacePos;
+float3 v_absWorldSpacePos;
+float3 viewPosition;
+float4 gl_FragCoord;
 
 float2 v_texCoords;
 float2 v_texCoords1;
@@ -64,18 +68,6 @@ float computeSpecularAmount(float3 normalVector, float3 lightDirection, float3 e
 
 float4 main_float(){   
     eyeDir = -eyeDir;
-
-    #ifdef USE_SCREENDOOR_TRANSPARENCY
-        #ifdef RANDOM_DITHER_FALLBACK
-            if (alpha < rand(v_texCoords)) {
-                discard;
-            }
-        #else
-            if (alpha < thresholdMatrix[int(mod(gl_FragCoord.x, 4.0))][int(mod(gl_FragCoord.y, 4.0))]) {
-                discard;
-            }
-        #endif
-    #endif
 
     float shadowVal = 1.0;
     
@@ -139,10 +131,13 @@ float4 main_float(){
         float3 maskedColor = lerp(skinColor, float3(1.0, 1.0, 1.0), maskColor.b);
         diffuseColor = lerp(maskedColor, u_browColor, maskColor.g);
 
+        float3 lipColor = u_lipColor;
+        lipColor = lipColor * skinColor;
+
         #ifdef USE_LIPSTICK
                 diffuseColor = lerp(diffuseColor, u_lipstickColor, maskColor.r) * gradientColor;
         #else
-                diffuseColor = lerp(diffuseColor, u_lipColor, maskColor.r) * gradientColor;
+                diffuseColor = lerp(diffuseColor, lipColor, maskColor.r) * gradientColor;
         #endif
 
         #ifdef USE_FACIAL_HAIR
@@ -179,6 +174,7 @@ float4 main_float(){
         float3 curLightColor;
         float3 ldir;
         float attenuation;
+        float3 vertToLight;
         #if (MAX_DIRECTIONAL_LIGHT_NUM > 0)
     
             #ifdef HAS_NORMAL_TEXTURE
@@ -245,7 +241,7 @@ float4 main_float(){
             #endif
         #endif
         #if (MAX_POINT_LIGHT_NUM > 0)
-            float3 vertToLight = u_PointLightSourcePosition1 - v_eyeSpacePos;
+            vertToLight = u_PointLightSourcePosition1 - v_absWorldSpacePos;
             ldir = vertToLight * u_PointLightSourceRangeInverse1;
             attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
             vertToLight = normalize(vertToLight);
@@ -257,10 +253,11 @@ float4 main_float(){
             #endif
     
             #if MAX_POINT_LIGHT_NUM > 1
-                ldir = v_vertexToPointLightDirection[1] * u_PointLightSourceRangeInverse[1];
+                vertToLight = u_PointLightSourcePosition2 - v_absWorldSpacePos;
+                ldir = vertToLight * u_PointLightSourceRangeInverse2;
                 attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
-                vertToLight = normalize(v_vertexToPointLightDirection[1]);
-                curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor[1], attenuation);
+                vertToLight = normalize(vertToLight);
+                curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor2, attenuation);
                 lightColor += curLightColor;
     
                 #ifdef USE_SPECULAR
@@ -268,10 +265,11 @@ float4 main_float(){
                 #endif
     
                 #if MAX_POINT_LIGHT_NUM > 2
-                    ldir = v_vertexToPointLightDirection[2] * u_PointLightSourceRangeInverse[2];
+                    vertToLight = u_PointLightSourcePosition3 - v_absWorldSpacePos;
+                    ldir = vertToLight * u_PointLightSourceRangeInverse3;
                     attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
-                    vertToLight = normalize(v_vertexToPointLightDirection[2]);
-                    curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor[2], attenuation);
+                    vertToLight = normalize(v_vertexToPointLightDirection3);
+                    curLightColor = computeLighting(normal, vertToLight, u_PointLightSourceColor3, attenuation);
                     lightColor += curLightColor;
     
                     #ifdef USE_SPECULAR
@@ -281,71 +279,80 @@ float4 main_float(){
             #endif
         #endif
         #if (MAX_SPOT_LIGHT_NUM > 0)
-            float3 vertToSpotight = u_SpotLightSourcePosition1 - v_eyeSpacePos;
-            float3 spotlightLdir = vertToSpotight * u_SpotLightSourceRangeInverse1;
-            float spotlightAttenuation = clamp(1.0 - dot(spotlightLdir, spotlightLdir), 0.0, 1.0);
-            vertToSpotight = normalize(vertToLight);
+            vertToLight = u_SpotLightSourcePosition1 - v_absWorldSpacePos;
+            ldir = vertToLight * u_SpotLightSourceRangeInverse1;
+            attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
+            vertToLight = normalize(vertToLight);
 
-            float3 spotLightDirection = normalize(u_SpotLightSourceDirection1);
+            #ifdef HAS_NORMAL_TEXTURE
+                float3 spotLightDirection = normalize(v_spotLightDirection1);
+            #else
+                float3 spotLightDirection = normalize(u_SpotLightSourceDirection1);
+            #endif
 
-            float spotCurrentAngleCos = dot(spotLightDirection, -vertToSpotight);
-            //spotlightAttenuation *= smoothstep(u_SpotLightSourceOuterAngleCos1, u_SpotLightSourceInnerAngleCos1, spotCurrentAngleCos);
-            float3 curLight = computeLighting(normal, vertToSpotight, u_SpotLightSourceColor1, spotlightAttenuation);
-            lightColor += curLight;
+
+            float spotCurrentAngleCos = dot(spotLightDirection, -vertToLight);
+            attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos1, u_SpotLightSourceInnerAngleCos1, spotCurrentAngleCos);
+
+
+            curLightColor = computeLighting(normal, vertToLight, u_SpotLightSourceColor1, attenuation);
+            lightColor += curLightColor;
                 
             #ifdef USE_SPECULAR
-            specularColor += computeSpecularAmount(normal, vertToSpotight, -eyeDir, specPower) * curLightColor;
+            specularColor += computeSpecularAmount(normal, vertToLight, -eyeDir, specPower) * curLightColor;
             #endif
     
             #if MAX_SPOT_LIGHT_NUM > 1
                 // Compute range attenuation
-                ldir = v_vertexToSpotLightDirection[1] * u_SpotLightSourceRangeInverse[1];
+                vertToLight = u_SpotLightSourcePosition2 - v_absWorldSpacePos;
+                ldir = vertToLight * u_SpotLightSourceRangeInverse2;
                 attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
-                vertexToSpotLightDirection = normalize(v_vertexToSpotLightDirection[1]);
+                vertToLight = normalize(vertToLight);
                 
                 #ifdef HAS_NORMAL_TEXTURE
-                spotLightDirection = normalize(v_spotLightDirection[1]);
+                spotLightDirection = normalize(v_spotLightDirection2);
                 #else
-                spotLightDirection = normalize(u_SpotLightSourceDirection[1]);
+                spotLightDirection = normalize(u_SpotLightSourceDirection2);
                 #endif
 
                 // "-lightDirection" is used because light direction points in opposite direction to spot direction.
-                spotCurrentAngleCos = dot(spotLightDirection, -vertexToSpotLightDirection);
+                spotCurrentAngleCos = dot(spotLightDirection, -vertToLight);
 
                 // Apply spot attenuation
-                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[1], u_SpotLightSourceInnerAngleCos[1], spotCurrentAngleCos);
+                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos2, u_SpotLightSourceInnerAngleCos2, spotCurrentAngleCos);
                 
-                curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[1], attenuation);
+                curLightColor = computeLighting(normal, vertToLight, u_SpotLightSourceColor2, attenuation);
                 lightColor += curLightColor;
                 
                 #ifdef USE_SPECULAR
-                specularColor += computeSpecularAmount(normal, vertexToSpotLightDirection, -eyeDir, specPower) * curLightColor;
+                specularColor += computeSpecularAmount(normal, vertToLight, -eyeDir, specPower) * curLightColor;
                 #endif
             #endif
     
             #if MAX_SPOT_LIGHT_NUM > 2
                 // Compute range attenuation
-                ldir = v_vertexToSpotLightDirection[2] * u_SpotLightSourceRangeInverse[2];
+                vertToLight = u_SpotLightSourcePosition3 - v_absWorldSpacePos;
+                ldir = vertToLight * u_SpotLightSourceRangeInverse3;
                 attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
-                vertexToSpotLightDirection = normalize(v_vertexToSpotLightDirection[2]);
+                vertToLight = normalize(vertToLight);
                 
                 #ifdef HAS_NORMAL_TEXTURE
-                spotLightDirection = normalize(v_spotLightDirection[2]);
+                spotLightDirection = normalize(v_spotLightDirection3);
                 #else
-                spotLightDirection = normalize(u_SpotLightSourceDirection[2]);
+                spotLightDirection = normalize(u_SpotLightSourceDirection3);
                 #endif
                 
                 // "-lightDirection" is used because light direction points in opposite direction to spot direction.
-                spotCurrentAngleCos = dot(spotLightDirection, -vertexToSpotLightDirection);
+                spotCurrentAngleCos = dot(spotLightDirection, -vertToLight);
                 
                 // Apply spot attenuation
-                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[2], u_SpotLightSourceInnerAngleCos[2], spotCurrentAngleCos);
+                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos3, u_SpotLightSourceInnerAngleCos3, spotCurrentAngleCos);
                 
-                curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[2], attenuation);
+                curLightColor = computeLighting(normal, vertToLight, u_SpotLightSourceColor3, attenuation);
                 lightColor += curLightColor;
                 
                 #ifdef USE_SPECULAR
-                specularColor += computeSpecularAmount(normal, vertexToSpotLightDirection, -eyeDir, specPower) * curLightColor;
+                specularColor += computeSpecularAmount(normal, vertToLight, -eyeDir, specPower) * curLightColor;
                 #endif
             #endif
         #endif
@@ -417,14 +424,15 @@ float4 main_float(){
     
     //Determine final color, based on diffuse, specular, and emissive.
     float3 finalColor = float3(0.0, 0.0, 0.0);
+    float3 faceSpecular;
     #ifdef USE_SPECULAR
         if (IS_HAIR_SHADER) {
             finalColor += (specularColor * u_specColor * specTexel.r);
         }
         else {
-                float3 faceSpecular = u_specColor * specTexel.g;
+            faceSpecular = u_specColor * specTexel.g;
 
-                // Skin specular color shouldn't affect lipstick or facial hair color.
+            // Skin specular color shouldn't affect lipstick or facial hair color.
             #ifdef USE_LIPSTICK
                 faceSpecular = mix(faceSpecular, float3(maskColor.r * u_lipSpecIntensity), maskColor.r);
             #endif
@@ -454,28 +462,48 @@ float4 main_float(){
 
     #endif
     
-    #ifdef USE_FOG
-        float eyeSpaceDepth = -v_eyeSpacePos.z;
-        float depthFogT = (eyeSpaceDepth - u_minFogDistance) / u_maxFogDistance;
+
+    if (USE_FOG) {
+        float3 v_fogWorldPos = v_absWorldSpacePos;
+        //#ifdef NEEDS_NORMALS
+        float v_eyeSpaceDepth = -viewPosition.z;
+        //#endif
+        float depthFogT = (v_eyeSpaceDepth - u_minFogDistance) / u_maxFogDistance;
         depthFogT = clamp(depthFogT, 0.0, u_maxFog);
-        
+
         float heightFogRange = u_heightFogEnd - u_heightFogStart;
         float heightFogT = ((v_fogWorldPos.y - u_heightFogStart) / heightFogRange);
         heightFogT = clamp(heightFogT, 0.0, u_heightFogDensity);
-    
-        vec3 heightMixColor = mix(u_heightFogColor, u_fogColor, u_flipFogOrder);
-        float heightMixT = mix(heightFogT, depthFogT, u_flipFogOrder);
-        finalColor = mix(finalColor, heightMixColor, heightMixT);
-        
-        vec3 depthMixColor = mix(u_fogColor, u_heightFogColor, u_flipFogOrder);
-        float depthMixT = mix(depthFogT, heightFogT, u_flipFogOrder);
-        finalColor = mix(finalColor, depthMixColor, depthMixT);
-    #endif
 
-    //TODO SCREENDOOR
+        float3 heightMixColor = lerp(u_heightFogColor, u_fogColor, u_flipFogOrder);
+        float heightMixT = lerp(heightFogT, depthFogT, u_flipFogOrder);
+        finalColor = lerp(finalColor, heightMixColor, heightMixT);
+
+        float3 depthMixColor = lerp(u_fogColor, u_heightFogColor, u_flipFogOrder);
+        float depthMixT = lerp(depthFogT, heightFogT, u_flipFogOrder);
+        finalColor = lerp(finalColor, depthMixColor, depthMixT);
+    }
 
     finalColor = pow(finalColor, 2.2);
+    #ifdef USE_SCREENDOOR_TRANSPARENCY
 
+        float4x4 thresholdMatrix = {
+            1.0f / 17.0f,  9.0f / 17.0f,  3.0f / 17.0f, 11.0f / 17.0f,
+            13.0f / 17.0f,  5.0f / 17.0f, 15.0f / 17.0f,  7.0f / 17.0f,
+            4.0f / 17.0f, 12.0f / 17.0f,  2.0f / 17.0f, 10.0f / 17.0f,
+            16.0f / 17.0f,  8.0f / 17.0f, 14.0f / 17.0f,  6.0f / 17.0f
+        };
+
+        float finalAlpha = alpha;
+
+        float threshold = thresholdMatrix[int(fmod(gl_FragCoord.x * 1000.0f, 4.0))][int(fmod(gl_FragCoord.y * 1000.0f, 4.0))];
+        if (alpha < threshold) {
+            return float4(finalColor, 0.0);
+        }
+        else {
+            return float4(finalColor, alpha);
+        }
+    #endif
 
     return float4(finalColor, alpha);
 }
@@ -495,9 +523,12 @@ void skin_float(
     UnityTexture2D _u_moleTexture,
 
     //Data
-    float3 _normal,
     float3 _eyeDir,
-    float3 _worldposition,
+    float3 _normal,
+    float3 _absWorldPosition,
+    float3 _viewPosition,
+    float4 _screenPosition,
+
     //Uvs
     float2 uv0,
     float2 uv1,
@@ -518,8 +549,10 @@ void skin_float(
     tex_u_moleTexture = _u_moleTexture;
 
     normal = _normal;
+    gl_FragCoord = _screenPosition;
     eyeDir = _eyeDir;
-    v_eyeSpacePos = _worldposition;
+    v_absWorldSpacePos = _absWorldPosition;
+    viewPosition = _viewPosition;
 
     v_texCoords = uv0;
     v_texCoords1 = uv1;

@@ -4,17 +4,24 @@
 #define USE_SPECULAR
 #define HAS_DYNAMIC_LIGHT
 #define MAX_DIRECTIONAL_LIGHT_NUM 4
+#define MAX_SPOT_LIGHT_NUM 3
+#define MAX_POINT_LIGHT_NUM 3
 //#define HAS_REFLECTION_TEXTURE
 #define USE_REFLECTION_ANGLE
 #define USE_REFLECTION_TINT
 #define USE_AMBIENT_COLOR
+#define USE_SCREENDOOR_TRANSPARENCY
+
 float3 tex_u_diffuse;
 float3 tex_u_mask;
 float3 tex_u_reflectionCubeMap;
 
 float3 eyeDir;
 float3 normal;
+float3 v_absWorldSpacePos;
+float3 viewPosition;
 float3 headNorm;
+float4 gl_FragCoord;
 
 #if defined(HAS_DYNAMIC_LIGHT) && !defined(USE_VERTEX_LIGHTING)
 float3 computeLighting(float3 normalVector, float3 lightDirection, float3 lightColor, float attenuation)
@@ -47,19 +54,6 @@ float3 computeSpecularLight(float3 normalVector, float3 eyeDirection)
 float4 main_float(){ 
 
     eyeDir = -eyeDir;
-
-
-    #ifdef USE_SCREENDOOR_TRANSPARENCY
-        #ifdef RANDOM_DITHER_FALLBACK
-            if (alpha < rand(v_diffuseCoords)) {
-                discard;
-            }
-        #else
-            if (alpha < thresholdMatrix[int(mod(gl_FragCoord.x, 4.0))][int(mod(gl_FragCoord.y, 4.0))]) {
-                discard;
-            }
-        #endif
-    #endif
     
     float shadowVal = 1.0;
     #ifdef USE_SHADOWMAP
@@ -155,6 +149,7 @@ float4 main_float(){
         float3 curLightColor;
         float3 ldir;
         float attenuation;
+        float3 vertToLight;
         #if (MAX_DIRECTIONAL_LIGHT_NUM > 0)
             //Index 0 is the shadowcasting light.
     
@@ -207,78 +202,88 @@ float4 main_float(){
         #endif
 
         #if (MAX_POINT_LIGHT_NUM > 0)
-        for (int i = 0; i < MAX_POINT_LIGHT_NUM; ++i)
-        {
-            ldir = v_vertexToPointLightDirection[i] * u_PointLightSourceRangeInverse[i];
+            vertToLight = u_PointLightSourcePosition1 - v_absWorldSpacePos;
+            ldir = vertToLight * u_PointLightSourceRangeInverse1;
             attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
-            lightColor += computeLighting(normal, normalize(v_vertexToPointLightDirection[i]), u_PointLightSourceColor[i], attenuation);
-        }
+            lightColor += computeLighting(normal, normalize(vertToLight), u_PointLightSourceColor1, attenuation);
+    
+            #if MAX_POINT_LIGHT_NUM > 1
+                vertToLight = u_PointLightSourcePosition2 - v_absWorldSpacePos;
+                ldir = vertToLight * u_PointLightSourceRangeInverse2;
+                attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
+                lightColor += computeLighting(normal, normalize(vertToLight), u_PointLightSourceColor2, attenuation);
+    
+                #if MAX_POINT_LIGHT_NUM > 2
+                    vertToLight = u_PointLightSourcePosition3 - v_absWorldSpacePos;
+                    ldir = vertToLight * u_PointLightSourceRangeInverse3;
+                    attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
+                    lightColor += computeLighting(normal, normalize(vertToLight), u_PointLightSourceColor3, attenuation);
+                #endif
+            #endif
         #endif
 
         #if (MAX_SPOT_LIGHT_NUM > 0)
-            ldir = v_vertexToSpotLightDirection[0] * u_SpotLightSourceRangeInverse[0];
+            vertToLight = u_SpotLightSourcePosition1 - v_absWorldSpacePos;
+            ldir = vertToLight * u_SpotLightSourceRangeInverse1;
             attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
-            vec3 vertexToSpotLightDirection = normalize(v_vertexToSpotLightDirection[0]);
-            
+            vertToLight = normalize(vertToLight);
+
             #ifdef HAS_NORMAL_TEXTURE
-            vec3 spotLightDirection = normalize(v_spotLightDirection[0]);
+                float3 spotLightDirection = normalize(v_spotLightDirection1);
             #else
-            vec3 spotLightDirection = normalize(u_SpotLightSourceDirection[0]);
+                float3 spotLightDirection = normalize(u_SpotLightSourceDirection1);
             #endif
-    
-            float spotCurrentAngleCos = dot(spotLightDirection, -vertexToSpotLightDirection);
-    
-            attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[0], u_SpotLightSourceInnerAngleCos[0], spotCurrentAngleCos);
-    
-            #ifdef USE_SPOTLIGHT_SHADOWMAP
-                curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[0], attenuation) * shadowVal;
-            #else
-                curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[0], attenuation);
-            #endif
-    
+
+
+            float spotCurrentAngleCos = dot(spotLightDirection, -vertToLight);
+            attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos1, u_SpotLightSourceInnerAngleCos1, spotCurrentAngleCos);
+
+
+            curLightColor = computeLighting(normal, vertToLight, u_SpotLightSourceColor1, attenuation);
             lightColor += curLightColor;
-    
             #if MAX_SPOT_LIGHT_NUM > 1
                 // Compute range attenuation
-                ldir = v_vertexToSpotLightDirection[1] * u_SpotLightSourceRangeInverse[1];
+                vertToLight = u_SpotLightSourcePosition2 - v_absWorldSpacePos;
+                ldir = vertToLight * u_SpotLightSourceRangeInverse2;
                 attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
-                vertexToSpotLightDirection = normalize(v_vertexToSpotLightDirection[1]);
+                vertToLight = normalize(vertToLight);
                 
                 #ifdef HAS_NORMAL_TEXTURE
-                spotLightDirection = normalize(v_spotLightDirection[1]);
+                spotLightDirection = normalize(v_spotLightDirection2);
                 #else
-                spotLightDirection = normalize(u_SpotLightSourceDirection[1]);
+                spotLightDirection = normalize(u_SpotLightSourceDirection2);
                 #endif
 
                 // "-lightDirection" is used because light direction points in opposite direction to spot direction.
-                spotCurrentAngleCos = dot(spotLightDirection, -vertexToSpotLightDirection);
+                spotCurrentAngleCos = dot(spotLightDirection, -vertToLight);
 
                 // Apply spot attenuation
-                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[1], u_SpotLightSourceInnerAngleCos[1], spotCurrentAngleCos);
+                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos2, u_SpotLightSourceInnerAngleCos2, spotCurrentAngleCos);
                 
-                curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[1], attenuation);
+                curLightColor = computeLighting(normal, vertToLight, u_SpotLightSourceColor2, attenuation);
                 lightColor += curLightColor;
             #endif
     
             #if MAX_SPOT_LIGHT_NUM > 2
                 // Compute range attenuation
-                ldir = v_vertexToSpotLightDirection[2] * u_SpotLightSourceRangeInverse[2];
+                vertToLight = u_SpotLightSourcePosition3 - v_absWorldSpacePos;
+                ldir = vertToLight * u_SpotLightSourceRangeInverse3;
                 attenuation = clamp(1.0 - dot(ldir, ldir), 0.0, 1.0);
-                vertexToSpotLightDirection = normalize(v_vertexToSpotLightDirection[2]);
+                vertToLight = normalize(vertToLight);
                 
                 #ifdef HAS_NORMAL_TEXTURE
-                spotLightDirection = normalize(v_spotLightDirection[2]);
+                spotLightDirection = normalize(v_spotLightDirection3);
                 #else
-                spotLightDirection = normalize(u_SpotLightSourceDirection[2]);
+                spotLightDirection = normalize(u_SpotLightSourceDirection3);
                 #endif
                 
                 // "-lightDirection" is used because light direction points in opposite direction to spot direction.
-                spotCurrentAngleCos = dot(spotLightDirection, -vertexToSpotLightDirection);
+                spotCurrentAngleCos = dot(spotLightDirection, -vertToLight);
                 
                 // Apply spot attenuation
-                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos[2], u_SpotLightSourceInnerAngleCos[2], spotCurrentAngleCos);
+                attenuation *= smoothstep(u_SpotLightSourceOuterAngleCos3, u_SpotLightSourceInnerAngleCos3, spotCurrentAngleCos);
                 
-                curLightColor = computeLighting(normal, vertexToSpotLightDirection, u_SpotLightSourceColor[2], attenuation);
+                curLightColor = computeLighting(normal, vertToLight, u_SpotLightSourceColor3, attenuation);
                 lightColor += curLightColor;
             #endif
         #endif
@@ -315,33 +320,67 @@ float4 main_float(){
     finalColor += diffuseColor * (lightColor);
     #endif
 
-    #ifdef USE_FOG
-        float eyeSpaceDepth = -v_eyeSpacePos.z;
-        float depthFogT = (eyeSpaceDepth - u_minFogDistance) / u_maxFogDistance;
+    if (USE_FOG) {
+        float3 v_fogWorldPos = v_absWorldSpacePos;
+        //#ifdef NEEDS_NORMALS
+        float v_eyeSpaceDepth = -viewPosition.z;
+        //#endif
+        float depthFogT = (v_eyeSpaceDepth - u_minFogDistance) / u_maxFogDistance;
         depthFogT = clamp(depthFogT, 0.0, u_maxFog);
-        
+
         float heightFogRange = u_heightFogEnd - u_heightFogStart;
         float heightFogT = ((v_fogWorldPos.y - u_heightFogStart) / heightFogRange);
         heightFogT = clamp(heightFogT, 0.0, u_heightFogDensity);
-    
-        vec3 heightMixColor = mix(u_heightFogColor, u_fogColor, u_flipFogOrder);
-        float heightMixT = mix(heightFogT, depthFogT, u_flipFogOrder);
-        finalColor = mix(finalColor, heightMixColor, heightMixT);
-        
-        vec3 depthMixColor = mix(u_fogColor, u_heightFogColor, u_flipFogOrder);
-        float depthMixT = mix(depthFogT, heightFogT, u_flipFogOrder);
-        finalColor = mix(finalColor, depthMixColor, depthMixT);
-    #endif
+
+        float3 heightMixColor = lerp(u_heightFogColor, u_fogColor, u_flipFogOrder);
+        float heightMixT = lerp(heightFogT, depthFogT, u_flipFogOrder);
+        finalColor = lerp(finalColor, heightMixColor, heightMixT);
+
+        float3 depthMixColor = lerp(u_fogColor, u_heightFogColor, u_flipFogOrder);
+        float depthMixT = lerp(depthFogT, heightFogT, u_flipFogOrder);
+        finalColor = lerp(finalColor, depthMixColor, depthMixT);
+    }
+
+    finalColor = pow(finalColor, 2.2);
 
     #ifdef USE_SCREENDOOR_TRANSPARENCY
-        return float4(finalColor, 1.0);
-    #else
-        return float4(finalColor, alpha);
+
+            float4x4 thresholdMatrix = {
+                1.0f / 17.0f,  9.0f / 17.0f,  3.0f / 17.0f, 11.0f / 17.0f,
+                13.0f / 17.0f,  5.0f / 17.0f, 15.0f / 17.0f,  7.0f / 17.0f,
+                4.0f / 17.0f, 12.0f / 17.0f,  2.0f / 17.0f, 10.0f / 17.0f,
+                16.0f / 17.0f,  8.0f / 17.0f, 14.0f / 17.0f,  6.0f / 17.0f
+            };
+
+            float finalAlpha = alpha;
+
+            float threshold = thresholdMatrix[int(fmod(gl_FragCoord.x * 1000.0f, 4.0))][int(fmod(gl_FragCoord.y * 1000.0f, 4.0))];
+            if (alpha < threshold) {
+                return float4(finalColor, 0.0);
+            }
+            else {
+                return float4(finalColor, alpha);
+            }
     #endif
+
+    return float4(finalColor, alpha);
 
 }
 
-void neweyeshader_float(float3 _u_diffuse, float3 _u_mask, float3 _u_reflectionCubeMap, float3 _eyeDir, float3 _normal, float3 _headNorm, out float4 gl_FragColor){
+void neweyeshader_float(
+    float3 _u_diffuse, 
+    float3 _u_mask, 
+    float3 _u_reflectionCubeMap, 
+
+    float3 _eyeDir, 
+    float3 _normal, 
+    float3 _headNorm,
+    float3 _absWorldSpacePos,
+    float3 _viewPosition,
+    float4 _screenPosition, 
+
+    out float4 gl_FragColor
+){
     tex_u_diffuse = _u_diffuse;
     tex_u_mask = _u_mask;
     tex_u_reflectionCubeMap = _u_reflectionCubeMap;
@@ -349,5 +388,9 @@ void neweyeshader_float(float3 _u_diffuse, float3 _u_mask, float3 _u_reflectionC
     eyeDir = _eyeDir;
     normal = _normal;
     headNorm = _headNorm;
+    v_absWorldSpacePos = _absWorldSpacePos;
+    viewPosition = _viewPosition;
+    gl_FragCoord = _screenPosition;
+
     gl_FragColor = main_float();
 }

@@ -26,15 +26,17 @@ Material:
   m_Name: neweyeshader
   m_Shader: {fileID: -6465566751694194690, guid: 2ed3b974efc9d8943846050131c0a1f6, type: 3}
   m_ValidKeywords:
+  - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords:
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2225
+  m_CustomRenderQueue: 2475
   stringTagMap:
     MotionVector: User
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -164,7 +166,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
     - _AlphaCutoff: 0.5
-    - _AlphaCutoffEnable: 0
+    - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
@@ -274,10 +276,20 @@ Material:
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 3
-    - _ZTestGBuffer: 4
+    - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
     - alpha: 1
+    - u_PointLightSourceRangeInverse1: 0
+    - u_SpotLightSourceInnerAngleCos1: 0
+    - u_SpotLightSourceInnerAngleCos2: 0
+    - u_SpotLightSourceInnerAngleCos3: 0
+    - u_SpotLightSourceOuterAngleCos1: 0
+    - u_SpotLightSourceOuterAngleCos2: 0
+    - u_SpotLightSourceOuterAngleCos3: 0
+    - u_SpotLightSourceRangeInverse1: 0
+    - u_SpotLightSourceRangeInverse2: 0
+    - u_SpotLightSourceRangeInverse3: 0
     - u_flatness: 1
     - u_reflectionAmount: 0
     - u_reflectionAngle: 0
@@ -313,6 +325,17 @@ Material:
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 0, g: 0, b: 0, a: 1}
     - u_reflectionTintColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 0, g: 0, b: 0, a: 1}

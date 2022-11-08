@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 262.3369, g: 325.0498, b: 430.21924, a: 1}
+  m_IndirectSpecularColor: {r: 150.75, g: 150.75, b: 150.75, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11671,6 +11671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera_armature: {fileID: 1646020261}
+  camera_animation: {fileID: 0}
   boost: 3.5
   positionLerpTime: 0.2
   mouseSensitivityCurve:
@@ -11899,7 +11900,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: 183cbd347d25080429f42b520742bbd8, type: 2}
+  sharedProfile: {fileID: 11400000, guid: d3ae3ddbeee32754090945226999306e, type: 2}
 --- !u!1 &1681239881
 GameObject:
   m_ObjectHideFlags: 0

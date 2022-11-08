@@ -44,7 +44,7 @@ namespace IndividualComponents
                 if (model == null || model.game_object == null)
                     continue;
                 var smr = model.game_object.transform.GetComponentInChildren<SkinnedMeshRenderer>();
-                    if (smr.material.shader.name != "Shader Graphs/avatarfaceshader")
+                    if (smr.material.shader.name != "Shader Graphs/skin")
                         continue;
 
                     if (outfit_id == null)

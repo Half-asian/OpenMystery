@@ -55,10 +55,19 @@ namespace IndividualComponents
             if (avatar_components.customization_categories["faces"].int_parameters.ContainsKey("skinColor"))
             {
                 int skin_color_id = avatar_components.customization_categories["faces"].int_parameters["skinColor"];
-                int[] skin_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].codes;
-                Color c = new Color(skin_color_codes[0] / 255.0f, skin_color_codes[1] / 255.0f, skin_color_codes[2] / 255.0f, 1.0f).gamma;
                 SkinnedMeshRenderer smr = component_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>();
-                smr.material.SetColor("u_skinColor", c);
+
+                int[] skin_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].sets[0];
+                Color u_skinColor = new Color(skin_color_codes[0] / 255.0f, skin_color_codes[1] / 255.0f, skin_color_codes[2] / 255.0f, 1.0f).gamma;
+                smr.material.SetColor("u_skinColor", u_skinColor);
+
+                int[] shade_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].sets[1];
+                Color u_shadeColor = new Color(shade_color_codes[0] / 255.0f, shade_color_codes[1] / 255.0f, shade_color_codes[2] / 255.0f, 1.0f).gamma;
+                smr.material.SetColor("u_shadeColor", u_shadeColor);
+
+                int[] spec_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].sets[2];
+                Color u_specColor = new Color(spec_color_codes[0] / 255.0f, spec_color_codes[1] / 255.0f, spec_color_codes[2] / 255.0f, 1.0f).gamma;
+                smr.material.SetColor("u_specColor", u_specColor);
             }
         }
     }

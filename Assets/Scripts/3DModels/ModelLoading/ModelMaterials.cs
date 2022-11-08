@@ -6,113 +6,171 @@ using System.Linq;
 using UnityEngine.Rendering;
 using System;
 using UnityEngine.Experimental.GlobalIllumination;
+using static ConfigScene._Scene._Lighting;
+using System.Globalization;
 
 namespace ModelLoading
 {
     public class ModelMaterials
     {
-		public static string lighting_phase = "CHARACTER";
+		public static List<string> lighting_layers = new List<string>();
 
 		static Shader error_shader;
 
 		static Dictionary<string, Material> material_dict = new Dictionary<string, Material>();
 
+		private static void setFogData(Material mat)
+		{
+			var fogsettings = Scene.current.fogSettings;
 
-		private static void setLightData(Material mat)
-        {
+			Color fog_color = Color.white;
+			if (fogsettings.fogColor != null)
+                fog_color = new Color(float.Parse(fogsettings.fogColor[0], CultureInfo.InvariantCulture), float.Parse(fogsettings.fogColor[1], CultureInfo.InvariantCulture), float.Parse(fogsettings.fogColor[2], CultureInfo.InvariantCulture));
+			mat.SetColor("u_fogColor", fog_color.gamma);
+
+            Color height_fog_color = Color.white;
+            if (fogsettings.heightFogColor != null)
+                height_fog_color = new Color(float.Parse(fogsettings.heightFogColor[0], CultureInfo.InvariantCulture), float.Parse(fogsettings.heightFogColor[1], CultureInfo.InvariantCulture), float.Parse(fogsettings.heightFogColor[2], CultureInfo.InvariantCulture));
+            mat.SetColor("u_heightFogColor", height_fog_color.gamma);
+
+            mat.SetFloat("u_heightFogDensity", fogsettings.heightFogDensity);
+            mat.SetFloat("u_heightFogStart", fogsettings.heightFogStart / 100.0f);
+            mat.SetFloat("u_heightFogEnd", fogsettings.heightFogEnd / 100.0f);
+            mat.SetFloat("u_maxFogDistance", fogsettings.maxDistance / 100.0f);
+            mat.SetFloat("u_minFogDistance", fogsettings.minDistance / 100.0f);
+            mat.SetFloat("u_maxFog", fogsettings.maxFog);
+			if (fogsettings.flipFogOrder == true)
+                mat.SetFloat("u_flipFogOrder", 1.0f);
+			else
+                mat.SetFloat("u_flipFogOrder", 0.0f);
+
+        }
+        private static void setLightData(Material mat)
+		{
+			if (Scene.current.fogSettings != null)
+				setFogData(mat);
 			if (Scene.current == null || Scene.current.Lighting == null || Scene.current.Lighting.layers == null)
 			{
 				return;
 			}
 
-			if (lighting_phase == null)
+			if (lighting_layers.Count == 0)
 			{
 				mat.SetColor("u_AmbientLightSourceColor", Color.white.gamma);
 				return;
 			}
 
-            ConfigScene._Scene._Lighting.Layer lighting_layer = null;
+			foreach(var lighting_phase in lighting_layers) {
 
-            if (!Scene.current.Lighting.layers.ContainsKey(lighting_phase))
-            {
-                Debug.LogWarning("No light layer for current lighting phase " + lighting_phase);
-                return;
-            }
+                ConfigScene._Scene._Lighting.Layer lighting_layer = null;
 
-            lighting_layer = Scene.current.Lighting.layers[lighting_phase];
-
-			int dirlight_count = 0;
-            int pointlight_count = 0;
-            int spotlight_count = 0;
-
-            foreach (string lightname in lighting_layer.lights)
-            {
-				//if (!Scene.scene_lights.ContainsKey(lightname))
-				//	continue;
-				SceneLight sceneLight = Scene.scene_lights[lightname];
-				if (sceneLight is AmbLight)
+                if (!Scene.current.Lighting.layers.ContainsKey(lighting_phase))
                 {
-					mat.SetColor("u_AmbientLightSourceColor", sceneLight.color.gamma);
-				}
-				else if (sceneLight is DirLight)
-                {
-					DirLight dirLight = (DirLight)sceneLight;
-					if (dirlight_count == 0)
-					{
-						mat.SetColor("u_DirLightSourceColor1", dirLight.color.gamma);
-						Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
-						mat.SetVector("u_DirLightSourceDirection1", direction);
-					}
-					else if (dirlight_count == 1)
-					{
-						mat.SetColor("u_DirLightSourceColor2", dirLight.color.gamma);
-						Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
-						mat.SetVector("u_DirLightSourceDirection2", direction);
-					}
-					else if (dirlight_count == 2)
-					{
-						mat.SetColor("u_DirLightSourceColor3", dirLight.color.gamma);
-						Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
-						mat.SetVector("u_DirLightSourceDirection3", direction);
-					}
-					else if (dirlight_count == 3)
-					{
-						mat.SetColor("u_DirLightSourceColor4", dirLight.color.gamma);
-						Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
-						mat.SetVector("u_DirLightSourceDirection4", direction);
-					}
-					dirlight_count++;
-				}
-				else if (sceneLight is PointLight)
-				{
-                    Debug.LogError("SETTING POINTLIGHT ON MATERIAL!");
-                    PointLight pointLight = (PointLight)sceneLight;
-					if (pointlight_count == 0)
-					{
-                        mat.SetColor("u_PointLightSourceColor1", pointLight.color.gamma);
-						mat.SetVector("u_PointLightSourcePosition1", pointLight.position);
-                        mat.SetFloat("u_PointLightSourceRangeInverse1", 1.0f / pointLight.range);
-                    }
-                    pointlight_count++;
-				}
-				else if (sceneLight is SpotLight)
-                {
-                    Debug.LogError("SETTING SPOTLIGHT ON MATERIAL!");
-
-					SpotLight spotLight = (SpotLight)sceneLight;
-                    if (pointlight_count == 0)
-                    {
-                        mat.SetColor("u_SpotLightSourceColor1", spotLight.color.gamma);
-                        mat.SetVector("u_SpotLightSourcePosition1", spotLight.position);
-                        mat.SetVector("u_SpotLightSourceDirection1", spotLight.direction);
-                        mat.SetFloat("u_SpotLightSourceRangeInverse1", 1.0f / spotLight.range);
-                        mat.SetFloat("u_SpotLightSourceInnerAngleCos1", spotLight.penumbraAngle);
-                        mat.SetFloat("u_SpotLightSourceOuterAngleCos1", spotLight.coneAngle);
-                    }
-
-                    spotlight_count++;
-
+                    Debug.LogWarning("No light layer for current lighting phase " + lighting_phase);
+                    return;
                 }
+
+                lighting_layer = Scene.current.Lighting.layers[lighting_phase];
+
+				int dirlight_count = 0;
+				int pointlight_count = 0;
+				int spotlight_count = 0;
+
+				foreach (string lightname in lighting_layer.lights)
+				{
+					//if (!Scene.scene_lights.ContainsKey(lightname))
+					//	continue;
+					SceneLight sceneLight = Scene.scene_lights[lightname];
+					if (sceneLight is AmbLight)
+					{
+						mat.SetColor("u_AmbientLightSourceColor", sceneLight.color.gamma);
+					}
+					else if (sceneLight is DirLight)
+					{
+						DirLight dirLight = (DirLight)sceneLight;
+						if (dirlight_count == 0)
+						{
+							mat.SetColor("u_DirLightSourceColor1", dirLight.color.gamma);
+							Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
+							mat.SetVector("u_DirLightSourceDirection1", direction);
+						}
+						else if (dirlight_count == 1)
+						{
+							mat.SetColor("u_DirLightSourceColor2", dirLight.color.gamma);
+							Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
+							mat.SetVector("u_DirLightSourceDirection2", direction);
+						}
+						else if (dirlight_count == 2)
+						{
+							mat.SetColor("u_DirLightSourceColor3", dirLight.color.gamma);
+							Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
+							mat.SetVector("u_DirLightSourceDirection3", direction);
+						}
+						else if (dirlight_count == 3)
+						{
+							mat.SetColor("u_DirLightSourceColor4", dirLight.color.gamma);
+							Vector4 direction = new Vector4(dirLight.direction.x, dirLight.direction.y, dirLight.direction.z, 0.0f);
+							mat.SetVector("u_DirLightSourceDirection4", direction);
+						}
+						dirlight_count++;
+					}
+					else if (sceneLight is PointLight)
+					{
+						PointLight pointLight = (PointLight)sceneLight;
+						if (pointlight_count == 0)
+						{
+							mat.SetColor("u_PointLightSourceColor1", pointLight.color.gamma);
+							mat.SetVector("u_PointLightSourcePosition1", pointLight.position);
+							mat.SetFloat("u_PointLightSourceRangeInverse1", 1.0f / pointLight.range);
+						}
+                        else if (pointlight_count == 1)
+                        {
+                            mat.SetColor("u_PointLightSourceColor2", pointLight.color.gamma);
+                            mat.SetVector("u_PointLightSourcePosition2", pointLight.position);
+                            mat.SetFloat("u_PointLightSourceRangeInverse2", 1.0f / pointLight.range);
+                        }
+                        else if (pointlight_count == 2)
+                        {
+                            mat.SetColor("u_PointLightSourceColor3", pointLight.color.gamma);
+                            mat.SetVector("u_PointLightSourcePosition3", pointLight.position);
+                            mat.SetFloat("u_PointLightSourceRangeInverse3", 1.0f / pointLight.range);
+                        }
+                        pointlight_count++;
+					}
+					else if (sceneLight is SpotLight)
+					{
+						SpotLight spotLight = (SpotLight)sceneLight;
+						if (spotlight_count == 0)
+						{
+							mat.SetColor("u_SpotLightSourceColor1", spotLight.color.gamma);
+							mat.SetVector("u_SpotLightSourcePosition1", spotLight.position);
+							mat.SetVector("u_SpotLightSourceDirection1", spotLight.direction);
+							mat.SetFloat("u_SpotLightSourceRangeInverse1", 1.0f / spotLight.range);
+							mat.SetFloat("u_SpotLightSourceInnerAngleCos1", Mathf.Cos(spotLight.coneAngle));
+							mat.SetFloat("u_SpotLightSourceOuterAngleCos1", Mathf.Cos(spotLight.penumbraAngle));
+						}
+						else if (spotlight_count == 1)
+						{
+							mat.SetColor("u_SpotLightSourceColor2", spotLight.color.gamma);
+							mat.SetVector("u_SpotLightSourcePosition2", spotLight.position);
+							mat.SetVector("u_SpotLightSourceDirection2", spotLight.direction);
+							mat.SetFloat("u_SpotLightSourceRangeInverse2", 1.0f / spotLight.range);
+							mat.SetFloat("u_SpotLightSourceInnerAngleCos2", Mathf.Cos(spotLight.coneAngle));
+							mat.SetFloat("u_SpotLightSourceOuterAngleCos2", Mathf.Cos(spotLight.penumbraAngle));
+						}
+						else if (spotlight_count == 2)
+						{
+							mat.SetColor("u_SpotLightSourceColor3", spotLight.color.gamma);
+							mat.SetVector("u_SpotLightSourcePosition3", spotLight.position);
+							mat.SetVector("u_SpotLightSourceDirection3", spotLight.direction);
+							mat.SetFloat("u_SpotLightSourceRangeInverse3", 1.0f / spotLight.range);
+							mat.SetFloat("u_SpotLightSourceInnerAngleCos3", Mathf.Cos(spotLight.coneAngle));
+							mat.SetFloat("u_SpotLightSourceOuterAngleCos3", Mathf.Cos(spotLight.penumbraAngle));
+						}
+						spotlight_count++;
+
+					}
+				}
             }
 		}
 
@@ -144,7 +202,17 @@ namespace ModelLoading
 
             }
         }
-		public static Material applyModelMaterial(Config3DModel._Config3DModel.JsonData.Material material, bool force_transparent)
+
+		public static void setIntSwitches(Material mat, string id, int value)
+		{
+			if (id == "BakedDiffuse")
+			{
+                mat.SetFloat("USE_AMBIENT_COLOR", 1 - value);
+            }
+
+        }
+
+        public static Material applyModelMaterial(Config3DModel._Config3DModel.JsonData.Material material, bool force_transparent)
         {
 			Material mat;
 
@@ -222,9 +290,16 @@ namespace ModelLoading
 				for (int i = 0; i < material.intSettingIds.Length; i++)
 				{
 					mat.SetFloat(material.intSettingIds[i], material.intSettingValues[i]);
-
+					setIntSwitches(mat, material.intSettingIds[i], material.intSettingValues[i]);
 				}
 			}
+
+			if (material.ReceiveFog == 0)
+			{
+				mat.SetFloat("USE_FOG", 0.0f);
+			}
+
+
 			if (shader_name == "houserobeshader" || shader_name == "houseclothshader" || shader_name == "quidditchshader" || shader_name == "houseubershader")
 			{
                 string house = "";

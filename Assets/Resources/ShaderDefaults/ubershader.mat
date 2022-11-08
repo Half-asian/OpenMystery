@@ -137,6 +137,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_emblemTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_emissiveMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -158,6 +162,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - u_specularMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_teamColorMask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -202,17 +210,22 @@ Material:
     - Rim_UvSet: 0
     - SecondDiffuse_UvSet: 0
     - TeamEmblemUVs: 0
+    - TeamId: 0
     - ThirdDiffuse_UvSet: 0
     - Tint_UvSet: 0
     - TopDiffuse_UvSet: 0
+    - USE_AMBIENT_COLOR: 1
     - USE_BAKED_DIFFUSE: 0
     - USE_DIFFUSE_COLOR: 1
+    - USE_EMBLEM_IN_DIFFUSE: 0
+    - USE_FOG: 1
     - USE_HOUSE_COLORS: 0
     - USE_HOUSE_EMBLEM: 0
     - USE_LIGHTMAP_COLOR: 1
     - USE_RIM: 1
     - USE_TRANSPARENCY_TEXTURE: 0
     - UseAsCutout_SWITCH: 0
+    - UseTeamTexture_SWITCH: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -337,13 +350,33 @@ Material:
     - _ZWrite: 1
     - _u_houseSet: 0
     - alpha: 1
+    - u_PointLightSourceRangeInverse1: 0
+    - u_PointLightSourceRangeInverse2: 0
+    - u_PointLightSourceRangeInverse3: 0
+    - u_SpotLightSourceInnerAngleCos1: 0
+    - u_SpotLightSourceInnerAngleCos2: 0
+    - u_SpotLightSourceInnerAngleCos3: 0
+    - u_SpotLightSourceOuterAngleCos1: 0
+    - u_SpotLightSourceOuterAngleCos2: 0
+    - u_SpotLightSourceOuterAngleCos3: 0
+    - u_SpotLightSourceRangeInverse1: 0
+    - u_SpotLightSourceRangeInverse2: 0
+    - u_SpotLightSourceRangeInverse3: 0
     - u_alphaTestReferenceValue: 0.5
     - u_brightness: 1
     - u_diffuseColorAdjust_Switch: 0
     - u_flatness: 1
+    - u_flipFogOrder: 0
+    - u_heightFogDensity: 0
+    - u_heightFogEnd: 0
+    - u_heightFogStart: 0
+    - u_houseSet: 0
     - u_lightAngleBoost: 0.2
     - u_lmExposure: 1
     - u_lmPower: 0
+    - u_maxFog: 0
+    - u_maxFogDistance: 0
+    - u_minFogDistance: 0
     - u_opacityAmount: 1
     - u_rimAngle: 0
     - u_rimFalloff: 0
@@ -382,11 +415,31 @@ Material:
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 1, g: 1, b: 1, a: 0}
+    - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
     - u_firstTintColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
     - u_lightmapColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_primaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
     - u_secondTintColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_secondaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
     - u_specColor: {r: 1, g: 1, b: 1, a: 1}
     - u_thirdTintColor: {r: 0, g: 0, b: 0, a: 0}

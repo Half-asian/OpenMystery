@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1782310678736043079
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 12
+  hdPluginSubTargetMaterialVersions:
+    m_Keys: []
+    m_Values: 
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -7,28 +23,21 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: avatarskinshader
-  m_Shader: {fileID: -6465566751694194690, guid: 90ae92c5fcb13ef4e8210ebea73a3c10, type: 3}
+  m_Name: pan2directions_vfx_transparent a
+  m_Shader: {fileID: -6465566751694194690, guid: 63b54c79059cb7f4886c850c8702af22, type: 3}
   m_ValidKeywords:
-  - USE_RIM
-  - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
+  - _ENABLE_FOG_ON_TRANSPARENT
+  - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
-  - IS_AVATAR_FACE_SHADER
-  - IS_AVATAR_SKIN_SHADER
-  - IS_SKIN_SHADER
-  - SHADER_TYPE_IS_SKIN_SHADER
-  - _IS_AVATAR_SKIN_SHADER
-  - _IS_SKIN_SHADER
   - _NORMALMAP_TANGENT_SPACE
-  - _USE_RIM
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2475
+  m_CustomRenderQueue: 3000
   stringTagMap:
     MotionVector: User
-    RenderType: TransparentCutout
+    RenderType: Transparent
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -114,51 +123,39 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _TransmissionMaskMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _TransmittanceColorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_beardTexture:
+    - u_alphaMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_blushTexture:
+    - u_bGTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_colorMap:
+    - u_clouds:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_emblemTexture:
+    - u_diffuse:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_eyeShadowTexture:
+    - u_dirtmap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_facePaintTexture:
+    - u_distortTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_frecklesTexture:
+    - u_lightmapMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - u_mask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - u_moleTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - u_secondaryMaps:
+    - u_skyTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -176,31 +173,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - IS_AVATAR_FACE_SHADER: 0
-    - IS_AVATAR_HAIR_SHADER: 0
-    - IS_AVATAR_SKIN_SHADER: 1
-    - IS_CLOTH_SHADER: 0
-    - IS_HAIR_SHADER: 0
-    - IS_HOUSECLOTH_SHADER: 0
-    - IS_HOUSEROBE_SHADER: 0
-    - IS_OUTFIT_SHADER: 0
-    - IS_SKIN_SHADER: 1
-    - SHADER_TYPE: 0
-    - USE_FOG: 1
-    - USE_RIM: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
     - _AlphaCutoff: 0.5
-    - _AlphaCutoffEnable: 1
+    - _AlphaCutoffEnable: 0
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
-    - _AlphaDstBlend: 0
-    - _AlphaRemapMax: 1
-    - _AlphaRemapMin: 0
+    - _AlphaDstBlend: 10
     - _AlphaSrcBlend: 1
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
@@ -223,7 +206,7 @@ Material:
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 1
-    - _DstBlend: 0
+    - _DstBlend: 10
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
     - _EmissiveIntensity: 1
@@ -241,8 +224,6 @@ Material:
     - _HeightPoMAmplitude: 2
     - _HeightTessAmplitude: 2
     - _HeightTessCenter: 0.5
-    - _IS_AVATAR_SKIN_SHADER: 1
-    - _IS_SKIN_SHADER: 1
     - _InvTilingScale: 1
     - _Ior: 1.5
     - _IridescenceMask: 1
@@ -254,8 +235,6 @@ Material:
     - _MetallicRemapMin: 0
     - _NormalMapSpace: 0
     - _NormalScale: 1
-    - _ObjectSpaceUVMapping: 0
-    - _ObjectSpaceUVMappingEmissive: 0
     - _OpaqueCullMode: 2
     - _PPDLodThreshold: 5
     - _PPDMaxSamples: 15
@@ -266,7 +245,7 @@ Material:
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
-    - _RenderQueueType: 1
+    - _RenderQueueType: 4
     - _RequireSplitLighting: 0
     - _Smoothness: 0.5
     - _SmoothnessRemapMax: 1
@@ -276,10 +255,10 @@ Material:
     - _SpecularOcclusionMode: 1
     - _SrcBlend: 1
     - _StencilRef: 0
-    - _StencilRefDepth: 8
+    - _StencilRefDepth: 0
     - _StencilRefDistortionVec: 4
-    - _StencilRefGBuffer: 10
-    - _StencilRefMV: 40
+    - _StencilRefGBuffer: 2
+    - _StencilRefMV: 32
     - _StencilWriteMask: 6
     - _StencilWriteMaskDepth: 8
     - _StencilWriteMaskDistortionVec: 4
@@ -287,12 +266,11 @@ Material:
     - _StencilWriteMaskMV: 40
     - _SubsurfaceMask: 1
     - _SupportDecals: 1
-    - _SurfaceType: 0
+    - _SurfaceType: 1
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
     - _Thickness: 1
     - _TransmissionEnable: 1
-    - _TransmissionMask: 1
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentDepthPostpassEnable: 0
@@ -300,45 +278,25 @@ Material:
     - _TransparentSortPriority: 0
     - _TransparentWritingMotionVec: 0
     - _TransparentZWrite: 0
-    - _USE_RIM: 1
     - _UVBase: 0
     - _UVDetail: 0
     - _UVEmissive: 0
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
-    - _ZTestDepthEqualForOpaque: 3
-    - _ZTestGBuffer: 3
+    - _ZTestDepthEqualForOpaque: 4
+    - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
-    - _ZWrite: 1
-    - _u_flatness: 0
-    - _u_lightAngleBoost: 0
-    - _u_specularity: 0
+    - _ZWrite: 0
     - alpha: 1
-    - u_PointLightSourceRangeInverse1: 0
-    - u_PointLightSourceRangeInverse2: 0
-    - u_PointLightSourceRangeInverse3: 0
-    - u_SpotLightSourceInnerAngleCos1: 0
-    - u_SpotLightSourceInnerAngleCos2: 0
-    - u_SpotLightSourceInnerAngleCos3: 0
-    - u_SpotLightSourceOuterAngleCos1: 0
-    - u_SpotLightSourceOuterAngleCos2: 0
-    - u_SpotLightSourceOuterAngleCos3: 0
-    - u_SpotLightSourceRangeInverse1: 0
-    - u_SpotLightSourceRangeInverse2: 0
-    - u_SpotLightSourceRangeInverse3: 0
-    - u_flatness: 1
-    - u_flipFogOrder: 0
-    - u_heightFogDensity: 0
-    - u_heightFogEnd: 0
-    - u_heightFogStart: 0
-    - u_houseSet: 0
-    - u_lightAngleBoost: 0.2
-    - u_maxFog: 0
-    - u_maxFogDistance: 0
-    - u_minFogDistance: 0
-    - u_moleScale: 0
+    - u_cloudSpeed: 0
+    - u_distortAmount: 0
+    - u_lmPower: 0
+    - u_offsetCloudTexture: 0
+    - u_repeatBg: 0
+    - u_repeatSky: 0
     - u_rimAngle: 0
-    - u_specularity: 0
+    - u_rimPower: 0
+    - u_speed: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
@@ -356,75 +314,8 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
-    - _u_AmbientLightSourceColor: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceColor4: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
-    - _u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
-    - _u_rimColor: {r: 0, g: 0, b: 0, a: 0}
-    - _u_shadeColor: {r: 0, g: 0, b: 0, a: 0}
-    - _u_specColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_AmbientLightSourceColor: {r: 0, g: 0, b: 0, a: 1}
-    - u_DirLightSourceColor1: {r: 0, g: 0, b: 0, a: 1}
-    - u_DirLightSourceColor2: {r: 0, g: 0, b: 0, a: 1}
-    - u_DirLightSourceColor3: {r: 0, g: 0, b: 0, a: 1}
-    - u_DirLightSourceColor4: {r: 0, g: 0, b: 0, a: 1}
-    - u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
-    - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
-    - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
-    - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
-    - u_PointLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
-    - u_PointLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
-    - u_PointLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
-    - u_PointLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
-    - u_PointLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
-    - u_PointLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
-    - u_SpotLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
-    - u_browColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_color1: {r: 0, g: 0, b: 0, a: 0}
-    - u_color2: {r: 0, g: 0, b: 0, a: 0}
-    - u_color3: {r: 0, g: 0, b: 0, a: 0}
-    - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
-    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_hairColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
-    - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
-    - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_moleOffset: {r: 0, g: 0, b: 0, a: 0}
-    - u_primaryColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_rimColor: {r: 0, g: 0, b: 0, a: 1}
-    - u_robeColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_secondaryColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_shadeColor: {r: 0, g: 0, b: 0, a: 1}
-    - u_skinColor: {r: 0, g: 0, b: 0, a: 0}
-    - u_specColor: {r: 0, g: 0, b: 0, a: 1}
+    - _color: {r: 0, g: 0, b: 0, a: 0}
+    - u_diffuseColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_rimColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_tint: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &5571307314426355002
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 12
-  hdPluginSubTargetMaterialVersions:
-    m_Keys: []
-    m_Values: 

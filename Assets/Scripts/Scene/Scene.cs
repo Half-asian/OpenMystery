@@ -58,11 +58,24 @@ public class Scene
             if (scene_model != null)
                 GameObject.Destroy(scene_model.game_object);
             spawnLights();
-            ModelMaterials.lighting_phase = "ENV";
-            scene_model = ModelManager.loadModel(current.envId);
+            spawnSceneModel();
             applySceneMaterials();
             setMainCamera();
         }
+    }
+
+    private static void spawnSceneModel()
+    {
+        ModelMaterials.lighting_layers = new List<string>() {};
+        foreach(var layer in current.Lighting.layers.Values)
+        {
+            if (layer.objects.Contains("ENVIRONMENT"))
+            {
+                ModelMaterials.lighting_layers.Add(layer.name);
+            }
+        }
+        Debug.Log("Spawning scene model");
+        scene_model = ModelManager.loadModel(current.envId);
     }
 
     public static void spawnLights()
@@ -165,8 +178,9 @@ public class Scene
                         newdirection.Normalize();
                         spotLight.direction = newdirection;
                         spotLight.dropoff = light.dropoff;
-                        spotLight.penumbraAngle = light.penumbraAngle;
-                        spotLight.coneAngle = light.coneAngle;
+                        spotLight.coneAngle = light.coneAngle * 0.5f * 0.017453f; //degrees to radian
+                        //if coneAngle was not set, penumbraAngle = coneAngle
+                        spotLight.penumbraAngle = spotLight.coneAngle + (light.penumbraAngle * 0.017453f);
 
 
                         scene_lights[light.name] = spotLight;
@@ -305,6 +319,21 @@ public class Scene
         scene_postprocessing_and_lighting = null;
     }
 
+    public static ConfigScene._Scene.WayPoint getWayPoint(string waypoint_id)
+    {
+        if (current == null || waypoint_id == null)
+            return null;
+        if (current.waypoint_dict == null)
+            return null;
+        if (!current.waypoint_dict.ContainsKey(waypoint_id))
+        {
+            Debug.LogError("Scene.getWayPoint(string waypoint_id): Current scene does not contain waypoint " + waypoint_id);
+            return null;
+        }
+        return current.waypoint_dict[waypoint_id];
+    }
+
+
     public static List<string> addMasterSceneItems(ConfigScene._Scene current_scene, List<string> master_scenes = null)
     {
 
@@ -425,6 +454,12 @@ public class Scene
                     current_scene.material_dict[material_name] = Configs.config_scene.Scene[current_scene.masterSceneId].material_dict[material_name];
                 }
             }
+        }
+
+        if (Configs.config_scene.Scene[current_scene.masterSceneId].fogSettings != null)
+        {
+            if (current_scene.fogSettings == null)
+                current_scene.fogSettings = Configs.config_scene.Scene[current_scene.masterSceneId].fogSettings;
         }
 
         return master_scenes;

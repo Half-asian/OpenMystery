@@ -117,7 +117,7 @@ public class Scenario
 
         if (current != null && activated_scenario.scenarioId == current.scenario_config.scenarioId) //We are trying to activate a scenario that we're already in.
         {
-            GameStart.interaction_manager.reloadGroups();
+            //GameStart.interaction_manager.reloadGroups();
 
             Debug.Log("Didn't activate the scenario, as it is the one we're in.");
             return;
@@ -172,7 +172,6 @@ public class Scenario
             {
                 Debug.Log("Didn't load the scenario, as it is the one we're in.");
 
-                GameStart.interaction_manager.reloadGroups();
                 onScenarioLoaded.Invoke();
 
                 return; //We are already in the right scenario
@@ -207,9 +206,8 @@ public class Scenario
         Scene.setCurrentScene(chosen_scene);
 
         onScenarioCallClear.Invoke();
-        Prop.spawnScenarioProps();
 
-        ModelMaterials.lighting_phase = "CHARACTER";
+        Prop.spawnScenarioProps();
 
         if (scenarios_serialized.ContainsKey(current.scenario_config.scenarioId))
         {

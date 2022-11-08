@@ -53,7 +53,7 @@ namespace IndividualComponents
             if (category.int_parameters.ContainsKey("naturalLips"))
             {
                 int lips_id = category.int_parameters["naturalLips"];
-                int[] lip_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["naturalLips"].colorConfigs[lips_id].codes;
+                int[] lip_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["naturalLips"].colorConfigs[lips_id].sets[0];
                 Color c = new Color(lip_color_codes[0] / 255.0f, lip_color_codes[1] / 255.0f, lip_color_codes[2] / 255.0f, 1.0f).gamma;
                 SkinnedMeshRenderer smr = component_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>();
                 smr.material.SetColor("u_lipColor", c);
@@ -62,12 +62,39 @@ namespace IndividualComponents
             if (avatar_components.customization_categories["faces"].int_parameters.ContainsKey("skinColor"))
             {
                 int skin_color_id = avatar_components.customization_categories["faces"].int_parameters["skinColor"];
-                int[] skin_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].codes;
-                Color c = new Color(skin_color_codes[0] / 255.0f, skin_color_codes[1] / 255.0f, skin_color_codes[2] / 255.0f, 1.0f).gamma;
                 SkinnedMeshRenderer smr = component_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>();
-                smr.material.SetColor("u_skinColor", c);
+
+                int[] skin_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].sets[0];
+                Color u_skinColor = new Color(skin_color_codes[0] / 255.0f, skin_color_codes[1] / 255.0f, skin_color_codes[2] / 255.0f, 1.0f).gamma;
+                smr.material.SetColor("u_skinColor", u_skinColor);
+
+                int[] shade_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].sets[1];
+                Color u_shadeColor = new Color(shade_color_codes[0] / 255.0f, shade_color_codes[1] / 255.0f, shade_color_codes[2] / 255.0f, 1.0f).gamma;
+                smr.material.SetColor("u_shadeColor", u_shadeColor);
+
+                int[] spec_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["skinColor"].colorConfigs[skin_color_id].sets[2];
+                Color u_specColor = new Color(spec_color_codes[0] / 255.0f, spec_color_codes[1] / 255.0f, spec_color_codes[2] / 255.0f, 1.0f).gamma;
+                smr.material.SetColor("u_specColor", u_specColor);
             }
 
+        }
+
+        public static void setExternalColorModifiers(IEnumerable<SkinnedMeshRenderer> skinnedMeshRenderers, AvatarComponents avatar_components)
+        {
+            PlayerFile.CustomizationCategory category = avatar_components.customization_categories["lips"];
+            if (!category.int_parameters.ContainsKey("naturalLips"))
+            {
+                return;
+            }
+
+            int lips_id = category.int_parameters["naturalLips"];
+            int[] lip_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["naturalLips"].colorConfigs[lips_id].sets[0];
+            Color c = new Color(lip_color_codes[0] / 255.0f, lip_color_codes[1] / 255.0f, lip_color_codes[2] / 255.0f, 1.0f).gamma;
+            foreach (var smr in skinnedMeshRenderers)
+            {
+                if (smr.material.HasColor("u_lipColor"))
+                    smr.material.SetColor("u_lipColor", c);
+            }
         }
     }
 }

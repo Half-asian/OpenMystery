@@ -10,16 +10,18 @@ Material:
   m_Name: houseclothshader
   m_Shader: {fileID: -6465566751694194690, guid: 90ae92c5fcb13ef4e8210ebea73a3c10, type: 3}
   m_ValidKeywords:
+  - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
-  - _IS_HOUSECLOTH_SHADER
   m_InvalidKeywords:
   - IS_HOUSECLOTH_SHADER
+  - _IS_HOUSECLOTH_SHADER
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2225
+  m_CustomRenderQueue: 2475
   stringTagMap:
     MotionVector: User
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - TransparentDepthPrepass
   - TransparentDepthPostpass
@@ -113,11 +115,39 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_beardTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_blushTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_colorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_emblemTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_eyeShadowTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_facePaintTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_frecklesTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - u_moleTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -139,11 +169,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - IS_AVATAR_FACE_SHADER: 0
+    - IS_AVATAR_HAIR_SHADER: 0
+    - IS_AVATAR_SKIN_SHADER: 0
     - IS_CLOTH_SHADER: 0
     - IS_HAIR_SHADER: 0
     - IS_HOUSECLOTH_SHADER: 1
     - IS_HOUSEROBE_SHADER: 0
+    - IS_OUTFIT_SHADER: 0
     - IS_SKIN_SHADER: 0
+    - USE_FOG: 1
     - USE_RIM: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
@@ -151,7 +186,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
     - _AlphaCutoff: 0.5
-    - _AlphaCutoffEnable: 0
+    - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
@@ -263,7 +298,7 @@ Material:
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 3
-    - _ZTestGBuffer: 4
+    - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
     - alpha: 1
@@ -271,8 +306,29 @@ Material:
     - is_hufflepuff: 0
     - is_ravenclaw: 0
     - is_slytherin: 0
+    - u_PointLightSourceRangeInverse1: 0
+    - u_PointLightSourceRangeInverse2: 0
+    - u_PointLightSourceRangeInverse3: 0
+    - u_SpotLightSourceInnerAngleCos1: 0
+    - u_SpotLightSourceInnerAngleCos2: 0
+    - u_SpotLightSourceInnerAngleCos3: 0
+    - u_SpotLightSourceOuterAngleCos1: 0
+    - u_SpotLightSourceOuterAngleCos2: 0
+    - u_SpotLightSourceOuterAngleCos3: 0
+    - u_SpotLightSourceRangeInverse1: 0
+    - u_SpotLightSourceRangeInverse2: 0
+    - u_SpotLightSourceRangeInverse3: 0
     - u_flatness: 1
+    - u_flipFogOrder: 0
+    - u_heightFogDensity: 0
+    - u_heightFogEnd: 0
+    - u_heightFogStart: 0
+    - u_houseSet: 0
     - u_lightAngleBoost: 0.2
+    - u_maxFog: 0
+    - u_maxFogDistance: 0
+    - u_minFogDistance: 0
+    - u_moleScale: 0
     - u_rimAngle: 0
     - u_specularity: 0
     m_Colors:
@@ -301,11 +357,39 @@ Material:
     - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
+    - u_browColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_color1: {r: 0, g: 0, b: 0, a: 0}
+    - u_color2: {r: 0, g: 0, b: 0, a: 0}
+    - u_color3: {r: 0, g: 0, b: 0, a: 0}
     - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
+    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_hairColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_housePrimary: {r: 0, g: 0, b: 0, a: 0}
+    - u_houseSecondary: {r: 0, g: 0, b: 0, a: 0}
+    - u_lipColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_moleOffset: {r: 0, g: 0, b: 0, a: 0}
     - u_primaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_robeColor: {r: 0, g: 0, b: 0, a: 0}
     - u_secondaryColor: {r: 0, g: 0, b: 0, a: 0}
     - u_shadeColor: {r: 1, g: 1, b: 1, a: 1}
+    - u_skinColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &5571307314426355002

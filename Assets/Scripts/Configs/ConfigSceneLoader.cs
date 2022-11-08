@@ -111,6 +111,9 @@ public class ConfigScene : Config<ConfigScene>
                 public float intensity;
                 public string[] position;
                 public string[] rotation;
+                public float dropoff;
+                public float coneAngle;
+                public float penumbraAngle;
             }
             public Dictionary<string, Light> lights;
             [System.Serializable]
@@ -118,12 +121,28 @@ public class ConfigScene : Config<ConfigScene>
             {
                 public bool fx;
                 public string[] lights;
-                public string[] objects;
+                public List<string> objects;
                 public string name;
             }
             public Dictionary<string, Layer> layers;
         }
         public _Lighting Lighting;
+
+        [System.Serializable]
+        public class _FogSettings
+        {
+            public float maxDistance;
+            public float minDistance;
+            public float maxFog;
+            public float heightFogDensity;
+            public float heightFogStart;
+            public float heightFogEnd;
+            public string[] heightFogColor;
+            public string[] fogColor;
+            public bool flipFogOrder;
+        }
+
+        public _FogSettings fogSettings;
 
         [System.Serializable]
         public class Material

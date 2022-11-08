@@ -39,22 +39,23 @@ public class Config3DModel : Config<Config3DModel>
             [System.Serializable]
             public class Material
             {
-                public string nodeName;
                 public List<float[]> vec3Values;
                 public List<float[]> vec4Values;
+                public float[] floatValues;
                 public string[] vec3Ids;
                 public string[] vec4Ids;
                 public string[] stringValueKeys;
-                public string shaderName;
                 public string[] stringIds;
-                public int CastShadow;
-                public int VertexLighting;
-                public float[] floatValues;
                 public string[] floatIds;
-                public int[] intSettingValues;
                 public string[] intSettingIds;
+                public string shaderName;
+                public string nodeName;
+                public int[] intSettingValues;
                 public int transparent;
                 public int RecieveShadow;
+                public int ReceiveFog = 1;
+                public int CastShadow;
+                public int VertexLighting;
             }
             public Material[] materials;
             public Dictionary<string, Material> material_dict;

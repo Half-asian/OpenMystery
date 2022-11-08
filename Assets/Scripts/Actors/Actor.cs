@@ -4,6 +4,9 @@ using UnityEngine;
 using System;
 using ModelLoading;
 using System.Globalization;
+using IndividualComponents;
+using System.IO;
+
 public class Actor
 {
     //Later on, change this from dictionary look up to using events
@@ -31,6 +34,22 @@ public class Actor
 
     public static ActorController spawnActor(string actor_id, string waypoint_id, string character_name)
     {
+        ModelMaterials.lighting_layers = new List<string>();
+
+        var waypoint = Scene.getWayPoint(waypoint_id);
+        if (waypoint != null)
+        {
+            if (waypoint.lightLayerOverride != null)
+            {
+                ModelMaterials.lighting_layers.AddRange(waypoint.lightLayerOverride); //Figure out if more than one light layer can be applied at once
+            }
+        }
+        
+        if (ModelMaterials.lighting_layers.Count == 0)
+        {
+            ModelMaterials.lighting_layers.Add("CHARACTER");
+        }
+
         if (actor_id == "c_avatar_female_base" || actor_id == "c_avatar_male_base")
             actor_id = "Avatar";
 
@@ -63,7 +82,7 @@ public class Actor
                 throw new System.Exception("Failed to load actor model " + config_actor.modelId);
 
             actor_controller = model.game_object.AddComponent<ActorController>();
-            actor_controller.actor_info = config_actor;
+            actor_controller.config_hpactor = config_actor;
             actor_controller.setup(model);
 
             if (config_actor.quidditchMaterialOptions != null)
@@ -82,6 +101,13 @@ public class Actor
             }
         }
 
+        //Set linked avatar component colors
+        if (config_actor.linkedComponentColorOverrides != null)
+        {
+            linkComponentColorOverrides(actor_controller);
+        }
+
+
 
 
         if (actor_controllers != null)
@@ -91,9 +117,36 @@ public class Actor
 
         if (Scene.scene_model != null)
             actor_controller.model.game_object.transform.SetParent(GameStart.current.actors_holder);
-        actor_controller.replaceCharacterIdle(actor_controller.actor_info.animId_idle);
+        actor_controller.replaceCharacterIdle(actor_controller.config_hpactor.animId_idle);
         actor_controllers_pool.Add(actor_controller);
         return actor_controller;
+    }
+
+    private static void linkComponentColorOverrides(ActorController actor_controller)
+    {
+        var skinned_mesh_renderers = actor_controller.model.game_object.GetComponentsInChildren<SkinnedMeshRenderer>();
+        var avatar_components = new AvatarComponents(Path.Combine(GlobalEngineVariables.player_folder, "Avatar.json"));
+        foreach (var component in actor_controller.config_hpactor.linkedComponentColorOverrides)
+        {
+            switch (component)
+            {
+                case "eyes":
+                    ComponentEyes.setExternalColorModifiers(skinned_mesh_renderers, avatar_components);
+                    break;
+                case "faces":
+                    ComponentFaces.setExternalColorModifiers(skinned_mesh_renderers, avatar_components);
+                    break;
+                case "hair":
+                    ComponentHair.setExternalColorModifiers(skinned_mesh_renderers, avatar_components);
+                    break;
+                case "lips":
+                    ComponentLips.setExternalColorModifiers(skinned_mesh_renderers, avatar_components);
+                    break;
+                case "brows":
+                    ComponentBrows.setExternalColorModifiers(skinned_mesh_renderers, avatar_components);
+                    break;
+            }
+        }
     }
 
     public static void despawnCharacterInScene(string character_name)

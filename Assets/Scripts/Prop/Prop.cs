@@ -124,6 +124,22 @@ public class Prop : Node
 
     public static void spawnPropFromLocator(ConfigScene._Scene.PropLocator prop_locator)
     {
+        ModelMaterials.lighting_layers = new List<string>();
+
+        if (Scene.current.Lighting != null)
+        {
+            foreach (var layer in Scene.current.Lighting.layers.Values)
+            {
+                if (layer.objects.Contains(prop_locator.name))
+                {
+                    Debug.LogError("FOUND A PROPLOCATOR LIGHTING LAYER " + prop_locator.name);
+                    ModelMaterials.lighting_layers.Add( layer.name);
+                }
+            }
+        }
+
+        Debug.LogError("Spawning prop " + prop_locator.name + " with light layer counts: " + ModelMaterials.lighting_layers.Count);
+
         Model model = ModelManager.loadModel(prop_locator.reference);
 
         Common.setPropLocatorTransform(ref model.game_object, prop_locator);
@@ -133,6 +149,8 @@ public class Prop : Node
             Debug.LogWarning("Failed to spawn scene prop " + prop_locator.reference);
             return;
         }
+
+
 
         model.game_object.transform.SetParent(GameStart.current.props_holder);
         model.game_object.gameObject.name = prop_locator.name;

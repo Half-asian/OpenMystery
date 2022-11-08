@@ -488,9 +488,9 @@ public class Predicate : MonoBehaviour
 
     public static bool parsePredicate(string predicate)
     {
-        //Debug.Log("parse predicate " + predicate);
+        Debug.Log("parse predicate " + predicate);
         bool result = NewPredicate.parsePredicate(predicate);
-        //Debug.Log("Result: " + result);
+        Debug.Log("Result: " + result);
         //bool result = predicateCrunchLogic(predicateParseSymbols(predicate)).Contains("true");
         return result;
     }

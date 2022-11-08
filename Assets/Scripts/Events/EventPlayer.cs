@@ -289,14 +289,6 @@ public class EventPlayer : MonoBehaviour
 
     public void reset()
     {
-        if (is_sequential_player)
-        {
-            Debug.LogError("Reset sequential");
-        }
-        else
-        {
-            Debug.LogError("Reset event non");
-        }
         event_stack.Clear();
         total_block = false;
         block_duration = 0.0f;
