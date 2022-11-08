@@ -102,6 +102,7 @@ public class EventManager : MonoBehaviour
 
     public void startSequentialPlayer(string[] events)
     {
+        Debug.Log("Starting sequential player");
         EventPlayer new_event_player = gameObject.AddComponent<EventPlayer>();
         new_event_player.is_sequential_player = true;
         new_event_player.addEvents(events);

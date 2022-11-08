@@ -196,7 +196,7 @@ public static class Events
                     }
                     else
                     {
-                        Debug.LogError("remove/despawn prop didn't find prop " + action_params[0]);
+                        Debug.LogWarning("remove/despawn prop didn't find prop " + action_params[0]);
                     }
                 }
 
@@ -710,14 +710,14 @@ public static class Events
 
         if (!Actor.actor_controllers.ContainsKey(action_params[0]))
         {
-            Debug.LogError("Lookat could not find actor" + action_params[0]);
+            Debug.LogWarning("Lookat could not find actor" + action_params[0]);
             return;
         }
 
 
         if (!Actor.actor_controllers.ContainsKey(action_params[1]))
         {
-            Debug.LogError("Lookat could not find actor" + action_params[1]);
+            Debug.LogWarning("Lookat could not find actor" + action_params[1]);
             Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
             return;
         }

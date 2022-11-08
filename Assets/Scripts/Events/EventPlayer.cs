@@ -182,7 +182,13 @@ public class EventPlayer : MonoBehaviour
             total_block = true;
         }
 
+        //Some interactions are erroneously marked as sequential
+        //Probably function like blocking instead
 
+        if (script_event.type == "Sequential" && script_event.sequenceIds == null)
+        {
+            script_event.type = "Blocking";
+        }
 
         if (script_event.type == "Blocking")
         {
@@ -201,7 +207,9 @@ public class EventPlayer : MonoBehaviour
 
         }
 
-        if (script_event.type == "Sequential")
+
+
+        if (script_event.type == "Sequential") 
         {
             Debug.Log("Starting sequential");
             if (script_event.messageAndKeys != null)
@@ -285,6 +293,7 @@ public class EventPlayer : MonoBehaviour
         else {
             GameStart.event_manager = GetComponent<EventManager>();
         }
+
     }
 
     public void reset()

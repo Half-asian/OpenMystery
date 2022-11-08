@@ -13,6 +13,9 @@ public class ConfigScriptEvents : Config<ConfigScriptEvents>
         public float? duration;
         public string shouldRun;
         public string[] sequenceIds;
+        //Y6C2P3_borfRunSequence is an example of a crazy complicated coroutine
+        public bool looping; //unimplemented
+        public bool persisting;//unimplemented
 
         public float Duration => duration ?? 0.0f;
     }
