@@ -32,8 +32,17 @@ public class Tappie
                 if (!Predicate.parsePredicate(tappie.showPredicate))
                     continue;
 
-            if (!Scene.current.waypoint_dict.ContainsKey(tappie.activeWaypoint))
+            if (tappie.activeWaypoint == null)
+            {
+                Debug.LogError("Failed to spawn tappie " + tappie_id + " because it didn't have a waypoint assigned");
                 continue;
+            }
+
+            if (Scene.current.waypoint_dict == null || tappie.activeWaypoint == null || !Scene.current.waypoint_dict.ContainsKey(tappie.activeWaypoint))
+            {
+                Debug.LogError("Failed to spawn tappie " + tappie_id + " due to missing waypoint in scene.");
+                continue;
+            }
 
             GameObject tappiego = new GameObject(tappie_id);
             Model m = ModelManager.loadModel(tappie.activeModel);
