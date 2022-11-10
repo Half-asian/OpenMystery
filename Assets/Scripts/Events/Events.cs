@@ -431,9 +431,7 @@ public static class Events
                     Debug.LogError("Couldn't find actor " + action_params[0]);
                     return;
                 }
-                string[] new_action_params = new string[] { action_params[0], action_params[1] };
-                moveCharacter(new_action_params);
-                Actor.actor_controllers[action_params[0]].replaceCharacterWalkSequence(action_params[2]);
+                moveCharacter(action_params, true);
                 break;
 
             case "animateProp":
@@ -617,7 +615,7 @@ public static class Events
         public Vector3 position;
         public Quaternion rotation;
     }
-    public static void moveCharacter(string[] action_params)
+    public static void moveCharacter(string[] action_params, bool sequence = false)
     {
         if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
         {
@@ -672,15 +670,29 @@ public static class Events
             return;
         }
 
+
+
         if (action_params[2] != "")
         {
-            List<string> running_anims =new List<string> { "walk_wheelchairStudent", "c_Stu_Jog01", "flyingOnBroom", "c_Stu_Run01", "flyingOnBroom" };
+
+
+            List<string> running_anims =new List<string> { "walk_wheelchairStudent", "c_Stu_Jog01", "c_Stu_Run01", "flyingOnBroom", "flyingOnBroom_slow", "flyingOnBroomSkye_slow" };
+            List<string> super_fast_anims = new List<string> { "flyingOnBroom", "flyingOnBroomSkye" };
             //There is an animation included
-            if (running_anims.Contains(action_params[2])) 
+            if (super_fast_anims.Contains(action_params[2]))
+                actor_controller.moveCharacter(path, 2.6f);
+            else if (running_anims.Contains(action_params[2])) 
                 actor_controller.moveCharacter(path, 1.3f);
             else
                 actor_controller.moveCharacter(path, 0.0f);
-            actor_controller.replaceCharacterWalk(action_params[2]);
+            if (sequence == true)
+            {
+                actor_controller.replaceCharacterWalkSequence(action_params[2]);
+            }
+            else
+            {
+                actor_controller.replaceCharacterWalk(action_params[2]);
+            }
         }
         else
         {

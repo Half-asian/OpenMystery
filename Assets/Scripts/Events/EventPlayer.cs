@@ -53,9 +53,7 @@ public class EventPlayer : MonoBehaviour
             if (found_message_key != null)
             {
                 print();
-                Debug.Log("Going to remove message " + found_message_key.message + " " + found_message_key.keys[0] + " THe count is currently " + Count);
                 message_key_set.Remove(found_message_key);
-                Debug.Log("Removed message " + found_message_key.message + " " + found_message_key.keys[0] + " THe count is now " + Count);
                 print();
                 return true;
             }
@@ -75,9 +73,7 @@ public class EventPlayer : MonoBehaviour
             if (found_message_key != null)
             {
                 print();
-                Debug.Log("Going to remove message " + found_message_key.message + " THe count is currently " + Count);
                 message_key_set.Remove(found_message_key);
-                Debug.Log("Removed message " + found_message_key.message + " THe count is now " + Count);
                 print();
                 return true;
             }
@@ -88,7 +84,6 @@ public class EventPlayer : MonoBehaviour
         {
             if (Count == 0)
             {
-                Debug.Log("There are no messagekeys");
                 return;
             }
             int count = 0;
@@ -102,7 +97,6 @@ public class EventPlayer : MonoBehaviour
                         line += key;
                     }
                 }
-                Debug.Log(line);
                 count++;
             }
 
@@ -199,7 +193,6 @@ public class EventPlayer : MonoBehaviour
                 anim_block_miss_count = 0;
                 foreach (var message_key_sets in script_event.messageAndKeys)
                 {
-                    Debug.Log("Adding block " + message_key_sets[0]);
                     blocking_message_keys.add(new List<string>(message_key_sets));
                 }
                 blocking_message_keys.print();
@@ -387,14 +380,6 @@ public class EventPlayer : MonoBehaviour
     public void notifyScreenFadeComplete() => processNotifyBlocks("ScreenFadeComplete", null);
     private void removeBlock()
     {
-        if (is_sequential_player)
-        {
-            Debug.Log("Remove block sequential");
-        }
-        else
-        {
-            Debug.Log("Remove block");
-        }
         total_block = false;
         block_duration = 0.00f;
         runImmediateEvents();
