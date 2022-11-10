@@ -57,7 +57,7 @@ public class InteractionButton : MonoBehaviour
 
             if (mesh_renderer) mesh_renderer.enabled = true;
 
-            if ((Input.GetMouseButtonDown(0) && mouse_hover)) //Clicked on
+            if (Input.GetMouseButtonDown(0) && mouse_hover && !PauseMenu.is_open) //Clicked on
             {
                 interaction.activate();
 

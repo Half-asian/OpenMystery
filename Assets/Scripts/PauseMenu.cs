@@ -26,6 +26,9 @@ public class PauseMenu : MonoBehaviour
 
     int screenshot_num;
 
+    public static PauseMenu current;
+
+    public static bool is_open => current.pause_menu.activeSelf;
 
     IEnumerator takeScreenshot()
     {
@@ -36,6 +39,11 @@ public class PauseMenu : MonoBehaviour
         Debug.Log("saving screenshot to " + filename);
         ScreenCapture.CaptureScreenshot(filename);
         //camera.antialiasing = HDAdditionalCameraData.AntialiasingMode.TemporalAntialiasing;
+    }
+
+    private void Awake()
+    {
+        current = this;
     }
 
     void Update()

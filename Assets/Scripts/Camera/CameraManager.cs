@@ -25,7 +25,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField]
     private Animation camera_holder_animation_component;
     [SerializeField]
-    private Camera camera_component;
+    public Camera camera_component;
     [SerializeField]
     private Transform camera_transform;
     [SerializeField]
