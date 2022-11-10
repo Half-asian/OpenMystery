@@ -27,7 +27,7 @@ MonoBehaviour:
     m_Value: -3
   saturation:
     m_OverrideState: 1
-    m_Value: -6
+    m_Value: -15
 --- !u!114 &-7902571840836887438
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -73,10 +73,10 @@ MonoBehaviour:
     m_Value: 0
   top:
     m_OverrideState: 1
-    m_Value: {r: 0.27058822, g: 0.6901961, b: 0.32551086, a: 1}
+    m_Value: {r: 0.069597736, g: 0.6415094, b: 0.14442724, a: 1}
   middle:
     m_OverrideState: 1
-    m_Value: {r: 0.44313726, g: 0.38799435, b: 0.25882354, a: 1}
+    m_Value: {r: 0.8773585, g: 0.7824375, b: 0.55869526, a: 1}
   bottom:
     m_OverrideState: 1
     m_Value: {r: 0.24528301, g: 0.24528301, b: 0.21867211, a: 1}
@@ -98,25 +98,25 @@ MonoBehaviour:
   active: 1
   redOutRedIn:
     m_OverrideState: 1
-    m_Value: 100
+    m_Value: 83
   redOutGreenIn:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 28
   redOutBlueIn:
     m_OverrideState: 1
     m_Value: -2
   greenOutRedIn:
     m_OverrideState: 1
-    m_Value: 18
+    m_Value: 16
   greenOutGreenIn:
     m_OverrideState: 1
     m_Value: 109
   greenOutBlueIn:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 22
   blueOutRedIn:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: -0
   blueOutGreenIn:
     m_OverrideState: 1
     m_Value: 0
@@ -237,13 +237,13 @@ MonoBehaviour:
     m_Value: 0.38
   intensity:
     m_OverrideState: 1
-    m_Value: 0.224
+    m_Value: 0.253
   scatter:
     m_OverrideState: 1
     m_Value: 0.25
   tint:
     m_OverrideState: 1
-    m_Value: {r: 0, g: 0.83478737, b: 1, a: 1}
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
   dirtTexture:
     m_OverrideState: 0
     m_Value: {fileID: 0}
@@ -283,7 +283,7 @@ MonoBehaviour:
     m_Value: {fileID: 0}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.127
+    m_Value: 0.399
   m_MaxSamples:
     m_OverrideState: 1
     m_Value: 12
@@ -314,7 +314,7 @@ MonoBehaviour:
     m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   tint:
     m_OverrideState: 1
-    m_Value: {r: 0.7166859, g: 1, b: 0.6839622, a: 1}
+    m_Value: {r: 1, g: 0.77027595, b: 0.4481132, a: 1}
   maxFogDistance:
     m_OverrideState: 1
     m_Value: 5000
@@ -332,16 +332,16 @@ MonoBehaviour:
     m_Value: 0
   maximumHeight:
     m_OverrideState: 1
-    m_Value: 35
+    m_Value: 50
   meanFreePath:
     m_OverrideState: 1
     m_Value: 300
   enableVolumetricFog:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   albedo:
     m_OverrideState: 1
-    m_Value: {r: 0.066037714, g: 0.06510322, b: 0.06510322, a: 1}
+    m_Value: {r: 0.2735849, g: 0.14324492, b: 0.19812477, a: 1}
   globalLightProbeDimmer:
     m_OverrideState: 0
     m_Value: 1
@@ -420,10 +420,10 @@ MonoBehaviour:
   active: 1
   temperature:
     m_OverrideState: 1
-    m_Value: -21.6
+    m_Value: -2
   tint:
     m_OverrideState: 1
-    m_Value: 22.4
+    m_Value: 10
 --- !u!114 &1036598581078929383
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -528,10 +528,10 @@ MonoBehaviour:
   active: 1
   type:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 5
   intensity:
     m_OverrideState: 1
-    m_Value: 0.697
+    m_Value: 0.356
   response:
     m_OverrideState: 0
     m_Value: 0.487
@@ -599,16 +599,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b24b200358312b4fa1004e2431c2f1f, type: 3}
   m_Name: ShadowsMidtonesHighlights
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 0.95, y: 0.955, z: 1, w: -0.10555947}
+    m_Value: {x: 0.95, y: 0.955, z: 1, w: -0.052602716}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 0.98, y: 1, z: 0.98966664, w: -0.019850807}
+    m_Value: {x: 0.98, y: 1, z: 0.98966664, w: -0.1323919}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.1337087}
+    m_Value: {x: 1, y: 1, z: 1, w: 0.1690132}
   shadowsStart:
     m_OverrideState: 1
     m_Value: 0
@@ -723,9 +723,9 @@ MonoBehaviour:
     m_Value: 1
   fixedExposure:
     m_OverrideState: 1
-    m_Value: 6.828163
+    m_Value: 6.806132
   compensation:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0.4
   limitMin:
     m_OverrideState: 0

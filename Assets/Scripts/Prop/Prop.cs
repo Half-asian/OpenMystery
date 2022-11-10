@@ -230,11 +230,24 @@ public class Prop : Node
     public static void spawnPropFromEvent(string model_id, ConfigScene._Scene.WayPoint waypoint, string name, string group)
     {
         ModelMaterials.lighting_layers = new List<string>();
-        if (waypoint != null)
+        if (Scene.current.Lighting != null)
         {
-            if (waypoint.lightLayerOverride != null)
+            if (ModelMaterials.lighting_layers.Count == 0)
             {
-                ModelMaterials.lighting_layers.AddRange(waypoint.lightLayerOverride); //Figure out if more than one light layer can be applied at once
+                foreach (var layer in Scene.current.Lighting.layers.Values)
+                {
+                    if (layer.objects.Contains("ENVIRONMENT"))
+                    {
+                        ModelMaterials.lighting_layers.Add(layer.name);
+                    }
+                }
+            }
+            if (waypoint != null)
+            {
+                if (waypoint.lightLayerOverride != null)
+                {
+                    ModelMaterials.lighting_layers.AddRange(waypoint.lightLayerOverride); //Figure out if more than one light layer can be applied at once
+                }
             }
         }
 

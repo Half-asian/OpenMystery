@@ -55,14 +55,40 @@ public class MenuBackgroundHalloween2022 : MonoBehaviour, IMenuBackground
 
         ConfigScene._Scene._Lighting.Layer env_layer = new ConfigScene._Scene._Lighting.Layer();
         env_layer.name = "CHARACTER";
-        env_layer.lights = new string[] { "amb" };
+        env_layer.lights = new string[] { "amb", "dir", "dir2", "dir3"};
         Scene.current.Lighting.layers["CHARACTER"] = env_layer;
 
         ConfigScene._Scene._Lighting.Light amb_light = new ConfigScene._Scene._Lighting.Light();
-        amb_light.color = new string[] { "255.0", "255.0", "255.0" };
-        amb_light.intensity = 1.0f;
+        amb_light.color = new string[] { "180.0", "190.0", "230.0" };
+        amb_light.intensity = 0.7f;
         amb_light.name = "amb";
         amb_light.type = "ambientLight";
+
+        ConfigScene._Scene._Lighting.Light dir_light = new ConfigScene._Scene._Lighting.Light();
+        dir_light.color = new string[] { "200.0", "160.0", "120.0" };
+        dir_light.rotation = new string[] { "-130.331181", "20.980526", "-121.478907" };
+        dir_light.intensity = 1.258741f;
+        dir_light.name = "dir";
+        dir_light.type = "directionalLight";
+
+        ConfigScene._Scene._Lighting.Light dir_light2 = new ConfigScene._Scene._Lighting.Light();
+        dir_light2.color = new string[] { "180.0", "180.0", "255.0" };
+        dir_light2.rotation = new string[] { "-187.316957", "38.045635", "-96.195167" };
+        dir_light2.intensity = 0.559441f;
+        dir_light2.name = "dir2";
+        dir_light2.type = "directionalLight";
+
+        ConfigScene._Scene._Lighting.Light dir_light3 = new ConfigScene._Scene._Lighting.Light();
+        dir_light3.color = new string[] { "255.0", "202.0", "132.0" };
+        dir_light3.rotation = new string[] { "-71.287748", "-9.978722", "53.942136" };
+        dir_light3.intensity = 1.328671f;
+        dir_light3.name = "dir3";
+        dir_light3.type = "directionalLight";
+
+        Scene.current.Lighting.lights["dir"] = dir_light;
+        Scene.current.Lighting.lights["dir2"] = dir_light2;
+        Scene.current.Lighting.lights["dir3"] = dir_light3;
+
 
         Scene.current.Lighting.lights["amb"] = amb_light;
         Scene.spawnLights();
