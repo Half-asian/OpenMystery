@@ -115,14 +115,26 @@ public class EncounterSocial : Encounter
                 GameStart.dialogue_manager.activateDialogue(config_opposition.positiveIntroDialogue);
                 break;
             case "positive":
-                finishedSuccesfully = true;
-                finishedMainEncounter();
+                finish();
                 break;
         }
     }
 
 
+    private void finish()
+    {
+        cleanup();
+
+        finishedSuccesfully = true;
+        finishedMainEncounter();
+    }
+
+    public override void cleanup()
+    {
+        base.cleanup();
+        SocialQuizUI.onSocialQuizGameFinished -= onQuizQuestionFinished;
+    }
 
 
-    
+
 }

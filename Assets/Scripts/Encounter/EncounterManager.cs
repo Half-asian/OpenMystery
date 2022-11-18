@@ -7,7 +7,19 @@ using System;
 public class EncounterManager : MonoBehaviour
 {
     public static event Action<string, bool> onEncounterFinished = delegate { };
-    public Encounter activateEncounter(string encounter_name)
+    public List<Encounter> active_encounters = new List<Encounter>();
+
+    public void cleanup()
+    {
+        onEncounterFinished = delegate { };
+        foreach(var encounter in active_encounters)
+        {
+            encounter.cleanup();
+        }
+        active_encounters.Clear();
+    }
+
+    public void activateEncounter(string encounter_name)
     {
         Debug.Log("Activating Encounter: " + encounter_name);
 
@@ -42,10 +54,10 @@ public class EncounterManager : MonoBehaviour
                 break;
             default:
                 Debug.LogWarning("Unknown interaction type " + new_encounter.type);
-                break;
+                return;
         }
 
-        return result_encounter;
+        active_encounters.Add(result_encounter);
     }
 
     public static void onEncounterComplete(string encounter_id, bool succeeded)
@@ -92,7 +104,9 @@ public abstract class Encounter
     }
 
     protected virtual void finishedDialogueCallback(string dialogue_id)
-    {
+    {            
+
+        DialogueManager.onDialogueFinishedEventSecondary -= finishedDialogueCallback;
         EventManager.all_script_events_finished_event += encounterComplete;
         if (config_encounter.exitEvents != null)
         {
@@ -110,7 +124,13 @@ public abstract class Encounter
 
     public virtual void encounterComplete()
     {
-        EventManager.all_script_events_finished_event -= encounterComplete;
+        cleanup();
         EncounterManager.onEncounterComplete(config_encounter.encounterId, finishedSuccesfully);
+    }
+
+    public virtual void cleanup()
+    {
+        EventManager.all_script_events_finished_event -= encounterComplete;
+        DialogueManager.onDialogueFinishedEventSecondary -= finishedDialogueCallback;
     }
 }
