@@ -134,7 +134,11 @@ public static class Events
 
             case "spawnCharacter":
                 if (action_params.Length > 2)
-                    Actor.spawnActor(action_params[0], action_params[1], action_params[2]);
+
+                    if (Actor.actor_controllers.ContainsKey(action_params[2]))
+                        Actor.actor_controllers[action_params[2]].teleportCharacter(action_params[1]);
+                    else
+                        Actor.spawnActor(action_params[0], action_params[1], action_params[2]);
                 else
                     Actor.spawnActor(action_params[0], action_params[1], action_params[0]);
                 break;
