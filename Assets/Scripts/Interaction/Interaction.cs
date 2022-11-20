@@ -110,23 +110,25 @@ public abstract class Interaction : MonoBehaviour
             return;
         }
 
-        if (config_interaction.exitEvents != null)
-            GameStart.event_manager.main_event_player.addEvents(config_interaction.exitEvents);
+
 
         if (success == true)
         {
-            if (config_interaction.successEvents != null)
-                GameStart.event_manager.main_event_player.addEvents(config_interaction.successEvents);
             if (config_interaction.qteSuccessEvents != null)
                 GameStart.event_manager.main_event_player.addEvents(config_interaction.qteSuccessEvents);
+            if (config_interaction.successEvents != null)
+                GameStart.event_manager.main_event_player.addEvents(config_interaction.successEvents);
         }
         else
         {
-            if (config_interaction.failEvents != null)
-                GameStart.event_manager.main_event_player.addEvents(config_interaction.failEvents);
             if (config_interaction.qteFailEvents != null)
                 GameStart.event_manager.main_event_player.addEvents(config_interaction.qteFailEvents);
+            if (config_interaction.failEvents != null)
+                GameStart.event_manager.main_event_player.addEvents(config_interaction.failEvents);
         }
+
+        if (config_interaction.exitEvents != null)
+            GameStart.event_manager.main_event_player.addEvents(config_interaction.exitEvents);
 
         EventManager.all_script_events_finished_event += onFinishedExitEvents;
 
