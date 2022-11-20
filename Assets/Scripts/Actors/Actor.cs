@@ -153,10 +153,14 @@ public class Actor
     {
         if (actor_controllers.ContainsKey(character_name))
         {
-            actor_controllers[character_name].destroy();
-            actor_controllers_pool.Remove(actor_controllers[character_name]);
-            actor_controllers.Remove(character_name);
+            actor_controllers[character_name].gameObject.SetActive(false);
         }
+    }
+
+    public static void respawnCharacterInScene(string character_name)
+    {
+        actor_controllers[character_name].gameObject.SetActive(true);
+        actor_controllers[character_name].setCharacterIdle();
     }
 
     public static string[][] serializeActors()

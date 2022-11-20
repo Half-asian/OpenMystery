@@ -133,6 +133,12 @@ public static class Events
                 break;
 
             case "spawnCharacter":
+                if (action_params.Length < 2)
+                {
+                    Actor.respawnCharacterInScene(action_params[0]);
+                    break;
+                }
+
                 if (action_params.Length > 2)
 
                     if (Actor.actor_controllers.ContainsKey(action_params[2]))
