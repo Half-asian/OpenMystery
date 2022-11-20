@@ -10,9 +10,11 @@ public class Project
     public static event Action<string> onProjectFinished = delegate { };
     public static ConfigProject._Project project_config = null;
     public static int current_progress;
-    
+    static bool addonce = false;
+
     public static void startProject(string new_project)
     {
+        addonce = false;
         Debug.Log("starting Project " + new_project);
 
         GameStart.onReturnToMenu += cleanup;
@@ -46,7 +48,7 @@ public class Project
     }
 
     public static void addProgress(int progress)
-    {
+    {       
         if (project_config == null) return;
         if (current_progress != -1)
             current_progress += progress;
@@ -59,6 +61,12 @@ public class Project
         if (stars >= project_config.progressForStars.Length - 1)
         {
             current_progress = -1;
+        }
+        //Honestly it doesn't matter
+        //Autotunes fuck everything up anyway
+        if (stars >= 1 && addonce == false)
+        {
+            addonce = true;
             InteractionManager.all_interactions_destroyed_event += finishProject;
         }
     }

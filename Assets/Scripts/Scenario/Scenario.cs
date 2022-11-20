@@ -244,7 +244,6 @@ public class Scenario
     {
         block_screenfades = false;
 
-        Debug.Log("onScenarioLoadScriptEventsFinished");
         EventManager.all_script_events_finished_event -= onScenarioLoadScriptEventsFinished;
 
         if (scenarios_serialized.ContainsKey(current.scenario_config.scenarioId)) //Reload saved interactions
