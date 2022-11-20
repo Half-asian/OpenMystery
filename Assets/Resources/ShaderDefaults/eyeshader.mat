@@ -8,11 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: eyeshader
-  m_Shader: {fileID: -6465566751694194690, guid: f0606921cae192c4482cdc660439edd1, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 328dd9451b848324197313437c49ab73, type: 3}
   m_ValidKeywords:
-  - _DISABLE_SSR_TRANSPARENT
-  m_InvalidKeywords:
   - _ALPHATEST_ON
+  - _DISABLE_SSR_TRANSPARENT
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -89,6 +89,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleCubemap_34d6f7be894c47afa37f5d8053fca016_Cube_1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecularColorMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -105,6 +109,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_676b9dcacd544be384e4f16906692eb6_Out_0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ThicknessMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -114,6 +122,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _u_reflectionCubeMap_1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - reflectTexel:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -167,6 +179,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - USE_FOG: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -285,14 +298,37 @@ Material:
     - offsetX: 0
     - offsetY: 0
     - speed: 0
+    - u_PointLightSourceRangeInverse1: 0
+    - u_PointLightSourceRangeInverse2: 0
+    - u_PointLightSourceRangeInverse3: 0
+    - u_SpotLightSourceInnerAngleCos1: 0
+    - u_SpotLightSourceInnerAngleCos2: 0
+    - u_SpotLightSourceInnerAngleCos3: 0
+    - u_SpotLightSourceOuterAngleCos1: 0
+    - u_SpotLightSourceOuterAngleCos2: 0
+    - u_SpotLightSourceOuterAngleCos3: 0
+    - u_SpotLightSourceRangeInverse1: 0
+    - u_SpotLightSourceRangeInverse2: 0
+    - u_SpotLightSourceRangeInverse3: 0
+    - u_flipFogOrder: 0
     - u_foamSpeed: 0
+    - u_heightFogDensity: 0
+    - u_heightFogEnd: 0
+    - u_heightFogStart: 0
+    - u_maxFog: 0
+    - u_maxFogDistance: 0
+    - u_minFogDistance: 0
     - u_mixer: 0
     - u_normalMapHeight: 0
     - u_reflectionAmount: 0
     - u_reflectionAngle: 0
+    - u_sideShadowEnd: 0
+    - u_sideShadowStart: 0
     - u_specMaxRadius: 0
     - u_specMinRadius: 0
     - u_speed: 0
+    - u_topShadowEnd: 0
+    - u_topShadowStart: 0
     - u_transparency: 0
     - u_waveSpeed: 0
     m_Colors:
@@ -312,8 +348,35 @@ Material:
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
+    - u_AmbientLightSourceColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceColor4: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
+    - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
+    - u_SpotLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 0, g: 0, b: 0, a: 0}
     - u_dustColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_reflectionTintColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &613401650452732667
