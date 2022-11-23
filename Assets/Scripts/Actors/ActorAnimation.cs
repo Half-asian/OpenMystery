@@ -8,13 +8,13 @@ public partial class ActorController : Node
     public HPAnimation animation_current_intro;
     public HPAnimation animation_current_loop;
     public HPAnimation animation_current_exit;
-    public string animation_current_name;
+    public string animation_current_name = null;
     public ActorState animation_current_state;
 
     public HPAnimation animation_previous_intro;
     public HPAnimation animation_previous_loop;
     public HPAnimation animation_previous_exit;
-    public string animation_previous_name;
+    public string animation_previous_name = null;
 
 
     private string idle_queued_animate = null;
@@ -41,7 +41,6 @@ public partial class ActorController : Node
         default_anim.anim_clip.legacy = true;
         if (config_hpactor is not null)
         {
-            idle_animation = config_hpactor.animId_idle;
             walk_animation = config_hpactor.animId_walk;
         }
     }
@@ -61,7 +60,7 @@ public partial class ActorController : Node
         }
     }
 
-    public void playIdleAnimation()
+    public void playIdleAnimation(bool force_loop = false)
     {
         cleanupState();
         if (idle_queued_animate != null)
@@ -75,12 +74,15 @@ public partial class ActorController : Node
         else
         {
             loadAnimationSet();
-            if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
+            if (anim_state == "loop" ) //If we are still introducing a new animation, don't bother playing outro
                 anim_state = "outro";
             else
                 anim_state = "intro";
 
-            updateAndPlayAnimationState();
+            if (reset_animation)
+                force_loop = true;
+
+            updateAndPlayAnimationState(force_loop);
         }
     }
 
@@ -89,16 +91,19 @@ public partial class ActorController : Node
         cleanupState();
 
         loadAnimationSet();
-        if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
-            anim_state = "outro";
-        else
-            anim_state = "intro";
+        //if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
+        //    anim_state = "outro";
+        //else
+        anim_state = "loop";
         updateAndPlayAnimationState();
     }
 
 
     public void replaceCharacterIdle(string anim_name)
     {
+        if (idle_animation == anim_name)
+            return;
+
         idle_animation = anim_name;
         idle_animation_sequence = null;
         idle_queued_animate = null;
@@ -110,6 +115,9 @@ public partial class ActorController : Node
 
     public void replaceCharacterIdleStaggered(string anim_name)
     {
+        if (idle_animation == anim_name)
+            return;
+
         idle_animation = anim_name;
         idle_animation_sequence = null;
         idle_queued_animate = null;
@@ -123,6 +131,8 @@ public partial class ActorController : Node
 
     public void replaceCharacterWalk(string anim_name)
     {
+        if (walk_animation == anim_name)
+            return;
         walk_animation = anim_name;
         if (actor_state == ActorState.Walk)
         {
@@ -136,6 +146,12 @@ public partial class ActorController : Node
         idle_animation_sequence = sequence_id;
         if (actor_state == ActorState.Idle)
         {
+            animation_previous_intro = null;
+            animation_previous_loop = null;
+            animation_previous_exit = null;
+            animation_current_intro = null;
+            animation_current_loop = null;
+            animation_current_exit = null;
             if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
                 DestroyImmediate(GetComponent<ActorAnimSequence>());
 
@@ -161,7 +177,7 @@ public partial class ActorController : Node
     public void customAnimationCharacter(string anim_name)
     {
         var new_anim = AnimationManager.loadAnimationClip(anim_name, model, config_hpactor, null, bone_mods: bone_mods);
-        playAnimationOnComponent(new_anim);
+        queueAnimationOnComponent(new_anim);
     }
 
     //Animate character plays once actor is idle
@@ -191,7 +207,7 @@ public partial class ActorController : Node
 
         var new_anim = AnimationManager.loadAnimationClip(idle_queued_animate, model, config_hpactor, null, bone_mods: bone_mods);
         idle_queued_animate = null;
-        playAnimationOnComponent(new_anim);
+        queueAnimationOnComponent(new_anim);
 
         StartCoroutine(WaitForAnimateCharacterFinished(new_anim));
     }
@@ -226,22 +242,18 @@ public partial class ActorController : Node
             animation_previous_exit = animation_current_exit;
             animation_previous_name = animation_current_name;
             //Switch all the old anims
-
-            if (animation_previous_intro == null) animation_previous_intro = default_anim;
-            if (animation_previous_loop == null) animation_previous_loop = default_anim;
-            if (animation_previous_exit == null) animation_previous_exit = default_anim;
         }
         else //Otherwise just wipe
         {
-            animation_previous_intro = default_anim;
-            animation_previous_loop = default_anim;
-            animation_previous_exit = default_anim;
-            animation_previous_name = "";
+            animation_previous_intro = null;
+            animation_previous_loop = null;
+            animation_previous_exit = null;
+            animation_previous_name = null;
         }
 
-        animation_current_intro = default_anim;
-        animation_current_loop = default_anim;
-        animation_current_exit = default_anim;
+        animation_current_intro = null;
+        animation_current_loop = null;
+        animation_current_exit = null;
 
         animation_current_state = actor_state;
         animation_current_name = animation_id;
@@ -260,8 +272,17 @@ public partial class ActorController : Node
 
     //Animation state is intro, loop and outro
     //Plays the actual animations
-    public void updateAndPlayAnimationState()
+    public void updateAndPlayAnimationState(bool force_loop = false)
     {
+        if (animation_previous_name != null && Configs.config_animation.Animation3D[animation_previous_name].wrapMode == "clamp")
+        {
+            force_loop = true;
+        }
+
+        if (force_loop)
+            anim_state = "loop";
+
+
         if (waitForAnimation != null)
             StopCoroutine(waitForAnimation);
         if (GetComponent<ActorAnimSequence>() != null)
@@ -272,25 +293,25 @@ public partial class ActorController : Node
             }
         }
 
-        if (anim_state == "intro" && animation_current_intro != null)
-            playAnimationOnComponent(animation_current_intro);
-        else if (anim_state == "outro" && animation_previous_exit != null)
-            playAnimationOnComponent(animation_previous_exit);
-        else
+        if (anim_state == "intro" && animation_current_intro != null && animation_previous_exit != null)
         {
-            playAnimationOnComponent(animation_current_loop);
-            anim_state = "loop";
-        }
-
-        if (anim_state == "intro")
-        {
+            queueAnimationOnComponent(animation_current_intro, animation_current_intro.anim_clip.length);
             waitForAnimation = WaitForAnimation(animation_current_intro, "intro");
             StartCoroutine(waitForAnimation);
         }
-        else if (anim_state == "outro")
+        else if (anim_state == "outro" && animation_current_intro != null && animation_previous_exit != null)
         {
+            queueAnimationOnComponent(animation_previous_exit, animation_previous_exit.anim_clip.length);
             waitForAnimation = WaitForAnimation(animation_previous_exit, "outro");
             StartCoroutine(waitForAnimation);
+        }
+        else
+        {
+            //if (force_loop )
+            //    queueAnimationOnComponent(animation_current_loop, 0.0f); //Play the loop without any crossfade
+            //else
+            queueAnimationOnComponent(animation_current_loop);
+            anim_state = "loop";
         }
     }
 

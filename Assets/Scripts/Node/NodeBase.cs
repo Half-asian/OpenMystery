@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.UIElements;
 
 public abstract partial class Node : MonoBehaviour
 {
@@ -13,11 +14,26 @@ public abstract partial class Node : MonoBehaviour
     public Animation animation_component;
 
     IEnumerator currentAnimationAlerter;
-    public float creation_time;
-    HPAnimation lastclip;
     public HPAnimation idle;
 
     Dictionary<string, SkinnedMeshRenderer> mesh_renderers;
+
+    bool anim_flip_flop = false;
+
+    public HPAnimation queued_anim = null;
+    public float queued_anim_fade_time = 0.4f;
+
+    public bool reset_animation = true;
+
+    private void Update()
+    {
+        if (queued_anim != null && reset_animation == false)
+            playAnimationOnComponent();
+        reset_animation = false;
+
+        queued_anim = null;
+        queued_anim_fade_time = 0.4f;
+    }
 
     public void setup(Model _model)
     {
@@ -26,7 +42,6 @@ public abstract partial class Node : MonoBehaviour
         if (model.game_object.GetComponent<Animation>() == null)
             model.game_object.AddComponent<Animation>();
         animation_component = model.game_object.GetComponent<Animation>();
-        creation_time = Time.realtimeSinceStartup;
 
         mesh_renderers = new Dictionary<string, SkinnedMeshRenderer>();
         for (int i = 0; i < _model.game_object.transform.childCount; i++)
@@ -48,40 +63,54 @@ public abstract partial class Node : MonoBehaviour
         Destroy(model.game_object);
     }
 
-    public void playAnimationOnComponent(HPAnimation animation)
+    public void queueAnimationOnComponent(HPAnimation animation, float fade_time = 0.4f)
+    {
+        Debug.Log("queueAnimationOnComponent on " + name + " " + animation.anim_clip.name);
+        queued_anim = animation;
+        queued_anim_fade_time = MathF.Min(fade_time, 0.4f);
+
+        string new_name = "flop";
+        if (anim_flip_flop == true)
+        {
+            new_name = "flip";
+        }
+        animation_component.AddClip(queued_anim.anim_clip, new_name);
+
+        if (reset_animation)
+        {
+            Debug.Log("Playing immediately on " + name);
+            animation_component.Play(new_name);
+            queued_anim = null;
+            queued_anim_fade_time = 0.4f;
+        }
+        anim_flip_flop = !anim_flip_flop;
+    }
+
+    private void playAnimationOnComponent()
     {
         if (currentAnimationAlerter != null)
             StopCoroutine(currentAnimationAlerter);
 
-        animation_component.AddClip(animation.anim_clip, "default");
-
-        if (Time.realtimeSinceStartup - creation_time < 0.5f)
-        {//First frame we can't let them T-pose
-            animation_component.Play("default");
-        }
-        else
+        string new_name = "flip";
+        if (anim_flip_flop == true)
         {
-            animation_component.Play("default");
-
-            //This check prevents a small spaz in lookats for looping anims
-            /*if (lastclip != null && lastclip == animation)
-            {
-                animation_component.Play("default");
-            }
-            else
-            {
-                animation_component.CrossFade("default", 0.4f);
-            }*/
+            new_name = "flop";
         }
-        lastclip = animation;
-        currentAnimationAlerter = animationAlert(animation.anim_clip);
+        Debug.Log("Playing " + queued_anim.anim_clip.name + " on " + name);
+        Debug.Log("crossfading on " + name + " with time of " + queued_anim_fade_time);
+
+
+        animation_component.CrossFade(new_name, queued_anim_fade_time);
+
+        currentAnimationAlerter = animationAlert(queued_anim.anim_clip);
         StartCoroutine(currentAnimationAlerter);
 
-        if (animation.shaderAnimations != null)
+        if (queued_anim.shaderAnimations != null)
         {
-            StartCoroutine(shaderAnimPlayer(animation.shaderAnimations, animation.anim_clip));
+            StartCoroutine(shaderAnimPlayer(queued_anim.shaderAnimations, queued_anim.anim_clip));
         }
     }
+
 
     protected abstract IEnumerator animationAlert(AnimationClip clip);
 

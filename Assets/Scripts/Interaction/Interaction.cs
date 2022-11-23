@@ -110,8 +110,6 @@ public abstract class Interaction : MonoBehaviour
             return;
         }
 
-
-
         if (success == true)
         {
             if (config_interaction.qteSuccessEvents != null)

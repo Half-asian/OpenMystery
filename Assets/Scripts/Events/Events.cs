@@ -133,20 +133,12 @@ public static class Events
                 break;
 
             case "spawnCharacter":
-                if (action_params.Length < 2)
-                {
-                    Actor.respawnCharacterInScene(action_params[0]);
-                    break;
-                }
 
-                if (action_params.Length > 2)
+                string hpactor_id   = action_params.Length >= 1 ? action_params[0] : null;
+                string waypoint_id  = action_params.Length >= 2 ? action_params[1] : null;
+                string instance_id  = action_params.Length >= 3 ? action_params[2] : null;
 
-                    if (Actor.actor_controllers.ContainsKey(action_params[2]))
-                        Actor.actor_controllers[action_params[2]].teleportCharacter(action_params[1]);
-                    else
-                        Actor.spawnActor(action_params[0], action_params[1], action_params[2]);
-                else
-                    Actor.spawnActor(action_params[0], action_params[1], action_params[0]);
+                Actor.spawnActor(hpactor_id, waypoint_id, instance_id);
                 break;
 
             case "despawnCharacter":

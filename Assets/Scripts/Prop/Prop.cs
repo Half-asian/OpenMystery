@@ -33,7 +33,7 @@ public class Prop : Node
         }
         HPAnimation prop_anim_clip = AnimationManager.loadAnimationClip(animation_name, model, null);
 
-        playAnimationOnComponent(prop_anim_clip);
+        queueAnimationOnComponent(prop_anim_clip);
     }
 
     public void playAnimSequence(string sequence_name)
@@ -223,7 +223,7 @@ public class Prop : Node
         {
             HPAnimation animation = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);
             prop.animation_component.wrapMode = WrapMode.Loop;
-            prop.playAnimationOnComponent(animation);
+            prop.queueAnimationOnComponent(animation);
         }
     }
 

@@ -32,8 +32,19 @@ public class Actor
         actor_controllers = new Dictionary<string, ActorController>();
     }
 
-    public static ActorController spawnActor(string actor_id, string waypoint_id, string character_name)
+    public static ActorController spawnActor(string hpactor_id, string waypoint_id, string instance_id)
     {
+        if (actor_controllers.ContainsKey(instance_id))
+        {
+            respawnCharacterInScene(instance_id);
+            if (waypoint_id != null)
+            {
+                actor_controllers[instance_id].teleportCharacter(waypoint_id);
+            }
+            return actor_controllers[instance_id];
+        }
+
+
         ModelMaterials.lighting_layers = new List<string>();
 
         var waypoint = Scene.getWayPoint(waypoint_id);
@@ -50,33 +61,33 @@ public class Actor
             ModelMaterials.lighting_layers.Add("CHARACTER");
         }
 
-        if (actor_id == "c_avatar_female_base" || actor_id == "c_avatar_male_base")
-            actor_id = "Avatar";
+        if (hpactor_id == "c_avatar_female_base" || hpactor_id == "c_avatar_male_base")
+            hpactor_id = "Avatar";
 
         //Debug.Log("Spawning character " + actor_id + " with name " + character_name);
         ActorController actor_controller = null;
         ConfigHPActorInfo._HPActorInfo config_actor = null;
 
-        actor_id = ConfigActorMapping.getActorMapping(actor_id, Player.local_avatar_gender);
+        hpactor_id = ConfigActorMapping.getActorMapping(hpactor_id, Player.local_avatar_gender);
 
-        if (actor_id != "Avatar" && !Configs.config_hp_actor_info.HPActorInfo.ContainsKey(actor_id))
-            throw new System.Exception("Error: Tried to spawn an actor with invalid id " + actor_id);
+        if (hpactor_id != "Avatar" && !Configs.config_hp_actor_info.HPActorInfo.ContainsKey(hpactor_id))
+            throw new System.Exception("Error: Tried to spawn an actor with invalid id " + hpactor_id);
 
 
-        if (actor_id == "Avatar")
+        if (hpactor_id == "Avatar")
         {
             if (Player.local_avatar_gender == "female")                
                 config_actor = Configs.config_hp_actor_info.HPActorInfo[ConfigActorMapping.getActorMapping("c_avatar_female_base", "female")];
             else
                 config_actor = Configs.config_hp_actor_info.HPActorInfo[ConfigActorMapping.getActorMapping("c_avatar_male_base", "male")];
 
-            Player.local_avatar_onscreen_name = character_name;
+            Player.local_avatar_onscreen_name = instance_id;
             actor_controller = StaticAvatarSpawner.spawnStaticAvatar(config_actor);
-            actor_controller.name = character_name;
+            actor_controller.name = instance_id;
         }
         else
         {
-            config_actor = Configs.config_hp_actor_info.HPActorInfo[actor_id];
+            config_actor = Configs.config_hp_actor_info.HPActorInfo[hpactor_id];
             Model model = ModelManager.loadModel(config_actor.modelId);
             if (model == null)
                 throw new System.Exception("Failed to load actor model " + config_actor.modelId);
@@ -90,7 +101,7 @@ public class Actor
                 setQuidditchProperties(actor_controller.model.game_object, config_actor);
             }
 
-            actor_controller.model.game_object.name = character_name;
+            actor_controller.model.game_object.name = instance_id;
 
             if (config_actor.modelPatches != null)
             {
@@ -111,14 +122,14 @@ public class Actor
 
 
         if (actor_controllers != null)
-            actor_controllers[character_name] = actor_controller;
+            actor_controllers[instance_id] = actor_controller;
 
-        actor_controller.teleportCharacter(waypoint_id);
 
         if (Scene.scene_model != null)
             actor_controller.model.game_object.transform.SetParent(GameStart.current.actors_holder);
         actor_controller.replaceCharacterIdle(actor_controller.config_hpactor.animId_idle);
         actor_controllers_pool.Add(actor_controller);
+        actor_controller.teleportCharacter(waypoint_id);
         return actor_controller;
     }
 

@@ -78,7 +78,7 @@ public class ModelInspector : MonoBehaviour
                 {
                     Debug.LogError("unknown anim " + anim);
                 }
-                prop.playAnimationOnComponent(anim);
+                prop.queueAnimationOnComponent(anim);
             }
             else
             {
@@ -157,7 +157,10 @@ public class ModelInspector : MonoBehaviour
             prop = null;
         }
         if (actor_controller != null)
+        {
+            Actor.actor_controllers.Remove(actor_controller.name);
             actor_controller.destroy();
+        }
 
         actor_controller = Actor.spawnActor(actor_input.text, null, actor_input.text);
         model = actor_controller.model;

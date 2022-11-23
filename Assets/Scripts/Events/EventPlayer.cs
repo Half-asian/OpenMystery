@@ -140,7 +140,7 @@ public class EventPlayer : MonoBehaviour
             return 0.0f;
         }
 
-        Debug.Log("Activating Event " + event_name + " is sequential player: " + is_sequential_player);
+        Debug.Log("Activating Event " + event_name + " is sequential player: " + is_sequential_player + " Frame: " + Time.frameCount);
 
         if (!string.IsNullOrEmpty( Configs.config_script_events.ScriptEvents[event_name].shouldRun))
         {

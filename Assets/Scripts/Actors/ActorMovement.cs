@@ -68,7 +68,11 @@ public partial class ActorController : Node
 
         applyWaypoint();
 
+        reset_animation = true;
+
         setCharacterIdle();
+
+
     }
 
     private void applyWaypoint()

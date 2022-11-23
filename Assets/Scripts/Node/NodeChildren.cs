@@ -86,7 +86,7 @@ public partial class Node : MonoBehaviour
 
         HPAnimation animation = AnimationManager.loadAnimationClip(target, childNodes[id].GetComponent<Node>().model, null, triggerReplacement);
         if (animation == null) return;
-        childNodes[id].GetComponent<Node>().playAnimationOnComponent(animation);
+        childNodes[id].GetComponent<Node>().queueAnimationOnComponent(animation);
     }
 
     public void stopPropAnim(string id)

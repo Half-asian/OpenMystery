@@ -58,12 +58,11 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
         if (animation == null) return 0.0f;
 
-        base_node.playAnimationOnComponent(animation);
+        base_node.queueAnimationOnComponent(animation);
         return animation.anim_clip.length;
     }
     protected void attachChildNode(string prop_model_id, string alias, string target)
     {
-        Debug.Log("attachChildNode " + prop_model_id + " " + alias + " " + target);
         base_node.attachChildNode(prop_model_id, alias, target);
     }
 
