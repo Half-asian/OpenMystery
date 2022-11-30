@@ -151,7 +151,9 @@ public class DialogueManager : MonoBehaviour
 
         dialogueLineStartActions(dialogue_line);
 
-        string name = dialogue_line.speakerId == "Avatar" ? "You" : mapSpeakerName(dialogue_line.speakerId);
+        string name = "";
+        if (dialogue_line.speakerId != null)
+            name = dialogue_line.speakerId == "Avatar" ? "You" : mapSpeakerName(dialogue_line.speakerId);
         string text = "";
 
 
