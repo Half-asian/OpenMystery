@@ -105,16 +105,16 @@ public class MenuBackgroundHalloween2022 : MonoBehaviour, IMenuBackground
         MC.transform.localEulerAngles = new Vector3(0, -157.526f, 0);
 
         Jane = Actor.spawnActor("c_Jane_Normal_skin", null, "Jane");
-        Jane.customAnimationCharacter("Animations/JaneHalloween2022");
+        //Jane.customAnimationCharacter("Animations/JaneHalloween2022");
 
         Jane.transform.localPosition = new Vector3(-47.102f, 0.744f, 22.997f);
         Jane.transform.localEulerAngles = new Vector3(0, -167.871f, 0);
         Jane.transform.localScale = new Vector3(1, 1.5f, 1.5f);
 
 
-        SnareC = Actor.spawnActor("c_DevilsSnare_C_skin", null, "SnareC");
-        SnareC.transform.localPosition = new Vector3(-47.872f, 0.744f, 22.091f);
-        SnareC.transform.localEulerAngles = new Vector3(0, -167.871f, 0);
+        //SnareC = Actor.spawnActor("c_DevilsSnare_C_skin", null, "SnareC");
+        //SnareC.transform.localPosition = new Vector3(-47.872f, 0.744f, 22.091f);
+        //SnareC.transform.localEulerAngles = new Vector3(0, -167.871f, 0);
 
         barge1 = GameObject.Find(barge1name);
         barge2 = GameObject.Find(barge2name);
@@ -138,7 +138,7 @@ public class MenuBackgroundHalloween2022 : MonoBehaviour, IMenuBackground
             barge4.transform.localPosition = new Vector3(barge4.transform.localPosition.x, newY, barge4.transform.localPosition.z);
             barge5.transform.localPosition = new Vector3(barge5.transform.localPosition.x, newY, barge5.transform.localPosition.z);
             barge6.transform.localPosition = new Vector3(barge6.transform.localPosition.x, newY, barge6.transform.localPosition.z);
-            SnareC.transform.localPosition = new Vector3(SnareC.transform.localPosition.x, newY + snarestartHeight, SnareC.transform.localPosition.z);
+            //SnareC.transform.localPosition = new Vector3(SnareC.transform.localPosition.x, newY + snarestartHeight, SnareC.transform.localPosition.z);
             Jane.transform.localPosition = new Vector3(Jane.transform.localPosition.x, newY + janestartHeight, Jane.transform.localPosition.z);
 
             float newY2 = Mathf.Sin(Time.time + 0.3f * cameraBobSpeed) * cameraBobAmplitude;
@@ -160,7 +160,7 @@ public class MenuBackgroundHalloween2022 : MonoBehaviour, IMenuBackground
         MC.destroy();
         Jane.destroy();
         Merula.destroy();
-        SnareC.destroy();
+        //SnareC.destroy();
 
         Destroy(MC);
         Destroy(Jane);
@@ -168,7 +168,7 @@ public class MenuBackgroundHalloween2022 : MonoBehaviour, IMenuBackground
         Destroy(SnareC);
 
         Jane = null;
-        SnareC = null;
+        //SnareC = null;
 
         Destroy(background_model.game_object);        
     }

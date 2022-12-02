@@ -35,7 +35,10 @@ public class Console : MonoBehaviour
 
         if (input_active && Input.GetKeyDown(KeyCode.Return))
         {
-            processCommand(inputfield.text);
+            var inputs = inputfield.text.Split('\n');
+            foreach (var i in inputs) {
+                processCommand(i);
+            }
             inputfield.text = "";
         }
 

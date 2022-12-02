@@ -69,7 +69,7 @@ public class Location
 
     public static void setLocation()
     {
-        if (Scenario.current.scenario_config.mapLocationId == null)
+        if (Scenario.current.scenario_config == null || Scenario.current.scenario_config.mapLocationId == null)
         {
             current = null;
             return;

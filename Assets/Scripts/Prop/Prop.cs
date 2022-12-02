@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ModelLoading;
+using System.Linq;
 
 public class Prop : Node
 {
@@ -132,21 +133,15 @@ public class Prop : Node
             {
                 if (layer.objects.Contains(prop_locator.name))
                 {
+                    ModelMaterials.explicit_ambient = true;
                     ModelMaterials.lighting_layers.Add( layer.name);
                 }
             }
             if (ModelMaterials.lighting_layers.Count == 0)
             {
-                foreach (var layer in Scene.current.Lighting.layers.Values)
-                {
-                    if (layer.objects.Contains("ENVIRONMENT"))
-                    {
-                        ModelMaterials.lighting_layers.Add(layer.name);
-                    }
-                }
+                ModelMaterials.lighting_layers.Add(Scene.current.Lighting.layers.Keys.First());
             }
         }
-
 
 
         Model model = ModelManager.loadModel(prop_locator.reference);
@@ -173,7 +168,9 @@ public class Prop : Node
             {
                 Transform child = prop.model.game_object.transform.GetChild(c);
                 if (!prop_locator.material_dict.ContainsKey(child.name))
+                {
                     continue;
+                }
                 Material mat = child.GetComponent<SkinnedMeshRenderer>().material;
                 var material = prop_locator.material_dict[child.name];
 
@@ -232,22 +229,16 @@ public class Prop : Node
         ModelMaterials.lighting_layers = new List<string>();
         if (Scene.current.Lighting != null)
         {
-            if (ModelMaterials.lighting_layers.Count == 0)
-            {
-                foreach (var layer in Scene.current.Lighting.layers.Values)
-                {
-                    if (layer.objects.Contains("ENVIRONMENT"))
-                    {
-                        ModelMaterials.lighting_layers.Add(layer.name);
-                    }
-                }
-            }
             if (waypoint != null)
             {
                 if (waypoint.lightLayerOverride != null)
                 {
                     ModelMaterials.lighting_layers.AddRange(waypoint.lightLayerOverride); //Figure out if more than one light layer can be applied at once
                 }
+            }
+            if (ModelMaterials.lighting_layers.Count == 0)
+            {
+                ModelMaterials.lighting_layers.Add(Scene.current.Lighting.layers.Keys.First());
             }
         }
 

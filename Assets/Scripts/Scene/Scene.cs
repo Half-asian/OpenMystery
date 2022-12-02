@@ -399,6 +399,21 @@ public class Scene
                 {
                     current_scene.proplocator_dict[master_proplocator_name] = Configs.config_scene.Scene[current_scene.masterSceneId].proplocator_dict[master_proplocator_name];
                 }
+                else
+                {
+                    var master_pl = Configs.config_scene.Scene[current_scene.masterSceneId].proplocator_dict[master_proplocator_name];
+                    var child_pl = current_scene.proplocator_dict[master_proplocator_name];
+                    if (master_pl.material_dict != null)
+                    {
+                        foreach (var mat_name in master_pl.material_dict.Keys)
+                        {
+                            if (!child_pl.material_dict.ContainsKey(mat_name))
+                            {
+                                child_pl.material_dict.Add(mat_name, master_pl.material_dict[mat_name]);
+                            }
+                        }
+                    }
+                }
             }
         }
         if (Configs.config_scene.Scene[current_scene.masterSceneId].hotspot_dict != null)
