@@ -56,6 +56,9 @@
         },
         {
             "m_Id": "a5487f26e5d94462a3f917290bd13936"
+        },
+        {
+            "m_Id": "6f1d93b5cfe742c4867dc866d8f192ee"
         }
     ],
     "m_Keywords": [
@@ -1375,6 +1378,28 @@
 }
 
 {
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.BooleanShaderProperty",
+    "m_ObjectId": "6f1d93b5cfe742c4867dc866d8f192ee",
+    "m_Guid": {
+        "m_GuidSerialized": "396269f8-1f31-4564-9d1e-c298df495c08"
+    },
+    "m_Name": "IS_SKIN_SHADER",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "IS_SKIN_SHADER",
+    "m_DefaultReferenceName": "_IS_SKIN_SHADER",
+    "m_OverrideReferenceName": "IS_SKIN_SHADER",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": false
+}
+
+{
     "m_SGVersion": 1,
     "m_Type": "UnityEditor.ShaderGraph.ViewDirectionNode",
     "m_ObjectId": "6f7141134a484eea854d83840439a453",
@@ -2360,6 +2385,9 @@
         },
         {
             "m_Id": "a2545cc550a44846b4d703dcf3f7b225"
+        },
+        {
+            "m_Id": "6f1d93b5cfe742c4867dc866d8f192ee"
         }
     ]
 }

@@ -26,6 +26,7 @@ Material:
   m_Name: panningbfresnel_vfx_transparent
   m_Shader: {fileID: -6465566751694194690, guid: 63b54c79059cb7f4886c850c8702af22, type: 3}
   m_ValidKeywords:
+  - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
   - _ENABLE_FOG_ON_TRANSPARENT
   - _SURFACE_TYPE_TRANSPARENT
@@ -173,22 +174,23 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - USE_FOG: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
     - _AddPrecomputedVelocity: 0
     - _AlbedoAffectEmissive: 0
     - _AlphaCutoff: 0.5
-    - _AlphaCutoffEnable: 0
+    - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
-    - _AlphaDstBlend: 10
+    - _AlphaDstBlend: 1
     - _AlphaSrcBlend: 1
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
     - _Anisotropy: 0
-    - _BlendMode: 0
+    - _BlendMode: 1
     - _CoatMask: 0
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 2
@@ -206,7 +208,7 @@ Material:
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 1
-    - _DstBlend: 10
+    - _DstBlend: 1
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
     - _EmissiveIntensity: 1
@@ -284,13 +286,20 @@ Material:
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 4
-    - _ZTestGBuffer: 4
+    - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 0
     - alpha: 1
     - u_cloudSpeed: 0
     - u_distortAmount: 0
+    - u_flipFogOrder: 0
+    - u_heightFogDensity: 0
+    - u_heightFogEnd: 0
+    - u_heightFogStart: 0
     - u_lmPower: 0
+    - u_maxFog: 0
+    - u_maxFogDistance: 0
+    - u_minFogDistance: 0
     - u_offsetCloudTexture: 0
     - u_repeatBg: 0
     - u_repeatSky: 0
@@ -316,6 +325,8 @@ Material:
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
     - _color: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
     - u_rimColor: {r: 0, g: 0, b: 0, a: 0}
     - u_tint: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

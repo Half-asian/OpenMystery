@@ -24,7 +24,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: panningb_vfx_transparent
-  m_Shader: {fileID: -6465566751694194690, guid: 8096e88f85aee594ab5101b2d603c3f7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: ae752085cedcdde4d9d8ca380c4f5736, type: 3}
   m_ValidKeywords:
   - _ALPHATEST_ON
   - _DISABLE_SSR_TRANSPARENT
@@ -146,6 +146,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - USE_FOG: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -156,12 +157,12 @@ Material:
     - _AlphaCutoffPostpass: 0.5
     - _AlphaCutoffPrepass: 0.5
     - _AlphaCutoffShadow: 0.5
-    - _AlphaDstBlend: 10
+    - _AlphaDstBlend: 1
     - _AlphaSrcBlend: 1
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
     - _Anisotropy: 0
-    - _BlendMode: 0
+    - _BlendMode: 1
     - _CoatMask: 0
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 2
@@ -179,7 +180,7 @@ Material:
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 1
-    - _DstBlend: 10
+    - _DstBlend: 1
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
     - _EmissiveIntensity: 1
@@ -260,6 +261,14 @@ Material:
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 0
+    - alpha: 1
+    - u_flipFogOrder: 0
+    - u_heightFogDensity: 0
+    - u_heightFogEnd: 0
+    - u_heightFogStart: 0
+    - u_maxFog: 0
+    - u_maxFogDistance: 0
+    - u_minFogDistance: 0
     - u_speed: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
@@ -279,4 +288,6 @@ Material:
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

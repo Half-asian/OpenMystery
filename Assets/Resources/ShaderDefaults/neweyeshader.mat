@@ -142,6 +142,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_diffuseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_mask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -160,6 +164,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - USE_FOG: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -281,6 +286,8 @@ Material:
     - _ZWrite: 1
     - alpha: 1
     - u_PointLightSourceRangeInverse1: 0
+    - u_PointLightSourceRangeInverse2: 0
+    - u_PointLightSourceRangeInverse3: 0
     - u_SpotLightSourceInnerAngleCos1: 0
     - u_SpotLightSourceInnerAngleCos2: 0
     - u_SpotLightSourceInnerAngleCos3: 0
@@ -291,6 +298,13 @@ Material:
     - u_SpotLightSourceRangeInverse2: 0
     - u_SpotLightSourceRangeInverse3: 0
     - u_flatness: 1
+    - u_flipFogOrder: 0
+    - u_heightFogDensity: 0
+    - u_heightFogEnd: 0
+    - u_heightFogStart: 0
+    - u_maxFog: 0
+    - u_maxFogDistance: 0
+    - u_minFogDistance: 0
     - u_reflectionAmount: 0
     - u_reflectionAngle: 0
     - u_sideShadowEnd: 1
@@ -326,7 +340,11 @@ Material:
     - u_DirLightSourceDirection3: {r: 0, g: 0, b: 0, a: 0}
     - u_DirLightSourceDirection4: {r: 0, g: 0, b: 0, a: 0}
     - u_PointLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
     - u_PointLightSourcePosition1: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
+    - u_PointLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
     - u_SpotLightSourceColor1: {r: 0, g: 0, b: 0, a: 0}
     - u_SpotLightSourceColor2: {r: 0, g: 0, b: 0, a: 0}
     - u_SpotLightSourceColor3: {r: 0, g: 0, b: 0, a: 0}
@@ -337,6 +355,8 @@ Material:
     - u_SpotLightSourcePosition2: {r: 0, g: 0, b: 0, a: 0}
     - u_SpotLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 0, g: 0, b: 0, a: 1}
+    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
     - u_reflectionTintColor: {r: 0, g: 0, b: 0, a: 0}
     - u_specColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

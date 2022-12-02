@@ -14,6 +14,7 @@ namespace ModelLoading
     public class ModelMaterials
     {
 		public static List<string> lighting_layers = new List<string>();
+		public static bool explicit_ambient = false;
 
 		static Shader error_shader;
 
@@ -33,7 +34,10 @@ namespace ModelLoading
                 height_fog_color = new Color(float.Parse(fogsettings.heightFogColor[0], CultureInfo.InvariantCulture), float.Parse(fogsettings.heightFogColor[1], CultureInfo.InvariantCulture), float.Parse(fogsettings.heightFogColor[2], CultureInfo.InvariantCulture));
             mat.SetColor("u_heightFogColor", height_fog_color.gamma);
 
-            mat.SetFloat("u_heightFogDensity", fogsettings.heightFogDensity);
+			if (fogsettings.heightFogDensity != 1.0f) //1.0 actually seems to toggle off weirdly enough
+			{
+				mat.SetFloat("u_heightFogDensity", fogsettings.heightFogDensity);
+			}
             mat.SetFloat("u_heightFogStart", fogsettings.heightFogStart / 100.0f);
             mat.SetFloat("u_heightFogEnd", fogsettings.heightFogEnd / 100.0f);
             mat.SetFloat("u_maxFogDistance", fogsettings.maxDistance / 100.0f);
@@ -47,17 +51,14 @@ namespace ModelLoading
         }
         private static void setLightData(Material mat)
 		{
-			if (Scene.current.fogSettings != null)
+            if (Scene.current.fogSettings != null)
 				setFogData(mat);
-			if (Scene.current == null || Scene.current.Lighting == null || Scene.current.Lighting.layers == null)
-			{
-				return;
-			}
 
-			if (lighting_layers.Count == 0)
-			{
+			if (explicit_ambient == false)
 				mat.SetColor("u_AmbientLightSourceColor", Color.white.gamma);
-				return;
+            if (Scene.current == null || Scene.current.Lighting == null || Scene.current.Lighting.layers == null)
+			{
+                return;
 			}
 
 			foreach(var lighting_phase in lighting_layers) {
@@ -172,7 +173,8 @@ namespace ModelLoading
 					}
 				}
             }
-		}
+            explicit_ambient = false;
+        }
 
 		public static void setTexSwitches(Material mat, string tex_name)
         {
