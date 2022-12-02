@@ -54,13 +54,11 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public string last_finished_animation;
+
     public void setLastCamAnim(string animation)
     {
-        main_event_player.last_finished_animation = animation;
-        foreach (EventPlayer sequential_event_player in sequential_event_players)
-        {
-            sequential_event_player.last_finished_animation = animation;
-        }
+        last_finished_animation = animation;
     }
 
     public void notifyMoveComplete(string character)
@@ -207,8 +205,7 @@ public class EventManager : MonoBehaviour
 
     public bool areEventsActive()
     {
-        //if (main_event_player.event_stack.Count == 0 && main_event_player.block_duration == 0.0f && main_event_player.total_block == false)
-        if (main_event_player.event_stack.Count == 0)
+        if (main_event_player.event_stack.Count == 0 && main_event_player.block_duration == 0.0f && main_event_player.total_block == false)
         {
             //if (sequential_event_player.event_stack.Count == 0 && sequential_event_player.block_duration == 0.0f && sequential_event_player.total_block == false)
             return false;

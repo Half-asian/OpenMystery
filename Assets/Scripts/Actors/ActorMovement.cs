@@ -113,9 +113,13 @@ public partial class ActorController : Node
             
         while (gameObject.transform.position != destination_waypoint.getWorldPosition())
         {
-            Vector3 targetDirection = transform.position - next_waypoint.getWorldPosition();
-            transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
-            transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
+            if (transform.position != next_waypoint.getWorldPosition())
+            {
+                Vector3 targetDirection = transform.position - next_waypoint.getWorldPosition();
+                transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
+                transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
+            }
+
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (0.4f + speed) * Time.deltaTime);
 
             if (gameObject.transform.position == next_waypoint.getWorldPosition())
@@ -142,6 +146,10 @@ public partial class ActorController : Node
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, Time.deltaTime * 500);
             yield return null;
         }
+
+        if (walk_animation_sequence == null)
+            idle_animation_sequence = null;
+
         setCharacterIdle();
     }
 

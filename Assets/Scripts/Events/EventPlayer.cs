@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using static EventPlayer.ActiveMessageKeys;
 
 public class EventPlayer : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class EventPlayer : MonoBehaviour
         {
             string message = strings[0];
             List<string> keys = strings.GetRange(1, strings.Count - 1);
+            
             message_key_set.Add(new MessageKey(message, keys));
         }
 
@@ -53,7 +55,8 @@ public class EventPlayer : MonoBehaviour
             if (found_message_key != null)
             {
                 print();
-                message_key_set.Remove(found_message_key);
+                //message_key_set.Remove(found_message_key);
+                message_key_set.Clear(); //We actually only need to remove one message key to remove the block.
                 print();
                 return true;
             }
@@ -73,7 +76,8 @@ public class EventPlayer : MonoBehaviour
             if (found_message_key != null)
             {
                 print();
-                message_key_set.Remove(found_message_key);
+                //message_key_set.Remove(found_message_key);
+                message_key_set.Clear(); //We actually only need to remove one message key to remove the block.
                 print();
                 return true;
             }
@@ -98,7 +102,33 @@ public class EventPlayer : MonoBehaviour
                     }
                 }
                 count++;
+                Debug.Log(line);
             }
+        }
+
+        public void update()
+        {
+            List<string> actorsAwaitingMovement = new List<string>();
+            bool waiting_cam_anim = false;
+            foreach (var message in message_key_set)
+            {
+                if (message.message == "CharMovementEnded")
+                {
+                    actorsAwaitingMovement.AddRange(message.keys);
+                }
+                if (message.message == "CamAnimFinished")
+                    waiting_cam_anim = true;
+            }
+            foreach(var actor_instance_id in actorsAwaitingMovement)
+            {
+                if (!Actor.actor_controllers.ContainsKey(actor_instance_id) || Actor.actor_controllers[actor_instance_id].actor_state != ActorState.Walk)
+                {
+                    GameStart.event_manager.notifyMoveComplete(actor_instance_id);
+                }
+            }
+
+            if (waiting_cam_anim)
+                GameStart.event_manager.notifyCamAnimFinished(GameStart.event_manager.last_finished_animation);
 
 
         }
@@ -223,10 +253,10 @@ public class EventPlayer : MonoBehaviour
 
     public void runImmediateEvents()
     {
-        if (blocking_message_keys.checkRemoveMessageKey("CamAnimFinished", last_finished_animation))
-        {//Sometimes, a blocking key is called after the animation has finished playing. May be related to very precise timing.
-            removeBlock();
-            return;
+        blocking_message_keys.update();
+        foreach(var seq in awaiting_sequential_players)
+        {
+            seq.Item1.update();
         }
 
         block_duration -= Time.deltaTime;

@@ -45,7 +45,10 @@ public partial class ActorController : Node
     //Clean up everything from last state
     public void cleanupState()
     {
-        DestroyImmediate(GetComponent<ActorAnimSequence>());
+        foreach (var actoranimseq in GetComponents<ActorAnimSequence>())
+        {
+            DestroyImmediate(actoranimseq);
+        }
         destroyProps();
         foreach (GameObject particle in particles)
         {
@@ -71,14 +74,14 @@ public partial class ActorController : Node
 
     public void setCharacterIdle()
     {
-        var oldstate = actor_state;
         setActorState(ActorState.Idle);
-        if (oldstate != ActorState.Idle)
-            playIdleAnimation();
         finishMovement();
+        playIdleAnimation();
     }
     public void setCharacterWalk()
     {
+        if (actor_state == ActorState.Idle)
+            reset_animation = true;
         setActorState(ActorState.Walk);
         playWalkAnimation();
     }

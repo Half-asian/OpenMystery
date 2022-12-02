@@ -14,6 +14,8 @@ public abstract partial class Node : MonoBehaviour
     public Animation animation_component;
 
     IEnumerator currentAnimationAlerter;
+    IEnumerator shaderPlayer;
+
     public HPAnimation idle;
 
     Dictionary<string, SkinnedMeshRenderer> mesh_renderers;
@@ -65,40 +67,65 @@ public abstract partial class Node : MonoBehaviour
 
     public void queueAnimationOnComponent(HPAnimation animation, float fade_time = 0.4f)
     {
-        Debug.Log("queueAnimationOnComponent on " + name + " " + animation.anim_clip.name);
         queued_anim = animation;
         queued_anim_fade_time = MathF.Min(fade_time, 0.4f);
-
-        string new_name = "flop";
-        if (anim_flip_flop == true)
-        {
-            new_name = "flip";
-        }
-        animation_component.AddClip(queued_anim.anim_clip, new_name);
-
-        if (reset_animation)
-        {
-            Debug.Log("Playing immediately on " + name);
-            animation_component.Play(new_name);
-            queued_anim = null;
-            queued_anim_fade_time = 0.4f;
-        }
-        anim_flip_flop = !anim_flip_flop;
-    }
-
-    private void playAnimationOnComponent()
-    {
-        if (currentAnimationAlerter != null)
-            StopCoroutine(currentAnimationAlerter);
 
         string new_name = "flip";
         if (anim_flip_flop == true)
         {
             new_name = "flop";
         }
-        Debug.Log("Playing " + queued_anim.anim_clip.name + " on " + name);
-        Debug.Log("crossfading on " + name + " with time of " + queued_anim_fade_time);
+        //Debug.Log("queueAnimationOnComponent on " + name + " " + animation.anim_clip.name + " as " + new_name);
+        animation_component.AddClip(queued_anim.anim_clip, new_name);
 
+        if (reset_animation)
+        {
+            if (currentAnimationAlerter != null)
+                StopCoroutine(currentAnimationAlerter);
+            if (shaderPlayer != null)
+                StopCoroutine(shaderPlayer);
+
+            //Debug.Log("Instantly playing on " + name + " " + animation.anim_clip.name);
+            animation_component.Play(new_name);
+
+            currentAnimationAlerter = animationAlert(queued_anim.anim_clip);
+            StartCoroutine(currentAnimationAlerter);
+
+            if (queued_anim.shaderAnimations != null)
+            {
+                shaderPlayer = shaderAnimPlayer(queued_anim.shaderAnimations, queued_anim.anim_clip);
+                StartCoroutine(shaderPlayer);
+            }
+
+            queued_anim = null;
+            queued_anim_fade_time = 0.4f;
+            anim_flip_flop = !anim_flip_flop;
+        }
+    }
+
+    private void playAnimationOnComponent()
+    {
+        if (currentAnimationAlerter != null)
+            StopCoroutine(currentAnimationAlerter);
+        if (shaderPlayer != null)
+            StopCoroutine(shaderPlayer);
+
+        string new_name = "flip";
+        string old_name = "flop";
+        if (anim_flip_flop == true)
+        {
+            new_name = "flop";
+            old_name = "flip";
+        }
+        //Debug.Log("Playing " + queued_anim.anim_clip.name + " on " + name + " as " + new_name);
+        if (animation_component.GetClip(old_name) != null) {
+            //Debug.Log("crossfading on " + name + "animation: " + queued_anim.anim_clip.name + " to " + animation_component.GetClip(old_name).name + " with time of " + queued_anim_fade_time);
+
+            /*if (Configs.config_animation.Animation3D[animation_component.GetClip(old_name).name].wrapMode == "clamp") //Hack to crossfade clamped anims
+            {
+                animation_component.GetClip(old_name).wrapMode = WrapMode.ClampForever;
+            }*/
+        }
 
         animation_component.CrossFade(new_name, queued_anim_fade_time);
 
@@ -107,8 +134,11 @@ public abstract partial class Node : MonoBehaviour
 
         if (queued_anim.shaderAnimations != null)
         {
-            StartCoroutine(shaderAnimPlayer(queued_anim.shaderAnimations, queued_anim.anim_clip));
+            shaderPlayer = shaderAnimPlayer(queued_anim.shaderAnimations, queued_anim.anim_clip);
+            StartCoroutine(shaderPlayer);
         }
+
+        anim_flip_flop = !anim_flip_flop;
     }
 
 

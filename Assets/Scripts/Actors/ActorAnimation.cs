@@ -22,7 +22,7 @@ public partial class ActorController : Node
     public string idle_animation_sequence = null;
 
     private string walk_animation = null;
-
+    private string walk_animation_sequence = null;
 
     HPAnimation default_anim;
 
@@ -101,23 +101,26 @@ public partial class ActorController : Node
 
     public void replaceCharacterIdle(string anim_name)
     {
-        if (idle_animation == anim_name)
+        if (idle_animation == anim_name && idle_animation_sequence == null)
             return;
-
+        bool force_loop = false;
+        if (idle_animation_sequence != null)
+            force_loop = true;
+        if (idle_animation == anim_name)
+            anim_state = "loop";
         idle_animation = anim_name;
         idle_animation_sequence = null;
         idle_queued_animate = null;
         if (actor_state == ActorState.Idle)
         {
-            playIdleAnimation();
+            playIdleAnimation(force_loop);
         }
     }
 
     public void replaceCharacterIdleStaggered(string anim_name)
     {
-        if (idle_animation == anim_name)
+        if (idle_animation == anim_name && idle_animation_sequence == null)
             return;
-
         idle_animation = anim_name;
         idle_animation_sequence = null;
         idle_queued_animate = null;
@@ -167,6 +170,8 @@ public partial class ActorController : Node
         {
             throw new Exception("Tried to replace a characters walk sequence while not walking");
         }
+        walk_animation = null;
+        walk_animation_sequence = sequence_id;
         if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
             DestroyImmediate(GetComponent<ActorAnimSequence>());
         var seq_component = gameObject.AddComponent<ActorAnimSequence>();
@@ -261,7 +266,13 @@ public partial class ActorController : Node
         var animation = Configs.config_animation.Animation3D[animation_id];
 
         animation_current_loop = AnimationManager.loadAnimationClip(animation_id, model, config_hpactor, null, bone_mods:bone_mods);
-        animation_current_loop.anim_clip.wrapMode = WrapMode.Loop; //Always loop even if the animation config says clamp
+        //animation_current_loop.anim_clip.wrapMode = WrapMode.Loop; //Always loop even if the animation config says clamp
+        //Need some animation clips to clamp to crossfade properly. E.g. Y6C6 HOM Tonks to binss
+        //Possible alternate code if some animations freeze
+        //if (animation_current_intro != null || animation_current_exit != null)
+        //  animation_current_loop.anim_clip.wrapMode = WrapMode.Loop;
+
+
 
         if (animation.introAnim != null)
             animation_current_intro = AnimationManager.loadAnimationClip(animation.introAnim, model, config_hpactor, null, bone_mods: bone_mods);
@@ -277,6 +288,7 @@ public partial class ActorController : Node
         if (animation_previous_name != null && Configs.config_animation.Animation3D[animation_previous_name].wrapMode == "clamp")
         {
             force_loop = true;
+            //reset_animation = true;
         }
 
         if (force_loop)
@@ -312,6 +324,8 @@ public partial class ActorController : Node
             //else
             queueAnimationOnComponent(animation_current_loop);
             anim_state = "loop";
+            waitForAnimation = WaitForAnimation(animation_current_loop, "loop");
+            StartCoroutine(waitForAnimation);
         }
     }
 
@@ -324,8 +338,12 @@ public partial class ActorController : Node
         //I have no idea why
         //There seems to be no other way around this
         float start_time = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup <= animation.anim_clip.length + start_time - 0.01f) 
-           yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(animation.anim_clip.length);
+        //while (Time.realtimeSinceStartup <= animation.anim_clip.length + start_time - 0.01f) 
+        //   yield return new WaitForEndOfFrame();
+
+        GameStart.event_manager.notifyCharacterAnimationComplete(name, animation.anim_clip.name);
+
 
         if (current == "intro")
         {

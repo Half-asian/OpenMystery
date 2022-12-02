@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine;
+using System.Collections;
 public class InteractionQTE : Interaction
 {
     public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
@@ -18,7 +13,13 @@ public class InteractionQTE : Interaction
     public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
-        interactionComplete();
+        GameStart.current.StartCoroutine(delay());
 
+    }
+
+    private IEnumerator delay()
+    {
+        yield return new WaitForSeconds(3);
+        interactionComplete();
     }
 }

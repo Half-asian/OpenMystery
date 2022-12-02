@@ -160,6 +160,15 @@ public class Actor
         }
     }
 
+    public static void destroyCharacter(string character_name)
+    {
+        if (actor_controllers.ContainsKey(character_name))
+        {
+            actor_controllers[character_name].destroy();
+        }
+        actor_controllers.Remove(character_name);
+    }
+
     public static void despawnCharacterInScene(string character_name)
     {
         if (actor_controllers.ContainsKey(character_name))
