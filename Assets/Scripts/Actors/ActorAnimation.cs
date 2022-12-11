@@ -183,6 +183,7 @@ public partial class ActorController : Node
 
     public void customAnimationCharacter(string anim_name)
     {
+        reset_animation = true;
         var new_anim = AnimationManager.loadAnimationClip(anim_name, model, config_hpactor, null, bone_mods: bone_mods);
         queueAnimationOnComponent(new_anim);
     }
@@ -314,7 +315,6 @@ public partial class ActorController : Node
             //    queueAnimationOnComponent(animation_current_intro);//, 0.0f);
             //else
             queueAnimationOnComponent(animation_current_intro);
-            Debug.Log("Playing intro " + Time.frameCount);
             waitForAnimation = WaitForAnimation(animation_current_intro, "intro", false, false);
             StartCoroutine(waitForAnimation);
         }
@@ -335,7 +335,6 @@ public partial class ActorController : Node
                 queueAnimationOnComponent(animation_current_loop);//, 0.0f);
             else
                 queueAnimationOnComponent(animation_current_loop);
-            Debug.Log("Playing loop " + Time.frameCount);
             next_anim_state = "loop";
             waitForAnimation = WaitForAnimation(animation_current_loop, "loop");
             StartCoroutine(waitForAnimation);

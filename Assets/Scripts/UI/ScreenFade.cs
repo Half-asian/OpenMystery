@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 public class ScreenFade : MonoBehaviour
 {
-    public enum FadeState {
+    public enum FadeState
+    {
         faded,
         unfaded,
     }
@@ -60,7 +61,7 @@ public class ScreenFade : MonoBehaviour
         AnimationClip anim_clip = new AnimationClip();
         anim_clip.legacy = true;
         List<Keyframe> keyframes = new List<Keyframe>();
-        keyframes.Add(new Keyframe(0.0f, 1.0f));
+        keyframes.Add(new Keyframe(Mathf.Min(0.15f, time - 0.01f), 1.0f));
         keyframes.Add(new Keyframe(time, 0.0f));
         AnimationCurve curve = new AnimationCurve(keyframes.ToArray());
         anim_clip.SetCurve("", typeof(Image), "m_Color.a", curve);
@@ -69,6 +70,7 @@ public class ScreenFade : MonoBehaviour
         current.animation_component.Play("default");
         waitfade = current.StartCoroutine(waitFade(time));
     }
+
 
     public static void fadeTo(float time, Color color, bool force = false)
     {
@@ -85,7 +87,10 @@ public class ScreenFade : MonoBehaviour
         anim_clip.legacy = true;
         List<Keyframe> keyframes = new List<Keyframe>();
         keyframes.Add(new Keyframe(0.0f, 0.0f));
-        keyframes.Add(new Keyframe(time, 1.0f));
+        if (time - 0.15 <= 0.0f)
+            keyframes.Add(new Keyframe(time, 1.0f));
+        else
+            keyframes.Add(new Keyframe(time - 0.15f, 1.0f));
         AnimationCurve curve = new AnimationCurve(keyframes.ToArray());
         anim_clip.SetCurve("", typeof(Image), "m_Color.a", curve);
         anim_clip.wrapMode = WrapMode.ClampForever;
