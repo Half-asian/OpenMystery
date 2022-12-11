@@ -23,17 +23,22 @@ public abstract partial class Node : MonoBehaviour
     bool anim_flip_flop = false;
 
     public HPAnimation queued_anim = null;
-    public float queued_anim_fade_time = 0.4f;
 
     public bool reset_animation = true;
+    private bool remove_reset = false;
 
     private void Update()
     {
         if (queued_anim != null && reset_animation == false)
             playAnimationOnComponent();
 
+        if (remove_reset == true)
+        {
+            reset_animation = false;
+            remove_reset = false;
+        }
+
         queued_anim = null;
-        queued_anim_fade_time = 0.4f;
     }
 
     public void setup(Model _model)
@@ -64,10 +69,9 @@ public abstract partial class Node : MonoBehaviour
         Destroy(model.game_object);
     }
 
-    public void queueAnimationOnComponent(HPAnimation animation, float fade_time = 0.3f)
+    public void queueAnimationOnComponent(HPAnimation animation)
     {
         queued_anim = animation;
-        queued_anim_fade_time = MathF.Min(fade_time, 0.3f);
 
         string new_name = "flip";
         if (anim_flip_flop == true)
@@ -77,15 +81,15 @@ public abstract partial class Node : MonoBehaviour
         //Debug.Log("queueAnimationOnComponent on " + name + " " + animation.anim_clip.name + " as " + new_name);
         animation_component.AddClip(queued_anim.anim_clip, new_name);
 
-        if (reset_animation)
+        if (reset_animation) //This needs to be on queue to prevent t-poses.
         {
-            reset_animation = false;
+            remove_reset = true;
             if (currentAnimationAlerter != null)
                 StopCoroutine(currentAnimationAlerter);
             if (shaderPlayer != null)
                 StopCoroutine(shaderPlayer);
 
-            //Debug.Log("Instantly playing on " + name + " " + animation.anim_clip.name);
+            //Debug.Log("Instantyly Playing " + queued_anim.anim_clip.name + " on " + name + " as " + new_name + " at " + Time.frameCount);
             animation_component.Play(new_name);
 
             currentAnimationAlerter = animationAlert(queued_anim.anim_clip);
@@ -98,7 +102,6 @@ public abstract partial class Node : MonoBehaviour
             }
 
             queued_anim = null;
-            queued_anim_fade_time = 0.4f;
             anim_flip_flop = !anim_flip_flop;
         }
     }
@@ -117,7 +120,7 @@ public abstract partial class Node : MonoBehaviour
             new_name = "flop";
             old_name = "flip";
         }
-        //Debug.Log("Playing " + queued_anim.anim_clip.name + " on " + name + " as " + new_name);
+        //Debug.Log("Playing " + queued_anim.anim_clip.name + " on " + name + " as " + new_name + " at " + Time.frameCount);
         if (animation_component.GetClip(old_name) != null) {
             //Debug.Log("crossfading on " + name + "animation: " + queued_anim.anim_clip.name + " to " + animation_component.GetClip(old_name).name + " with time of " + queued_anim_fade_time);
 
@@ -127,7 +130,7 @@ public abstract partial class Node : MonoBehaviour
             }*/
         }
 
-        animation_component.CrossFade(new_name, queued_anim_fade_time);
+        animation_component.CrossFade(new_name, 0.3f);
 
         currentAnimationAlerter = animationAlert(queued_anim.anim_clip);
         StartCoroutine(currentAnimationAlerter);

@@ -216,6 +216,7 @@ public class Prop : Node
             }
         }
 
+        prop.reset_animation = true;
         if (prop_locator.animation != null)
         {
             HPAnimation animation = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);

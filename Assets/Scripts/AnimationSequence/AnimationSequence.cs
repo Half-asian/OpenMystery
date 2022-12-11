@@ -158,7 +158,8 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     protected void destroyProps()
     {
-        base_node.destroyProps();
+        if (base_node != null)
+            base_node.destroyProps();
     }
 
     protected static string getBroomSkinName(string actor_id)
