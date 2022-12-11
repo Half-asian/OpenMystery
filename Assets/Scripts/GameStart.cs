@@ -55,6 +55,11 @@ public class GameStart : MonoBehaviour
         }
     }
 
+    public static void Log(string message)
+    {
+        Debug.Log(message);
+    }
+
     public Model addPatchToCharacter(string character_name, string patch_name, Dictionary<string, Transform> parent_bones)
     {
         Debug.Log("add patch " + patch_name + " to " + character_name );
@@ -95,7 +100,7 @@ public class GameStart : MonoBehaviour
         {
             GameObject.Destroy(g);
         }
-
+        Resources.UnloadUnusedAssets();
         onReturnToMenu.Invoke();
         menu_background.spawnMenuBackground();
     }

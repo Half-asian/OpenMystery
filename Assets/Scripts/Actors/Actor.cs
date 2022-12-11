@@ -27,9 +27,10 @@ public class Actor
         foreach (ActorController ac in actor_controllers_pool)
         {
             ac.destroy();
+            
         }
-        actor_controllers_pool = new List<ActorController>();
-        actor_controllers = new Dictionary<string, ActorController>();
+        actor_controllers_pool.Clear();
+        actor_controllers.Clear();
     }
 
     public static ActorController spawnActor(string hpactor_id, string waypoint_id, string instance_id)
@@ -165,6 +166,7 @@ public class Actor
         if (actor_controllers.ContainsKey(character_name))
         {
             actor_controllers[character_name].destroy();
+            actor_controllers[character_name] = null;
         }
         actor_controllers.Remove(character_name);
     }
