@@ -30,7 +30,15 @@ public class LocationScenarioMenu : MonoBehaviour
 
         if (location.defaultScenarios != null) //Pre-add these
         {
-            options.Add(location.defaultScenarios[0]);
+            foreach(var default_scenario in location.defaultScenarios)
+            {
+                if (Configs.config_scenario.Scenario[default_scenario].activeDefaultPredicate == null ||
+                    Predicate.parsePredicate(Configs.config_scenario.Scenario[default_scenario].activeDefaultPredicate))
+                {
+                    options.Add(default_scenario);
+                    break;
+                }
+            }
         }
 
         if (Location.activeScenarios.ContainsKey(location))

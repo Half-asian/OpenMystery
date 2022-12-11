@@ -55,6 +55,7 @@ public partial class NewPredicate
         {"companionLevel"               , new Func<SymbolConstantString, SymbolConstantInteger >(companionLevel) },
         {"numCompletedDatesWithPartner" , new Func<SymbolConstantString, SymbolConstantInteger>(numCompletedDatesWithPartner) },
         {"attributeLevel"               , new Func<SymbolConstantString, SymbolConstantInteger>(attributeLevel) },
+        {"hasCompletedNux"              , new Func<SymbolConstantBool>(hasCompletedNux) },
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -195,7 +196,7 @@ public partial class NewPredicate
 
     static SymbolConstantBool isTimedPromoActive(SymbolConstantString promo_id)
     {
-        return new SymbolConstantBool(false); //TODO
+        return new SymbolConstantBool(TimedPromo.isTimedPromoActive(promo_id.value));
     }
 
     static SymbolConstantBool isGoalInProgress(SymbolConstantString goal_id)
@@ -331,5 +332,10 @@ public partial class NewPredicate
     static SymbolConstantInteger attributeLevel(SymbolConstantString attribute)
     {
         return new SymbolConstantInteger(100);
+    }
+
+    static SymbolConstantBool hasCompletedNux()
+    {
+        return new SymbolConstantBool(true);
     }
 }

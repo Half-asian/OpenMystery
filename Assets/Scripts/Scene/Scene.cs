@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using ModelLoading;
 using System.Globalization;
+using static SceneEnvOverrides;
+
 public class Scene
 {
     public static Model scene_model;
@@ -40,8 +42,11 @@ public class Scene
             scene_has_changed = true;
 
         current = Configs.config_scene.Scene[scene_id];
-
+        overrideScene(ref current);
+        Debug.Log(current != null);
+        Debug.Log(current.Lighting != null);
         List<string> related_scenes = addMasterSceneItems(current);
+
 
         if (scene_has_changed)
         {
@@ -75,7 +80,137 @@ public class Scene
             }
         }
         Debug.Log("Spawning scene model");
-        scene_model = ModelManager.loadModel(current.envId);
+        scene_model = ModelManager.loadModel(getEnvOverride(current.envId));
+    }
+
+    private static string getEnvOverride(string envId)
+    {
+        foreach(var envOverride in Configs.config_scene_env_override.EnvOverride)
+        {
+            if (envOverride.envId == envId) {
+                if (TimedPromo.isTimedPromoActive(envOverride.timedPromoId))
+                {
+                    if (envOverride.exceptions == null ||
+                        !envOverride.exceptions.Contains(Scenario.current.scenario_config.scenarioId))
+                    {
+                        if (envOverride.predicate == null ||
+                            Predicate.parsePredicate(envOverride.predicate)){
+                            Debug.Log("Overrideing " + envId + " with " + envOverride.overrideEnvId);
+
+                            return envOverride.overrideEnvId;
+                        }
+                    }
+                }
+            }
+        }
+        return envId;
+    }
+
+    private static void overrideScene(ref ConfigScene._Scene current)
+    {
+        string scene_override_id = getSceneOverride(current.layoutId);
+        if (scene_override_id == current.layoutId)
+            return;
+        Debug.Log("OVERRIDING");
+        var scene_override = Configs.config_scene.Scene[scene_override_id];
+        if (scene_override.cameras != null)
+        {
+            if (current.cameras == null)
+                current.cameras = new List<ConfigScene._Scene.Camera>();
+            if (current.camera_dict == null)
+                current.camera_dict = new Dictionary<string, ConfigScene._Scene.Camera>();
+            current.cameras.AddRange(scene_override.cameras);
+            foreach(var camera in scene_override.cameras)
+            {
+                current.camera_dict[camera.name] = camera;
+            }
+        }
+        if (scene_override.proplocators != null)
+        {
+            if (current.proplocators == null)
+                current.proplocators = new List<ConfigScene._Scene.PropLocator>();
+            if (current.proplocator_dict == null)
+                current.proplocator_dict = new Dictionary<string, ConfigScene._Scene.PropLocator>();
+            current.proplocators.AddRange(scene_override.proplocators);
+            foreach (var proplocator in scene_override.proplocators)
+            {
+                current.proplocator_dict[proplocator.name] = proplocator;
+            }
+        }
+        if (scene_override.waypoints != null)
+        {
+            if (current.waypoints == null)
+                current.waypoints = new List<ConfigScene._Scene.WayPoint>();
+            if (current.waypoint_dict == null)
+                current.waypoint_dict = new Dictionary<string, ConfigScene._Scene.WayPoint>();
+            current.waypoints.AddRange(scene_override.waypoints);
+            foreach (var waypoint in scene_override.waypoints)
+            {
+                if (!current.waypoint_dict.ContainsKey(waypoint.name)) //Don't overwrite, seems worse
+                    current.waypoint_dict[waypoint.name] = waypoint;
+            }
+        }
+        if (scene_override.waypointconnections != null)
+        {
+            if (current.waypointconnections == null)
+                current.waypointconnections = new List<ConfigScene._Scene.WayPointConnection>();
+            current.waypointconnections.AddRange(scene_override.waypointconnections);
+        }
+        if (scene_override.hotspots != null)
+        {
+            if (current.hotspots == null)
+                current.hotspots = new List<ConfigScene._Scene.HotSpot>();
+            if (current.hotspot_dict == null)
+                current.hotspot_dict = new Dictionary<string, ConfigScene._Scene.HotSpot>();
+            current.hotspots.AddRange(scene_override.hotspots);
+            foreach (var hotspot in scene_override.hotspots)
+            {
+                current.hotspot_dict[hotspot.name] = hotspot;
+            }
+        }
+        if (scene_override.Lighting != null)
+            current.Lighting = scene_override.Lighting;
+        if (scene_override.fogSettings != null)
+            current.fogSettings = scene_override.fogSettings;
+        if (scene_override.envmaterials != null) {
+            if (current.material_dict == null)
+                current.material_dict = new Dictionary<string, ConfigScene._Scene.Material>();
+            current.envmaterials = scene_override.envmaterials;
+            foreach(var envMaterial in scene_override.envmaterials.materials)
+            {
+                current.material_dict[envMaterial.nodeName] = envMaterial;
+            }
+
+        }
+        if (scene_override.layoutId != null)
+            current.layoutId = scene_override.layoutId;
+        if (scene_override.envId != null)
+            current.envId = scene_override.envId;
+    }
+
+    private static string getSceneOverride(string sceneId)
+    {
+        Debug.Log("Checking Scene override " + sceneId);
+        foreach (var sceneOverride in Configs.config_scene_env_override.SceneOverride)
+        {
+            if (sceneOverride.masterSceneId == sceneId)
+            {
+                if (TimedPromo.isTimedPromoActive(sceneOverride.timedPromoId))
+                {
+                    if (sceneOverride.exceptions == null ||
+                        !sceneOverride.exceptions.Contains(Scenario.current.scenario_config.scenarioId))
+                    {
+                        if (sceneOverride.predicate == null ||
+                            Predicate.parsePredicate(sceneOverride.predicate))
+                        {
+                            Debug.Log("Found Scene override " + sceneOverride.overrideSceneId);
+                            return sceneOverride.overrideSceneId;
+                        }
+                    }
+                }
+            }
+        }
+        return sceneId;
     }
 
     public static void spawnLights()
@@ -94,8 +229,6 @@ public class Scene
        
         foreach(var light in current.Lighting.lights.Values)
         {
-            Debug.Log("Spawning light type " + light.type + " with colour " + light.color[0]);
-
             switch (light.type)
             {
                 case "directionalLight":
@@ -255,7 +388,10 @@ public class Scene
             Transform child = scene_model.game_object.transform.GetChild(c);
             if (!current.material_dict.ContainsKey(child.name))
                 continue;
-            Material mat = child.GetComponent<MeshRenderer>().material;
+            var meshrenderer = child.GetComponent<MeshRenderer>();
+            if (meshrenderer == null)
+                continue;
+            Material mat = meshrenderer.material;
             var material = current.material_dict[child.name];
 
             if (material.stringValueKeys != null)
@@ -341,67 +477,71 @@ public class Scene
             master_scenes = new List<string>();
         if (!master_scenes.Contains(current_scene.layoutId))
             master_scenes.Add(current_scene.layoutId);
-        if (current_scene.masterSceneId != null && !master_scenes.Contains(current_scene.masterSceneId))
-            master_scenes.Add(current_scene.masterSceneId);
 
-        if (current_scene.masterSceneId == null)
+        string master_scene_id = getSceneOverride(current_scene.masterSceneId);
+        
+
+        if (master_scene_id != null && !master_scenes.Contains(master_scene_id))
+            master_scenes.Add(master_scene_id);
+
+        if (master_scene_id == null)
         {
             return master_scenes;
         }
-        if (!Configs.config_scene.Scene.ContainsKey(current_scene.masterSceneId))
+        if (!Configs.config_scene.Scene.ContainsKey(master_scene_id))
         {
             return master_scenes;
         }
-        if (Configs.config_scene.Scene[current_scene.masterSceneId].masterSceneId != null)
+        if (Configs.config_scene.Scene[master_scene_id].masterSceneId != null)
         {
-            master_scenes = addMasterSceneItems(Configs.config_scene.Scene[current_scene.masterSceneId], master_scenes);
+            master_scenes = addMasterSceneItems(Configs.config_scene.Scene[master_scene_id], master_scenes);
         }
 
-        if (Configs.config_scene.Scene[current_scene.masterSceneId].camera_dict != null)
+        if (Configs.config_scene.Scene[master_scene_id].camera_dict != null)
         {
             if (current_scene.camera_dict == null)
             {
                 current_scene.camera_dict = new Dictionary<string, ConfigScene._Scene.Camera>();
             }
-            foreach (string master_camera_name in Configs.config_scene.Scene[current_scene.masterSceneId].camera_dict.Keys)
+            foreach (string master_camera_name in Configs.config_scene.Scene[master_scene_id].camera_dict.Keys)
             {
                 if (!current_scene.camera_dict.ContainsKey(master_camera_name))
                 {
-                    current_scene.camera_dict[master_camera_name] = Configs.config_scene.Scene[current_scene.masterSceneId].camera_dict[master_camera_name];
+                    current_scene.camera_dict[master_camera_name] = Configs.config_scene.Scene[master_scene_id].camera_dict[master_camera_name];
                 }
             }
         }
 
-        if (Configs.config_scene.Scene[current_scene.masterSceneId].waypoint_dict != null)
+        if (Configs.config_scene.Scene[master_scene_id].waypoint_dict != null)
         {
             if (current_scene.waypoint_dict == null)
             {
                 current_scene.waypoint_dict = new Dictionary<string, ConfigScene._Scene.WayPoint>();
             }
-            foreach (string master_waypoint_name in Configs.config_scene.Scene[current_scene.masterSceneId].waypoint_dict.Keys)
+            foreach (string master_waypoint_name in Configs.config_scene.Scene[master_scene_id].waypoint_dict.Keys)
             {
                 if (!current_scene.waypoint_dict.ContainsKey(master_waypoint_name))
                 {
-                    current_scene.waypoint_dict[master_waypoint_name] = Configs.config_scene.Scene[current_scene.masterSceneId].waypoint_dict[master_waypoint_name];
+                    current_scene.waypoint_dict[master_waypoint_name] = Configs.config_scene.Scene[master_scene_id].waypoint_dict[master_waypoint_name];
                 }
             }
         }
-        if (Configs.config_scene.Scene[current_scene.masterSceneId].proplocator_dict != null)
+        if (Configs.config_scene.Scene[master_scene_id].proplocator_dict != null)
         {
             if (current_scene.proplocator_dict == null)
             {
                 current_scene.proplocator_dict = new Dictionary<string, ConfigScene._Scene.PropLocator>();
             }
 
-            foreach (string master_proplocator_name in Configs.config_scene.Scene[current_scene.masterSceneId].proplocator_dict.Keys)
+            foreach (string master_proplocator_name in Configs.config_scene.Scene[master_scene_id].proplocator_dict.Keys)
             {
                 if (!current_scene.proplocator_dict.ContainsKey(master_proplocator_name))
                 {
-                    current_scene.proplocator_dict[master_proplocator_name] = Configs.config_scene.Scene[current_scene.masterSceneId].proplocator_dict[master_proplocator_name];
+                    current_scene.proplocator_dict[master_proplocator_name] = Configs.config_scene.Scene[master_scene_id].proplocator_dict[master_proplocator_name];
                 }
                 else
                 {
-                    var master_pl = Configs.config_scene.Scene[current_scene.masterSceneId].proplocator_dict[master_proplocator_name];
+                    var master_pl = Configs.config_scene.Scene[master_scene_id].proplocator_dict[master_proplocator_name];
                     var child_pl = current_scene.proplocator_dict[master_proplocator_name];
                     if (master_pl.material_dict != null)
                     {
@@ -416,23 +556,23 @@ public class Scene
                 }
             }
         }
-        if (Configs.config_scene.Scene[current_scene.masterSceneId].hotspot_dict != null)
+        if (Configs.config_scene.Scene[master_scene_id].hotspot_dict != null)
         {
             if (current_scene.hotspot_dict == null)
             {
                 current_scene.hotspot_dict = new Dictionary<string, ConfigScene._Scene.HotSpot>();
             }
 
-            foreach (string master_hotspot_name in Configs.config_scene.Scene[current_scene.masterSceneId].hotspot_dict.Keys)
+            foreach (string master_hotspot_name in Configs.config_scene.Scene[master_scene_id].hotspot_dict.Keys)
             {
                 if (!current_scene.hotspot_dict.ContainsKey(master_hotspot_name))
                 {
-                    current_scene.hotspot_dict[master_hotspot_name] = Configs.config_scene.Scene[current_scene.masterSceneId].hotspot_dict[master_hotspot_name];
+                    current_scene.hotspot_dict[master_hotspot_name] = Configs.config_scene.Scene[master_scene_id].hotspot_dict[master_hotspot_name];
                 }
             }
         }
 
-        if (Configs.config_scene.Scene[current_scene.masterSceneId].Lighting != null)
+        if (Configs.config_scene.Scene[master_scene_id].Lighting != null)
         {
             if (current_scene.Lighting == null)
                 current_scene.Lighting = new ConfigScene._Scene._Lighting();
@@ -441,40 +581,40 @@ public class Scene
             if (current_scene.Lighting.layers == null)
                 current_scene.Lighting.layers = new Dictionary<string, ConfigScene._Scene._Lighting.Layer>();
 
-            foreach (string master_light_name in Configs.config_scene.Scene[current_scene.masterSceneId].Lighting.lights.Keys)
+            foreach (string master_light_name in Configs.config_scene.Scene[master_scene_id].Lighting.lights.Keys)
             {
                 if (!current_scene.Lighting.lights.ContainsKey(master_light_name))
                 {
-                    current_scene.Lighting.lights[master_light_name] = Configs.config_scene.Scene[current_scene.masterSceneId].Lighting.lights[master_light_name];
+                    current_scene.Lighting.lights[master_light_name] = Configs.config_scene.Scene[master_scene_id].Lighting.lights[master_light_name];
                 }
             }
-            foreach (string master_layer_name in Configs.config_scene.Scene[current_scene.masterSceneId].Lighting.layers.Keys)
+            foreach (string master_layer_name in Configs.config_scene.Scene[master_scene_id].Lighting.layers.Keys)
             {
                 if (!current_scene.Lighting.layers.ContainsKey(master_layer_name))
                 {
-                    current_scene.Lighting.layers[master_layer_name] = Configs.config_scene.Scene[current_scene.masterSceneId].Lighting.layers[master_layer_name];
+                    current_scene.Lighting.layers[master_layer_name] = Configs.config_scene.Scene[master_scene_id].Lighting.layers[master_layer_name];
                 }
             }
         }
 
-        if (Configs.config_scene.Scene[current_scene.masterSceneId].material_dict != null)
+        if (Configs.config_scene.Scene[master_scene_id].material_dict != null)
         {
             if (current_scene.material_dict == null)
                 current_scene.material_dict = new Dictionary<string, ConfigScene._Scene.Material>();
 
-            foreach (string material_name in Configs.config_scene.Scene[current_scene.masterSceneId].material_dict.Keys)
+            foreach (string material_name in Configs.config_scene.Scene[master_scene_id].material_dict.Keys)
             {
                 if (!current_scene.material_dict.ContainsKey(material_name))
                 {
-                    current_scene.material_dict[material_name] = Configs.config_scene.Scene[current_scene.masterSceneId].material_dict[material_name];
+                    current_scene.material_dict[material_name] = Configs.config_scene.Scene[master_scene_id].material_dict[material_name];
                 }
             }
         }
 
-        if (Configs.config_scene.Scene[current_scene.masterSceneId].fogSettings != null)
+        if (Configs.config_scene.Scene[master_scene_id].fogSettings != null)
         {
             if (current_scene.fogSettings == null)
-                current_scene.fogSettings = Configs.config_scene.Scene[current_scene.masterSceneId].fogSettings;
+                current_scene.fogSettings = Configs.config_scene.Scene[master_scene_id].fogSettings;
         }
 
         return master_scenes;

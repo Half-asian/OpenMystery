@@ -38,6 +38,10 @@ namespace ModelLoading
 			{
 				mat.SetFloat("u_heightFogDensity", fogsettings.heightFogDensity);
 			}
+			else
+			{
+				mat.SetFloat("u_heightFogDensity", 0.0f);
+			}
             mat.SetFloat("u_heightFogStart", fogsettings.heightFogStart / 100.0f);
             mat.SetFloat("u_heightFogEnd", fogsettings.heightFogEnd / 100.0f);
             mat.SetFloat("u_maxFogDistance", fogsettings.maxDistance / 100.0f);
@@ -242,9 +246,6 @@ namespace ModelLoading
 
 			mat = new Material(default_material);
 
-			setLightData(mat);
-
-
 			if (shader_name == "avatarfaceshader")
 			{
 				mat.SetTexture("u_facePaintTexture", (Texture)Resources.Load("Shaders/transparent"));
@@ -295,8 +296,9 @@ namespace ModelLoading
 					setIntSwitches(mat, material.intSettingIds[i], material.intSettingValues[i]);
 				}
 			}
+            setLightData(mat);
 
-			if (material.ReceiveFog == 0)
+            if (material.ReceiveFog == 0)
 			{
 				mat.SetFloat("USE_FOG", 0.0f);
 			}
@@ -367,6 +369,8 @@ namespace ModelLoading
                 int[] brow_color_codes = Configs.config_avatar_attribute_colors.AvatarAttributeColors["browColor"].colorConfigs[brow_color_id].codes;
                 Color b = new Color(brow_color_codes[0] / 255.0f, brow_color_codes[1] / 255.0f, brow_color_codes[2] / 255.0f, 1.0f).gamma;
                 mat.SetColor("u_browColor", b);
+
+
             }
 			return mat;
 		}

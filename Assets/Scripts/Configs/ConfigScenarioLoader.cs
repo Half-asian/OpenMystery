@@ -37,7 +37,7 @@ public class ConfigScenario : Config<ConfigScenario>
 
         public string bgSoundPlaylistId;
         public string musicPlaylistId;
-
+        public string activeDefaultPredicate;
         public bool useRobeOverride;
     }
 

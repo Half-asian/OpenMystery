@@ -159,6 +159,7 @@ public class Configs{
     public static ConfigShaderAnimation config_shader_animation;
     public static ConfigQuizGroup config_quiz_group;
     public static ConfigQuiz config_quiz;
+    public static SceneEnvOverrides config_scene_env_override;
 
     public static Dictionary<string, ConfigSound._Ambient> ambient_dict;
     public static Dictionary<string, ConfigSound._Playlist> playlist_dict;
@@ -506,6 +507,9 @@ public class Configs{
         config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
         config_quiz_group = ConfigQuizGroup.getJObjectsConfigsListST("QuizGroup");
         config_quiz = ConfigQuiz.getJObjectsConfigsListST("Quiz");
+
+        config_scene_env_override = SceneEnvOverrides.getJObjectsConfigsListST("SceneOverride");
+
         Configs.config_3dmodel.createMaterialDict();
     }
 }

@@ -28,7 +28,7 @@ public class ConfigScene : Config<ConfigScene>
             public float panSpeedModifier;
             public string animation;
         }
-        public Camera[] cameras;
+        public List<Camera> cameras;
         public Dictionary<string, Camera> camera_dict;
 
         public string envId;
@@ -50,14 +50,14 @@ public class ConfigScene : Config<ConfigScene>
             public string neededTextureKeys;
             public Dictionary<string, Material> material_dict;
         }
-        public PropLocator[] proplocators;
+        public List<PropLocator> proplocators;
         public Dictionary<string, PropLocator> proplocator_dict;
         [System.Serializable]
         public class WayPointConnection
         {
             public string[] connection;
         }
-        public WayPointConnection[] waypointconnections;
+        public List<WayPointConnection> waypointconnections;
         [System.Serializable]
         public class WayPoint
         {
@@ -87,7 +87,7 @@ public class ConfigScene : Config<ConfigScene>
             }
 
         }
-        public WayPoint[] waypoints;
+        public List<WayPoint> waypoints;
         public Dictionary<string, WayPoint> waypoint_dict;
         [System.Serializable]
         public class HotSpot
@@ -96,7 +96,7 @@ public class ConfigScene : Config<ConfigScene>
             public float[] rotation;
             public string name;
         }
-        public HotSpot[] hotspots;
+        public List<HotSpot> hotspots;
         public Dictionary<string, HotSpot> hotspot_dict;
 
         [System.Serializable]
@@ -202,5 +202,37 @@ public class ConfigScene : Config<ConfigScene>
     public static void getConfig()
     {
         Configs.config_scene = getJObjectsConfigsListST("Scene");
+    }
+}
+
+public class SceneEnvOverrides : Config<SceneEnvOverrides>
+{
+    [System.Serializable]
+
+    public class _SceneOverride
+    {
+        public string masterSceneId;
+        public string overrideSceneId;
+        public string timedPromoId;
+        public string predicate;
+        public List<string> exceptions;
+    }
+
+    public _SceneOverride[] SceneOverride;
+
+    public class _EnvOverride
+    {
+        public string envId;
+        public string overrideEnvId;
+        public string timedPromoId;
+        public string predicate;
+        public List<string> exceptions;
+    }
+
+    public _EnvOverride[] EnvOverride;
+
+    public override SceneEnvOverrides combine(List<SceneEnvOverrides> other_list)
+    {
+        return this;
     }
 }
