@@ -225,6 +225,7 @@ public class ConfigEncounterChoice : Config<ConfigEncounterChoice>
         public string name;
         public string[] playbackScripts;
         public string[] playerChoiceBlacklist;
+        public string[] playerChoiceWhitelist;
         public int unlockLevel;
     }
 

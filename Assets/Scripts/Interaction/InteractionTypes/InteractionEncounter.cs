@@ -40,9 +40,16 @@ public class InteractionEncounter : Interaction
     {
         if (encounter_id == config_interaction.encounterId)
         {
-            Debug.Log("Encounter complete");
-            EncounterManager.onEncounterFinished -= encounterComplete;
-            interactionComplete();
+            if (succeeded == true)
+            {
+                Debug.Log("Encounter complete");
+                EncounterManager.onEncounterFinished -= encounterComplete;
+                interactionComplete();
+            }
+            else
+            {
+                is_active = true;
+            }
         }
     }
 

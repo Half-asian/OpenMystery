@@ -109,6 +109,10 @@ public class SocialQuizUI : MonoBehaviour
             {
                 result = Instantiate(Resources.Load<GameObject>("UI/SocialQuiz/CorrectChoiceResult"));
             }
+            else if (okay_choice_ids.Contains(choice_id))
+            {
+                result = Instantiate(Resources.Load<GameObject>("UI/SocialQuiz/OkayChoiceResult"));
+            }
             else
             {
                 result = Instantiate(Resources.Load<GameObject>("UI/SocialQuiz/IncorrectChoiceResult"));

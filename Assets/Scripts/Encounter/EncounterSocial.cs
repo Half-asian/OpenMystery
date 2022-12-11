@@ -16,6 +16,8 @@ public class EncounterSocial : Encounter
 
     private string current_mood = "negative";
 
+    private int question_index = 0; //a question index that's reset on mood change.
+
     public EncounterSocial(ConfigEncounter._Encounter _encounter) {
 
         Debug.Log("Starting Encounter Social");
@@ -56,11 +58,14 @@ public class EncounterSocial : Encounter
         //EventManager.all_script_events_finished_event += finished;
 
     }
-
     private void onDialogueFinished(string dialogue_id)
     {
         DialogueManager.onDialogueFinishedEventPrimary -= onDialogueFinished;
+        startQuestion();
+    }
 
+    private void startQuestion()
+    {
         string mood_id = "";
         switch (current_mood)
         {
@@ -78,13 +83,28 @@ public class EncounterSocial : Encounter
 
         var answer_pool = new List<string>(config_encounter.playerChoices);
 
-        //Lets do only index 0 for now
-        string question_id = config_mood.choices[0][0];
+        string question_id = config_mood.choices[question_index][0];
 
         var config_question = Configs.config_encounter_choice.EncounterChoice[question_id];
 
-        foreach(var choice in config_question.playerChoiceBlacklist){
-            answer_pool.Remove(choice);
+        if (config_question.playerChoiceWhitelist != null)
+        {
+            answer_pool.Clear();
+            foreach(var choice in config_question.playerChoiceWhitelist)
+            {
+                answer_pool.Add(choice);
+            }
+        }
+        if (config_question.playerChoiceBlacklist != null)
+        {
+            foreach (var choice in config_question.playerChoiceBlacklist)
+            {
+                answer_pool.Remove(choice);
+            }
+        }
+        foreach(var choice in answer_pool)
+        {
+            Debug.Log("Adding choice: " + choice + " to answer pool");
         }
 
         var correct_pool = new List<string>() { answer_pool[0] };
@@ -101,21 +121,52 @@ public class EncounterSocial : Encounter
     private void onQuizQuestionFinished(bool succeeded)
     {
         SocialQuizUI.onSocialQuizGameFinished -= onQuizQuestionFinished;
+        if (!succeeded)
+        {
+            finishedSuccesfully = false;
+            finish();
+            return;
+        }
+
+        question_index++;
 
         switch (current_mood)
         {
             case "negative":
-                current_mood = "neutral";
-                DialogueManager.onDialogueFinishedEventPrimary += onDialogueFinished;
-                GameStart.dialogue_manager.activateDialogue(config_opposition.neutralIntroDialogue);
+                if (question_index > config_opposition.negativeMoods.Length)
+                {
+                    question_index = 0;
+                    current_mood = "neutral";
+                    DialogueManager.onDialogueFinishedEventPrimary += onDialogueFinished;
+                    GameStart.dialogue_manager.activateDialogue(config_opposition.neutralIntroDialogue);
+                }
+                else
+                {
+                    startQuestion();
+                }
                 break;
             case "neutral":
-                current_mood = "positive";
-                DialogueManager.onDialogueFinishedEventPrimary += onDialogueFinished;
-                GameStart.dialogue_manager.activateDialogue(config_opposition.positiveIntroDialogue);
+                if (question_index > config_opposition.negativeMoods.Length)
+                {
+                    question_index = 0;
+                    current_mood = "positive";
+                    DialogueManager.onDialogueFinishedEventPrimary += onDialogueFinished;
+                    GameStart.dialogue_manager.activateDialogue(config_opposition.positiveIntroDialogue);
+                }
+                else
+                {
+                    startQuestion();
+                }
                 break;
             case "positive":
-                finish();
+                if (question_index > config_opposition.positiveMoods.Length) {
+                    finishedSuccesfully = true;
+                    finish();
+                }
+                else
+                {
+                    startQuestion();
+                }
                 break;
         }
     }
@@ -125,7 +176,6 @@ public class EncounterSocial : Encounter
     {
         cleanup();
 
-        finishedSuccesfully = true;
         finishedMainEncounter();
     }
 
