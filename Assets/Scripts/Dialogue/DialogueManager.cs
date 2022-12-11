@@ -555,12 +555,6 @@ public class DialogueManager : MonoBehaviour
         setDialogueUIActive(false);
         current_dialogue_line = null;
 
-        foreach (string character in Actor.actor_controllers.Keys)
-        {
-            Actor.actor_controllers[character].actor_head.clearLookat();
-            Actor.actor_controllers[character].actor_head.clearTurnHeadAt();
-        }
-
         onDialogueFinishedEventPrimary?.Invoke(dialogue_id); //For things that need to finish first, like interactions
         onDialogueFinishedEventSecondary?.Invoke(dialogue_id); //For things that need to finish last, like objectives
     }
