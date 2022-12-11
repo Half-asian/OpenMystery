@@ -230,11 +230,11 @@ public class EventPlayer : MonoBehaviour
 
         }
 
+        //Year 6 Chapter 12 Part 1 is the ultimate challenge of whether sequential players and looping events are implemented correctly.
 
-
-        if (script_event.type == "Sequential") 
+        if (script_event.type == "Sequential" && is_sequential_player == false) //Sequential players cannot start more sequential players 
         {
-            Debug.Log("Starting sequential");
+            Debug.Log("Starting sequential from event " + script_event.eventId);
             if (script_event.messageAndKeys != null)
             {
                 ActiveMessageKeys sequential_queue_message_keys = new ActiveMessageKeys();
@@ -254,7 +254,9 @@ public class EventPlayer : MonoBehaviour
     public void runImmediateEvents()
     {
         blocking_message_keys.update();
-        foreach(var seq in awaiting_sequential_players)
+
+        var copy = awaiting_sequential_players.ToArray();
+        foreach(var seq in copy)
         {
             seq.Item1.update();
         }
