@@ -198,7 +198,7 @@ public abstract class Interaction : MonoBehaviour
         if (can_add_project_progress)
             Project.addProgress(config_interaction.ProjectProgress);
 
-        if (parent_autotune_group_interaction == null && parent_autotune_group_interaction == null)
+        if (parent_group_interaction == null && parent_autotune_group_interaction == null)
         {
             destroy();
         }
