@@ -82,6 +82,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
         [System.Serializable]
         public class _data
         {
+            public string exitAnim; //todo
             [System.Serializable]
             public class action
             {
@@ -101,7 +102,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
             public _startEdge startEdge;
 
             [System.Serializable]
-            public class _endEdge
+            public class _endEdge //Todo
             {
                 public action[] actions;
             }

@@ -31,7 +31,6 @@ public abstract partial class Node : MonoBehaviour
     {
         if (queued_anim != null && reset_animation == false)
             playAnimationOnComponent();
-        reset_animation = false;
 
         queued_anim = null;
         queued_anim_fade_time = 0.4f;
@@ -65,10 +64,10 @@ public abstract partial class Node : MonoBehaviour
         Destroy(model.game_object);
     }
 
-    public void queueAnimationOnComponent(HPAnimation animation, float fade_time = 0.4f)
+    public void queueAnimationOnComponent(HPAnimation animation, float fade_time = 0.3f)
     {
         queued_anim = animation;
-        queued_anim_fade_time = MathF.Min(fade_time, 0.4f);
+        queued_anim_fade_time = MathF.Min(fade_time, 0.3f);
 
         string new_name = "flip";
         if (anim_flip_flop == true)
@@ -80,6 +79,7 @@ public abstract partial class Node : MonoBehaviour
 
         if (reset_animation)
         {
+            reset_animation = false;
             if (currentAnimationAlerter != null)
                 StopCoroutine(currentAnimationAlerter);
             if (shaderPlayer != null)

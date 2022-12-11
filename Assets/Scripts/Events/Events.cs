@@ -25,7 +25,7 @@ public static class Events
 
                 break;
 
-            case "replaceCharacterIdleStaggered":
+            case "replaceCharacterIdleStaggered": //seems to skip intro anims. glitchy
                 if (Actor.actor_controllers.ContainsKey(action_params[0]))
                 {
                     Actor.actor_controllers[action_params[0]].replaceCharacterIdleStaggered(action_params[1]);
@@ -110,7 +110,7 @@ public static class Events
                 }
 
                 Actor.actor_controllers[action_params[0]].teleportCharacter(action_params[1]);
-
+                Actor.actor_controllers[action_params[0]].reset_animation = true;
                 Actor.actor_controllers[action_params[0]].actor_head.clearTurnHeadAt();
                 Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
                 break;
