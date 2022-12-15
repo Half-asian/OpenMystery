@@ -107,6 +107,9 @@ public partial class ActorController : Node
 
     private IEnumerator MoveCoroutine(float speed)
     {
+        if (walk_animation_sequence == null)
+            idle_animation_sequence = null;
+
         is_moving = true;
 
         ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
@@ -146,9 +149,6 @@ public partial class ActorController : Node
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, Time.deltaTime * 500);
             yield return null;
         }
-
-        if (walk_animation_sequence == null)
-            idle_animation_sequence = null;
 
         setCharacterIdle();
     }
