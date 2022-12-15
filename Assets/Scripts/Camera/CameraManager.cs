@@ -170,7 +170,7 @@ public class CameraManager : MonoBehaviour
             StartCoroutine(aov_player_coroutine);
         }
 
-        wait_camera_coroutine = waitCameraAnimation(anim_clip.length, animation);
+        wait_camera_coroutine = waitCameraAnimation(anim_clip, animation);
         StartCoroutine(wait_camera_coroutine);
     }
 
@@ -335,14 +335,16 @@ public class CameraManager : MonoBehaviour
         camera_jt_cam_bind_transform.transform.localRotation = end_rotation;
     }
 
-    private IEnumerator waitCameraAnimation(float length, string animation)
+    private IEnumerator waitCameraAnimation(AnimationClip animation_clip, string animation)
     {
         GameStart.event_manager.setLastCamAnim(""); //Not entirely sure this is necessary
-
-        yield return new WaitForSeconds(length);
-
+        do
+        {
+            yield return new WaitForSeconds(animation_clip.length);
+            GameStart.event_manager.notifyCamAnimFinished(animation);
+        }
+        while (animation_clip.wrapMode == WrapMode.Loop);
         setCameraState(CameraState.StateStatic);
-        GameStart.event_manager.notifyCamAnimFinished(animation);
     }
 
     IEnumerator CameraAOVPlayer(List<VerticalAOV> vertical_aovs, AnimationClip anim_clip)

@@ -194,6 +194,13 @@ public class DialogueManager : MonoBehaviour
 
         setDialogueUIActive(false);
 
+        if (camera_params != null)
+        {
+            Debug.Log("Setting camera " + camera_params[0]);
+            CameraManager.current.focusCam(ref camera_params);
+            camera_params = null;
+        }
+
         if (dialogue_line.enterEvents != null)
         {
             Debug.Log("Adding enter events to stack from " + dialogue_line.id);
@@ -202,8 +209,6 @@ public class DialogueManager : MonoBehaviour
             GameStart.event_manager.main_event_player.addEvents(entry_stack);
             GameStart.event_manager.main_event_player.runImmediateEvents();
         }
-
-
 
         if (dialogue_line.exitEvents != null)
             exit_stack.AddRange(dialogue_line.exitEvents);
@@ -452,12 +457,7 @@ public class DialogueManager : MonoBehaviour
     void onEntryEventsFinished()
     {
         dialogue_status = DialogueStatus.WaitingPlayerConfirm;
-        if (camera_params != null)
-        {
-            Debug.Log("Setting camera " + camera_params[0]);
-            CameraManager.current.focusCam(ref camera_params);
-            camera_params = null;
-        }
+
         if (current_dialogue_line.dialogueChoiceIds is not null)
         {
             setDialogueLineChoices(current_dialogue_line);

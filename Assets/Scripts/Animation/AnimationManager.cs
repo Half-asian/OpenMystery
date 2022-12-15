@@ -311,6 +311,9 @@ public static partial class AnimationManager
 		if (first_rotation == false && Quaternion.Dot(current_quat, previous_quaternion) < 0.0f)
 			current_quat = new Quaternion(-current_quat.x, -current_quat.y, -current_quat.z, -current_quat.w);
 
+		if (use_bone_mod == true && bone_mods[bone_name].CameraHack)
+			return;
+
 		keyframe_rot_x = new Keyframe(keyframe.keytime * animation_length, current_quat.x);
 		keyframe_rot_y = new Keyframe(keyframe.keytime * animation_length, current_quat.y);
 		keyframe_rot_z = new Keyframe(keyframe.keytime * animation_length, current_quat.z);
