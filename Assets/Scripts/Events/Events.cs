@@ -437,25 +437,10 @@ public static class Events
                 break;
 
             case "animateProp":
-                if (Prop.spawned_props.ContainsKey(action_params[0]))
-                {
-                    Prop.spawned_props[action_params[0]].playAnimation(action_params[1]);
-                }
-                else
-                {
-                    Debug.LogWarning("Couldn't find prop " + action_params[0] + " in spawned props");
-                }
+                Prop.animateProp(action_params[0], action_params[1]);
                 break;
             case "playPropAnimSequence":
-                Debug.Log("playPromAnimSequence " + action_params[0] + " " + action_params[1]);
-                if (Prop.spawned_props.ContainsKey(action_params[0]))
-                {
-                    Prop.spawned_props[action_params[0]].playAnimSequence(action_params[1]);
-                }
-                else
-                {
-                    Debug.LogWarning("Couldn't find prop " + action_params[0] + " in spawned props");
-                }
+                Prop.playPropAnimationSequence(action_params[0], action_params[1]);
                 break;
 
             case "replaceScenarioBGMusic":

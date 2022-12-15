@@ -269,4 +269,28 @@ public class Prop : Node
             Prop.spawned_props.Remove(name);
         }
     }
+
+    public static void animateProp(string prop, string animation, Dictionary<string, string> triggerReplacement = null)
+    {
+        if (spawned_props.ContainsKey(prop))
+        {
+            spawned_props[prop].playAnimation(animation, triggerReplacement);
+        }
+        else
+        {
+            Debug.LogWarning("Couldn't find prop " + prop + " in spawned props");
+        }
+    }
+
+    public static void playPropAnimationSequence(string prop, string animation_sequence)
+    {
+        if (Prop.spawned_props.ContainsKey(prop))
+        {
+            Prop.spawned_props[prop].playAnimSequence(animation_sequence);
+        }
+        else
+        {
+            Debug.LogWarning("Couldn't find prop " + prop + " in spawned props");
+        }
+    }
 }

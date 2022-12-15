@@ -47,7 +47,6 @@ public partial class ActorController : Node
             DestroyImmediate(actoranimseq);
         }
         destroyProps();
-        particles = new List<GameObject>();
         //Some animations change these
         model.jt_all_bind.localPosition = Vector3.zero;
         model.jt_all_bind.localRotation = Quaternion.identity;
