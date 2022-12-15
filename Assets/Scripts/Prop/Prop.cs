@@ -25,14 +25,14 @@ public class Prop : Node
         Event,
     }
 
-    public void playAnimation(string animation_name)
+    public void playAnimation(string animation_name, Dictionary<string, string> triggerReplacement = null)
     {
 
         if (gameObject.GetComponent<PropAnimSequence>() != null)
         {
             Destroy(gameObject.GetComponent<PropAnimSequence>());
         }
-        HPAnimation prop_anim_clip = AnimationManager.loadAnimationClip(animation_name, model, null);
+        HPAnimation prop_anim_clip = AnimationManager.loadAnimationClip(animation_name, model, null, triggerReplacement);
 
         queueAnimationOnComponent(prop_anim_clip);
     }
