@@ -24,9 +24,6 @@ public partial class ActorController : Node
 
     public ActorState actor_state = ActorState.Idle;
 
-    public List<GameObject> particles = new List<GameObject>();
-
-
     private void LateUpdate()
     {
         actor_head.ApplyHeadTurns();
@@ -50,10 +47,6 @@ public partial class ActorController : Node
             DestroyImmediate(actoranimseq);
         }
         destroyProps();
-        foreach (GameObject particle in particles)
-        {
-            GameObject.Destroy(particle);
-        }
         particles = new List<GameObject>();
         //Some animations change these
         model.jt_all_bind.localPosition = Vector3.zero;
@@ -105,30 +98,6 @@ public partial class ActorController : Node
             Destroy(patch.game_object);
         }
         Destroy(model.game_object);
-    }
-
-    public void AttachParticleSystem(string parameters)
-    {
-        string[] split = parameters.Split(':');
-        string particle_name = split[0];
-        string bone_name = split[1];
-        string prop_name = null;
-        GameObject particle = null;
-        if (split.Length == 3)
-        {
-            prop_name = split[2];
-            if (childNodes.ContainsKey(prop_name))
-            {
-                Transform bone = childNodes[prop_name].GetComponent<Node>().model.pose_bones[bone_name];
-                particle = Particle.AttachParticleSystem(particle_name, bone);
-            }
-        }
-        else
-        {
-            particle = Particle.AttachParticleSystem(particle_name, model.pose_bones[bone_name]);
-        }
-        if (particle != null)
-            particles.Add(particle);
     }
 
     //Not super advanced
