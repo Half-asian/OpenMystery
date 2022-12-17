@@ -10,6 +10,7 @@ public partial class Node : MonoBehaviour
 {
 
     protected Dictionary<string, Node> childNodes = new Dictionary<string, Node>();
+    public List<GameObject> particles = new List<GameObject>();
 
     public void attachChildNode(string prop_model_id, string alias, string target)
     {
@@ -41,12 +42,14 @@ public partial class Node : MonoBehaviour
 
             //Debug.Log("Adding prop " + alias);
             childNodes[alias] = prop;
+            prop.parent_node = this;
         }
         else
         {
             if (childNodes.ContainsKey(prop_model_id))
                 Destroy(childNodes[prop_model_id]);
             childNodes[prop_model_id] = prop;
+            prop.parent_node = this;
         }
         //if (bone_to_attach.name == "jt_propCounterScale")
         //{
@@ -66,6 +69,20 @@ public partial class Node : MonoBehaviour
         prop.model.game_object.transform.rotation = Quaternion.identity;
     }
 
+    //Animation event
+    public void AttachProp(string parameters)
+    {
+        string[] split = parameters.Split(':');
+        attachChildNode(split[0], split[1], split[2]);
+    }
+
+    //Animation event
+    public void PlayPropAnim(string parameters)
+    {
+        string[] split = parameters.Split(':');
+        playPropAnim(split[0], split[1]);
+    }
+
     public void removeProp(string id)
     {
         if (childNodes.ContainsKey(id))
@@ -75,18 +92,24 @@ public partial class Node : MonoBehaviour
         }
     }
 
-    public void playPropAnim(string id, string target, Dictionary<string, string> triggerReplacement)
+    public void playPropAnim(string id, string target, Dictionary<string, string> triggerReplacement = null)
     {
-        if (!childNodes.ContainsKey(id))
+        Node found_node = null;
+        childNodes.TryGetValue(id, out found_node);
+
+        if (found_node == null && parent_node != null){
+            parent_node.childNodes.TryGetValue(id, out found_node);
+        }
+        
+        if (found_node == null)
         {
             Debug.LogError("Failed to play prop anim " + target + " on a nonexistent prop " + id);
             return;
         }
 
-
-        HPAnimation animation = AnimationManager.loadAnimationClip(target, childNodes[id].GetComponent<Node>().model, null, triggerReplacement);
+        HPAnimation animation = AnimationManager.loadAnimationClip(target, found_node.GetComponent<Node>().model, null, triggerReplacement);
         if (animation == null) return;
-        childNodes[id].GetComponent<Node>().queueAnimationOnComponent(animation);
+        found_node.GetComponent<Node>().queueAnimationOnComponent(animation);
     }
 
     public void stopPropAnim(string id)
@@ -103,6 +126,34 @@ public partial class Node : MonoBehaviour
         {
             DestroyImmediate(g);
         }
+        foreach (GameObject particle in particles)
+        {
+            DestroyImmediate(particle);
+        }
         childNodes.Clear();
+    }
+
+    public void AttachParticleSystem(string parameters)
+    {
+        string[] split = parameters.Split(':');
+        string particle_name = split[0];
+        string bone_name = split[1];
+        string prop_name = null;
+        GameObject particle = null;
+        if (split.Length == 3)
+        {
+            prop_name = split[2];
+            if (childNodes.ContainsKey(prop_name))
+            {
+                Transform bone = childNodes[prop_name].GetComponent<Node>().model.pose_bones[bone_name];
+                particle = Particle.AttachParticleSystem(particle_name, bone);
+            }
+        }
+        else
+        {
+            particle = Particle.AttachParticleSystem(particle_name, model.pose_bones[bone_name]);
+        }
+        if (particle != null)
+            particles.Add(particle);
     }
 }

@@ -21,7 +21,7 @@ public class Particle : MonoBehaviour
         particle.transform.parent = parent;
         particle.transform.localPosition = Vector3.zero;
         //particle.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);                        
-        /*switch (type)
+        switch (type)
         {
             case "fx_lumos":
                 if (parent.Find("fx_lumos"))
@@ -44,7 +44,7 @@ public class Particle : MonoBehaviour
             default:
                 Debug.Log("Unknown particle " + type);
                 break;
-        }*/
+        }
         return particle;
     }
 }

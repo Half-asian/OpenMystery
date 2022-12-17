@@ -85,11 +85,6 @@ public partial class ActorController : Node
         patch.game_object.transform.parent = transform;
     }
 
-    public void PlaySound(string sound) =>
-    Sound.playSoundEffect(sound);
-    public void ScriptTrigger(string trigger) =>
-    GameStart.event_manager.notifyScriptTrigger(trigger);
-
     public void destroy()
     {
         foreach(Model patch in patches)

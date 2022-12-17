@@ -60,13 +60,6 @@ public class Prop : Node
             }
         }
     }
-
-    public void PlaySound(string sound) =>
-    Sound.playSoundEffect(sound);
-
-    public void ScriptTrigger(string trigger) =>
-    GameStart.event_manager.notifyScriptTrigger(trigger);
-
     public static void Initialize()
     {
         GameStart.onReturnToMenu += cleanup;

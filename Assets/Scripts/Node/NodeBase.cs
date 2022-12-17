@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 public abstract partial class Node : MonoBehaviour
 {
     public event Action<string> onAnimationFinished = delegate { };
-
+    private Node parent_node = null;
     public Model model;
 
     public Animation animation_component;
@@ -185,5 +185,10 @@ public abstract partial class Node : MonoBehaviour
             yield return null;
         }
     }
+
+    public void PlaySound(string sound) =>
+    Sound.playSoundEffect(sound);
+    public void ScriptTrigger(string trigger) =>
+    GameStart.event_manager.notifyScriptTrigger(trigger);
 
 }
