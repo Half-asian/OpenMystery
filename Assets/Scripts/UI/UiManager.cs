@@ -114,6 +114,13 @@ public class UiManager : MonoBehaviour
         GameStart.ui_manager.pause_menu.SetActive(false);
         GameStart.ui_manager.main_menu.SetActive(true);
         ScreenFade.fadeFrom(1, Color.clear, true);
+        StartCoroutine(fadeBackup());
+    }
+
+    IEnumerator fadeBackup()
+    {
+        yield return new WaitForSeconds(1);
+        ScreenFade.fadeFrom(0.001f, Color.clear, true);
     }
 
     public void settingsButtonClicked()

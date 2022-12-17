@@ -27,8 +27,16 @@ public class Sound : MonoBehaviour
 
     public static void playBGMusic(string BGMusic_id)
     {
+        if (BGMusic_id == "noSoundPL")
+        {
+            current.playAudioFile("none", "bgaudio");
+            return;
+        }
+
         if (Configs.playlist_dict.ContainsKey(BGMusic_id))
+        {
             current.playAudioFile(Configs.playlist_dict[BGMusic_id].files[0], "bgaudio");
+        }
     }
 
     public static void playAmbient(string ambient_id)
@@ -134,11 +142,18 @@ public class Sound : MonoBehaviour
     }
 
 
-    IEnumerator PlayAudioFile(string filename, string type)
+    IEnumerator PlayAudioFile(string filepath, string type)
     {
-        if (filename == "none" && type == "amb")
+        if (Path.GetFileName(filepath) == "none")
         {
-            AMBAudioPlayer.GetComponent<AudioSource>().Stop();
+            if (type == "amb")
+            {
+                AMBAudioPlayer.GetComponent<AudioSource>().Stop();
+            }
+            else if (type == "bgaudio" || type == "custom")
+            {
+                BGMusicPlayer.GetComponent<AudioSource>().Stop();
+            }
             yield break;
         }
 
@@ -146,7 +161,7 @@ public class Sound : MonoBehaviour
         {
             if (BGMusicPlayer.clip != null)
             {
-                if (BGMusicPlayer.clip.name == filename)
+                if (BGMusicPlayer.clip.name == filepath)
                 {
                     yield break;
                 }
@@ -157,7 +172,7 @@ public class Sound : MonoBehaviour
         {
             if (BGMusicPlayer.clip != null)
             {
-                if (BGMusicPlayer.clip.name == filename)
+                if (BGMusicPlayer.clip.name == filepath)
                 {
                     yield break;
                 }
@@ -165,13 +180,13 @@ public class Sound : MonoBehaviour
         }
 
         UnityWebRequest www;
-        if (filename.Contains(".wav"))
+        if (filepath.Contains(".wav"))
         {
-            www = UnityWebRequestMultimedia.GetAudioClip("file://" + filename, AudioType.WAV);
+            www = UnityWebRequestMultimedia.GetAudioClip("file://" + filepath, AudioType.WAV);
         }
         else
         {
-            www = UnityWebRequestMultimedia.GetAudioClip("file://" + filename, AudioType.MPEG);
+            www = UnityWebRequestMultimedia.GetAudioClip("file://" + filepath, AudioType.MPEG);
         }
         yield return www.SendWebRequest();
         if (www.result == UnityWebRequest.Result.ConnectionError)
@@ -181,6 +196,7 @@ public class Sound : MonoBehaviour
         }
         else
         {
+            Debug.Log("FILENAME: " + filepath);
             AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
 
             if (type == "bark" || type == "sound") //TODO: sounds have the ability to loop
@@ -194,7 +210,7 @@ public class Sound : MonoBehaviour
             }
             else if (type == "bgaudio" || type == "custom")
             {
-                myClip.name = filename;
+                myClip.name = filepath;
                 BGMusicPlayer.clip = myClip;
 
                 BGMusicPlayer.Play();

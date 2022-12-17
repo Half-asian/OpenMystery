@@ -545,6 +545,8 @@ public class Scene
                     var child_pl = current_scene.proplocator_dict[master_proplocator_name];
                     if (master_pl.material_dict != null)
                     {
+                        if (child_pl.material_dict == null)
+                            child_pl.material_dict = new Dictionary<string, ConfigScene._Scene.Material>();
                         foreach (var mat_name in master_pl.material_dict.Keys)
                         {
                             if (!child_pl.material_dict.ContainsKey(mat_name))

@@ -68,8 +68,12 @@ public class Console : MonoBehaviour
                 GameStart.quidditch_manager.startMatch(parameters[1]);
                 break;
             case "loadscene":
-                Scene.setCurrentScene(parameters[1]);
-                Scenario.cleanup();
+                ConfigScenario._Scenario test_scenario = new ConfigScenario._Scenario();
+                test_scenario.scene = parameters[1];
+                test_scenario.scenarioId = "test_scenario";
+                Configs.config_scenario.Scenario["test_scenario"] = test_scenario;
+                Scenario.Activate("test_scenario");
+                Scenario.Load("test_scenario");
                 break;
             case "completeobjective":
                 Objective.active_objectives[0].objectiveCompleted();
