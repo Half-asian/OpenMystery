@@ -688,13 +688,7 @@ public static class Events
 
         //action_params[3] int unknown
     }
-    public class Looking
-    {
-        public ActorController character;
-        public float progress;
-        public float destination_progress;
-        public Vector3 looking_position;
-    }
+
     public static void lookAt(string[] action_params) //Up to 4 parameters. Idk what 4 is for.
     {
         //Debug.Log("lookAt " + string.Join(",", action_params));
@@ -709,26 +703,20 @@ public static class Events
 
         if (!Actor.actor_controllers.ContainsKey(action_params[0]))
         {
-            Debug.LogWarning("Lookat could not find actor" + action_params[0]);
+            Debug.LogWarning("Lookat could not find actor: " + action_params[0]);
             return;
         }
 
 
         if (!Actor.actor_controllers.ContainsKey(action_params[1]))
         {
-            Debug.LogWarning("Lookat could not find actor" + action_params[1]);
+            Debug.LogWarning("Lookat could not find actor: " + action_params[1]);
             Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
             return;
         }
 
-        Looking new_looking = new Looking();
-        new_looking.character = Actor.actor_controllers[action_params[1]];
+        Actor.actor_controllers[action_params[0]].actor_head.setLookAt(Actor.actor_controllers[action_params[1]]);
 
-        new_looking.progress = 0.0f;
-
-        Actor.actor_controllers[action_params[0]].actor_head.setLookat(new_looking);
-
-        
         if (action_params.Length > 2)
         {
             float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out float action_params_2_float);
@@ -754,12 +742,7 @@ public static class Events
         {
             if (Actor.actor_controllers.ContainsKey(action_params[1]))
             {
-
-                Looking new_looking = new Looking();
-                new_looking.character = Actor.actor_controllers[action_params[1]];
-
-                new_looking.progress = 0.0f;
-                Actor.actor_controllers[action_params[0]].actor_head.setTurnHeadAt(new_looking);
+                Actor.actor_controllers[action_params[0]].actor_head.setTurnHeadAt(Actor.actor_controllers[action_params[1]]);
             }
             else
             {
