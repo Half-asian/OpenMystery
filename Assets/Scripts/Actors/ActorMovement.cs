@@ -49,8 +49,8 @@ public partial class ActorController : Node
         if (is_moving == false)
         {
             walk_animation = config_hpactor.animId_walk;
-            actor_head.clearLookat();
-            actor_head.clearTurnHeadAt();
+            clearLookat();
+            clearTurnHeadAt();
             coroutine_move = MoveCoroutine(speed);
             StartCoroutine(coroutine_move);
             setCharacterWalk();
@@ -150,6 +150,7 @@ public partial class ActorController : Node
             yield return null;
         }
 
+        refreshLookAts();
         setCharacterIdle();
     }
 

@@ -3,7 +3,6 @@ using UnityEngine;
 using ModelLoading;
 public partial class ActorController : Node
 {
-    public ActorHead actor_head;
     public List<Model> patches;
 
     private ConfigHPActorInfo._HPActorInfo _config_hpactor;
@@ -26,14 +25,13 @@ public partial class ActorController : Node
 
     private void LateUpdate()
     {
-        actor_head.ApplyHeadTurns();
+        ApplyHeadTurns();
     }
 
     public new void setup(Model _model)
     {
         base.setup(_model);
 
-        actor_head = new ActorHead(this);
         initializeAnimations();
         patches = new List<Model>();
 

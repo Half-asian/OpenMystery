@@ -111,8 +111,8 @@ public static class Events
 
                 Actor.actor_controllers[action_params[0]].teleportCharacter(action_params[1]);
                 Actor.actor_controllers[action_params[0]].reset_animation = true;
-                Actor.actor_controllers[action_params[0]].actor_head.clearTurnHeadAt();
-                Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
+                Actor.actor_controllers[action_params[0]].clearTurnHeadAt();
+                Actor.actor_controllers[action_params[0]].clearLookat();
                 break;
 
             case "teleportProp":
@@ -691,63 +691,107 @@ public static class Events
 
     public static void lookAt(string[] action_params) //Up to 4 parameters. Idk what 4 is for.
     {
-        //Debug.Log("lookAt " + string.Join(",", action_params));
-        if (action_params.Length < 2)
-        {
-            if (Actor.actor_controllers.ContainsKey(action_params[0]))
-            {
-                Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
-            }
-            return;
-        }
-
-        if (!Actor.actor_controllers.ContainsKey(action_params[0]))
+        if (!Actor.actor_controllers.ContainsKey(action_params[0]))                     //Check Actor exists 
         {
             Debug.LogWarning("Lookat could not find actor: " + action_params[0]);
             return;
         }
 
-
-        if (!Actor.actor_controllers.ContainsKey(action_params[1]))
+        if (action_params.Length < 2)                                                   //Actor clear
         {
-            Debug.LogWarning("Lookat could not find actor: " + action_params[1]);
-            Actor.actor_controllers[action_params[0]].actor_head.clearLookat();
+            if (Actor.actor_controllers.ContainsKey(action_params[0]))
+            {
+                Actor.actor_controllers[action_params[0]].clearLookat();
+            }
             return;
         }
 
-        Actor.actor_controllers[action_params[0]].actor_head.setLookAt(Actor.actor_controllers[action_params[1]]);
+        float speed = 3.0f;
 
         if (action_params.Length > 2)
         {
-            float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out float action_params_2_float);
+            speed = float.Parse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture);
 
             //QuidditchS1C10P3_hoochSlowLookOrion
-            //Action param 2 refers how long to lerp to looking at character.
-            //TODO
+        }
+
+        //There is a mystery param 4 as well
+        //TLSQS3HouseCupP9_PennyWatchBackgroundLeave is the only case it is not set to 1
+
+        if (Actor.actor_controllers.ContainsKey(action_params[1]))                      //Actor look at target actor
+        {
+            Actor.actor_controllers[action_params[0]].setLookAt(
+                Actor.actor_controllers[action_params[1]], speed);
+            return;
+        }
+        else                                                                            //Actor look in specific direction
+        {
+            float x = 0;
+
+            string[] numbers = action_params[1].Split(',');
+            float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
+            if (numbers.Length > 1)
+                x = float.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
+            if (x == 0 && y == 0)
+            {
+                Actor.actor_controllers[action_params[0]].clearLookat();
+            }
+            else
+            {
+                Actor.actor_controllers[action_params[0]].setLookAt(x, y, speed);
+            }
+
         }
     }
 
     public static void turnHeadAt(string[] action_params)
     {
-        if (action_params.Length < 2)
+        if (!Actor.actor_controllers.ContainsKey(action_params[0]))                     //Check Actor exists 
+        {
+            Debug.LogWarning("Lookat could not find actor: " + action_params[0]);
+            return;
+        }
+
+        if (action_params.Length < 2)                                                   //Actor clear
         {
             if (Actor.actor_controllers.ContainsKey(action_params[0]))
             {
-                Actor.actor_controllers[action_params[0]].actor_head.clearTurnHeadAt();
+                Actor.actor_controllers[action_params[0]].clearTurnHeadAt();
             }
             return;
         }
 
-        if (Actor.actor_controllers.ContainsKey(action_params[0]))
+        float speed = 3.0f;
+
+        if (action_params.Length > 2)
         {
-            if (Actor.actor_controllers.ContainsKey(action_params[1]))
+            speed = float.Parse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture);
+
+            //QuidditchS1C10P3_hoochSlowLookOrion
+        }
+
+        if (Actor.actor_controllers.ContainsKey(action_params[1]))                      //Actor look at target actor
+        {
+            Actor.actor_controllers[action_params[0]].setTurnHeadAt(
+                Actor.actor_controllers[action_params[1]], speed);
+            return;
+        }
+        else                                                                            //Actor look in specific direction
+        {
+            float x = 0;
+            string[] numbers = action_params[1].Split(',');
+            float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
+            if (numbers.Length > 1) 
+                x = int.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
+            if (x == 0 && y == 0)
             {
-                Actor.actor_controllers[action_params[0]].actor_head.setTurnHeadAt(Actor.actor_controllers[action_params[1]]);
+                Actor.actor_controllers[action_params[0]].clearLookat();
             }
             else
             {
-                Actor.actor_controllers[action_params[0]].actor_head.clearTurnHeadAt();
+                Actor.actor_controllers[action_params[0]].setTurnHeadAt(x, y, speed);
             }
+
         }
     }
 }
