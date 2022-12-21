@@ -738,7 +738,7 @@ public static class Events
             }
             else
             {
-                Actor.actor_controllers[action_params[0]].setLookAt(x, y, speed);
+                Actor.actor_controllers[action_params[0]].setLookAt(-x, y, speed);
             }
 
         }
@@ -789,7 +789,7 @@ public static class Events
             }
             else
             {
-                Actor.actor_controllers[action_params[0]].setTurnHeadAt(x, y, speed);
+                Actor.actor_controllers[action_params[0]].setTurnHeadAt(-x, y, speed);
             }
 
         }
