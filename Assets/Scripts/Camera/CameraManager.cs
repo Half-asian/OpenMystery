@@ -280,9 +280,10 @@ public class CameraManager : MonoBehaviour
         //Set the sampled animation
         if (camera.animation != null)
         {
-            AnimationClip anim_clip = AnimationManager.loadAnimationClip(
-                camera.animation, camera_model, null, null, null, is_camera: true).anim_clip;
-            anim_clip.SampleAnimation(camera_holder_transform.gameObject, 0.0f);
+            var animation = AnimationManager.loadAnimationClip(
+                camera.animation, camera_model, null, null, null, is_camera: true);
+            if (animation!= null)
+                animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, 0.0f);
         }
 
         //Game defined Field of View is often pretty bad. Usually looks better if its constant.
@@ -341,10 +342,12 @@ public class CameraManager : MonoBehaviour
         do
         {
             yield return new WaitForSeconds(animation_clip.length);
+            if (animation_clip.wrapMode != WrapMode.Loop)
+                setCameraState(CameraState.StateStatic);
+
             GameStart.event_manager.notifyCamAnimFinished(animation);
         }
         while (animation_clip.wrapMode == WrapMode.Loop);
-        setCameraState(CameraState.StateStatic);
     }
 
     IEnumerator CameraAOVPlayer(List<VerticalAOV> vertical_aovs, AnimationClip anim_clip)
