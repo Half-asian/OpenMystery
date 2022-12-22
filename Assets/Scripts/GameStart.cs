@@ -122,6 +122,7 @@ public class GameStart : MonoBehaviour
         onReturnToMenu = delegate { };
 
         Debug.Log("GameStart Start");
+        Sound.current.playCustom("theblueghost.mp3");
 
         current = this;
 
@@ -220,8 +221,6 @@ public class GameStart : MonoBehaviour
         Configs.postload();
         onConfigsLoaded.Invoke();
         CameraManager.current.initialise();
-
-        Sound.current.playCustom("theblueghost.mp3");
 
         if (GlobalEngineVariables.launch_mode == "model_inspector" || model_inspector)
         {
