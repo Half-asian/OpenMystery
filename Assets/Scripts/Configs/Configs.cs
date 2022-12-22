@@ -379,6 +379,11 @@ public class Configs{
                     scene.material_dict = new Dictionary<string, ConfigScene._Scene.Material>();
                     foreach(ConfigScene._Scene.Material mat in scene.envmaterials.materials)
                     {
+                        if (scene.material_dict.ContainsKey(mat.nodeName)) //s_BroomClassroom_ChristmasDT_MS_rig has several material overides for the same nodes. The second ones seem to be erroneous.
+                        {
+                            continue;
+                        }
+
                         scene.material_dict[mat.nodeName] = mat;
                     }
                 }

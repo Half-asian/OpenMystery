@@ -43,8 +43,6 @@ public class Scene
 
         current = Configs.config_scene.Scene[scene_id];
         overrideScene(ref current);
-        Debug.Log(current != null);
-        Debug.Log(current.Lighting != null);
         List<string> related_scenes = addMasterSceneItems(current);
 
 
@@ -72,11 +70,14 @@ public class Scene
     private static void spawnSceneModel()
     {
         ModelMaterials.lighting_layers = new List<string>() {};
-        foreach(var layer in current.Lighting.layers.Values)
+        if (current.Lighting != null)
         {
-            if (layer.objects.Contains("ENVIRONMENT"))
+            foreach (var layer in current.Lighting.layers.Values)
             {
-                ModelMaterials.lighting_layers.Add(layer.name);
+                if (layer.objects.Contains("ENVIRONMENT"))
+                {
+                    ModelMaterials.lighting_layers.Add(layer.name);
+                }
             }
         }
         Debug.Log("Spawning scene model");
@@ -111,7 +112,6 @@ public class Scene
         string scene_override_id = getSceneOverride(current.layoutId);
         if (scene_override_id == current.layoutId)
             return;
-        Debug.Log("OVERRIDING");
         var scene_override = Configs.config_scene.Scene[scene_override_id];
         if (scene_override.cameras != null)
         {
@@ -203,7 +203,7 @@ public class Scene
                         if (sceneOverride.predicate == null ||
                             Predicate.parsePredicate(sceneOverride.predicate))
                         {
-                            Debug.Log("Found Scene override " + sceneOverride.overrideSceneId);
+                            Debug.LogError("Found Scene override " + sceneOverride.overrideSceneId + " for " + sceneId);
                             return sceneOverride.overrideSceneId;
                         }
                     }
