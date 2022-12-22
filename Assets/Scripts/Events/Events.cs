@@ -726,21 +726,26 @@ public static class Events
         }
         else                                                                            //Actor look in specific direction
         {
-            float x = 0;
-
-            string[] numbers = action_params[1].Split(',');
-            float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
-            if (numbers.Length > 1)
-                x = float.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
-            if (x == 0 && y == 0)
+            try
             {
-                Actor.actor_controllers[action_params[0]].clearLookat();
+                float x = 0;
+                string[] numbers = action_params[1].Split(',');
+                float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (numbers.Length > 1)
+                    x = float.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (x == 0 && y == 0)
+                {
+                    Actor.actor_controllers[action_params[0]].clearLookat();
+                }
+                else
+                {
+                    Actor.actor_controllers[action_params[0]].setLookAt(-x, y, speed);
+                }
             }
-            else
+            catch
             {
-                Actor.actor_controllers[action_params[0]].setLookAt(-x, y, speed);
-            }
 
+            }
         }
     }
 
