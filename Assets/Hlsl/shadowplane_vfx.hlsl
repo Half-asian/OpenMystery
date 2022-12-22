@@ -1,26 +1,14 @@
-void panningb_vfx_float(
-    UnityTexture2D u_alphaMap,
+void shadowplane_vfx_float(
     float2 v_texCoord0,
-    float4 v_color,
     float3 v_fogWorldPos,
     float3 v_eyeSpacePos,
-    float time,
     out float4 gl_FragColor
 ) {
     /*Vertex shader*/
-    float MulOp = (time * u_speed);
-    float AddOp = (MulOp + v_texCoord0.y);
-    float2 VectorConstruct = float2(v_texCoord0.x, AddOp);
-
-    /*Fragment shder*/
-    float4 TextureStandin = tex2D(u_alphaMap, VectorConstruct);
-    float4 ColorStandin = v_color;
-    float MulOp1434 = (2.0 * ColorStandin.x);
-    float SubOp = (MulOp1434 - 1.0);
-    float AddOp1432 = (TextureStandin.w + SubOp);
-    float3 MulOp1441 = (AddOp1432 * u_diffuseColor.xyz);
-    float4 VectorConstruct917 = float4(MulOp1441.x, MulOp1441.y, MulOp1441.z, AddOp1432);
-    gl_FragColor = VectorConstruct917;
+    float MulOp = (v_texCoord0.y * u_opacity);
+    float PowOp = pow(MulOp, u_falloff);
+    float4 VectorConstruct = float4(u_shadowColor.xyz.x, u_shadowColor.xyz.y, u_shadowColor.xyz.z, PowOp);
+    gl_FragColor = VectorConstruct;
 
     if (USE_FOG) {
         float v_eyeSpaceDepth = -v_eyeSpacePos.z;
@@ -46,5 +34,4 @@ void panningb_vfx_float(
     }
 
     gl_FragColor = pow(gl_FragColor, 2.2);
-    gl_FragColor.a = AddOp1432;
 }
