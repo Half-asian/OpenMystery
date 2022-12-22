@@ -87,6 +87,18 @@ public static partial class AnimationManager
                     list.Add(shaderAnimation);
                 }
             }
+            if (effect.fadeKeys != null)
+            {
+                float prev_time = 0.0f;
+                float prev_val = 1.0f;
+                foreach(var fadeKey in effect.fadeKeys)
+                {
+                    ShaderAnimation shaderAnimation = new ShaderAnimationFloat(effect.name, "alpha", prev_time, prev_val, fadeKey[0], fadeKey[1]);
+                    prev_time = fadeKey[0];
+                    prev_val = fadeKey[1];
+                    list.Add(shaderAnimation);
+                }
+            }
         }
         return list;
     }

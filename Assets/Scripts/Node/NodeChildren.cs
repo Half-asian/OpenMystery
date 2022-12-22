@@ -6,11 +6,26 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Animations;
 using ModelLoading;
+using static UnityEngine.ParticleSystem;
+
 public partial class Node : MonoBehaviour
 {
 
-    protected Dictionary<string, Node> childNodes = new Dictionary<string, Node>();
+    protected Dictionary<string, Node> child_nodes = new Dictionary<string, Node>();
     public List<GameObject> particles = new List<GameObject>();
+
+    private Node getChildNode(string name)
+    {
+        foreach(var key in child_nodes.Keys)
+        {
+            if (key == name)
+                return child_nodes[key];
+            var granchild_node = child_nodes[key].getChildNode(name);
+            if (granchild_node != null)
+                return granchild_node;
+        }
+        return null;
+    }
 
     public void attachChildNode(string prop_model_id, string alias, string target)
     {
@@ -19,7 +34,7 @@ public partial class Node : MonoBehaviour
         {
             bone_to_attach = Common.recursiveFindChild(model.jt_all_bind, target);
             if (bone_to_attach == null)
-                Debug.LogError("Failed to find attach bone " + target);
+                Debug.LogError("Failed to find attach bone " + target + " on " + name);
         }
 
         Model prop_model = ModelManager.loadModel(prop_model_id);
@@ -37,18 +52,18 @@ public partial class Node : MonoBehaviour
 
         if (alias != null)
         {
-            if (childNodes.ContainsKey(alias))
-                Destroy(childNodes[alias]);
+            if (child_nodes.ContainsKey(alias))
+                Destroy(child_nodes[alias]);
 
             //Debug.Log("Adding prop " + alias);
-            childNodes[alias] = prop;
+            child_nodes[alias] = prop;
             prop.parent_node = this;
         }
         else
         {
-            if (childNodes.ContainsKey(prop_model_id))
-                Destroy(childNodes[prop_model_id]);
-            childNodes[prop_model_id] = prop;
+            if (child_nodes.ContainsKey(prop_model_id))
+                Destroy(child_nodes[prop_model_id]);
+            child_nodes[prop_model_id] = prop;
             prop.parent_node = this;
         }
         //if (bone_to_attach.name == "jt_propCounterScale")
@@ -73,56 +88,67 @@ public partial class Node : MonoBehaviour
     public void AttachProp(string parameters)
     {
         string[] split = parameters.Split(':');
-        attachChildNode(split[0], split[1], split[2]);
+        string model_id = split[0];
+        string bone_id = split[1];
+        
+        if (split.Length < 3)
+        {
+            attachChildNode(model_id, model_id, bone_id);
+        }
+        else
+        {
+            string prop_name = split[2];
+            if (child_nodes.ContainsKey(prop_name))
+            {
+                Node prop = child_nodes[prop_name].GetComponent<Node>();
+                prop.attachChildNode(model_id, model_id, bone_id);
+            }
+        }
     }
 
     //Animation event
     public void PlayPropAnim(string parameters)
     {
         string[] split = parameters.Split(':');
+
         playPropAnim(split[0], split[1]);
     }
 
     public void removeProp(string id)
     {
-        if (childNodes.ContainsKey(id))
+        if (child_nodes.ContainsKey(id))
         {
-            Destroy(childNodes[id]);
-            childNodes.Remove(id);
+            Destroy(child_nodes[id]);
+            child_nodes.Remove(id);
         }
     }
 
-    public void playPropAnim(string id, string target, Dictionary<string, string> triggerReplacement = null)
+    public void playPropAnim(string prop_id, string anim_id, Dictionary<string, string> triggerReplacement = null)
     {
-        Node found_node = null;
-        childNodes.TryGetValue(id, out found_node);
-
-        if (found_node == null && parent_node != null){
-            parent_node.childNodes.TryGetValue(id, out found_node);
-        }
+        Node found_node = getChildNode(prop_id);
         
         if (found_node == null)
         {
-            Debug.LogError("Failed to play prop anim " + target + " on a nonexistent prop " + id);
+            Debug.LogError("Failed to play prop anim " + anim_id + " on a nonexistent prop " + prop_id);
             return;
         }
 
-        HPAnimation animation = AnimationManager.loadAnimationClip(target, found_node.GetComponent<Node>().model, null, triggerReplacement);
+        HPAnimation animation = AnimationManager.loadAnimationClip(anim_id, found_node.GetComponent<Node>().model, null, triggerReplacement);
         if (animation == null) return;
         found_node.GetComponent<Node>().queueAnimationOnComponent(animation);
     }
 
     public void stopPropAnim(string id)
     {
-        if (childNodes.ContainsKey(id))
+        if (child_nodes.ContainsKey(id))
         {
-            childNodes[id].GetComponent<Animation>().Stop();
+            child_nodes[id].GetComponent<Animation>().Stop();
         }
     }
 
     public void destroyProps()
     {
-        foreach (var g in childNodes.Values)
+        foreach (var g in child_nodes.Values)
         {
             DestroyImmediate(g);
         }
@@ -130,7 +156,7 @@ public partial class Node : MonoBehaviour
         {
             DestroyImmediate(particle);
         }
-        childNodes.Clear();
+        child_nodes.Clear();
     }
 
     public void AttachParticleSystem(string parameters)
@@ -143,9 +169,9 @@ public partial class Node : MonoBehaviour
         if (split.Length == 3)
         {
             prop_name = split[2];
-            if (childNodes.ContainsKey(prop_name))
+            if (child_nodes.ContainsKey(prop_name))
             {
-                Transform bone = childNodes[prop_name].GetComponent<Node>().model.pose_bones[bone_name];
+                Transform bone = child_nodes[prop_name].GetComponent<Node>().model.pose_bones[bone_name];
                 particle = Particle.AttachParticleSystem(particle_name, bone);
             }
         }

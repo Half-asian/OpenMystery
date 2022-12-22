@@ -59,7 +59,8 @@ public class ConfigAnimation : Config<ConfigAnimation>
             }
             public FadeEffect[] fades;
             //unknown what these do
-            //public fadeKeys
+
+            public float[][] fadeKeys;
             //public frames
             //public frameKeys
             public string name;

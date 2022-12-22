@@ -24,7 +24,6 @@ public abstract partial class AnimationSequence : MonoBehaviour
     public virtual void initAnimSequence(string _anim_sequence, bool _walk)
     {
         base_node.onAnimationFinished += WaitForAnimation;
-
         destroyProps();
         walk = _walk;
         //Find the animation sequence in the config
@@ -52,6 +51,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         if (config_sequence.data.startEdge.actions != null)
             foreach (ConfigCharAnimSequence._CharAnimSequence._data.action action in config_sequence.data.startEdge.actions)
                 processAction(action);
+
 
         activateNode();
 
