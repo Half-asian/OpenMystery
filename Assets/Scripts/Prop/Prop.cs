@@ -222,7 +222,8 @@ public class Prop : Node
             spawned_props[name] = prop;
         }
 
-        prop.model.game_object.transform.parent = Scene.scene_model.game_object.transform;
+        prop.model.game_object.transform.SetParent(GameStart.current.props_holder);
+
         Common.setWaypointTransform(ref prop.model.game_object, waypoint);
     }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UIElements;
 
 public partial class ActorController : Node
 {
@@ -36,8 +37,19 @@ public partial class ActorController : Node
 
     private IEnumerator waitForAnimation;
 
+    static AnimationManager.BoneMod frozen_bonemod = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1), true);
+
     public void initializeAnimations()
     {
+        //Freezes these bones in place when no animations are playing to stop infinite spin on lookats
+        bone_mods = new Dictionary<string, AnimationManager.BoneMod>()
+        {
+            ["jt_hips_bind"] = frozen_bonemod,
+            ["spine1_loResSpine2_bind"] = frozen_bonemod,
+            ["spine1_loResSpine3_bind"] = frozen_bonemod,
+            ["jt_head_bind"] = frozen_bonemod,
+        };
+
         default_anim = new HPAnimation(Resources.Load("default") as AnimationClip);
         default_anim.anim_clip.legacy = true;
         if (config_hpactor is not null)

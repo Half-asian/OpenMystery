@@ -70,7 +70,11 @@ class StaticAvatarSpawner
             }
         }
 
-        c.bone_mods = avatar_components.bonemods;
+
+        foreach (string bone_mod in avatar_components.bonemods.Keys)
+        {
+            c.bone_mods.Add(bone_mod, avatar_components.bonemods[bone_mod]);
+        }
 
         if (Scenario.current != null && Scenario.current.appliedClothes != null) //Apply scenario clothes
         {

@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
-using UnityEngine.XR;
-using static Events;
 
 public partial class ActorController
 {
@@ -21,6 +16,7 @@ public partial class ActorController
     [SerializeField]
     private float multiplier2 = 1.0f;
     private ActorController last_actor_controller = null;
+    private Prop last_prop = null;
     private Vector3 last_vec3 = Vector3.zero;
 
     [SerializeField]
@@ -43,6 +39,19 @@ public partial class ActorController
         if (speed_boost == 0.0)
             speed_boost = 1000.0f;
         last_actor_controller = target_actor;
+        last_prop = null;
+        last_vec3 = Vector3.zero;
+    }
+
+    public void setLookAt(Prop target_prop, float new_speed = 3.0f)
+    {
+        setActorTarget(target_prop);
+        is_head_only = false;
+        speed_boost = new_speed;
+        if (speed_boost == 0.0)
+            speed_boost = 1000.0f;
+        last_actor_controller = null;
+        last_prop = target_prop;
         last_vec3 = Vector3.zero;
     }
 
@@ -55,6 +64,7 @@ public partial class ActorController
             speed_boost = 1000.0f;
         last_vec3 = new Vector3(x, y, 0);
         last_actor_controller = null;
+        last_prop = null;
     }
 
     public void setTurnHeadAt(ActorController target_actor, float new_speed = 3.0f)
@@ -65,6 +75,19 @@ public partial class ActorController
         if (speed_boost == 0.0)
             speed_boost = 1000.0f;
         last_actor_controller = target_actor;
+        last_prop = null;
+        last_vec3 = Vector3.zero;
+    }
+
+    public void setTurnHeadAt(Prop target_prop, float new_speed = 3.0f)
+    {
+        setActorTarget(target_prop);
+        is_head_only = true;
+        speed_boost = new_speed;
+        if (speed_boost == 0.0)
+            speed_boost = 1000.0f;
+        last_actor_controller = null;
+        last_prop = target_prop;
         last_vec3 = Vector3.zero;
     }
 
@@ -77,12 +100,15 @@ public partial class ActorController
             speed_boost = 1000.0f;
         last_vec3 = new Vector3(x, y, 0);
         last_actor_controller = null;
+        last_prop = null;
     }
 
     public void refreshLookAts()
     {
         if (last_actor_controller != null)
             setActorTarget(last_actor_controller);
+        else if (last_prop != null)
+            setActorTarget(last_prop);
         else
             setTargetRotation(last_vec3);
     }
@@ -98,6 +124,20 @@ public partial class ActorController
         }
 
         Vector3 targetDirection = target_actor.model.pose_bones["jt_head_bind"].position - model.pose_bones["jt_head_bind"].position;
+
+        setTargetRotation(Quaternion.LookRotation(targetDirection).eulerAngles - transform.eulerAngles);
+    }
+
+    private void setActorTarget(Prop target_prop)
+    {
+        if (!target_prop.model.pose_bones.ContainsKey("jt_prop_bind"))
+        {
+            Debug.LogError("Couldn't find jt_prop_bind for lookat on " + target_prop.name);
+            clearLookat();
+            return;
+        }
+
+        Vector3 targetDirection = target_prop.model.pose_bones["jt_prop_bind"].position - model.pose_bones["jt_head_bind"].position;
 
         setTargetRotation(Quaternion.LookRotation(targetDirection).eulerAngles - transform.eulerAngles);
     }

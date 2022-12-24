@@ -31,7 +31,6 @@ public class CustomizableAvatarSpawner : MonoBehaviour
         actor_controller.config_hpactor = character;
         actor_controller.replaceCharacterIdle(character.animId_idle);
         actor_controller.patches = new List<Model>();
-        actor_controller.bone_mods = new Dictionary<string, AnimationManager.BoneMod>();
 
         if (character_model.game_object != null)
         {

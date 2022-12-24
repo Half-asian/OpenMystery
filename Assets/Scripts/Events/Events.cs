@@ -724,6 +724,12 @@ public static class Events
                 Actor.actor_controllers[action_params[1]], speed);
             return;
         }
+        else if (Prop.spawned_props.ContainsKey(action_params[1]))
+        {
+            Actor.actor_controllers[action_params[0]].setLookAt(
+                Prop.spawned_props[action_params[1]], speed);
+            return;
+        }
         else                                                                            //Actor look in specific direction
         {
             try
@@ -744,7 +750,7 @@ public static class Events
             }
             catch
             {
-
+                Debug.LogError("Unknown second param for lookat " + action_params[0] + " " + action_params[1]);
             }
         }
     }
@@ -781,22 +787,34 @@ public static class Events
                 Actor.actor_controllers[action_params[1]], speed);
             return;
         }
+        else if (Prop.spawned_props.ContainsKey(action_params[1]))
+        {
+            Actor.actor_controllers[action_params[0]].setTurnHeadAt(
+                Prop.spawned_props[action_params[1]], speed);
+            return;
+        }
         else                                                                            //Actor look in specific direction
         {
-            float x = 0;
-            string[] numbers = action_params[1].Split(',');
-            float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
-            if (numbers.Length > 1) 
-                x = int.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
-            if (x == 0 && y == 0)
+            try
             {
-                Actor.actor_controllers[action_params[0]].clearLookat();
+                float x = 0;
+                string[] numbers = action_params[1].Split(',');
+                float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (numbers.Length > 1)
+                    x = int.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (x == 0 && y == 0)
+                {
+                    Actor.actor_controllers[action_params[0]].clearLookat();
+                }
+                else
+                {
+                    Actor.actor_controllers[action_params[0]].setTurnHeadAt(-x, y, speed);
+                }
             }
-            else
+            catch
             {
-                Actor.actor_controllers[action_params[0]].setTurnHeadAt(-x, y, speed);
+                Debug.LogError("Unknown second param for turnheadat " + action_params[0] + " " + action_params[1]);
             }
-
         }
     }
 }

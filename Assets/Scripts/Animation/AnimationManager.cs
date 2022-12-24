@@ -4,6 +4,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System.IO;
 using UnityEngine.TextCore.Text;
+using static AnimationManager;
 
 public class HPAnimation {
 	public AnimationClip anim_clip;
@@ -68,7 +69,6 @@ public static partial class AnimationManager
 		return _loadAnimationClip();
 	}
 
-
 	public static HPAnimation _loadAnimationClip()
 	{
 		if (string.IsNullOrEmpty(animation_name))
@@ -112,15 +112,64 @@ public static partial class AnimationManager
 		anim_clip.legacy = true;
 		bone_fullname_dict = Common.GetTransformFullNameDict(model.jt_all_bind);
 
-		foreach (CocosModel.Animation.Bone node in animation_c3t.animations[0].bones)
-		{
-			processAnimationBone(node);
-		}
+		List<string> animated_bones = new List<string>();
 
-		//Apply bone mods
-		if (bone_mods != null)
+        foreach (CocosModel.Animation.Bone node in animation_c3t.animations[0].bones)
+        {
+			animated_bones.Add(node.boneId);
+            processAnimationBone(node);
+        }
+
+		/*foreach(var bone_mod in bone_mods.Keys)
 		{
-			setBoneMODMods(ref anim_clip, ref bone_mods);
+			if (bone_mods[bone_mod].freezehack == true)
+			{
+                CocosModel.Animation.Bone node = new CocosModel.Animation.Bone();
+                node.boneId = bone_mod;
+                var keyframe1 = new CocosModel.Animation.Bone.Keyframe();
+                keyframe1.keytime = 0.0f;
+				/*keyframe1.translation = new float[] {
+					model.pose_bones[bone_mod].transform.localPosition.x,
+					model.pose_bones[bone_mod].transform.localPosition.y,
+					model.pose_bones[bone_mod].transform.localPosition.z};*/
+                /*keyframe1.rotation = new float[] { 0.0f, 0.0f, 0.0f, 1.0f };
+                node.keyframes = new CocosModel.Animation.Bone.Keyframe[] { keyframe1 };
+                processAnimationBone(node);
+            }
+		}*/
+
+        //Apply bone mods
+        if (bone_mods != null)
+		{
+			foreach (string key in bone_mods.Keys)
+			{
+				if (bone_mods[key].freezehack == false)
+					setBoneMod(ref anim_clip, ref bone_mods, key);
+				else if (!animated_bones.Contains(key))
+				{
+					if (!model.pose_bones.ContainsKey(key))
+						continue;
+					CocosModel.Animation.Bone node = new CocosModel.Animation.Bone();
+					node.boneId = key;
+					var keyframe1 = new CocosModel.Animation.Bone.Keyframe();
+					keyframe1.keytime = 0.0f;
+					Vector3 rotation = model.pose_bones[key].transform.localEulerAngles;
+					Quaternion final = Quaternion.Euler(new Vector3(rotation.x, -rotation.y, -rotation.z));
+                    keyframe1.rotation = new float[] {
+                        final.x,
+                        final.y,
+                        final.z,
+                        final.w
+                    };
+                    keyframe1.scale = new float[] {
+                        model.pose_bones[key].transform.localScale.x,
+                        model.pose_bones[key].transform.localScale.y,
+                        model.pose_bones[key].transform.localScale.z};
+                    node.keyframes = new CocosModel.Animation.Bone.Keyframe[] { keyframe1 };
+					processAnimationBone(node);
+				}
+
+			}
 		}
 
 		//Add trigger map
