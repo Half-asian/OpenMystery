@@ -136,7 +136,7 @@ public static class Events
 
                 string hpactor_id   = action_params.Length >= 1 ? action_params[0] : null;
                 string waypoint_id  = action_params.Length >= 2 ? action_params[1] : null;
-                string instance_id  = action_params.Length >= 3 ? action_params[2] : null;
+                string instance_id  = action_params.Length >= 3 ? action_params[2] : hpactor_id;
 
                 Actor.spawnActor(hpactor_id, waypoint_id, instance_id);
                 break;
