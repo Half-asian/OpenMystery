@@ -35,7 +35,6 @@ public class MenuBackgroundHalloween2022 : MonoBehaviour, IMenuBackground
     public float cameraBobSpeed;
     public float cameraBobAmplitude;
     float janestartHeight = 0.744f;
-    float snarestartHeight = 1.944f;
 
     Coroutine bobBargeCoroutine = null;
 

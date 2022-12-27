@@ -11,10 +11,6 @@ public partial class ActorController
     [SerializeField]
     private bool is_head_only = false;
 
-    [SerializeField]
-    private float multiplier = 1.0f;
-    [SerializeField]
-    private float multiplier2 = 1.0f;
     private ActorController last_actor_controller = null;
     private Prop last_prop = null;
     private Vector3 last_vec3 = Vector3.zero;

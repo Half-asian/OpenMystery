@@ -18,27 +18,12 @@ public class MenuBackgroundChristmas2022 : MonoBehaviour, IMenuBackground
     ActorController Bill;
     ActorController Charlie;
 
-    string barge1name = "BargeA_Railing";
-    string barge2name = "Barge_LODS";
-    string barge3name = "Ropes";
-    string barge4name = "RailingCards";
-    string barge5name = "Barge_Panels";
-    string barge6name = "BargeLamps";
-
-    GameObject barge1;
-    GameObject barge2;
-    GameObject barge3;
-    GameObject barge4; 
-    GameObject barge5;
-    GameObject barge6;
 
 
     public float bobSpeed;
     public float bobAmplitude;
     public float cameraBobSpeed;
     public float cameraBobAmplitude;
-    float janestartHeight = 0.744f;
-    float snarestartHeight = 1.944f;
 
     Coroutine bobBargeCoroutine = null;
 

@@ -24,6 +24,10 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 playChildNodeAnim(action.id, action.target, config_sequence.data.triggerReplacement);
                 break;
 
+            case "AttachParticleSystem":
+                AttachParticleSystem(action.id, action.target);
+                break;
+
             case "StopPropAnim":
                 stopPropAnim(action.id);
                 break;
@@ -73,6 +77,10 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     protected abstract void attachBroom(string target);
     protected abstract void playBroomAnim(string target);
+    protected void AttachParticleSystem(string id, string target)
+    {
+        base_node.AttachParticleSystem(id + ":" + target);
+    }
     protected void playChildNodeAnim(string id, string target, Dictionary<string, string> triggerReplacement)
     {
         base_node.playPropAnim(id, target, triggerReplacement);

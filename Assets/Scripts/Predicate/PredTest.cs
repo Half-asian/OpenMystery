@@ -6,9 +6,9 @@ public class PredTest : MonoBehaviour
 {
     void Start()
     {
-        //NewPredicate.startupTest();
-        //NewPredicate.parsePredicate("  -5     ==    10     -    15");
-        //NewPredicate.parsePredicate("falseTrue()");
+        PUParticleSpawner.spawnParticle("fx_cauldronSpew_15_v1.pu");
+
+
     }
 
 }
