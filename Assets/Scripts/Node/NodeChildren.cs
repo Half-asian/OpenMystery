@@ -161,6 +161,7 @@ public partial class Node : MonoBehaviour
 
     public void AttachParticleSystem(string parameters)
     {
+        Debug.Log("AttachParticleSystem");
         string[] split = parameters.Split(':');
         string particle_name = split[0];
         string bone_name = split[1];
@@ -174,9 +175,18 @@ public partial class Node : MonoBehaviour
                 Transform bone = child_nodes[prop_name].GetComponent<Node>().model.pose_bones[bone_name];
                 particle = Particle.AttachParticleSystem(particle_name, bone);
             }
+            else
+            {
+                Debug.LogError("Could not find child node to attach particle system " + prop_name);
+            }
         }
         else
         {
+            if (!model.pose_bones.ContainsKey(bone_name))
+            {
+                Debug.LogError("Failed to attach particle system to invalud bone " + bone_name);
+                return;
+            }
             particle = Particle.AttachParticleSystem(particle_name, model.pose_bones[bone_name]);
         }
         if (particle != null)

@@ -87,7 +87,7 @@ public static partial class AnimationManager
 					}
 					else
 					{
-                        string attach_prop = triggerReplacement.ContainsKey(trigger.parameters[1]) ? triggerReplacement[trigger.parameters[1]] : trigger.parameters[1];
+                        string attach_prop = triggerReplacement.ContainsKey(trigger.parameters[2]) ? triggerReplacement[trigger.parameters[2]] : trigger.parameters[2];
 						animationEvent.stringParameter = particle_name + ":" + attach_bone + ":" + attach_prop;
 					}
 

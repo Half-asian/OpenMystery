@@ -60,7 +60,7 @@ namespace IndividualComponents
 
                     for (int i = 0; i < patch.stringIds.Length; i++)
                     {
-                        smr.materials[0].SetTexture(patch.stringIds[i], TextureManager.loadTextureDDS(patch.stringValueKeys[i]));
+                        smr.materials[0].SetTexture(patch.stringIds[i], TextureManager.loadTexture(patch.stringValueKeys[i]));
                     }
 
                     for (int i = 0; i < patch.vec3Ids.Length; i++)

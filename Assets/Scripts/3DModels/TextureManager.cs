@@ -61,7 +61,7 @@ public class TextureManager
 
 		return null;    //Give up :(
 	}
-	public static Texture2D loadTextureDDS(string name)
+	public static Texture2D loadTexture(string name)
     {
 		if (!Configs.config_texture.TextureConfig.ContainsKey(name))
 		{
@@ -73,53 +73,66 @@ public class TextureManager
 		if (loaded_textures.ContainsKey(name))
 			return loaded_textures[name];
 
-		string full_path = "";
 		string file_name = Configs.config_texture.TextureConfig[name].filename;
-		if (file_name.StartsWith("mods/") || file_name.StartsWith("mods\\"))
-		{
-			string root_folder = GlobalEngineVariables.mods_folder;
-			file_name = file_name.Substring(5);
-			full_path = root_folder + file_name;
-		}
-        else
-        {
-			name = Configs.config_texture.TextureConfig[name].filename.Replace(".compressed", "@4x.dds");
-			full_path = Path.Combine(GlobalEngineVariables.assets_folder, "textures", name);
-		}
 
-		if (!System.IO.File.Exists(full_path))
-		{
-			Debug.LogError("Couldn't find tex " + full_path);
-			return null;
-		}
-
-		byte[] buffer;
-		FileStream stream = new FileStream(full_path, FileMode.Open);
-
-		var ddsBytes = new byte[stream.Length];
-		stream.Read(ddsBytes, 0, ddsBytes.Length);
-
-		byte ddsSizeCheck = ddsBytes[4];
-		if (ddsSizeCheck != 124)
-			throw new System.Exception("Invalid DDS DXTn texture. Unable to read");  //this header byte should be 124 for DDS image files
-
-		int height = ddsBytes[13] * 256 + ddsBytes[12];
-		int width = ddsBytes[17] * 256 + ddsBytes[16];
-		Texture2D tex = new Texture2D(width, height, TextureFormat.BC7, false, true);
-
-		int DDS_HEADER_SIZE = 148;
-		buffer = new byte[ddsBytes.Length - DDS_HEADER_SIZE];
-		System.Buffer.BlockCopy(ddsBytes, DDS_HEADER_SIZE, buffer, 0, ddsBytes.Length - DDS_HEADER_SIZE);
-		stream.Close();
-
-		tex.LoadRawTextureData(buffer);
-		tex.Apply();
+        Texture2D tex = loadTextureDDS(file_name);
 
         loaded_textures[name] = tex;
 
 		return tex;
 
 	}
+
+    public static Texture2D loadTextureDDS(string file_name)
+	{
+		string full_path;
+        if (file_name.StartsWith("mods/") || file_name.StartsWith("mods\\"))
+        {
+            string root_folder = GlobalEngineVariables.mods_folder;
+            file_name = file_name.Substring(5);
+            full_path = root_folder + file_name;
+        }
+        else
+        {
+            file_name = file_name.Replace(".compressed", "@4x.dds");
+            full_path = Path.Combine(GlobalEngineVariables.assets_folder, "textures", file_name);
+        }
+
+        if (!System.IO.File.Exists(full_path))
+        {
+            Debug.LogError("Couldn't find tex " + full_path);
+            return null;
+        }
+
+        byte[] buffer;
+        FileStream stream = new FileStream(full_path, FileMode.Open);
+
+        var ddsBytes = new byte[stream.Length];
+        stream.Read(ddsBytes, 0, ddsBytes.Length);
+
+        byte ddsSizeCheck = ddsBytes[4];
+        if (ddsSizeCheck != 124)
+            throw new System.Exception("Invalid DDS DXTn texture. Unable to read");  //this header byte should be 124 for DDS image files
+
+        int height = ddsBytes[13] * 256 + ddsBytes[12];
+        int width = ddsBytes[17] * 256 + ddsBytes[16];
+		Texture2D tex;
+        if (height % 4 == 0)
+			tex = new Texture2D(width, height, TextureFormat.BC7, false, true);
+		else
+            tex = new Texture2D(width, height, TextureFormat.RGBA32, false, true);
+
+        int DDS_HEADER_SIZE = 148;
+        buffer = new byte[ddsBytes.Length - DDS_HEADER_SIZE];
+        System.Buffer.BlockCopy(ddsBytes, DDS_HEADER_SIZE, buffer, 0, ddsBytes.Length - DDS_HEADER_SIZE);
+        stream.Close();
+
+        tex.LoadRawTextureData(buffer);
+        tex.Apply();
+
+		return tex;
+    }
+
 
     public static void Initialize()
     {

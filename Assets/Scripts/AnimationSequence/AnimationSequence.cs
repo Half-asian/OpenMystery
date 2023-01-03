@@ -122,8 +122,9 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     private void cleanup()
     {
-        destroyProps();
         base_node.onAnimationFinished -= WaitForAnimation;
+        destroyProps();
+        config_sequence = null;
     }
 
     protected virtual void finishSequence()
@@ -139,6 +140,8 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     private void WaitForAnimation(string animation_name)
     {
+        if (config_sequence == null)
+            return;
         if (config_sequence.data.nodes[this.node_index].blocking == true)
             return;
         //Debug.Log("ANIMATION_SEQUENCE: waitforanimation finished for " + base_node.name + " playing anim seq " + config_sequence.sequenceId);

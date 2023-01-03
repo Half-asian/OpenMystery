@@ -19,12 +19,12 @@ public class ActorAnimSequence : AnimationSequence
     protected override void finishSequence()
     {
         //Debug.Log("ACTOR_ANIM_SEQUENCE: " + actor_controller.name + " has finished sequence.");
-        base.finishSequence();
-
         if (config_sequence.isOneShot)
         {
             actor_controller.setCharacterIdle();
         }
+        base.finishSequence();
+
         //If not one shot, freeze
         //Reference Y5 Chapter 22 P6 Charlie prefect bath, charlies frozen
         //If one shot, repeat

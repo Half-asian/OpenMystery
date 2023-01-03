@@ -159,6 +159,8 @@ public class Configs{
     public static ConfigShaderAnimation config_shader_animation;
     public static ConfigQuizGroup config_quiz_group;
     public static ConfigQuiz config_quiz;
+    public static ConfigParticleConfig config_particle_config;
+    public static ConfigParticleInstance config_particle_instance;
     public static SceneEnvOverrides config_scene_env_override;
 
     public static Dictionary<string, ConfigSound._Ambient> ambient_dict;
@@ -455,6 +457,8 @@ public class Configs{
         config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
         config_quidditch_broom_info = ConfigQuidditchBroomInfo.getJObjectsConfigsListST("QuidditchBroomInfo");
         config_local_data = ConfigLocalData.getConfig();
+        config_particle_instance = ConfigParticleInstance.getJObjectsConfigsListST("ParticleInstance");
+        config_particle_config = ConfigParticleConfig.getJObjectsConfigsListST("ParticleConfig");
         Configs.config_3dmodel.createMaterialDict();
     }
 
@@ -512,6 +516,8 @@ public class Configs{
         config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
         config_quiz_group = ConfigQuizGroup.getJObjectsConfigsListST("QuizGroup");
         config_quiz = ConfigQuiz.getJObjectsConfigsListST("Quiz");
+        config_particle_instance = ConfigParticleInstance.getJObjectsConfigsListST("ParticleInstance");
+        config_particle_config = ConfigParticleConfig.getJObjectsConfigsListST("ParticleConfig");
 
         config_scene_env_override = SceneEnvOverrides.getJObjectsConfigsListST("SceneOverride");
 

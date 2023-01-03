@@ -25,7 +25,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 break;
 
             case "AttachParticleSystem":
-                AttachParticleSystem(action.id, action.target);
+                attachParticleSystem(action.id, action.target);
                 break;
 
             case "StopPropAnim":
@@ -77,7 +77,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     protected abstract void attachBroom(string target);
     protected abstract void playBroomAnim(string target);
-    protected void AttachParticleSystem(string id, string target)
+    protected void attachParticleSystem(string id, string target)
     {
         base_node.AttachParticleSystem(id + ":" + target);
     }

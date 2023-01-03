@@ -397,7 +397,7 @@ public class Scene
             if (material.stringValueKeys != null)
             {
                 for (int i = 0; i < material.stringValueKeys.Length; i++) {
-                    mat.SetTexture(material.stringIds[i], TextureManager.loadTextureDDS(material.stringValueKeys[i]));
+                    mat.SetTexture(material.stringIds[i], TextureManager.loadTexture(material.stringValueKeys[i]));
                 }
             }
             if (material.floatIds != null)

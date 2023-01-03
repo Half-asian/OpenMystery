@@ -1,615 +1,780 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static PUParticle.System.Technique;
+using UnityEngine.Assertions;
+using static CocosPU.PUCommon;
+using static CocosPU.PUParticle.PUSystem.Technique;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
-public class PUParticle
+namespace CocosPU
 {
-    public class ValueSingle
+    public partial class PUParticle
     {
-        public enum type
+        public partial class PUSystem
         {
-            Fixed,
-            Random,
-            CurvedLinear
-        }
-        public ValueSingle(float value)
-        {
-            min = value;
-        }
-        public ValueSingle(float _min, float _max)
-        {
-            value_type = type.Random;
-            min = _min;
-            max = _max;
-        }
-
-        public type value_type = type.Fixed;
-        public float min;
-        public float max;
-        
-        public class ControlPoint
-        {
-            public ControlPoint(float _time, float _value)
+            public PUSystem()
             {
-                time = _time;
-                value = _value;
-            }
-
-            public float time;
-            public float value;
-        }
-        public List<ControlPoint> controlPoints = new List<ControlPoint>();
-    }
-
-    public class ValueTriple
-    {
-        public ValueTriple(float value1, float value2, float value3)
-        {
-            x = value1;
-            y = value2;
-            z = value3;
-        }
-        public float x;
-        public float y;
-        public float z;
-    }
-
-    public class ValueQuad
-    {
-        public ValueQuad(float value1, float value2, float value3, float value4)
-        {
-            x = value1;
-            y = value2;
-            z = value3;
-            w = value4;
-        }
-        public float x;
-        public float y;
-        public float z;
-        public float w;
-    }
-
-    public class System
-    {
-        public System()
-        {
-            techniques = new Dictionary<string, Technique>();
-        }
-
-        public string name;
-        public float iteration_interval;
-        public float[] fast_forward;
-
-        public class Technique
-        {
-            public Technique()
-            {
-                emitters = new List<Emitter>();
-                affectors = new List<Affector>();
+                techniques = new Dictionary<string, Technique>();
             }
 
             public string name;
-            public ValueSingle visual_particle_quota = new ValueSingle(1000);
-            public ValueSingle emitted_emitter_quota; //unused
-            public ValueSingle default_particle_width = new ValueSingle(1); //Tested - no effect
-            public ValueSingle default_particle_height = new ValueSingle(1); //Tested - no effect
-            public ValueSingle default_particle_depth = new ValueSingle(1); //Tested - no effect
-            public ValueSingle spatial_hashtable_size; //unused
-            public ValueSingle max_velocity;
-            public string material;
+            public string category;
+            public float iteration_interval;
+            public float[] fast_forward;
+            public ValueTriple scale;
 
-            public class Renderer
+            public class Technique
             {
-                public string type;
-                public ValueSingle max_elements;
-                /*Ribbontrail*/
-                public ValueSingle ribbontrail_length;
-                public ValueSingle ribbontrail_width;
-                public bool random_initial_colour;
-                public ValueQuad initial_colour;
-                public ValueQuad colour_change;
-
-            }
-            public Renderer renderer;
-            public class Emitter
-            {
-                public string type;
-                public string name;
-                public string emits_type;
-                public string emits_id;
-                public ValueSingle emission_rate;
-                public ValueSingle angle; //Can't figure out what this does
-                public ValueSingle duration;
-                public ValueSingle particle_width;
-                public ValueSingle particle_height;
-                public ValueSingle radius;
-                //public Value direction;
-                public ValueSingle time_to_live;
-                public ValueSingle mass;
-                public ValueSingle velocity;
-                public ValueSingle all_particle_dimensions;
-                public ValueSingle repeat_delay;
-                public ValueQuad start_colour_range;
-                public ValueQuad end_colour_range;
-                public ValueQuad colour;
-                public bool auto_direction;
-            }
-            public List<Emitter> emitters;
-            public class Affector
-            {
-                public Affector()
+                public Technique()
                 {
-                    timeColours = new List<TimeColour>();
+                    emitters = new List<Emitter>();
+                    affectors = new List<Affector>();
+                    externs = new List<Extern>();
                 }
 
-                public string type;
                 public string name;
-                public ValueSingle rotation;
-                public ValueTriple rotation_axis;
-                public ValueSingle rotation_speed;
-                public string exclude_emitter;
-                /*LinearForce*/
-                public ValueTriple force_vector;
-                /*Color*/
-                public class TimeColour
+                public ValueSingle visual_particle_quota = new ValueSingle(1000);
+                public ValueSingle emitted_system_quota;
+                public ValueSingle emitted_technique_quota;
+                public ValueSingle emitted_emitter_quota;
+                public ValueSingle emitted_affector_quota;
+                public ValueSingle default_particle_width = new ValueSingle(1); //Tested - no effect
+                public ValueSingle default_particle_height = new ValueSingle(1); //Tested - no effect
+                public ValueSingle default_particle_depth = new ValueSingle(1); //Tested - no effect
+                public ValueSingle spatial_hashtable_size; //unused
+                public ValueSingle max_velocity;
+                public ValueSingle lod_index;
+                public string material;
+                public ValueTriple position;
+                public bool enabled;
+                public bool keep_local;
+
+                public class Renderer
                 {
-                    public TimeColour(float _time, float _r, float _g, float _b, float _a)
+                    public string type;
+                    public ValueSingle max_elements;
+                    //Ribbontrail
+                    public ValueSingle ribbontrail_length;
+                    public ValueSingle ribbontrail_width;
+                    public bool random_initial_colour;
+                    public bool sorting;
+                    public bool accurate_facing;
+                    public bool use_vertex_colours;
+                    public bool use_soft_particles;
+                    public ValueQuad initial_colour;
+                    public ValueQuad colour_change;
+                    public ValueSingle texture_coords_rows;
+                    public ValueSingle texture_coords_columns;
+                    public ValueSingle render_queue_group;
+                    public ValueSingle soft_particles_contrast_power;
+                    public ValueSingle soft_particles_scale;
+                    public ValueSingle soft_particles_delta;
+                    public string billboard_rotation_type;
+                    public string billboard_type;
+                    public string billboard_origin;
+                    public ValueTriple common_direction;
+
+                }
+                public Renderer renderer;
+                public partial class Emitter
+                {
+                    public string type;
+                    public string name;
+                    public string emits_type;
+                    public string emits_id;
+                    public string master_technique_name; //Slave Emitter
+                    public string master_emitter_name; //Slave Emitter
+                    public string mesh_name; //?
+                    public bool auto_direction; 
+                    public bool emit_random;
+                    public bool keep_local;
+                    public float? box_width; //Box Emitter
+                    public float? box_height; //Box Emitter
+                    public float? box_depth; //Box Emitter
+                    public float? radius; //Circle, Sphere Emitter
+                    public ValueSingle angle; //Circle
+                    public ValueSingle emission_rate;
+                    public ValueSingle duration;
+                    public ValueSingle particle_width;
+                    public ValueSingle particle_height;
+                    public ValueSingle time_to_live;
+                    public ValueSingle mass;
+                    public ValueSingle velocity;
+                    public ValueSingle all_particle_dimensions;
+                    public ValueSingle repeat_delay;
+                    public ValueSingle start_texture_coords_range;
+                    public ValueSingle end_texture_coords_range;
+                    public ValueSingle step;
+                    public ValueSingle max_deviation;
+                    public ValueSingle min_increment;
+                    public ValueSingle max_increment;
+                    public ValueTriple direction;
+                    public ValueTriple position;
+                    public ValueTriple normal;
+                    public ValueTriple end;
+                    public ValueQuad start_colour_range;
+                    public ValueQuad end_colour_range;
+                    public ValueQuad colour;
+                    public ValueQuad start_orientation_range;
+                    public ValueQuad end_orientation_range;
+                    public ValueQuad orientation;
+                }
+                public List<Emitter> emitters;
+                public class Affector
+                {
+                    public Affector()
                     {
-                        time = _time;
-                        r = _r;
-                        g = _g;
-                        b = _b;
-                        a = _a;
+                        timeColours = new List<TimeColour>();
                     }
-                    public float time;
-                    public float r;
-                    public float g;
-                    public float b;
-                    public float a;
+
+                    public string type;
+                    public string name;
+                    public ValueSingle rotation;
+                    public ValueTriple rotation_axis;
+                    public ValueSingle rotation_speed;
+                    public string exclude_emitter;
+                    //LinearForce
+                    public ValueTriple force_vector;
+                    public ValueTriple position;
+                    //Color
+                    //Colour
+                    public class TimeColour
+                    {
+                        public TimeColour(float _time, float _r, float _g, float _b, float _a)
+                        {
+                            time = _time;
+                            r = _r;
+                            g = _g;
+                            b = _b;
+                            a = _a;
+                        }
+                        public float time;
+                        public float r;
+                        public float g;
+                        public float b;
+                        public float a;
+                    }
+                    public List<TimeColour> timeColours;
+                    public string colour_operation;
+                    //Scale
+                    public ValueSingle xyz_scale;
+                    public bool since_start_system;
+                    public ValueSingle x_scale;
+                    public ValueSingle y_scale;
+                    //TextureAnimator
+                    public ValueSingle end_texture_coords_range;
+                    public bool texture_start_random;
+                    public ValueSingle start_texture_coords_range;
+                    public string texture_animation_type;
+                    //Jet
+                    public ValueSingle acceleration;
+                    //ScaleVelocity
+                    public ValueSingle velocity_scale;
+                    public bool stop_at_flip;
+                    public ValueSingle mass_affector;
+                    //Randomiser
+                    public ValueSingle max_deviation_x;
+                    public ValueSingle max_deviation_y;
+                    public ValueSingle max_deviation_z;
+                    public ValueSingle time_step;
+                    //TextureRotator
+                    public bool use_own_rotation;
+                    //ForceField
+                    public ValueSingle delta;
+                    public ValueSingle force;
+                    public ValueSingle octaves;
+                    public ValueSingle frequency;
+                    public ValueSingle forcefield_size;
+                    public ValueSingle movement_frequency;
+                    public ValueSingle amplitude;
+                    public ValueSingle persistence;
+                    public bool ignore_negative_y;
+                    public bool ignore_negative_z;
+                    public ValueTriple movement;
+                    public ValueTriple worldsize;
+                    public string forcefield_type;
+                    //Gravity
+                    public ValueSingle gravity;
+                    public bool enabled;
+                    //SineForce
+                    public ValueSingle min_frequency;
+                    public ValueSingle max_frequency;
+                    //VelocityMatching
+                    public ValueSingle radius;
+                    //BoxCollider
+                    public ValueSingle box_width;
+                    public ValueSingle box_height;
+                    public ValueSingle box_depth;
                 }
-                public List<TimeColour> timeColours;
-                /*Scale*/
-                public ValueSingle xyz_scale;
-                /*TextureAnimator*/
-                public ValueSingle end_texture_coords_range;
-                public bool texture_start_random;
+                public List<Affector> affectors;
+                public class Behaviour
+                {
+                    public string type;
+                }
+                public Behaviour behaviour;
+
+                public class Extern
+                {
+                    public string name;
+                    public string type;
+                    public ValueSingle box_width;
+                    public string collision_intersection;
+                }
+                public List<Extern> externs;
+
             }
-            public List<Affector> affectors;
-            public class Behaviour
+            public Dictionary<string, Technique> techniques;
+        }
+
+        public static PUSystem loadParticle(string file)
+        {
+            string path = Path.Combine(GlobalEngineVariables.assets_folder, "particles", file);
+            if (!File.Exists(path))
             {
-                public string type;
+                Debug.LogError("Particle file does not exist: " + path);
+                return null;
             }
-            public Behaviour behaviour;
+            StreamReader reader = new StreamReader(path);
+            string content = reader.ReadToEnd();
+            reader.Close();
+
+
+            var split = PUCommon.splitFile(content);
+
+            int pointer = 0;
+            var system = parseSystem(ref pointer, split);
+            return system;
         }
-        public Dictionary<string, Technique> techniques;
-    }
 
-    public static System loadParticle(string file)
-    {
-        StreamReader reader = new StreamReader(file);
-        string content = reader.ReadToEnd();
-        reader.Close();
-        content = content.Replace('\x0d', ' ');
-        content = content.Replace('\x0a', ' ');
-        content = Regex.Replace(content, @"\s+", " ");
-
-        var split = content.Split(' ');
-
-        //First word is System
-        int pointer = 1;
-
-        return parseSystem(ref pointer, split);
-    }
-
-    private static System parseSystem(ref int pointer, string[] split)
-    {
-        System system = new System();
-        system.name = split[pointer];
-        pointer += 2; //{
-        while (split[pointer] != "}")
+        private static PUSystem parseSystem(ref int pointer, string[][] split)
         {
-            switch (split[pointer])
+            PUSystem system = new PUSystem();
+            system.name = split[pointer][1];
+            pointer += 2; //{
+            while (split[pointer][0] != "}")
             {
-                case "iteration_interval":
-                    pointer++;
-                    system.iteration_interval = float.Parse(split[pointer]);
-                    break;
-                case "fast_forward":
-                    system.fast_forward = new float[2];
-                    pointer++;
-                    system.fast_forward[0] = float.Parse(split[pointer]);
-                    pointer++;
-                    system.fast_forward[1] = float.Parse(split[pointer]);
-                    break;
-                case "technique":
-                    pointer++;
-                    var technique = parseTechnique(ref pointer, split);
-                    system.techniques.Add(technique.name, technique);
-                    break;
+                switch (split[pointer][0])
+                {
+                    case "iteration_interval":
+                        system.iteration_interval = float.Parse(split[pointer][1]);
+                        break;
+                    case "fast_forward":
+                        system.fast_forward = new float[2] { float.Parse(split[pointer][1]), float.Parse(split[pointer][2]) };
+                        break;
+                    case "technique":
+                        var technique = parseTechnique(ref pointer, split);
+                        if (technique.name != null)
+                            system.techniques.Add(technique.name, technique);
+                        break;
+                    case "category":
+                        system.category = split[pointer][1];
+                        break;
+                    case "scale":
+                        system.scale = parseValueTriple(ref pointer, split);
+                        break;
+                    default:
+                        throw new System.Exception("Unknown System parameter " + split[pointer][0]);
+                }
+                pointer++;
             }
-            pointer++;
+            return system;
         }
-        return system;
-    }
-    private static System.Technique parseTechnique(ref int pointer, string[] split)
-    {
-        System.Technique technique = new System.Technique();
-        if (split[pointer] != "{")
+        
+        private static PUSystem.Technique parseTechnique(ref int pointer, string[][] split)
         {
-            technique.name = split[pointer];
-            pointer++;
-        }
-        else
-        {
-            technique.name = "unnamed technique";
-        }
-        pointer ++;//{
-        while (split[pointer] != "}")
-        {
-            switch (split[pointer])
+            PUSystem.Technique technique = new PUSystem.Technique();
+            if (split[pointer].Length > 1)
+                technique.name = split[pointer][1];
+            pointer+=2;//{
+            while (split[pointer][0] != "}")
             {
-                case "renderer":
-                    pointer++;
-                    technique.renderer = parseRenderer(ref pointer, split);
-                    break;
-                case "emitter":
-                    pointer++;
-                    var emitter = parseEmitter(ref pointer, split);
-                    technique.emitters.Add(emitter);
-                    break;
-                case "affector":
-                    pointer++;
-                    var affector = parseAffector(ref pointer, split);
-                    technique.affectors.Add(affector);
-                    break;
-                case "behaviour":
-                    pointer++;
-                    technique.behaviour = parseBehaviour(ref pointer, split);
-                    break;
-                case "visual_particle_quota":
-                    pointer++;
-                    technique.visual_particle_quota = parseValue(ref pointer, split);
-                    break;
-                case "emitted_emitter_quota":
-                    pointer++;
-                    technique.emitted_emitter_quota = parseValue(ref pointer, split);
-                    break;
-                case "default_particle_width":
-                    pointer++;
-                    technique.default_particle_width = parseValue(ref pointer, split);
-                    break;
-                case "default_particle_height":
-                    pointer++;
-                    technique.default_particle_height = parseValue(ref pointer, split);
-                    break;
-                case "default_particle_depth":
-                    pointer++;
-                    technique.default_particle_depth = parseValue(ref pointer, split);
-                    break;
-                case "spatial_hashtable_size":
-                    pointer++;
-                    technique.spatial_hashtable_size = parseValue(ref pointer, split);
-                    break;
-                case "max_velocity":
-                    pointer++;
-                    technique.max_velocity = parseValue(ref pointer, split);
-                    break;
-                case "material":
-                    pointer++;
-                    technique.material = split[pointer];
-                    break;
+                switch (split[pointer][0])
+                {
+                    case "renderer":
+                        technique.renderer = parseRenderer(ref pointer, split);
+                        break;
+                    case "emitter":
+                        technique.emitters.Add(parseEmitter(ref pointer, split));
+                        break;
+                    case "affector":
+                        technique.affectors.Add(parseAffector(ref pointer, split));
+                        break;
+                    case "behaviour":
+                        technique.behaviour = parseBehaviour(ref pointer, split);
+                        break;
+                    case "extern":
+                        technique.externs.Add(parseExtern(ref pointer, split));
+                        break;
+                    case "visual_particle_quota":
+                        technique.visual_particle_quota = parseValue(ref pointer, split);
+                        break;
+                    case "emitted_system_quota":
+                        technique.emitted_system_quota = parseValue(ref pointer, split);
+                        break;
+                    case "emitted_technique_quota":
+                        technique.emitted_technique_quota = parseValue(ref pointer, split);
+                        break;
+                    case "emitted_emitter_quota":
+                        technique.emitted_emitter_quota = parseValue(ref pointer, split);
+                        break;
+                    case "emitted_affector_quota":
+                        technique.emitted_affector_quota = parseValue(ref pointer, split);
+                        break;
+                    case "default_particle_width":
+                        technique.default_particle_width = parseValue(ref pointer, split);
+                        break;
+                    case "default_particle_height":
+                        technique.default_particle_height = parseValue(ref pointer, split);
+                        break;
+                    case "default_particle_depth":
+                        technique.default_particle_depth = parseValue(ref pointer, split);
+                        break;
+                    case "spatial_hashtable_size":
+                        technique.spatial_hashtable_size = parseValue(ref pointer, split);
+                        break;
+                    case "max_velocity":
+                        technique.max_velocity = parseValue(ref pointer, split);
+                        break;
+                    case "lod_index":
+                        technique.lod_index = parseValue(ref pointer, split);
+                        break;
+                    case "material":
+                        technique.material = split[pointer][1];
+                        break;
+                    case "position":
+                        technique.position = parseValueTriple(ref pointer, split);
+                        break;
+                    case "enabled":
+                        technique.enabled = bool.Parse(split[pointer][1]);
+                        break;
+                    case "keep_local":
+                        technique.keep_local = bool.Parse(split[pointer][1]);
+                        break;
+
+                    default:
+                        throw new System.Exception("Unknown Technique parameter " + split[pointer][0]);
+                }
+                pointer++;
             }
-            pointer++;
+            return technique;
         }
-        return technique;
-    }
-    private static System.Technique.Renderer parseRenderer(ref int pointer, string[] split)
-    {
-        System.Technique.Renderer renderer = new System.Technique.Renderer();
-        renderer.type = split[pointer];
-        pointer++;
-        pointer++; //{
-        while (split[pointer] != "}")
+
+        private static PUSystem.Technique.Renderer parseRenderer(ref int pointer, string[][] split)
         {
-            switch (split[pointer])
+            PUSystem.Technique.Renderer renderer = new PUSystem.Technique.Renderer();
+            renderer.type = split[pointer][1];
+            pointer+=2;//{
+            while (split[pointer][0] != "}")
             {
-                case "max_elements":
-                    pointer++;
-                    renderer.max_elements = parseValue(ref pointer, split);
-                    break;
-                case "ribbontrail_length":
-                    pointer++;
-                    renderer.ribbontrail_length = parseValue(ref pointer, split);
-                    break;
-                case "ribbontrail_width":
-                    pointer++;
-                    renderer.ribbontrail_width = parseValue(ref pointer, split);
-                    break;
-                case "random_initial_colour":
-                    pointer++;
-                    renderer.random_initial_colour = bool.Parse(split[pointer]);
-                    break;
-                case "initial_colour":
-                    pointer++;
-                    renderer.initial_colour = parseValueQuad(ref pointer, split);
-                    break;
-                case "colour_change":
-                    pointer++;
-                    renderer.colour_change = parseValueQuad(ref pointer, split);
-                    break;
+                switch (split[pointer][0])
+                {
+                    case "max_elements":
+                        renderer.max_elements = parseValue(ref pointer, split);
+                        break;
+                    case "ribbontrail_length":
+                        renderer.ribbontrail_length = parseValue(ref pointer, split);
+                        break;
+                    case "ribbontrail_width":
+                        renderer.ribbontrail_width = parseValue(ref pointer, split);
+                        break;
+                    case "random_initial_colour":
+                        renderer.random_initial_colour = bool.Parse(split[pointer][1]);
+                        break;
+                    case "sorting":
+                        renderer.sorting = bool.Parse(split[pointer][1]);
+                        break;
+                    case "accurate_facing":
+                        renderer.accurate_facing = bool.Parse(split[pointer][1]);
+                        break;
+                    case "use_vertex_colours":
+                        renderer.use_vertex_colours = bool.Parse(split[pointer][1]);
+                        break;
+                    case "use_soft_particles":
+                        renderer.use_soft_particles = bool.Parse(split[pointer][1]);
+                        break;
+                    case "initial_colour":
+                        renderer.initial_colour = parseValueQuad(ref pointer, split);
+                        break;
+                    case "colour_change":
+                        renderer.colour_change = parseValueQuad(ref pointer, split);
+                        break;
+                    case "texture_coords_rows":
+                        renderer.texture_coords_rows = parseValue(ref pointer, split);
+                        break;
+                    case "texture_coords_columns":
+                        renderer.texture_coords_columns = parseValue(ref pointer, split);
+                        break;
+                    case "render_queue_group":
+                        renderer.render_queue_group = parseValue(ref pointer, split);
+                        break;
+                    case "soft_particles_contrast_power":
+                        renderer.soft_particles_contrast_power = parseValue(ref pointer, split);
+                        break;
+                    case "soft_particles_scale":
+                        renderer.soft_particles_scale = parseValue(ref pointer, split);
+                        break;
+                    case "soft_particles_delta":
+                        renderer.soft_particles_delta = parseValue(ref pointer, split);
+                        break;
+                    case "billboard_rotation_type":
+                        renderer.billboard_rotation_type = split[pointer][1];
+                        break;
+                    case "billboard_type":
+                        renderer.billboard_type = split[pointer][1];
+                        break;
+                    case "billboard_origin":
+                        renderer.billboard_origin = split[pointer][1];
+                        break;
+                    case "common_direction":
+                        renderer.common_direction = parseValueTriple(ref pointer, split);
+                        break;
+                    default:
+                        throw new System.Exception("Unknown Renderer parameter " + split[pointer][0]);
+                }
+                pointer++;
             }
-            pointer++;
+            return renderer;
         }
-        return renderer;
-    }
-    private static System.Technique.Emitter parseEmitter(ref int pointer, string[] split)
-    {
-        System.Technique.Emitter emitter = new System.Technique.Emitter();
-        emitter.type = split[pointer];
-        pointer++;
-        if (split[pointer] != "{")
+        private static PUSystem.Technique.Emitter parseEmitter(ref int pointer, string[][] split)
         {
-            emitter.name = split[pointer];
-            pointer++;
-        }
-        else
-        {
-            emitter.name = "unnamed emitter";
-        }
-        pointer++; //{
-
-        Debug.Log("Loading emitter " + emitter.name);
-
-
-        while (split[pointer] != "}")
-        {
-            switch (split[pointer])
+            PUSystem.Technique.Emitter emitter = new PUSystem.Technique.Emitter();
+            emitter.type = split[pointer][1];
+            if (split[pointer].Length > 2)
+                emitter.name = split[pointer][2];
+            pointer+=2; //{
+            while (split[pointer][0] != "}")
             {
-                case "time_to_live":
-                    pointer++;
-                    emitter.time_to_live = parseValue(ref pointer, split);
-                    break;
-                case "mass":
-                    pointer++;
-                    emitter.mass = parseValue(ref pointer, split);
-                    break;
-                case "velocity":
-                    pointer++;
-                    emitter.velocity = parseValue(ref pointer, split);
-                    break;
-                case "all_particle_dimensions":
-                    pointer++;
-                    emitter.all_particle_dimensions = parseValue(ref pointer, split);
-                    break;
-                case "emission_rate":
-                    pointer++;
-                    emitter.emission_rate = parseValue(ref pointer, split);
-                    break;
-                case "angle":
-                    pointer++;
-                    emitter.angle = parseValue(ref pointer, split);
-                    break;
-                case "duration":
-                    pointer++;
-                    emitter.duration = parseValue(ref pointer, split);
-                    break;
-                case "particle_width":
-                    pointer++;
-                    emitter.particle_width = parseValue(ref pointer, split);
-                    break;
-                case "particle_height":
-                    pointer++;
-                    emitter.particle_height = parseValue(ref pointer, split);
-                    break;
-                case "radius":
-                    pointer++;
-                    emitter.radius = parseValue(ref pointer, split);
-                    break;
-                case "start_colour_range":
-                    pointer++;
-                    emitter.start_colour_range = parseValueQuad(ref pointer, split);
-                    break;
-                case "end_colour_range":
-                    pointer++;
-                    emitter.end_colour_range = parseValueQuad(ref pointer, split);
-                    break;
-                case "colour":
-                    pointer++;
-                    emitter.colour = parseValueQuad(ref pointer, split);
-                    break;
-                case "auto_direction":
-                    pointer++;
-                    emitter.auto_direction = bool.Parse(split[pointer]);
-                    break;
-                case "repeat_delay":
-                    pointer++;
-                    emitter.repeat_delay = parseValue(ref pointer, split);
-                    break;
-                case "emits":
-                    Debug.Log("EMITS");
-                    pointer++;
-                    emitter.emits_type = split[pointer];
-                    pointer++;
-                    emitter.emits_id = split[pointer];
-                    break;
+                switch (split[pointer][0])
+                {
+                    case "time_to_live":
+                        emitter.time_to_live = parseValue(ref pointer, split);
+                        break;
+                    case "mass":
+                        emitter.mass = parseValue(ref pointer, split);
+                        break;
+                    case "velocity":
+                        emitter.velocity = parseValue(ref pointer, split);
+                        break;
+                    case "all_particle_dimensions":
+                        emitter.all_particle_dimensions = parseValue(ref pointer, split);
+                        break;
+                    case "emission_rate":
+                        emitter.emission_rate = parseValue(ref pointer, split);
+                        break;
+                    case "angle":
+                        emitter.angle = parseValue(ref pointer, split);
+                        break;
+                    case "duration":
+                        emitter.duration = parseValue(ref pointer, split);
+                        break;
+                    case "particle_width":
+                        emitter.particle_width = parseValue(ref pointer, split);
+                        break;
+                    case "particle_height":
+                        emitter.particle_height = parseValue(ref pointer, split);
+                        break;
+                    case "radius":
+                        emitter.radius = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+                        break;
+                    case "start_colour_range":
+                        emitter.start_colour_range = parseValueQuad(ref pointer, split);
+                        break;
+                    case "end_colour_range":
+                        emitter.end_colour_range = parseValueQuad(ref pointer, split);
+                        break;
+                    case "colour":
+                        emitter.colour = parseValueQuad(ref pointer, split);
+                        break;
+                    case "auto_direction":
+                        emitter.auto_direction = bool.Parse(split[pointer][1]);
+                        break;
+                    case "emit_random":
+                        emitter.emit_random = bool.Parse(split[pointer][1]);
+                        break;
+                    case "keep_local":
+                        emitter.keep_local = bool.Parse(split[pointer][1]);
+                        break;
+                    case "repeat_delay":
+                        emitter.repeat_delay = parseValue(ref pointer, split);
+                        break;
+                    case "emits":
+                        emitter.emits_type = split[pointer][1];
+                        emitter.emits_id = split[pointer][2];
+                        break;
+                    case "box_width":
+                        emitter.box_width = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+                        break;
+                    case "box_height":
+                        emitter.box_height = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+                        break;
+                    case "box_depth":
+                        emitter.box_depth = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+                        break;
+                    case "start_texture_coords_range":
+                        emitter.end_texture_coords_range = parseValue(ref pointer, split);
+                        break;
+                    case "end_texture_coords_range":
+                        emitter.end_texture_coords_range = parseValue(ref pointer, split);
+                        break;
+                    case "step":
+                        emitter.step = parseValue(ref pointer, split);
+                        break;
+                    case "max_deviation":
+                        emitter.max_deviation = parseValue(ref pointer, split);
+                        break;
+                    case "min_increment":
+                        emitter.min_increment = parseValue(ref pointer, split);
+                        break;
+                    case "max_increment":
+                        emitter.max_increment = parseValue(ref pointer, split);
+                        break;
+                    case "direction":
+                        emitter.direction = parseValueTriple(ref pointer, split);
+                        break;
+                    case "position":
+                        emitter.position = parseValueTriple(ref pointer, split);
+                        break;
+                    case "normal":
+                        emitter.normal = parseValueTriple(ref pointer, split);
+                        break;
+                    case "end":
+                        emitter.end = parseValueTriple(ref pointer, split);
+                        break;
+                    case "master_technique_name":
+                        emitter.master_technique_name = split[pointer][1];
+                        break;
+                    case "master_emitter_name":
+                        emitter.master_emitter_name = split[pointer][1];
+                        break;
+                    case "mesh_name":
+                        emitter.mesh_name = split[pointer][1];
+                        break;
+                    case "start_orientation_range":
+                        emitter.start_orientation_range = parseValueQuad(ref pointer, split);
+                        break;
+                    case "end_orientation_range":
+                        emitter.end_orientation_range = parseValueQuad(ref pointer, split);
+                        break;
+                    case "orientation":
+                        emitter.orientation = parseValueQuad(ref pointer, split);
+                        break;
+                    default:
+                        throw new System.Exception("Unknown Emitter parameter " + split[pointer][0]);
+                }
+                pointer++;
             }
-            pointer++;
+            return emitter;
         }
-        return emitter;
-    }
-    private static System.Technique.Affector parseAffector(ref int pointer, string[] split)
-    {
-        System.Technique.Affector affector = new System.Technique.Affector();
-        affector.type = split[pointer];
-        pointer++;
-        if (split[pointer] != "{")
+        private static PUSystem.Technique.Affector parseAffector(ref int pointer, string[][] split)
         {
-            affector.name = split[pointer];
-            pointer++;
-        }
-        else
-        {
-            affector.name = "unnamed affector";
-        }
-        pointer ++; //{
-        while (split[pointer] != "}")
-        {
-            switch (split[pointer])
+            PUSystem.Technique.Affector affector = new PUSystem.Technique.Affector();
+            affector.type = split[pointer][1];
+            if (split[pointer].Length > 2)
+                affector.name = split[pointer][2];
+
+            pointer+=2; //{
+            while (split[pointer][0] != "}")
             {
-                case "exclude_emitter":
-                    pointer++;
-                    affector.exclude_emitter = split[pointer];
-                    break;
-                case "rotation":
-                    pointer++;
-                    affector.rotation = parseValue(ref pointer, split);
-                    break;
-                case "rotation_axis":
-                    pointer++;
-                    affector.rotation_axis = parseValueTriple(ref pointer, split);
-                    break;
-                case "rotation_speed":
-                    pointer++;
-                    affector.rotation_speed = parseValue(ref pointer, split);
-                    break;
-                case "xyz_scale":
-                    pointer++;
-                    affector.xyz_scale = parseValue(ref pointer, split);
-                    break;
-                case "force_vector":
-                    pointer++;
-                    affector.force_vector = parseValueTriple(ref pointer, split);
-                    break;
-                case "time_colour":
-                    pointer++;
-                    affector.timeColours.Add(parseTimeColour(ref pointer, split));
-                    break;
-                case "end_texture_coords_range":
-                    pointer++;
-                    affector.end_texture_coords_range = parseValue(ref pointer, split);
-                    break;
-                case "texture_start_random":
-                    pointer++;
-                    affector.texture_start_random = bool.Parse(split[pointer]);
-                    break;
+                switch (split[pointer][0])
+                {
+                    case "exclude_emitter":
+                        affector.exclude_emitter = split[pointer][1];
+                        break;
+                    case "rotation":
+                        affector.rotation = parseValue(ref pointer, split);
+                        break;
+                    case "rotation_axis":
+                        affector.rotation_axis = parseValueTriple(ref pointer, split);
+                        break;
+                    case "rotation_speed":
+                        affector.rotation_speed = parseValue(ref pointer, split);
+                        break;
+                    case "use_own_rotation":
+                        affector.use_own_rotation = bool.Parse(split[pointer][1]);
+                        break;
+                    case "xyz_scale":
+                        affector.xyz_scale = parseValue(ref pointer, split);
+                        break;
+                    case "x_scale":
+                        affector.x_scale = parseValue(ref pointer, split);
+                        break;
+                    case "y_scale":
+                        affector.y_scale = parseValue(ref pointer, split);
+                        break;
+                    case "since_start_system":
+                        affector.since_start_system = bool.Parse(split[pointer][1]);
+                        break;
+                    case "force_vector":
+                        affector.force_vector = parseValueTriple(ref pointer, split);
+                        break;
+                    case "position":
+                        affector.position = parseValueTriple(ref pointer, split);
+                        break;
+                    case "time_colour":
+                        affector.timeColours.Add(parseTimeColour(ref pointer, split));
+                        break;
+                    case "colour_operation":
+                        affector.colour_operation = split[pointer][1];
+                        break;
+                    case "start_texture_coords_range":
+                        affector.start_texture_coords_range = parseValue(ref pointer, split);
+                        break;
+                    case "end_texture_coords_range":
+                        affector.end_texture_coords_range = parseValue(ref pointer, split);
+                        break;
+                    case "texture_start_random":
+                        affector.texture_start_random = bool.Parse(split[pointer][1]);
+                        break;
+                    case "texture_animation_type":
+                        affector.texture_animation_type = split[pointer][1];
+                        break;
+                    case "acceleration":
+                        affector.acceleration = parseValue(ref pointer, split);
+                        break;
+                    case "velocity_scale":
+                        affector.velocity_scale = parseValue(ref pointer, split);
+                        break;
+                    case "stop_at_flip":
+                        affector.stop_at_flip = bool.Parse(split[pointer][1]);
+                        break;
+                    case "mass_affector":
+                        affector.mass_affector = parseValue(ref pointer, split);
+                        break;
+                    case "max_deviation_x":
+                        affector.max_deviation_x = parseValue(ref pointer, split);
+                        break;
+                    case "max_deviation_y":
+                        affector.max_deviation_y = parseValue(ref pointer, split);
+                        break;
+                    case "max_deviation_z":
+                        affector.max_deviation_z = parseValue(ref pointer, split);
+                        break;
+                    case "time_step":
+                        affector.time_step = parseValue(ref pointer, split);
+                        break;
+                    case "delta":
+                        affector.delta = parseValue(ref pointer, split);
+                        break;
+                    case "force":
+                        affector.force = parseValue(ref pointer, split);
+                        break;
+                    case "octaves":
+                        affector.octaves = parseValue(ref pointer, split);
+                        break;
+                    case "frequency":
+                        affector.frequency = parseValue(ref pointer, split);
+                        break;
+                    case "amplitude":
+                        affector.amplitude = parseValue(ref pointer, split);
+                        break;
+                    case "persistence":
+                        affector.persistence = parseValue(ref pointer, split);
+                        break;
+                    case "forcefield_size":
+                        affector.forcefield_size = parseValue(ref pointer, split);
+                        break;
+                    case "movement_frequency":
+                        affector.movement_frequency = parseValue(ref pointer, split);
+                        break;
+                    case "ignore_negative_y":
+                        affector.ignore_negative_y = bool.Parse(split[pointer][1]);
+                        break;
+                    case "ignore_negative_z":
+                        affector.ignore_negative_z = bool.Parse(split[pointer][1]);
+                        break;
+                    case "movement":
+                        affector.movement = parseValueTriple(ref pointer, split);
+                        break;
+                    case "worldsize":
+                        affector.worldsize = parseValueTriple(ref pointer, split);
+                        break;
+                    case "forcefield_type":
+                        affector.forcefield_type = split[pointer][1];
+                        break;
+                    case "gravity":
+                        affector.gravity = parseValue(ref pointer, split);
+                        break;
+                    case "enabled":
+                        affector.enabled = bool.Parse(split[pointer][1]);
+                        break;
+                    case "min_frequency":
+                        affector.min_frequency = parseValue(ref pointer, split);
+                        break;
+                    case "max_frequency":
+                        affector.max_frequency = parseValue(ref pointer, split);
+                        break;
+                    case "radius":
+                        affector.radius = parseValue(ref pointer, split);
+                        break;
+                    case "box_height":
+                        affector.box_height = parseValue(ref pointer, split);
+                        break;
+                    case "box_width":
+                        affector.box_width = parseValue(ref pointer, split);
+                        break;
+                    case "box_depth":
+                        affector.box_depth = parseValue(ref pointer, split);
+                        break;
+                    default:
+                        throw new System.Exception("Unknown Affector parameter " + split[pointer][0]);
+                }
+                pointer++;
             }
-            pointer++;
-        }
-        return affector;
-    }
-    private static System.Technique.Behaviour parseBehaviour(ref int pointer, string[] split)
-    {
-        System.Technique.Behaviour behaviour = new System.Technique.Behaviour();
-        behaviour.type = split[pointer];
-        pointer += 2; //{
-        while (split[pointer] != "}")
-        {
-            pointer++;
+            return affector;
         }
 
-        return behaviour;
-    }
-    private static ValueSingle parseValue(ref int pointer, string[] split)
-    {
-        ValueSingle value;
-        if (split[pointer] == "dyn_random")
+        private static PUSystem.Technique.Extern parseExtern(ref int pointer, string[][] split)
         {
-            pointer++;
-            value = parseDynRandom(ref pointer, split);
-        }
-        else if (split[pointer] == "dyn_curved_linear")
-        {
-            pointer++;
-            value = parseDynCurvedLinear(ref pointer, split);
-        }
-        else
-        {
-            value = new ValueSingle(float.Parse(split[pointer]));
-        }
-        return value;
-    }
-    private static ValueSingle parseDynRandom(ref int pointer, string[] split)
-    {
-        pointer += 1; //{
-        float min = 0;
-        float max = 0;
-        while (split[pointer] != "}")
-        {
-            switch (split[pointer])
+            PUSystem.Technique.Extern _extern = new PUSystem.Technique.Extern();
+            _extern.type = split[pointer][1];
+            if (split[pointer].Length > 2)
+                _extern.name = split[pointer][2];
+
+            pointer += 2; //{
+            while (split[pointer][0] != "}")
             {
-                case "min":
-                    pointer++;
-                    min = float.Parse(split[pointer]);
-                    break;
-                case "max":
-                    pointer++;
-                    max = float.Parse(split[pointer]);
-                    break;
+                switch (split[pointer][0])
+                {
+                    case "box_width":
+                        _extern.box_width = parseValue(ref pointer, split);
+                        break;
+                    case "collision_intersection":
+                        _extern.collision_intersection = split[pointer][1];
+                        break;
+                    default:
+                        throw new System.Exception("Unknown Extern parameter " + split[pointer][0]);
+                }
+                pointer++;
             }
-            pointer++;
+            return _extern;
         }
-        return new ValueSingle(min, max);
-    }
-    private static ValueSingle parseDynCurvedLinear(ref int pointer, string[] split)
-    {
-        Debug.Log("parseDynCurvedLinear");
-        var value_curved = new ValueSingle(0);
-        value_curved.value_type = ValueSingle.type.CurvedLinear;
-        pointer += 1; //{
-        while (split[pointer] != "}")
+        private static PUSystem.Technique.Behaviour parseBehaviour(ref int pointer, string[][] split)
         {
-            switch (split[pointer])
+            PUSystem.Technique.Behaviour behaviour = new PUSystem.Technique.Behaviour();
+            behaviour.type = split[pointer][1];
+            pointer += 2; //{
+            while (split[pointer][0] != "}")
             {
-                case "control_point":
-                    pointer++;
-                    float time = float.Parse(split[pointer]);
-                    pointer++;
-                    float value = float.Parse(split[pointer]);
-                    value_curved.controlPoints.Add(new ValueSingle.ControlPoint(time, value));
-                    break;
+                switch (split[pointer][0])
+                {
+                    default:
+                        throw new System.Exception("Unknown Behaviour parameter " + split[pointer][0]);
+                }
+                //pointer++;
             }
-            pointer++;
+
+            return behaviour;
         }
-        return value_curved;
-    }
 
-    private static ValueTriple parseValueTriple(ref int pointer, string[] split)
-    {
-        float x = float.Parse(split[pointer]);
-        pointer++;
-        float y = float.Parse(split[pointer]);
-        pointer++;
-        float z = float.Parse(split[pointer]);
-        return new ValueTriple(x, y, z);
-    }
-
-    private static ValueQuad parseValueQuad(ref int pointer, string[] split)
-    {
-        float x = float.Parse(split[pointer]);
-        pointer++;
-        float y = float.Parse(split[pointer]);
-        pointer++;
-        float z = float.Parse(split[pointer]);
-        pointer++;
-        float w = float.Parse(split[pointer]);
-        return new ValueQuad(x, y, z, w);
-    }
-
-    private static System.Technique.Affector.TimeColour parseTimeColour(ref int pointer, string[] split)
-    {
-        float time = float.Parse(split[pointer]);
-        pointer++;
-        float r = float.Parse(split[pointer]);
-        pointer++;
-        float g = float.Parse(split[pointer]);
-        pointer++;
-        float b = float.Parse(split[pointer]);
-        pointer++;
-        float a = float.Parse(split[pointer]);
-        return new System.Technique.Affector.TimeColour(time, r, g, b, a);
+        private static PUSystem.Technique.Affector.TimeColour parseTimeColour(ref int pointer, string[][] split)
+        {
+            float time = float.Parse(split[pointer][1]);
+            float r = float.Parse(split[pointer][2]);
+            float g = float.Parse(split[pointer][3]);
+            float b = float.Parse(split[pointer][4]);
+            float a = float.Parse(split[pointer][5]);
+            return new PUSystem.Technique.Affector.TimeColour(time, r, g, b, a);
+        }
     }
 }

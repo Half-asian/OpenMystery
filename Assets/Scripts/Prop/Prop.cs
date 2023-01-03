@@ -143,7 +143,7 @@ public class Prop : Node
                 {
                     for (int i = 0; i < material.stringValueKeys.Length; i++)
                     {
-                        mat.SetTexture(material.stringIds[i], TextureManager.loadTextureDDS(material.stringValueKeys[i]));
+                        mat.SetTexture(material.stringIds[i], TextureManager.loadTexture(material.stringValueKeys[i]));
                         ModelMaterials.setTexSwitches(mat, material.stringIds[i]);
                     }
                 }

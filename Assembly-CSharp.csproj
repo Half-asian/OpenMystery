@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\Objectives\ObjectiveMatchComplete.cs" />
     <Compile Include="Assets\Scripts\Events\EventManager.cs" />
     <Compile Include="Assets\Scripts\UI\LoadingScreenCanvas.cs" />
+    <Compile Include="Assets\Scripts\Particle\PUMaterial.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\MatrixOperations.cs" />
     <Compile Include="Assets\Scripts\Player\CustomizeAvatarGroup.cs" />
     <Compile Include="Assets\Scripts\Player\AvatarComponents.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Assets\Scripts\Animation\AnimationTriggers.cs" />
     <Compile Include="Assets\Scripts\Objectives\Objective.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundQuidditch.cs" />
+    <Compile Include="Assets\Scripts\Particle\PUMaterialSpawner.cs" />
     <Compile Include="Assets\Scripts\Player\BonemodMap.cs" />
     <Compile Include="Assets\Scripts\Configs\Config3dModelsLoader.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ModelManager.cs" />
@@ -125,6 +127,7 @@
     <Compile Include="Assets\Scripts\Particle\PUParticle.cs" />
     <Compile Include="Assets\Scripts\PostProcess.cs" />
     <Compile Include="Assets\Scripts\Project\Project.cs" />
+    <Compile Include="Assets\Scripts\Particle\PUCommon.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionBubble.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigAvatarLoader.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionEncounter.cs" />
@@ -170,7 +173,9 @@
     <Compile Include="Assets\Scripts\Actors\ActorHead.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraAutoDOF.cs" />
+    <Compile Include="Assets\Scripts\Particle\PUParticleEmitter.cs" />
     <Compile Include="Assets\Scripts\Predicate\PredOperators.cs" />
+    <Compile Include="Assets\Scripts\Configs\ConfigParticleLoader.cs" />
     <Compile Include="Assets\Scripts\Animation\ShaderAnimation.cs" />
     <Compile Include="Assets\Scripts\UI\FocusUI.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigLocationsLoader.cs" />

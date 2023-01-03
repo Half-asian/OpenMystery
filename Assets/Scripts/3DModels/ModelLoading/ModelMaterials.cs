@@ -258,7 +258,7 @@ namespace ModelLoading
 				for (int i = 0; i < material.stringValueKeys.Length; i++)
 				{
 					if (material.stringValueKeys[i] != "room1")
-						mat.SetTexture(material.stringIds[i], TextureManager.loadTextureDDS(material.stringValueKeys[i]));
+						mat.SetTexture(material.stringIds[i], TextureManager.loadTexture(material.stringValueKeys[i]));
 					setTexSwitches(mat, material.stringIds[i]);
 				}
 			}
