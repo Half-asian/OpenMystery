@@ -5,11 +5,13 @@ using Newtonsoft.Json;
 using System.IO;
 using UnityEngine.TextCore.Text;
 using static AnimationManager;
+using System.Linq;
 
 public class HPAnimation {
 	public AnimationClip anim_clip;
 	public List<ShaderAnimation> shaderAnimations;
 	public List<VerticalAOV> verticalAOVs;
+	public float speed;
 	public HPAnimation(AnimationClip _anim_clip = null)
     {
 		anim_clip = _anim_clip;
@@ -221,6 +223,14 @@ public static partial class AnimationManager
 
 		hpanimation.anim_clip = anim_clip;
 
+		foreach(var keyframe in animation_c3t.animations[0].bones)
+		{
+			if (keyframe.boneId == "jt_all_bind")
+			{
+                hpanimation.speed = keyframe.keyframes.Last().translation[2] / animation_c3t.animations[0].length;
+			}
+		}
+		
 		return hpanimation;
 	}
 	public static void processAnimationBone(CocosModel.Animation.Bone bone)

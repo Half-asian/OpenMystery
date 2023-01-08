@@ -32,26 +32,19 @@ public partial class ActorController : Node
     }
 
 
-    public void moveCharacter(List<string> path, float speed)
+    public void moveCharacter(List<string> path)
     {
         Debug.Log("moveCharacter: " + name);
         destination_waypoint = Scene.current.waypoint_dict[path.Last()];
 
         movement_path.AddRange(path);
 
-        /*if (is_moving == true)
-        {
-            StopCoroutine(coroutine_move);
-            coroutine_move = MoveCoroutine(speed);
-            StartCoroutine(coroutine_move);
-        }*/
-
         if (is_moving == false)
         {
             walk_animation = config_hpactor.animId_walk;
             clearLookat();
             clearTurnHeadAt();
-            coroutine_move = MoveCoroutine(speed);
+            coroutine_move = MoveCoroutine();
             StartCoroutine(coroutine_move);
             setCharacterWalk();
         }
@@ -105,7 +98,7 @@ public partial class ActorController : Node
 
     /*----------        COROUTINES      ----------*/
 
-    private IEnumerator MoveCoroutine(float speed)
+    private IEnumerator MoveCoroutine()
     {
         if (walk_animation_sequence == null)
             idle_animation_sequence = null;
@@ -123,7 +116,7 @@ public partial class ActorController : Node
                 transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
             }
 
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (0.4f + speed) * Time.deltaTime);
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (animation_current_loop != null ? animation_current_loop.speed * 0.01f : 0.4479245f) * Time.deltaTime);
 
             if (gameObject.transform.position == next_waypoint.getWorldPosition())
             {

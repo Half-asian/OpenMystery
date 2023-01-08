@@ -651,27 +651,16 @@ public static class Events
             path.Add(action_params[1]); //Change to a direct route
         }
 
+        actor_controller.moveCharacter(path);
+
         if (action_params.Length < 3)
         {
-            actor_controller.moveCharacter(path, 0.0f);
             return;
         }
 
-
-
         if (action_params[2] != "")
         {
-
-
-            List<string> running_anims =new List<string> { "walk_wheelchairStudent", "c_Stu_Jog01", "c_Stu_Run01", "flyingOnBroom", "flyingOnBroom_slow", "flyingOnBroomSkye_slow" };
-            List<string> super_fast_anims = new List<string> { "flyingOnBroom", "flyingOnBroomSkye" };
             //There is an animation included
-            if (super_fast_anims.Contains(action_params[2]))
-                actor_controller.moveCharacter(path, 2.6f);
-            else if (running_anims.Contains(action_params[2])) 
-                actor_controller.moveCharacter(path, 1.3f);
-            else
-                actor_controller.moveCharacter(path, 0.0f);
             if (sequence == true)
             {
                 actor_controller.replaceCharacterWalkSequence(action_params[2]);
@@ -680,10 +669,6 @@ public static class Events
             {
                 actor_controller.replaceCharacterWalk(action_params[2]);
             }
-        }
-        else
-        {
-            actor_controller.moveCharacter(path, 0.0f);
         }
 
         //action_params[3] int unknown
