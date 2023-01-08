@@ -1,4 +1,3 @@
-//#define USE_UNLIT_DIFFUSE
 #define USE_DIFFUSE
 #define USE_TRANSPARENCY
 #define USE_ALPHA_TEST
@@ -14,7 +13,6 @@
 
 #define USE_DIFFUSE_COLOR_ADJUST
 #define USE_EMISSIVE
-#define HAS_EMISSIVE_TEXTURE
 #define HAS_EMISSIVE_COMP
 
 #define USE_SPECULAR
@@ -634,19 +632,20 @@ float4 main_float(){
     #endif
 
     #ifdef USE_EMISSIVE
-        #if defined(HAS_EMISSIVE_TEXTURE)
+        if (HAS_EMISSIVE_TEXTURE == true) {
             #ifdef USE_EMISSIVE_VERT_COLOR
-                emissiveComponent += (texture2D(u_emissiveMap, v_emissiveCoords).rgb * v_vertColor.g);
+                        emissiveComponent += (texture2D(u_emissiveMap, v_emissiveCoords).rgb * v_vertColor.g);
             #else
-                emissiveComponent += tex2D(tex_u_emissiveMap, v_emissiveCoords);
+                        emissiveComponent += tex2D(tex_u_emissiveMap, v_emissiveCoords);
             #endif
-        #elif defined(USE_EMISSIVE_COLOR)
+        }
+        else if (USE_EMISSIVE_COLOR == true) {
             #ifdef USE_EMISSIVE_VERT_COLOR
-                emissiveComponent += (u_emissiveColor * v_vertColor.g);
+                        emissiveComponent += (u_emissiveColor * v_vertColor.g);
             #else
-                emissiveComponent += u_emissiveColor;
+                        emissiveComponent += u_emissiveColor;
             #endif
-        #endif
+        }
     #endif
     
     #ifdef USE_RIM
@@ -764,11 +763,10 @@ float4 main_float(){
         diffuseColor = diffuseColor * (1.0 - reflectIntensity);
     #endif
     
-    #ifdef USE_UNLIT_DIFFUSE
+    if (USE_UNLIT_DIFFUSE)
         finalColor += diffuseColor;
-    #else
+    else
         finalColor += diffuseColor * (lightColor);
-    #endif
 
     if (USE_FOG){
         float3 v_fogWorldPos = v_absWorldSpacePos;

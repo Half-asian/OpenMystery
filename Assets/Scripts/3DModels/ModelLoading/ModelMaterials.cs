@@ -205,16 +205,35 @@ namespace ModelLoading
 				case "u_teamColorMask":
                     mat.SetFloat("USE_HOUSE_COLORS", 1);
 					break;
-
+				case "u_emissiveMap":
+					mat.SetFloat("HAS_EMISSIVE_TEXTURE", 1);
+                    break;
             }
         }
 
-		public static void setIntSwitches(Material mat, string id, int value)
+		public static void setVec3Switches(Material mat, string id)
+		{
+            switch (id)
+			{
+				case "u_emissiveColor":
+					mat.SetFloat("USE_EMISSIVE_COLOR", 1);
+					break;
+
+            }
+
+
+        }
+
+        public static void setIntSwitches(Material mat, string id, int value)
 		{
 			if (id == "BakedDiffuse")
 			{
                 mat.SetFloat("USE_AMBIENT_COLOR", 1 - value);
             }
+			else if (id == "Unlit")
+			{
+				mat.SetFloat("USE_UNLIT_DIFFUSE", value);
+			}
 
         }
 
@@ -227,7 +246,7 @@ namespace ModelLoading
 
 
 			Material default_material = null;
-			string material_name = shader_name;
+			string material_name = shader_name.ToLower();
 
 
 			if (force_transparent || material.transparent == 1)
@@ -274,8 +293,9 @@ namespace ModelLoading
 				for (int i = 0; i < material.vec3Ids.Length; i++)
 				{
 					mat.SetColor(material.vec3Ids[i], new Color(material.vec3Values[i][0], material.vec3Values[i][1], material.vec3Values[i][2]).gamma);
-				}
-			}
+                    setVec3Switches(mat, material.vec3Ids[i]);
+                }
+            }
 			if (material.vec4Ids != null)
 			{
 
@@ -303,8 +323,20 @@ namespace ModelLoading
 				mat.SetFloat("USE_FOG", 0.0f);
 			}
 
+			if (material.blendingMode != null)
+			{
+				switch (material.blendingMode)
+				{
+					case "additive":
+                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.One);
+						break;
+                }
 
-			if (shader_name == "houserobeshader" || shader_name == "houseclothshader" || shader_name == "quidditchshader" || shader_name == "houseubershader")
+            }
+
+
+            if (shader_name == "houserobeshader" || shader_name == "houseclothshader" || shader_name == "quidditchshader" || shader_name == "houseubershader")
 			{
                 string house = "";
                 if (material.intSettingIds == null || !material.intSettingIds.Contains("TeamId"))

@@ -50,6 +50,7 @@ public class Config3DModel : Config<Config3DModel>
                 public string[] intSettingIds;
                 public string shaderName;
                 public string nodeName;
+                public string blendingMode;
                 public int[] intSettingValues;
                 public int transparent;
                 public int RecieveShadow;
