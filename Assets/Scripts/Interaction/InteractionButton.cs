@@ -9,7 +9,7 @@ public class InteractionButton : MonoBehaviour
     Transform camera_transform;
     //public bool is_active = false;
     MeshRenderer mesh_renderer;
-
+    MeshCollider mesh_collider;
     void OnMouseEnter()
     {
         mouse_hover = true;
@@ -30,6 +30,7 @@ public class InteractionButton : MonoBehaviour
     void Start()
     {
         mesh_renderer = GetComponent<MeshRenderer>();
+        mesh_collider = GetComponent<MeshCollider>();
         camera_transform = GameObject.Find("Main Camera").GetComponent<Transform>();
         mouse_hover = false;
         StartCoroutine(waitForEventsStackClear());
@@ -49,6 +50,7 @@ public class InteractionButton : MonoBehaviour
         if (GameStart.dialogue_manager.dialogue_status != DialogueStatus.Finished)
         {
             if (mesh_renderer) mesh_renderer.enabled = false;
+            if (mesh_collider) mesh_collider.enabled = false;
         }
 
         else
@@ -56,8 +58,9 @@ public class InteractionButton : MonoBehaviour
             FaceButtonToCamera(camera_transform);
 
             if (mesh_renderer) mesh_renderer.enabled = true;
+            if (mesh_collider) mesh_collider.enabled = true;
 
-            if (Input.GetMouseButtonDown(0) && mouse_hover && !PauseMenu.is_open) //Clicked on
+            if (Input.GetMouseButtonDown(0) && mouse_hover && !PauseMenu.is_open && interaction.is_active) //Clicked on
             {
                 interaction.activate();
 
@@ -73,8 +76,7 @@ public class InteractionButton : MonoBehaviour
             if (this == null) return;
 
             if (mesh_renderer) mesh_renderer.enabled = interaction.is_active;
-
-
+            if (mesh_collider) mesh_collider.enabled = interaction.is_active;
         }
     }
 }

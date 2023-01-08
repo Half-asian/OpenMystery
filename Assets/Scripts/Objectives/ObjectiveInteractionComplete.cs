@@ -8,7 +8,7 @@ public class ObjectiveInteractionComplete : Objective
     {
         objective_config = _objective;
         keys = new List<string>(objective_config.keys);
-        InteractionManager.interaction_finished_event += interactionFinishedCheck;
+        Interaction.interaction_finished_event += interactionFinishedCheck;
     }
 
     public void interactionFinishedCheck(string interaction_id)
@@ -20,7 +20,7 @@ public class ObjectiveInteractionComplete : Objective
         }
         if (keys_completed >= objective_config.required_count)
         {
-            InteractionManager.interaction_finished_event -= interactionFinishedCheck;
+            Interaction.interaction_finished_event -= interactionFinishedCheck;
             objectiveCompleted();
         }
     }

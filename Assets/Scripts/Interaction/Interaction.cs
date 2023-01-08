@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
+using static ConfigInteraction;
 
 /*
 Interaction Class Lifespan
@@ -34,6 +35,8 @@ public abstract class Interaction : MonoBehaviour
     public bool is_active = true;
     public bool should_onFinishedEnterEvents_when_respawned = true;
     public bool can_add_project_progress = true; //Autotune interactions are not allowed to add project progress. That is controlled by the autotune group.
+
+    public static event Action<string> interaction_finished_event;
 
     private void Update()
     {
@@ -190,6 +193,7 @@ public abstract class Interaction : MonoBehaviour
         {
             Reward.getReward(config_interaction.successReward);
         }
+        interaction_finished_event?.Invoke(config_interaction.id);
 
         if (parent_group_interaction != null)
             parent_group_interaction.memberInteractionFinished(this);
@@ -197,6 +201,7 @@ public abstract class Interaction : MonoBehaviour
             parent_autotune_group_interaction.memberInteractionComplete(this);
         if (can_add_project_progress)
             Project.addProgress(config_interaction.ProjectProgress);
+
 
         if (parent_group_interaction == null && parent_autotune_group_interaction == null)
         {

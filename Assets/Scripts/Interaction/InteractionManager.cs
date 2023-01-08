@@ -18,7 +18,6 @@ public class InteractionManager : MonoBehaviour {
     public static List<Interaction> active_interactions = new List<Interaction>();
 
     public static event Action all_interactions_destroyed_event;
-    public static event Action<string> interaction_finished_event;
 
     public void spawnHubNPCInteraction(ref string dialogue_id, ref Vector3 location)
     {
@@ -188,7 +187,6 @@ public class InteractionManager : MonoBehaviour {
     public void onInteractionDestroyed(Interaction interaction)
     {
         if (interaction.config_interaction == null) return; //Location Interaction
-        interaction_finished_event?.Invoke(interaction.config_interaction.id);
 
         bool all_finished = true;
         foreach(var i in active_interactions)
