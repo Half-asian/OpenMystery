@@ -428,13 +428,22 @@ public class Configs{
 
             Configs.config_goal_chain.GoalChain["C2_v2"].classGoalIds.Insert(1, "Y1_C2_P4_hub"); //Tutorial triggers this class in between goals
 
+            //Y1C3
             //Insert broom flying class within the rest of the goals. It needs to be done in order.
             Configs.config_goal_chain.GoalChain["C3_v2"].goalIds.Insert(5, new List<string> { "Y1_C3_SummonBroom_v2" });
             Configs.config_goal_chain.GoalChain["C3_v2"].classGoalIds = null;
 
-            Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true"; //Remove check to see if player has completed part of Y2
 
-            //Configs.config_objective.Objectives["Y1_C9_P2aObj1"].objectiveScenario = "MQ4C5P2a";
+            //Y2C2
+            //Class must be completed in order
+            Configs.config_goal_chain.GoalChain["Y2_C2"].goalIds[1] = new List<string>() { "Y2_C2_P2_huba", "Y2_C2_P2_hubb" };
+            Configs.config_goal_chain.GoalChain["Y2_C2"].goalIds.Insert(2, new List<string>() { "Y2_C2_CG_1"});
+            Configs.config_goal_chain.GoalChain["Y2_C2"].classGoalIds = null;
+            Configs.config_goal.Goals["Y2_C2_P3"].dependencies = null;
+
+            //QuidditchS1
+            //Remove check to see if player has completed part of Y2
+            Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true";
         }
 
     }
