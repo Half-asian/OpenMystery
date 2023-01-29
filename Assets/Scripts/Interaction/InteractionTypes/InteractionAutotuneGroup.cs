@@ -75,6 +75,7 @@ public class InteractionAutotuneGroup : Interaction
                 new_bubble.parent_autotune_group_guid = guid;
                 new_bubble.interaction_gameobject.transform.parent = interaction_gameobject.transform;
                 new_bubble.can_add_project_progress = false;
+                new_bubble.is_active = true;
             }
             else
             {

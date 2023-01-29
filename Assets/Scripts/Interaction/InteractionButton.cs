@@ -67,9 +67,11 @@ public class InteractionButton : MonoBehaviour
             }
             if (Input.GetKeyDown("space") && interaction.config_interaction != null) //Project
             {
-                if (interaction.config_interaction.type == "AutotuneGroup" || interaction.config_interaction.type == null)
+                Debug.Log("A");
+                if (interaction.config_interaction.type == "AutotuneGroup" || interaction.config_interaction.type == null && interaction.is_active)
                 {
-                    //is_active = false;
+                    Debug.Log("B " + interaction.is_active);
+                    interaction.is_active = false;
                     interaction.interactionComplete();
                 }
             }
