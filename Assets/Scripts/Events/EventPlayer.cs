@@ -136,7 +136,7 @@ public class EventPlayer : MonoBehaviour
     }
 
     [SerializeField]
-    private List<(ActiveMessageKeys, string[])> awaiting_sequential_players = new List<(ActiveMessageKeys, string[])>();
+    private List<(ActiveMessageKeys, string[], float)> awaiting_sequential_players = new List<(ActiveMessageKeys, string[], float)>();
     [SerializeField]
     ActiveMessageKeys blocking_message_keys = new ActiveMessageKeys();
 
@@ -235,17 +235,22 @@ public class EventPlayer : MonoBehaviour
         if (script_event.type == "Sequential" && is_sequential_player == false) //Sequential players cannot start more sequential players 
         {
             Debug.Log("Starting sequential from event " + script_event.eventId);
-            if (script_event.messageAndKeys != null)
+            if (script_event.messageAndKeys != null || script_event.duration != null)
             {
-                ActiveMessageKeys sequential_queue_message_keys = new ActiveMessageKeys();
-                foreach (var message_key_sets in script_event.messageAndKeys)
+                ActiveMessageKeys sequential_queue_message_keys = null;
+                if (script_event.messageAndKeys != null && script_event.messageAndKeys.Length != 0)
                 {
-                    sequential_queue_message_keys.add(new List<string>(message_key_sets));
+                    sequential_queue_message_keys = new ActiveMessageKeys();
+                    foreach (var message_key_sets in script_event.messageAndKeys)
+                    {
+                        sequential_queue_message_keys.add(new List<string>(message_key_sets));
+                    }
                 }
-                awaiting_sequential_players.Add((sequential_queue_message_keys, script_event.sequenceIds));
+                awaiting_sequential_players.Add((sequential_queue_message_keys, script_event.sequenceIds, script_event.duration != null ? Time.realtimeSinceStartup + script_event.Duration : float.MaxValue));
             }
             else
                 GameStart.event_manager.startSequentialPlayer(script_event.sequenceIds);
+            event_time = 0.0f;//Sequential players continue immediately. Duration/blocking keys are only for starting the sequences.
         }
 
         return event_time;
@@ -255,11 +260,24 @@ public class EventPlayer : MonoBehaviour
     {
         blocking_message_keys.update();
 
+        List<(ActiveMessageKeys, string[], float)> to_remove = new List<(ActiveMessageKeys, string[], float)>();
         var copy = awaiting_sequential_players.ToArray();
         foreach(var seq in copy)
         {
-            seq.Item1.update();
+            if (seq.Item1 != null)
+                seq.Item1.update();
+
+            if (Time.realtimeSinceStartup > seq.Item3)
+            {
+                GameStart.event_manager.startSequentialPlayer(seq.Item2);
+                to_remove.Add(seq);
+            }
         }
+        foreach (var remove in to_remove)
+        {
+            awaiting_sequential_players.Remove(remove);
+        }
+
 
         block_duration -= Time.deltaTime;
 
@@ -327,7 +345,7 @@ public class EventPlayer : MonoBehaviour
         total_block = false;
         block_duration = 0.0f;
         blocking_message_keys = new ActiveMessageKeys();
-        awaiting_sequential_players = new List<(ActiveMessageKeys, string[])>();
+        awaiting_sequential_players = new List<(ActiveMessageKeys, string[], float)>();
     }
 
     public void addCustomBlocking(List<string> strings)
@@ -344,11 +362,13 @@ public class EventPlayer : MonoBehaviour
 
     private void processSequentialBlocks(string message, string key)
     {
-        List<(ActiveMessageKeys, string[])> to_remove = new List<(ActiveMessageKeys, string[])>();
+        List<(ActiveMessageKeys, string[], float)> to_remove = new List<(ActiveMessageKeys, string[], float)>();
         foreach (var awaiting in awaiting_sequential_players)
         {
-            awaiting.Item1.checkRemoveMessageKey(message, key);
-            if (awaiting.Item1.Count == 0)
+            if (awaiting.Item1 != null)
+                awaiting.Item1.checkRemoveMessageKey(message, key);
+            
+            if ((awaiting.Item1 != null && awaiting.Item1.Count == 0))
             {
                 GameStart.event_manager.startSequentialPlayer(awaiting.Item2);
                 to_remove.Add(awaiting);
