@@ -87,9 +87,9 @@ public partial class ActorController : Node
     {
         foreach(Model patch in patches)
         {
-            Destroy(patch.game_object);
+            DestroyImmediate(patch.game_object);
         }
-        Destroy(model.game_object);
+        DestroyImmediate(model.game_object);
     }
 
     //Not super advanced
