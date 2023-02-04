@@ -35,6 +35,15 @@ public class Actor
 
     public static ActorController spawnActor(string hpactor_id, string waypoint_id, string instance_id)
     {
+        if (waypoint_id != null)
+        {
+            if (Scene.getWayPoint(waypoint_id) == null)
+            {
+                Debug.LogError("Failed to spawn actor " + instance_id + " because waypoint was invalid");
+                return null;
+            }
+        }
+
         if (actor_controllers.ContainsKey(instance_id))
         {
             respawnCharacterInScene(instance_id);
@@ -49,7 +58,7 @@ public class Actor
         ModelMaterials.lighting_layers = new List<string>();
 
         var waypoint = Scene.getWayPoint(waypoint_id);
-        if (waypoint != null)
+        if (Scene.getWayPoint(waypoint_id) != null)
         {
             if (waypoint.lightLayerOverride != null)
             {

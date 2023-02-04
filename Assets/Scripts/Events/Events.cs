@@ -626,6 +626,10 @@ public static class Events
             if (current_waypoint == action_params[1]) //We are already at the destination
                 return;
         }
+        else
+        {
+            throw new System.Exception("Actor has no current waypoint");
+        }
 
         List<string> path = carvePath(visited, action_params[1]);
 
