@@ -10,7 +10,7 @@ public class Goal
     public static event Action<string> onGoalCompleted = delegate { };
     public ConfigGoal.Goal goal_config;
     public int active_objective_index;
-    private Objective active_objective;
+    public Objective active_objective;
 
     public static void Initialize()
     {
@@ -43,6 +43,12 @@ public class Goal
         showGoalPopup(_goal_config);
     }
 
+    private static void showGoalPopup(ConfigGoal.Goal goal_config)
+    {
+        GameStart.ui_manager.showPopup(goal_config);
+        GameStart.ui_manager.showNextButton();
+    }
+
     public static Goal getGoalById(string id)
     {
         foreach(Goal g in active_goals)
@@ -51,12 +57,6 @@ public class Goal
                 return g;
         }
         return null;
-    }
-
-    private static void showGoalPopup(ConfigGoal.Goal goal_config)
-    {
-        GameStart.ui_manager.showPopup(goal_config);
-        GameStart.ui_manager.next_area_button.SetActive(true);
     }
 
 

@@ -163,6 +163,6 @@ public class GoalChain
         }
 
         onGoalChainCompleted.Invoke(goal_chain_config.id);
-        GameStart.ui_manager.exitPopup();
+        GameStart.ui_manager.showExitMenuButton();
     }
 }

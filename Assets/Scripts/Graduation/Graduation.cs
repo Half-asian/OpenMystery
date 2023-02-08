@@ -58,7 +58,7 @@ public class Graduation
         else
             avatar.replaceCharacterIdle("c_Stu_LevelUpFemale01_femaleLevelUp");
         yield return new WaitForSeconds(2);
-        GameStart.ui_manager.exitPopup();
+        GameStart.ui_manager.showExitMenuButton();
 
     }
 

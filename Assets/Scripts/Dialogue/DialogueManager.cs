@@ -25,6 +25,7 @@ public class DialogueManager : MonoBehaviour
     public static event Action<string> onDialogueFinishedEventPrimary = delegate { };
     public static event Action<string> onDialogueFinishedEventSecondary = delegate { };
 
+    public static bool in_dialogue = false;
 
     public string dialogue_id;
 
@@ -57,12 +58,14 @@ public class DialogueManager : MonoBehaviour
 
     void cleanup()
     {
+        in_dialogue = false;
         dialogue_status = DialogueStatus.Finished;
         setDialogueUIActive(false);
     }
 
     public void showBubbleDialogue(string speaker, string dialogue)
     {
+        in_dialogue = true;
         speaker = speaker == "Avatar" ? "You" : mapSpeakerName(speaker);
         setDialogueUIActive.Invoke(true);
         setDialogueText.Invoke(LocalData.getLine(dialogue));
@@ -71,6 +74,7 @@ public class DialogueManager : MonoBehaviour
 
     public void finishBubbleDialogue()
     {
+        in_dialogue = false;
         in_bubble = false;
         setDialogueUIActive.Invoke(false);
     }
@@ -78,6 +82,8 @@ public class DialogueManager : MonoBehaviour
     //When we only know the dialogue id
     public bool activateDialogue(string dialogue)
     {
+        in_dialogue = true;
+
         dialogue_id = dialogue;
 
         string initial_dialogue_line = null;
@@ -120,6 +126,8 @@ public class DialogueManager : MonoBehaviour
 
     public bool activateDialogueLine(string dialogue_name)
     {
+        in_dialogue = true;
+
         onDialogueStartedEvent.Invoke();
         in_bubble = false;
 
@@ -219,6 +227,7 @@ public class DialogueManager : MonoBehaviour
 
         if (dialogue_line.nextTurnIds == null && dialogue_line.dialogueChoiceIds == null)
         {
+            in_dialogue = false;
             Debug.Log("finished dialogue");
             return true; //Finished dialogue
         }
@@ -550,6 +559,8 @@ public class DialogueManager : MonoBehaviour
     
     void onDialogueFinished()
     {
+        in_dialogue = false;
+
         Debug.Log("Dialogue finished " + dialogue_id);
 
         setDialogueUIActive(false);

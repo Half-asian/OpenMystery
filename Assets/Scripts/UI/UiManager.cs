@@ -26,9 +26,19 @@ public class UiManager : MonoBehaviour
     public Text please_wait_text;
     public Text press_space_text;
 
-    public GameObject exit_to_menu_button;
-    public GameObject pause_menu;
-    public GameObject main_menu;
+    [SerializeField]
+    GameObject exit_to_menu_button;
+    [SerializeField]
+    GameObject pause_menu;
+    [SerializeField]
+    GameObject main_menu;
+
+    [SerializeField]
+    bool should_show_exit = false;
+    [SerializeField]
+    bool should_show_popup = false;
+    [SerializeField]
+    bool should_show_next = false;
 
     UnityEvent<ConfigGoal.Goal> _event_goal_dropdown_changed;
 
@@ -39,39 +49,77 @@ public class UiManager : MonoBehaviour
         _event_goal_dropdown_changed = new UnityEvent<ConfigGoal.Goal>();
         _event_goal_dropdown_changed.AddListener(showPopup);
         _ui_image_loader = GetComponent<UiImageLoader>();
-        DialogueManager.onDialogueStartedEvent += hideShit;
+
     }
 
-    private void hideShit()
+    private void checkRemovePopup()
     {
-        if (_goal_popup.gameObject.activeSelf)
+        var current_goal = Goal.getGoalById(_goal_popup.latest_goal.goal_id);
+        if (current_goal == null)
+            return;
+        var current_ob_scenario = current_goal.active_objective.objective_config.objectiveScenario;
+        if (current_ob_scenario == null)
+            return;
+        if (Scenario.current.scenario_config == null)
+            return;
+
+        if (Scenario.current.scenario_config.scenarioId == current_ob_scenario)
         {
-            _goal_popup.closePopup();
-            if (Goal.getGoalById(_goal_popup.latest_goal.goal_id) == null)
-                DialogueManager.onDialogueFinishedEventPrimary += showPopup;
-        }
-        if (GameStart.ui_manager.next_area_button.activeSelf)
-        {
-            GameStart.ui_manager.next_area_button.SetActive(false);
-            DialogueManager.onDialogueFinishedEventPrimary += showNextAreaButton;
-        }
-        if (GameStart.ui_manager.exit_to_menu_button.activeSelf)
-        {
-            GameStart.ui_manager.exit_to_menu_button.SetActive(false);
-            DialogueManager.onDialogueFinishedEventPrimary += showExitMenuButton;
+            should_show_popup = false;
+            should_show_next = false;
         }
     }
 
-    private void showNextAreaButton(string rubbish)
+    private void Update()
     {
-        DialogueManager.onDialogueFinishedEventPrimary -= showNextAreaButton;
-        GameStart.ui_manager.next_area_button.SetActive(true);
+        if (should_show_popup)
+        {
+            checkRemovePopup();
+
+            if (DialogueManager.in_dialogue || EventManager.are_events_active || LoadingScreenCanvas.is_loading)
+                goal_popup_gameobject.SetActive(false);
+            else
+                goal_popup_gameobject.SetActive(true);
+        }
+        else
+            goal_popup_gameobject.SetActive(false);
+
+        if (should_show_exit)
+        {
+            if (DialogueManager.in_dialogue || EventManager.are_events_active || LoadingScreenCanvas.is_loading)
+                exit_to_menu_button.SetActive(false);
+            else
+                exit_to_menu_button.SetActive(true);
+        }
+        else
+            exit_to_menu_button.SetActive(false);
+
+        if (should_show_next)
+        {
+            if (DialogueManager.in_dialogue || EventManager.are_events_active || LoadingScreenCanvas.is_loading)
+                next_area_button.SetActive(false);
+            else
+                next_area_button.SetActive(true);
+        }
+        else
+            next_area_button.SetActive(false);
     }
 
-    private void showExitMenuButton(string rubbish)
+    public void showExitMenuButton()
     {
-        DialogueManager.onDialogueFinishedEventPrimary -= showExitMenuButton;
-        GameStart.ui_manager.exit_to_menu_button.SetActive(true);
+        should_show_exit = true;
+    }
+
+    public void showNextButton()
+    {
+        should_show_next = true;
+    }
+
+    public void showPopup(ConfigGoal.Goal goal_id)
+    {
+        Debug.Log("ShowPopup");
+        _goal_popup.setPopup(goal_id);
+        should_show_popup = true;
     }
 
     public void setup()
@@ -84,18 +132,11 @@ public class UiManager : MonoBehaviour
         _goal_dropdown.setup(_event_goal_dropdown_changed);
         _goal_popup.closePopup();
     }
-    public void exitPopup()
-    {
-
-        GameStart.ui_manager.next_area_button.SetActive(false);
-        GameStart.ui_manager.exit_to_menu_button.SetActive(true);
-    }
 
     public void nextAreaButtonClicked()
     {
         LoadingScreenCanvas.current.showImage();
         GameStart.ui_manager.next_area_button.SetActive(false);
-        closePopup();
         StartCoroutine(nextAreaButtonClickedDelay());
     }
 
@@ -113,6 +154,8 @@ public class UiManager : MonoBehaviour
         GameStart.current.GetComponent<GameStart>().cleanUp();
         GameStart.ui_manager.pause_menu.SetActive(false);
         GameStart.ui_manager.main_menu.SetActive(true);
+        should_show_exit = false;
+        should_show_popup = false;
         ScreenFade.fadeFrom(1, Color.clear, true);
         StartCoroutine(fadeBackup());
     }
@@ -142,22 +185,12 @@ public class UiManager : MonoBehaviour
         GoalChainType goal_chain_type = _goal_dropdown.getCurrentGoalChainType();
         int goal_index = _goal_dropdown.getCurrentGoalIndex(goal_chain_type);
         if (goal_chain != null) GameObject.Find("MainMenuCanvas").GetComponent<MainMenu>().enterGoalID(goal_chain, goal_index, goal_chain_type);
-    }
-
-    public void showPopup(string rubbish)
-    {
-        DialogueManager.onDialogueFinishedEventPrimary -= showPopup;
-        _goal_popup.setPopup(_goal_popup.latest_goal);
-    }
-    public void showPopup(ConfigGoal.Goal goal_id)
-    {
-        _goal_popup.setPopup(goal_id);
-    }
-
-    public void closePopup()
-    {
         _goal_popup.closePopup();
+        should_show_popup = false;
+        should_show_next = false;
     }
+
+
 
 
 }

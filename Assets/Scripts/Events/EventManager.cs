@@ -11,7 +11,7 @@ public class EventManager : MonoBehaviour
 {
 
     public static event Action all_script_events_finished_event = delegate {};
-
+    public static bool are_events_active = false;
     //public List<string> event_stack = new List<string>();
     //public float block_duration = 0.0f;
 
@@ -200,7 +200,12 @@ public class EventManager : MonoBehaviour
     public void checkEventsActive()
     {
         if (areEventsActive() == false)
+        {
             all_script_events_finished_event.Invoke();
+            are_events_active = false;
+        }
+        else
+            are_events_active = true;
     }
 
     public bool areEventsActive()

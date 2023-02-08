@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using static ConfigGoal;
+
 namespace UI
 {
     class GoalPopup : MonoBehaviour
@@ -36,15 +38,23 @@ namespace UI
 
             if (goal.ready_text != null) _description.text = LocalData.getLine(goal.ready_text); else _description.text = "";
             if (goal.goal_name != null) _title.text = LocalData.getLine(goal.goal_name); else _title.text = "";
-            if (goal.characterId != null) character = Actor.spawnActor(goal.characterId, null, goal.characterId);
 
-            if (character != null)
-                StartCoroutine(setPos());
+
+            StartCoroutine(spawnCharacter(goal));
         }
 
-        private IEnumerator setPos()
+        private IEnumerator spawnCharacter(ConfigGoal.Goal goal)
         {
             yield return null;
+            if (goal.characterId != null)
+            {
+                Debug.Log("Spawning character id " + goal.characterId);
+                character = Actor.spawnActor(goal.characterId, null, goal.characterId);
+            }
+            if (character == null)
+                throw new System.Exception("character was null");
+            if (character.gameObject == null)
+                throw new System.Exception("character gameobject was null");
             character.gameObject.transform.position = new Vector3(0, -200, 0);
             float new_height = -100f;
             if (character != null && character.model.pose_bones.ContainsKey("jt_head_bind"))

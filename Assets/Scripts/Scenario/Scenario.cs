@@ -192,9 +192,7 @@ public class Scenario
 
 
         GameStart.interaction_manager.destroyAllInteractions();
-        GameStart.ui_manager.closePopup();
-        GameStart.ui_manager.next_area_button.SetActive(false);
-        GameStart.ui_manager.exit_to_menu_button.SetActive(false);        
+
 
         //Set the scene
         string chosen_scene = current.scenario_config.scene;

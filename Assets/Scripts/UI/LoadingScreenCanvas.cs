@@ -12,6 +12,8 @@ public class LoadingScreenCanvas : MonoBehaviour
 
     private IEnumerator waitHideImage;
 
+    public static bool is_loading = false;
+
     private void Awake()
     {
         current = this;
@@ -25,6 +27,7 @@ public class LoadingScreenCanvas : MonoBehaviour
         if (waitHideImage != null)
             StopCoroutine(waitHideImage);
         image.SetActive(true);
+        is_loading = true;
     }
 
     private void hideImage()
@@ -39,6 +42,7 @@ public class LoadingScreenCanvas : MonoBehaviour
         yield return new WaitForSeconds(0.05f);
         image.SetActive(false);
         waitHideImage = null;
+        is_loading = false;
     }
 
 }
