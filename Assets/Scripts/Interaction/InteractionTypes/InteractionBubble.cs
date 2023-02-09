@@ -19,7 +19,7 @@ public class InteractionBubble : Interaction
     public override void onFinishedEnterEvents()
     {
         base.onFinishedEnterEvents();
-
+        is_active = true;
 
         interaction_gameobject.AddComponent<InteractionButton>();
         interaction_gameobject.GetComponent<InteractionButton>().interaction = this;
