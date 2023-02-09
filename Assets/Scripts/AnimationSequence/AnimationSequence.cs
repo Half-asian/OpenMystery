@@ -114,9 +114,10 @@ public abstract partial class AnimationSequence : MonoBehaviour
         //Play the main animation
         if (config_sequence.data.nodes[this.node_index].walkAnimName != null)
             current_animation_name = config_sequence.data.nodes[this.node_index].walkAnimName;
-        else
+        else if (config_sequence.data.nodes[this.node_index].animName != null)
             current_animation_name = config_sequence.data.nodes[this.node_index].animName;
-
+        else
+            return;
         playAnimation(current_animation_name, config_sequence.sequenceId);
     }
 
