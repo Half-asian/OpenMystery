@@ -1,6 +1,3 @@
-//#define USE_UNLIT_DIFFUSE
-#define USE_DIFFUSE
-#define HAS_EYE_SHADOW_PARAMS
 void panningbfresnel_vfx_float(
     UnityTexture2D u_alphaMap,
     float2 v_texCoord0,
