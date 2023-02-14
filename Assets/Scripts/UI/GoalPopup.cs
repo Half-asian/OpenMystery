@@ -51,6 +51,10 @@ namespace UI
                 Debug.Log("Spawning character id " + goal.characterId);
                 character = Actor.spawnActor(goal.characterId, null, goal.characterId);
             }
+            else
+            {
+                yield break;
+            }
             if (character == null)
                 throw new System.Exception("character was null");
             if (character.gameObject == null)
