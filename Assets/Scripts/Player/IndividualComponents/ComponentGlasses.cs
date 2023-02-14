@@ -29,13 +29,16 @@ namespace IndividualComponents
                         outfit_id = style.outfitId;
                 }
             }
-            string model_id = Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].modelid;
             if (component_model != null)
                 removeComponent();
-            component_model = ModelManager.loadModel(model_id, avatar_components.base_model.pose_bones);
-            component_model.game_object.transform.parent = avatar_components.base_model.game_object.transform;
-            if (avatar_components.base_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>().enabled == false)
-                hideComponent();
+            if (outfit_id != null)
+            {
+                string model_id = Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].modelid;
+                component_model = ModelManager.loadModel(model_id, avatar_components.base_model.pose_bones);
+                component_model.game_object.transform.parent = avatar_components.base_model.game_object.transform;
+                if (avatar_components.base_model.game_object.GetComponentInChildren<SkinnedMeshRenderer>().enabled == false)
+                    hideComponent();
+            }
             return component_model;
         }
     }
