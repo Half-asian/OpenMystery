@@ -699,7 +699,7 @@ public static class Events
 
         if (action_params.Length > 2)
         {
-            speed = float.Parse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture);
+            float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out speed);
 
             //QuidditchS1C10P3_hoochSlowLookOrion
         }
