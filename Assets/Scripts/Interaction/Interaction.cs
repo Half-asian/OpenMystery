@@ -88,7 +88,8 @@ public abstract class Interaction : MonoBehaviour
     }
     public virtual void onFinishedEnterEvents()
     {
-        Debug.Log("onFinishedEnterEvents " + config_interaction.id);
+        if (config_interaction != null) //These can be fake interactions
+            Debug.Log("onFinishedEnterEvents " + config_interaction.id);
         EventManager.all_script_events_finished_event -= onFinishedEnterEvents;
     }
     public void interactionComplete(bool success = true)
@@ -137,7 +138,8 @@ public abstract class Interaction : MonoBehaviour
     }
     protected virtual void onFinishedExitEvents()
     {
-        Debug.Log("onFinishedExitEvents " + config_interaction.id);
+        if (config_interaction != null) //These can be fake interactions
+            Debug.Log("onFinishedExitEvents " + config_interaction.id);
         EventManager.all_script_events_finished_event -= onFinishedExitEvents;
 
         if (config_interaction.leadsTo != null)
@@ -198,7 +200,8 @@ public abstract class Interaction : MonoBehaviour
 
     public void complete()
     {
-        Debug.Log("Interaction complete " + config_interaction.id);
+        if (config_interaction != null) //These can be fake interactions
+            Debug.Log("Interaction complete " + config_interaction.id);
         if (config_interaction == null) return;
 
         if (config_interaction.successReward != null)
