@@ -44,6 +44,7 @@ public class InteractionGroup : Interaction
         member_interactions[interaction.config_interaction.id] = interaction;
         interaction.parent_group_interaction = this;
         interaction.parent_group_guid = guid;
+        interaction.transform.parent = transform;
     }
 
     public void spawnMemberInteractions()

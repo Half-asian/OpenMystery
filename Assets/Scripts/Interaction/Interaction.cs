@@ -88,6 +88,7 @@ public abstract class Interaction : MonoBehaviour
     }
     public virtual void onFinishedEnterEvents()
     {
+        Debug.Log("onFinishedEnterEvents " + config_interaction.id);
         EventManager.all_script_events_finished_event -= onFinishedEnterEvents;
     }
     public void interactionComplete(bool success = true)
@@ -136,6 +137,7 @@ public abstract class Interaction : MonoBehaviour
     }
     protected virtual void onFinishedExitEvents()
     {
+        Debug.Log("onFinishedExitEvents " + config_interaction.id);
         EventManager.all_script_events_finished_event -= onFinishedExitEvents;
 
         if (config_interaction.leadsTo != null)
@@ -150,6 +152,7 @@ public abstract class Interaction : MonoBehaviour
     public void spawnLeadsTo()
     {
         Debug.Log("spawnLeadsTo");
+        GameObject leadsto = null;
         if (config_interaction.leadsToPredicate != null)
         {
             int best_match_leads_to = config_interaction.leadsTo.Length - 1;
@@ -170,7 +173,7 @@ public abstract class Interaction : MonoBehaviour
 
             Debug.Log("Activating a leads to " + config_interaction.leadsTo[best_match_leads_to]);
 
-            GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[best_match_leads_to]);
+            leadsto = GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[best_match_leads_to]);
         }
         else
         {
@@ -178,15 +181,24 @@ public abstract class Interaction : MonoBehaviour
             {
                 Debug.Log("Activating leads to " + config_interaction.leadsTo[0]);
 
-                GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[0]);
+                leadsto = GameStart.interaction_manager.spawnInteraction(config_interaction.leadsTo[0]);
             }
             Debug.Log("Activating leads to exit. We are done.");
         }
+        if (leadsto != null && config_interaction.type != "Group" && config_interaction.type != "AutotuneGroup")
+        {
+            if (parent_group_interaction != null)
+            {
+                parent_group_interaction.addMemberInteraction(leadsto.GetComponent<Interaction>());
+            }
+        }
+
         complete();
     }
 
     public void complete()
     {
+        Debug.Log("Interaction complete " + config_interaction.id);
         if (config_interaction == null) return;
 
         if (config_interaction.successReward != null)
