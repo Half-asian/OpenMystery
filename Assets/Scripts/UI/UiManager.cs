@@ -56,18 +56,48 @@ public class UiManager : MonoBehaviour
     {
         var current_goal = Goal.getGoalById(_goal_popup.latest_goal.goal_id);
         if (current_goal == null)
+        {
             return;
+        }
         var current_ob_scenario = current_goal.active_objective.objective_config.objectiveScenario;
-        if (current_ob_scenario == null)
+        if (current_ob_scenario == null && current_goal.active_objective.objective_config.objectiveHubNpcs == null)
+        {
+            if (Scenario.current.scenario_config != null)
+                if (Scenario.current.scenario_config.scenarioId == "NUX_TrainScene")
+                {
+                    should_show_popup = false;
+                    should_show_next = false;
+                }
+
             return;
+        }
+
         if (Scenario.current.scenario_config == null)
+        {
             return;
+        }
 
         if (Scenario.current.scenario_config.scenarioId == current_ob_scenario)
         {
             should_show_popup = false;
             should_show_next = false;
         }
+        if (LocationHub.current != null && current_goal.active_objective.objective_config.objectiveHubNpcs != null) {
+            bool hub_npcs_found = false;
+            foreach (var hubnpc in current_goal.active_objective.objective_config.objectiveHubNpcs)
+            {
+                if (Configs.config_hub_npc.HubNPC[hubnpc].hubId == LocationHub.current.hubId)
+                {
+                    hub_npcs_found = true;
+                }
+            }
+            if (hub_npcs_found == true)
+            {
+                should_show_popup = false;
+                should_show_next = false;
+            }
+        }
+        
     }
 
     private void Update()
