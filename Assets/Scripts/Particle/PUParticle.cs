@@ -257,10 +257,10 @@ namespace CocosPU
                 switch (split[pointer][0])
                 {
                     case "iteration_interval":
-                        system.iteration_interval = float.Parse(split[pointer][1]);
+                        system.iteration_interval = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
                         break;
                     case "fast_forward":
-                        system.fast_forward = new float[2] { float.Parse(split[pointer][1]), float.Parse(split[pointer][2]) };
+                        system.fast_forward = new float[2] { float.Parse(split[pointer][1], CultureInfo.InvariantCulture), float.Parse(split[pointer][2], CultureInfo.InvariantCulture) };
                         break;
                     case "technique":
                         var technique = parseTechnique(ref pointer, split);
@@ -769,11 +769,11 @@ namespace CocosPU
 
         private static PUSystem.Technique.Affector.TimeColour parseTimeColour(ref int pointer, string[][] split)
         {
-            float time = float.Parse(split[pointer][1]);
-            float r = float.Parse(split[pointer][2]);
-            float g = float.Parse(split[pointer][3]);
-            float b = float.Parse(split[pointer][4]);
-            float a = float.Parse(split[pointer][5]);
+            float time = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+            float r = float.Parse(split[pointer][2], CultureInfo.InvariantCulture);
+            float g = float.Parse(split[pointer][3], CultureInfo.InvariantCulture);
+            float b = float.Parse(split[pointer][4], CultureInfo.InvariantCulture);
+            float a = float.Parse(split[pointer][5], CultureInfo.InvariantCulture);
             return new PUSystem.Technique.Affector.TimeColour(time, r, g, b, a);
         }
     }

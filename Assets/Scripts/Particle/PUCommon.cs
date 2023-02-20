@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -126,7 +127,7 @@ namespace CocosPU
             }
             else
             {
-                value = new ValueSingle(float.Parse(split[pointer][1]));
+                value = new ValueSingle(float.Parse(split[pointer][1], CultureInfo.InvariantCulture));
             }
             return value;
         }
@@ -140,10 +141,10 @@ namespace CocosPU
                 switch (split[pointer][0])
                 {
                     case "min":
-                        min = float.Parse(split[pointer][1]);
+                        min = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
                         break;
                     case "max":
-                        max = float.Parse(split[pointer][1]);
+                        max = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
                         break;
                 }
                 pointer++;
@@ -160,8 +161,8 @@ namespace CocosPU
                 switch (split[pointer][0])
                 {
                     case "control_point":
-                        float time = float.Parse(split[pointer][1]);
-                        float value = float.Parse(split[pointer][2]);
+                        float time = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+                        float value = float.Parse(split[pointer][2], CultureInfo.InvariantCulture);
                         value_curved.controlPoints.Add(new ValueSingle.ControlPoint(time, value));
                         break;
                 }
@@ -180,8 +181,8 @@ namespace CocosPU
                 switch (split[pointer][0])
                 {
                     case "control_point":
-                        float time = float.Parse(split[pointer][1]);
-                        float value = float.Parse(split[pointer][2]);
+                        float time = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+                        float value = float.Parse(split[pointer][2], CultureInfo.InvariantCulture);
                         value_curved.controlPoints.Add(new ValueSingle.ControlPoint(time, value));
                         break;
                 }
@@ -200,16 +201,16 @@ namespace CocosPU
                 switch (split[pointer][0])
                 {
                     case "oscillate_frequency":
-                        value_oscillate.oscillate_frequency = float.Parse(split[pointer][1]);
+                        value_oscillate.oscillate_frequency = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
                         break;
                     case "oscillate_phase":
-                        value_oscillate.oscillate_phase = float.Parse(split[pointer][1]);
+                        value_oscillate.oscillate_phase = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
                         break;
                     case "oscillate_base":
-                        value_oscillate.oscillate_base = float.Parse(split[pointer][1]);
+                        value_oscillate.oscillate_base = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
                         break;
                     case "oscillate_amplitude":
-                        value_oscillate.oscillate_amplitude = float.Parse(split[pointer][1]);
+                        value_oscillate.oscillate_amplitude = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
                         break;
                     case "oscillate_type":
                         value_oscillate.oscillate_type = split[pointer][1];
@@ -222,18 +223,18 @@ namespace CocosPU
 
         public static ValueTriple parseValueTriple(ref int pointer, string[][] split)
         {
-            float x = float.Parse(split[pointer][1]);
-            float y = float.Parse(split[pointer][2]);
-            float z = float.Parse(split[pointer][3]);
+            float x = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+            float y = float.Parse(split[pointer][2], CultureInfo.InvariantCulture);
+            float z = float.Parse(split[pointer][3], CultureInfo.InvariantCulture);
             return new ValueTriple(x, y, z);
         }
 
         public static ValueQuad parseValueQuad(ref int pointer, string[][] split)
         {
-            float x = float.Parse(split[pointer][1]);
-            float y = float.Parse(split[pointer][2]);
-            float z = float.Parse(split[pointer][3]);
-            float w = float.Parse(split[pointer][4]);
+            float x = float.Parse(split[pointer][1], CultureInfo.InvariantCulture);
+            float y = float.Parse(split[pointer][2], CultureInfo.InvariantCulture);
+            float z = float.Parse(split[pointer][3], CultureInfo.InvariantCulture);
+            float w = float.Parse(split[pointer][4], CultureInfo.InvariantCulture);
             return new ValueQuad(x, y, z, w);
         }
 
