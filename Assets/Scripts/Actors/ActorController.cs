@@ -66,7 +66,8 @@ public partial class ActorController : Node
     {
         setActorState(ActorState.Idle);
         finishMovement();
-        playIdleAnimation();
+        if (this != null) //The actor might die after finishing movement
+            playIdleAnimation();
     }
     public void setCharacterWalk()
     {
