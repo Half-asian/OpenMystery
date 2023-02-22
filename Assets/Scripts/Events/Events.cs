@@ -618,32 +618,34 @@ public static class Events
             return;
         }
 
+        List<string> path = null;
         List<string> visited = new List<string>();
-        string current_waypoint = actor_controller.getDestinationWaypoint();
+        string current_waypoint = actor_controller.destination_waypoint_name;
         if (current_waypoint != null)
         {
             visited.Add(current_waypoint);
             if (current_waypoint == action_params[1]) //We are already at the destination
                 return;
-        }
-        else
-        {
-            throw new System.Exception("Actor has no current waypoint");
-        }
 
-        List<string> path = carvePath(visited, action_params[1]);
+            path = carvePath(visited, action_params[1]);
 
-        string s_path = "";
-        foreach (string s in path)
-        {
-            s_path += s + " ";
-        }
+            string s_path = "";
+            foreach (string s in path)
+            {
+                s_path += s + " ";
+            }
 
-        Debug.Log(action_params[0] + " Walking: " + s_path + ". Starting at " + actor_controller.getDestinationWaypoint() + " going to " + action_params[1]);
+            Debug.Log(action_params[0] + " Walking: " + s_path + ". Starting at " + actor_controller.destination_waypoint_name + " going to " + action_params[1]);
 
-        if (path.Count != 0)
-        {
-            if (path[path.Count - 1] != action_params[1])//Did not find a path
+            if (path.Count != 0)
+            {
+                if (path[path.Count - 1] != action_params[1])//Did not find a path
+                {
+                    path.Clear();
+                    path.Add(action_params[1]); //Change to a direct route
+                }
+            }
+            else
             {
                 path.Clear();
                 path.Add(action_params[1]); //Change to a direct route
@@ -651,8 +653,7 @@ public static class Events
         }
         else
         {
-            path.Clear();
-            path.Add(action_params[1]); //Change to a direct route
+            path = new List<string>() { action_params[1] }; //If actor has no defined waypoint, we move directly to new waypoint. Tested in retail.
         }
 
         actor_controller.moveCharacter(path);

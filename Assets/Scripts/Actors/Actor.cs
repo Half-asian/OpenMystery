@@ -33,17 +33,9 @@ public class Actor
         actor_controllers.Clear();
     }
 
+    //Actors will still spawn with invalid waypoint_id. Tested in retail.
     public static ActorController spawnActor(string hpactor_id, string waypoint_id, string instance_id)
     {
-        if (waypoint_id != null)
-        {
-            if (Scene.getWayPoint(waypoint_id) == null)
-            {
-                Debug.LogError("Failed to spawn actor " + instance_id + " because waypoint was invalid");
-                return null;
-            }
-        }
-
         if (actor_controllers.ContainsKey(instance_id))
         {
             respawnCharacterInScene(instance_id);
