@@ -53,7 +53,7 @@ public class Debugger : MonoBehaviour
             {
                 foreach (Interaction i in InteractionManager.active_interactions)
                 {
-                    text += "\n Interaction: " + i.name + " " + i.gameObject.activeSelf;
+                    text += "\n Interaction: " + i.name + " is_active: " + i.is_active;
                     if (i is InteractionGroup || i is InteractionAutotuneGroup)
                     {
                         text += " " + i.group_progress + "/" + i.config_interaction.ProgressRequired;

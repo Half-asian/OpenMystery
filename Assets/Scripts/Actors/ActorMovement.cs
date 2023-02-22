@@ -10,8 +10,7 @@ public partial class ActorController : Node
     private ConfigScene._Scene.WayPoint destination_waypoint;
     private bool is_moving = false;
     List<string> movement_path = new List<string>();
-    public string getDestinationWaypoint() => 
-        (destination_waypoint == null) ? null : destination_waypoint.name;
+    public string destination_waypoint_name; 
 
     public void finishMovement()
     {
@@ -36,6 +35,7 @@ public partial class ActorController : Node
     {
         Debug.Log("moveCharacter: " + name);
         destination_waypoint = Scene.current.waypoint_dict[path.Last()];
+        destination_waypoint_name = (destination_waypoint == null) ? "" : destination_waypoint.name;
 
         movement_path.AddRange(path);
 
@@ -58,6 +58,7 @@ public partial class ActorController : Node
         finishMovement();
 
         destination_waypoint = Scene.current.waypoint_dict[waypoint_id];
+        destination_waypoint_name = (destination_waypoint == null) ? "" : destination_waypoint.name;
 
         applyWaypoint();
 

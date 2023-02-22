@@ -113,7 +113,7 @@ public partial class ActorController : Node
             gameObject.transform.localScale.z.ToString(),//11
 
             actor_state.ToString(),                     //12
-            getDestinationWaypoint(),    //13
+            destination_waypoint_name,    //13
             idle_animation,             //14
         };
 

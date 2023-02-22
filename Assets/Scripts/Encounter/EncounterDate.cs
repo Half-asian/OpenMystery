@@ -44,6 +44,8 @@ public class EncounterDate : Encounter
 
     public override void activate()
     {
+        base.activate();
+
         ConfigCompanion._Companion _companion = Configs.config_companion.Companion[companion];
         string companion_id;
         if (_companion.specialActorIds != null)
@@ -58,7 +60,6 @@ public class EncounterDate : Encounter
 
         Actor.spawnActor(companion_id, date_prompt.dateSpawn, "opponent");
 
-        base.activate();
     }
 
     public override void onFinishedEnterEvents()
