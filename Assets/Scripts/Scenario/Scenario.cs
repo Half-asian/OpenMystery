@@ -77,6 +77,7 @@ public class Scenario
 
     public static void completeInteraction(string interaction)
     {
+        if (current == null) return;
         if (!current.scenario_interactions_completed.ContainsKey(current.scenario_config.scenarioId))
             current.scenario_interactions_completed[current.scenario_config.scenarioId] = new List<string>();
 

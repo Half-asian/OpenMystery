@@ -353,6 +353,12 @@ public class EventPlayer : MonoBehaviour
         blocking_message_keys.add(strings);
     }
 
+    public void removeCustomBlockings()
+    {
+        blocking_message_keys.clear();
+        total_block = false;
+    }
+
     public IEnumerator waitSafeAdvanceAnimSequenceToCoroutine(string destination) //This is a stub
     {
         yield return null;

@@ -55,7 +55,7 @@ namespace ModelLoading
         }
         private static void setLightData(Material mat)
 		{
-            if (Scene.current.fogSettings != null)
+            if (Scene.current != null && Scene.current.fogSettings != null)
 				setFogData(mat);
 
 			if (explicit_ambient == false)

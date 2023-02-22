@@ -21,7 +21,10 @@ public class InteractionScenarioTransition : Interaction
     {
         base.onFinishedEnterEvents();
 
-        Scenario.Activate(config_interaction.scenarioId, Scenario.current.objective);
-        Scenario.Load(config_interaction.scenarioId);
+        if (Scenario.current != null)
+        {
+            Scenario.Activate(config_interaction.scenarioId, Scenario.current.objective);
+            Scenario.Load(config_interaction.scenarioId);
+        }
     }
 }
