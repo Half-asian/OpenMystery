@@ -51,7 +51,7 @@ public class Particle : MonoBehaviour
 
     public static GameObject AttachParticleSystem(string particle_instance_id, Transform parent)
     {
-        Debug.Log("AttachParticleSystem");
+        Debug.Log("AttachParticleSystem particle_instand_id: " + particle_instance_id + " parent:" + parent.name);
         if (parent.Find(particle_instance_id))
             return null;
 
@@ -85,6 +85,7 @@ public class Particle : MonoBehaviour
         }
         particle_go.transform.SetParent(parent);
         particle_go.transform.localPosition = new Vector3(0, 0, 0);
+        particle_go.name = particle_instance_id;
         return particle_go;
     }
 

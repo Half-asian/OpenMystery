@@ -161,14 +161,13 @@ public partial class Node : MonoBehaviour
 
     public void AttachParticleSystem(string parameters)
     {
-        Debug.Log("AttachParticleSystem");
         string[] split = parameters.Split(':');
         string particle_name = split[0];
         string bone_name = split[1];
-        string prop_name = null;
         GameObject particle = null;
         if (split.Length == 3)
         {
+            string prop_name = null;
             prop_name = split[2];
             if (child_nodes.ContainsKey(prop_name))
             {
@@ -184,7 +183,7 @@ public partial class Node : MonoBehaviour
         {
             if (!model.pose_bones.ContainsKey(bone_name))
             {
-                Debug.LogError("Failed to attach particle system to invalud bone " + bone_name);
+                Debug.LogError("Failed to attach particle system to invalid bone " + bone_name);
                 return;
             }
             particle = Particle.AttachParticleSystem(particle_name, model.pose_bones[bone_name]);
