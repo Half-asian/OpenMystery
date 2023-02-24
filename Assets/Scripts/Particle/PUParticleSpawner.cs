@@ -196,7 +196,8 @@ namespace CocosPU
             }
             try
             {
-                gradient.SetKeys(color_keys.ToArray(), alpha_keys.ToArray());
+                if (color_keys.Count <= 8)
+                    gradient.SetKeys(color_keys.ToArray(), alpha_keys.ToArray());
             }
             catch
             {
