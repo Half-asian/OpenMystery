@@ -36,6 +36,7 @@ public partial class ActorController : Node
     public Dictionary<string, AnimationManager.BoneMod> bone_mods;
 
     private IEnumerator waitForAnimation;
+    private IEnumerator waitForAnimateCharacterFinished;
 
     static AnimationManager.BoneMod frozen_bonemod = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1), true);
 
@@ -75,6 +76,8 @@ public partial class ActorController : Node
 
     public void playIdleAnimation()
     {
+        if (waitForAnimateCharacterFinished != null) //Single Animates take priority over idle
+            return;
         cleanupState();
         if (idle_queued_animate != null)
         {
@@ -201,6 +204,7 @@ public partial class ActorController : Node
     }
 
     //Animate character plays once actor is idle
+    //ReplaceCharacterIdle will not replace the played animation, until it finishes
     //If the animation is clamped, it is discarded at end and returns to regular idle anim
     public void animateCharacter(string anim_name)
     {
@@ -228,8 +232,8 @@ public partial class ActorController : Node
         var new_anim = AnimationManager.loadAnimationClip(idle_queued_animate, model, config_hpactor, null, bone_mods: bone_mods);
         idle_queued_animate = null;
         queueAnimationOnComponent(new_anim);
-
-        StartCoroutine(WaitForAnimateCharacterFinished(new_anim));
+        waitForAnimateCharacterFinished = WaitForAnimateCharacterFinished(new_anim);
+        StartCoroutine(waitForAnimateCharacterFinished);
     }
 
     private void loadAnimationSet()
@@ -388,11 +392,11 @@ public partial class ActorController : Node
     public IEnumerator WaitForAnimateCharacterFinished(HPAnimation animation)
     {
         yield return new WaitForSeconds(animation.anim_clip.length);
+        waitForAnimateCharacterFinished = null;
         if (animation.anim_clip.wrapMode != WrapMode.Loop)
         {
             playIdleAnimation(); //This should trigger the regular idle to play
         }
-
     }
     
 
