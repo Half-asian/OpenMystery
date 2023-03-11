@@ -447,56 +447,57 @@ public class Configs{
         }
         ConfigHPActorInfo._HPActorInfo merula_adult = new ConfigHPActorInfo._HPActorInfo();
         merula_adult.actorId = "merula_adult";
-        merula_adult.animId_idle = "c_Stu_IdleStanding01";
+        merula_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
         merula_adult.modelId = "c_MerulaHead_Y8_skin";
         merula_adult.modelPatches = new string[] { "c_MerulaBody_Y8_skin", "c_StudentHandsRosyPeach_skin" };
-        merula_adult.animationScale = 1.27f;
-        merula_adult.headAnimationScale = 0.89f;
         Configs.config_hp_actor_info.HPActorInfo.Add("merula_adult", merula_adult);
 
         ConfigHPActorInfo._HPActorInfo barnaby_adult = new ConfigHPActorInfo._HPActorInfo();
         barnaby_adult.actorId = "barnaby_adult";
-        barnaby_adult.animId_idle = "c_Stu_IdleStanding01";
+        barnaby_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
         barnaby_adult.modelId = "c_BarnabyHead_Y8_skin";
         barnaby_adult.modelPatches = new string[] { "c_BarnabyBody_Y8_skin", "c_StudentHandsWhite_skin" };
-        barnaby_adult.animationScale = 1.27f;
-        barnaby_adult.headAnimationScale = 0.89f;
         Configs.config_hp_actor_info.HPActorInfo.Add("barnaby_adult", barnaby_adult);
+
+        ConfigHPActorInfo._HPActorInfo penny_adult = new ConfigHPActorInfo._HPActorInfo();
+        penny_adult.actorId = "penny_adult";
+        penny_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
+        penny_adult.modelId = "c_Penny_Y8_skin";
+        Configs.config_hp_actor_info.HPActorInfo.Add("penny_adult", penny_adult);
 
         ConfigHPActorInfo._HPActorInfo jae_adult = new ConfigHPActorInfo._HPActorInfo();
         jae_adult.actorId = "jae_adult";
-        jae_adult.animId_idle = "c_Stu_IdleStanding01";
+        jae_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
         jae_adult.modelId = "c_JaeKimHead_Y8_skin";
         jae_adult.modelPatches = new string[] { "c_JaeKimBody_Y8_skin", "c_StudentHandsWhite_skin" };
-        jae_adult.animationScale = 1.27f;
-        jae_adult.headAnimationScale = 0.89f;
         Configs.config_hp_actor_info.HPActorInfo.Add("jae_adult", jae_adult);
 
         ConfigHPActorInfo._HPActorInfo tonks_adult = new ConfigHPActorInfo._HPActorInfo();
         tonks_adult.actorId = "tonks_adult";
-        tonks_adult.animId_idle = "c_Stu_IdleStanding01";
+        tonks_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
         tonks_adult.modelId = "c_NymphadoraTonksHead_Y8_skin";
         tonks_adult.modelPatches = new string[] { "c_NymphadoraTonksBody_Y8_skin", "c_NymphadoraTonksHands_Y8_skin" };
-        tonks_adult.animationScale = 1.27f;
-        tonks_adult.headAnimationScale = 0.89f;
         Configs.config_hp_actor_info.HPActorInfo.Add("tonks_adult", tonks_adult);
+
+        ConfigHPActorInfo._HPActorInfo tulip_adult = new ConfigHPActorInfo._HPActorInfo();
+        tulip_adult.actorId = "tulip_adult";
+        tulip_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
+        tulip_adult.modelId = "c_TulipHead_Y8_skin";
+        tulip_adult.modelPatches = new string[] { "c_TulipBody_Y8_skin", "c_StudentHandsWhite_skin" };
+        Configs.config_hp_actor_info.HPActorInfo.Add("tulip_adult", tulip_adult);
 
         ConfigHPActorInfo._HPActorInfo murphy_adult = new ConfigHPActorInfo._HPActorInfo();
         murphy_adult.actorId = "murphy_adult";
-        murphy_adult.animId_idle = "c_Stu_IdleStanding01";
+        murphy_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
         murphy_adult.modelId = "c_MurphyMcNullyHead_Y8_skin";
         murphy_adult.modelPatches = new string[] { "c_MurphyMcNullyArms_Y8_skin", "c_MurphyMcNullyBody_Y8_skin" };
-        murphy_adult.animationScale = 1.27f;
-        murphy_adult.headAnimationScale = 0.89f;
         Configs.config_hp_actor_info.HPActorInfo.Add("murphy_adult", murphy_adult);
 
         ConfigHPActorInfo._HPActorInfo ruby = new ConfigHPActorInfo._HPActorInfo();
         ruby.actorId = "ruby";
-        ruby.animId_idle = "c_Stu_IdleStanding01";
+        ruby.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
         ruby.modelId = "c_RubyHead_Y8_skin";
         ruby.modelPatches = new string[] { "c_RubyBody_Y8_skin", "c_StudentHandsWhite_skin" };
-        ruby.animationScale = 1.27f;
-        ruby.headAnimationScale = 0.89f;
         Configs.config_hp_actor_info.HPActorInfo.Add("ruby", ruby);
 
         ConfigHPActorInfo._HPActorInfo harry = new ConfigHPActorInfo._HPActorInfo();
@@ -520,7 +521,7 @@ public class Configs{
         config_avatar_outfit_data = ConfigAvatarOutfitData.getJObjectsConfigsListST("AvatarOutfitData");
         config_avatar_patch_config = ConfigAvatarPatchConfig.getJObjectsConfigsListST("AvatarPatchConfig");
         config_scripted_clothing_set = ConfigScriptedClothingSet.getJObjectsConfigsListST("ScriptedClothingSet");
-        config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
+        config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo", Newtonsoft.Json.Linq.MergeArrayHandling.Replace);
         config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
         config_house = ConfigHouse.getJObjectsConfigsListST("House");
         config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");

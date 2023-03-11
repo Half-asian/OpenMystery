@@ -8,7 +8,6 @@ public class Particle : MonoBehaviour
     public static GameObject AttachParticleSystemOld(string type, Transform parent)
     {
         GameObject particle = null;
-        Debug.Log("AttachParticleSystem");
         if (parent.Find(type))
             return null;
         GameObject g = Resources.Load<GameObject>(type);
@@ -51,10 +50,6 @@ public class Particle : MonoBehaviour
 
     public static GameObject AttachParticleSystem(string particle_instance_id, Transform parent)
     {
-        Debug.Log("AttachParticleSystem particle_instand_id: " + particle_instance_id + " parent:" + parent.name);
-        if (parent.Find(particle_instance_id))
-            return null;
-
         if (!Configs.config_particle_instance.ParticleInstance.ContainsKey(particle_instance_id))
         {
             Debug.LogError("Unknown particle instance type " + particle_instance_id);
@@ -67,6 +62,9 @@ public class Particle : MonoBehaviour
             Debug.LogError("Unknown particle system type " + particle_instance.systemId);
             return null;
         }
+
+        if (parent.Find(particle_instance_id))
+            Destroy(parent.Find(particle_instance_id).gameObject);
 
         var particle_system = Configs.config_particle_config.ParticleConfig[particle_instance.systemId];
 

@@ -415,24 +415,16 @@ public static class Events
                 }
                 break;
             case "replaceCharacterIdleSequence":
+                Actor.getActor(action_params[0])?.replaceCharacterIdleSequence(action_params[1]);
+                break;
+
             case "playCharacterAnimSequence":
-                if (!Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    Debug.LogError("Couldn't find actor " + action_params[0]);
-                    return;
-                }
-
-                Actor.actor_controllers[action_params[0]].replaceCharacterIdleSequence(action_params[1]);
-
+                Actor.getActor(action_params[0])?.playCharacterIdleSequence(action_params[1]);
                 break;
 
             case "moveCharacterWithSequence":
-
-                if (!Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    Debug.LogError("Couldn't find actor " + action_params[0]);
+                if (Actor.getActor(action_params[0]) == null)
                     return;
-                }
                 moveCharacter(action_params, true);
                 break;
 

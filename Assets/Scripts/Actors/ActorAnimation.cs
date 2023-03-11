@@ -36,6 +36,7 @@ public partial class ActorController : Node
     public Dictionary<string, AnimationManager.BoneMod> bone_mods;
 
     private IEnumerator waitForAnimation;
+    private IEnumerator waitForAnimateCharacterSequenceFinished;
     private IEnumerator waitForAnimateCharacterFinished;
 
     static AnimationManager.BoneMod frozen_bonemod = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1), true);
@@ -77,6 +78,8 @@ public partial class ActorController : Node
     public void playIdleAnimation()
     {
         if (waitForAnimateCharacterFinished != null) //Single Animates take priority over idle
+            return;
+        if (waitForAnimateCharacterSequenceFinished != null) //Played animation sequences also take priority
             return;
         cleanupState();
         if (idle_queued_animate != null)
@@ -177,6 +180,30 @@ public partial class ActorController : Node
 
             var seq_component = gameObject.AddComponent<ActorAnimSequence>();
             seq_component.initAnimSequence(idle_animation_sequence, false);
+        }
+    }
+
+    public void playCharacterIdleSequence(string sequence_id)
+    {
+        idle_animation_sequence = sequence_id;
+        current_anim_state = "loop";
+        next_anim_state = "loop";
+        if (actor_state == ActorState.Idle)
+        {
+            animation_previous_intro = null;
+            animation_previous_loop = null;
+            animation_previous_exit = null;
+            animation_current_intro = null;
+            animation_current_loop = null;
+            animation_current_exit = null;
+            if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
+                DestroyImmediate(GetComponent<ActorAnimSequence>());
+
+            var seq_component = gameObject.AddComponent<ActorAnimSequence>();
+            seq_component.initAnimSequence(idle_animation_sequence, false);
+
+            waitForAnimateCharacterSequenceFinished = WaitForAnimateCharacterSequenceFinished(seq_component);
+            StartCoroutine(waitForAnimateCharacterSequenceFinished);
         }
     }
 
@@ -387,6 +414,14 @@ public partial class ActorController : Node
             if (animation.anim_clip.wrapMode == WrapMode.ClampForever)
                 updateAndPlayAnimationState();
         }
+    }
+
+    public IEnumerator WaitForAnimateCharacterSequenceFinished(AnimationSequence animSequence)
+    {
+        while(animSequence != null)
+            yield return null;
+        waitForAnimateCharacterSequenceFinished = null;
+        playIdleAnimation(); //This should trigger the regular idle to play
     }
 
     public IEnumerator WaitForAnimateCharacterFinished(HPAnimation animation)

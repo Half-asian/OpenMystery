@@ -30,13 +30,11 @@ public static partial class AnimationManager
 					if (trigger.parameters.Length < 3)
 					{
                         animationEvent.stringParameter = model_id + ":" + bone_id;
-                        Debug.Log("AttachProp: model_id: " + model_id + " bone_id: " + bone_id);
                     }
                     else
 					{
                         string prop_id = triggerReplacement.ContainsKey(trigger.parameters[2]) ? triggerReplacement[trigger.parameters[2]] : trigger.parameters[2];
                         animationEvent.stringParameter = model_id + ":" + bone_id + ":" + prop_id;
-                        Debug.Log("AttachProp: model_id: " + model_id + " bone_id: " + bone_id + " prop_id: " + prop_id);
                     }
 
                     animationEvent.functionName = "AttachProp";
@@ -63,7 +61,6 @@ public static partial class AnimationManager
 					animationEvent.functionName = "PlayPropAnim";
 					animationEvent.time = trigger.time * anim_clip.length + 0.01f + offset;
 					anim_clip.AddEvent(animationEvent);
-                    Debug.Log("playpropanim: prop_id: " + prop_id + " anim_id: " + anim_id);
                     break;
 				}
 			case "scripttrigger":

@@ -33,6 +33,19 @@ public class Actor
         actor_controllers.Clear();
     }
 
+    public static ActorController getActor(string instance_id)
+    {
+        if (actor_controllers.ContainsKey(instance_id))
+        {
+            return actor_controllers[instance_id];
+        }
+        else
+        {
+            Debug.Log("Couldn't find actor" + instance_id);
+            return null;
+        }
+    }
+
     //Actors will still spawn with invalid waypoint_id. Tested in retail.
     public static ActorController spawnActor(string hpactor_id, string waypoint_id, string instance_id)
     {

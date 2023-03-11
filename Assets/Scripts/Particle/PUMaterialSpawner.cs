@@ -13,7 +13,6 @@ namespace CocosPU {
     {
         public static UnityEngine.Material loadMaterial(string file)
         {
-            Debug.Log("Loading Material " + file);
             string path = Path.Combine(GlobalEngineVariables.assets_folder, "particles", file);
             if (!File.Exists(path))
             {

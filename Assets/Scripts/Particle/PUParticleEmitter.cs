@@ -37,7 +37,6 @@ namespace CocosPU
                     throw new System.Exception("Unknown emitter type " + pu_emitter.type);
             }
             emitter.apply(particle_system, particle_main);
-            Debug.Log("Setting scale");
             subsystem_go.transform.localScale = scale;
 
         }
@@ -99,7 +98,6 @@ namespace CocosPU
                     emission.enabled = true;
                     if (emitter.emission_rate.value_type == ValueSingle.type.Fixed)
                     {
-                        Debug.Log(emitter.emission_rate.min);
                         emission.rateOverTime = new ParticleSystem.MinMaxCurve(emitter.emission_rate.min);
                     }
                     else if (emitter.emission_rate.value_type == ValueSingle.type.CurvedLinear)

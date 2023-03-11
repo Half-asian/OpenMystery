@@ -16,7 +16,6 @@ namespace CocosPU
         private static Vector3 scale;
         public static GameObject spawnParticle(string file, Vector3 _scale)
         {
-            Debug.Log("spawnParticle " + file);
             GameObject particle_go = new GameObject(file.Substring(0, file.Length - 3));
             var pu_system = PUParticle.loadParticle(file);
 
