@@ -5,19 +5,7 @@ public partial class ActorController : Node
 {
     public List<Model> patches;
 
-    private ConfigHPActorInfo._HPActorInfo _config_hpactor;
-
-    public ConfigHPActorInfo._HPActorInfo config_hpactor
-    {
-        get
-        {
-            return _config_hpactor;
-        }
-        set
-        {
-            _config_hpactor = value;
-        }
-    }
+    public ConfigHPActorInfo._HPActorInfo config_hpactor;
 
     public AvatarComponents avatar_components;
 
@@ -38,7 +26,7 @@ public partial class ActorController : Node
     }
 
     //Clean up everything from last state
-    public void cleanupState()
+    private void cleanupState()
     {
         foreach (var actoranimseq in GetComponents<ActorAnimSequence>())
         {
@@ -48,10 +36,13 @@ public partial class ActorController : Node
         //Some animations change these
         model.jt_all_bind.localPosition = Vector3.zero;
         model.jt_all_bind.localRotation = Quaternion.identity;
-
+        if (waitForAnimateCharacterFinished != null)
+            StopCoroutine(waitForAnimateCharacterFinished);
+        if (waitForAnimateCharacterSequenceFinished != null)
+            StopCoroutine(waitForAnimateCharacterSequenceFinished);
     }
 
-    public void setActorState(ActorState _actor_state)
+    private void setActorState(ActorState _actor_state)
     {
         if (actor_state != _actor_state)
         {
@@ -67,14 +58,18 @@ public partial class ActorController : Node
         setActorState(ActorState.Idle);
         finishMovement();
         if (this != null) //The actor might die after finishing movement
-            playIdleAnimation();
+            playActorAnimation(idle_actor_anim);
     }
-    public void setCharacterWalk()
+    private void setCharacterWalk()
     {
         if (actor_state == ActorState.Idle)
             reset_animation = true;
         setActorState(ActorState.Walk);
-        playWalkAnimation();
+        playActorAnimation(new ActorAnim(ActorAnim.AnimType.Regular, config_hpactor.animId_walk));
+    }
+    private void setCharacterAnimate()
+    {
+        setActorState(ActorState.Animate);
     }
 
     public void addPatch(string patch_model_id)
@@ -115,7 +110,7 @@ public partial class ActorController : Node
 
             actor_state.ToString(),                     //12
             destination_waypoint_name,    //13
-            idle_animation,             //14
+            config_hpactor.animId_idle,             //14
         };
 
         if (avatar_components != null) //Actually an avatar
@@ -132,8 +127,5 @@ public enum ActorState
 {
     Idle,
     Walk,
-    Run,
-    SittingIdle,
-    Success,
-    RenownBoard
+    Animate
 }

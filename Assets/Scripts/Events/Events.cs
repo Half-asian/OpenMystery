@@ -13,106 +13,54 @@ public static class Events
     {
         switch (action_type)
         {
-            case "animateCharacter":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    Actor.actor_controllers[action_params[0]].animateCharacter(action_params[1]);
-                }
-                else
-                {
-                    Debug.Log("Couldn't find actor " + action_params[0] + " in scene.");
-                }
-
-                break;
-
-            case "replaceCharacterIdleStaggered": //seems to skip intro anims. glitchy
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    Actor.actor_controllers[action_params[0]].replaceCharacterIdleStaggered(action_params[1]);
-
-                }
-                break;
             case "replaceCharacterIdle":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    Actor.actor_controllers[action_params[0]].replaceCharacterIdle(action_params[1]);
-                }
-
+                Actor.getActor(action_params[0])?.replaceCharacterIdle(action_params[1]);
                 break;
 
             case "setCharacterIdle":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    if (Actor.actor_controllers.ContainsKey(action_params[0]))
-                    {
-                        Actor.actor_controllers[action_params[0]].setCharacterIdle();
-                    }
-                }
+                Actor.getActor(action_params[0])?.setCharacterIdle();
                 break;
 
+            case "replaceCharacterIdleSequence":
+                Actor.getActor(action_params[0])?.replaceCharacterIdleSequence(action_params[1]);
+                break;
+
+            case "playCharacterAnimSequence":
+                Actor.getActor(action_params[0])?.playCharacterAnimSequence(action_params[1]);
+                break;
+
+            case "animateCharacter":
+                Actor.getActor(action_params[0])?.animateCharacter(action_params[1]);
+                break;
+
+            case "replaceCharacterIdleStaggered":
+                Actor.getActor(action_params[0])?.replaceCharacterIdleStaggered(action_params[1]);
+                break;
 
             case "walkInCharacter": //Tp's character to closest connecting waypoint, then they walk to the destination
-                if (!Actor.actor_controllers.ContainsKey(action_params[0]))
-                {
-                    Debug.LogError("COULDN'T FIND CHARACTER " + action_params[0] + " IN CURRENT SCENE!");
-                    break;
-                }
-                if (!Scene.current.waypoint_dict.ContainsKey(action_params[1]))
-                {
-                    Debug.LogError("COULDN'T FIND WAYPOINT " + action_params[1] + " IN CURRENT SCENE!");
-                    break;
-                }
-                string waypoint_connector = null;
-                if (Scene.current.waypointconnections != null)
-                {
-                    foreach (var w in Scene.current.waypointconnections)
-                    {
-                        if (w.connection[1] == action_params[1])
-                            waypoint_connector = w.connection[0];
-                        else if (w.connection[0] == action_params[1])
-                            waypoint_connector = w.connection[1];
-                    }
-                }
-                if (waypoint_connector == null)
-                {
-                    Debug.LogError("Couldn't find a connector to waypoint " + action_params[1]);
-                }
-                else
-                {
-                    Actor.actor_controllers[action_params[0]].teleportCharacter(waypoint_connector);
-                }
-                moveCharacter(action_params);
+                Actor.getActor(action_params[0])?.walkInCharacter(action_params[1]);
                 break;
 
             case "moveCharacter":
-                moveCharacter(action_params);
+                Actor.getActor(action_params[0])?.moveCharacter(
+                    action_params.Length > 1 ? action_params[1] : null, 
+                    action_params.Length > 2 ? action_params[2] : null, 
+                    ActorController.ActorAnim.AnimType.Regular);
+                //action_params[3] int unknown
 
                 break;
+
             case "turnHeadAt": //Don't move shoulders
                 turnHeadAt(action_params);
                 break;
+
             case "lookAt":
                 lookAt(action_params);
                 break;
+
             case "teleportCharacter":
-                if (action_params.Length < 2)
-                    break;
-                if (!Scene.current.waypoint_dict.ContainsKey(action_params[1]))
-                {
-                    Debug.LogWarning("COULDN'T FIND WAYPOINT " + action_params[1] + " IN CURRENT SCENE!");
-                    break;
-                }
-
-                if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
-                {
-                    Debug.Log("Couldn't find character " + action_params[0] + " in characters.");
-                    break;
-                }
-
-                Actor.actor_controllers[action_params[0]].teleportCharacter(action_params[1]);
-                Actor.actor_controllers[action_params[0]].reset_animation = true;
-                Actor.actor_controllers[action_params[0]].clearTurnHeadAt();
-                Actor.actor_controllers[action_params[0]].clearLookat();
+                if (action_params.Length < 2) break;
+                Actor.getActor(action_params[0])?.teleportCharacter(action_params[1]);
                 break;
 
             case "teleportProp":
@@ -391,13 +339,9 @@ public static class Events
                 break;
 
             case "advanceAnimSequence":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
+                if (Actor.getActor(action_params[0]))
                 {
-                    if (Actor.actor_controllers[action_params[0]].gameObject != null)
-                    {
-                        if (Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>() != null)
-                            Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().advanceAnimSequence();
-                    }
+                    Actor.getActor(action_params[0]).advanceAnimSequence();
                 }
                 else
                 {
@@ -414,18 +358,12 @@ public static class Events
                     }
                 }
                 break;
-            case "replaceCharacterIdleSequence":
-                Actor.getActor(action_params[0])?.replaceCharacterIdleSequence(action_params[1]);
-                break;
-
-            case "playCharacterAnimSequence":
-                Actor.getActor(action_params[0])?.playCharacterIdleSequence(action_params[1]);
-                break;
 
             case "moveCharacterWithSequence":
-                if (Actor.getActor(action_params[0]) == null)
-                    return;
-                moveCharacter(action_params, true);
+                Actor.getActor(action_params[0])?.moveCharacter(
+                    action_params.Length > 1 ? action_params[1] : null,
+                    action_params.Length > 2 ? action_params[2] : null, 
+                    ActorController.ActorAnim.AnimType.Sequence);
                 break;
 
             case "animateProp":
@@ -495,181 +433,7 @@ public static class Events
     {
         doEventAction(Configs.config_script_events.ScriptEvents[event_name].action[event_index], action_params, event_player);
     }
-
-    public static List<string> carvePath(List<string> visited, string destination)
-    {
-        List<string> final_result = new List<string>();
-
-        if (Scene.current.waypointconnections == null)
-        {
-            return final_result;
-        }
-
-        foreach (ConfigScene._Scene.WayPointConnection connection in Scene.current.waypointconnections)
-        {
-            //Check if the waypoint connection defines invalid waypoints
-            if (!Scene.current.waypoint_dict.ContainsKey(connection.connection[0]) ||
-                !Scene.current.waypoint_dict.ContainsKey(connection.connection[1]))
-                continue;
-
-            if (connection.connection[0] == visited[visited.Count - 1])
-            {
-                if (connection.connection[1] == destination)
-                {
-                    visited.Add(destination);
-                    return visited;
-                }
-                else if (!visited.Contains(connection.connection[1]))
-                {
-                    List<string> temp = new List<string>(visited);
-                    temp.Add(connection.connection[1]);
-                    List<string> result = carvePath(temp, destination);
-
-                    if (result[result.Count - 1] == destination) //we found a path
-                    {
-                        string s_path = "";
-                        foreach (string s in result)
-                        {
-                            s_path += s + " ";
-                        }
-                        if (final_result.Count != 0) //we already found a path
-                        {
-                            if (result.Count < final_result.Count)
-                            {
-                                final_result = result; //The new path is shorter
-                            }
-                        }
-                        else
-                        {
-
-                            final_result = result; //we hadn't found a path, now we have
-                        }
-                    }
-                }
-            }
-            else if (connection.connection[1] == visited[visited.Count - 1])
-            {
-                if (connection.connection[0] == destination)
-                {
-                    visited.Add(destination);
-                    return visited;
-                }
-                else if (!visited.Contains(connection.connection[0]))
-                {
-                    List<string> temp = new List<string>(visited);
-                    temp.Add(connection.connection[0]);
-                    List<string> result = carvePath(temp, destination);
-
-                    if (result[result.Count - 1] == destination) //we found a path
-                    {
-                        string s_path = "";
-                        foreach (string s in result)
-                        {
-                            s_path += s + " ";
-                        }
-                        if (final_result.Count != 0) //we already found a path
-                        {
-                            if (result.Count < final_result.Count)
-                            {
-                                final_result = result; //The new path is shorter
-                            }
-                        }
-                        else
-                        {
-                            final_result = result; //we hadn't found a path, now we have
-                        }
-                    }
-                }
-            }
-        }
-        if (final_result.Count == 0)
-        {
-            return visited;
-        }
-        return final_result;
-    }
-
-    public class WayPoint
-    {
-        public Vector3 position;
-        public Quaternion rotation;
-    }
-    public static void moveCharacter(string[] action_params, bool sequence = false)
-    {
-        if (!Actor.actor_controllers.ContainsKey(action_params[0]) || Actor.actor_controllers[action_params[0]].gameObject == null)
-        {
-            Debug.LogError("Couldn't find character " + action_params[0] + " in characters.");
-            return;
-        }
-
-        ActorController actor_controller = Actor.actor_controllers[action_params[0]];
-
-        if (!Scene.current.waypoint_dict.ContainsKey(action_params[1]))
-        {
-            Debug.LogWarning("COULDN'T FIND WAYPOINT " + action_params[1] + " IN CURRENT SCENE! for character move");
-            return;
-        }
-
-        List<string> path = null;
-        List<string> visited = new List<string>();
-        string current_waypoint = actor_controller.destination_waypoint_name;
-        if (current_waypoint != null)
-        {
-            visited.Add(current_waypoint);
-            if (current_waypoint == action_params[1]) //We are already at the destination
-                return;
-
-            path = carvePath(visited, action_params[1]);
-
-            string s_path = "";
-            foreach (string s in path)
-            {
-                s_path += s + " ";
-            }
-
-            Debug.Log(action_params[0] + " Walking: " + s_path + ". Starting at " + actor_controller.destination_waypoint_name + " going to " + action_params[1]);
-
-            if (path.Count != 0)
-            {
-                if (path[path.Count - 1] != action_params[1])//Did not find a path
-                {
-                    path.Clear();
-                    path.Add(action_params[1]); //Change to a direct route
-                }
-            }
-            else
-            {
-                path.Clear();
-                path.Add(action_params[1]); //Change to a direct route
-            }
-        }
-        else
-        {
-            path = new List<string>() { action_params[1] }; //If actor has no defined waypoint, we move directly to new waypoint. Tested in retail.
-        }
-
-        actor_controller.moveCharacter(path);
-
-        if (action_params.Length < 3)
-        {
-            return;
-        }
-
-        if (action_params[2] != "")
-        {
-            //There is an animation included
-            if (sequence == true)
-            {
-                actor_controller.replaceCharacterWalkSequence(action_params[2]);
-            }
-            else
-            {
-                actor_controller.replaceCharacterWalk(action_params[2]);
-            }
-        }
-
-        //action_params[3] int unknown
-    }
+    
 
     public static void lookAt(string[] action_params) //Up to 4 parameters. Idk what 4 is for.
     {

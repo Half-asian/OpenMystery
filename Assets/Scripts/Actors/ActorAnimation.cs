@@ -17,21 +17,31 @@ public partial class ActorController : Node
     public HPAnimation animation_previous_exit;
     public string animation_previous_name = null;
 
-
-    private string idle_queued_animate = null;
-    public string idle_animation = null;
-    public string idle_animation_sequence = null;
-
-    private string walk_animation = null;
-    private string walk_animation_sequence = null;
-
-    HPAnimation default_anim;
-
-
     public string current_anim_state = "loop";
     public string next_anim_state = "loop";
 
-    public string delayed_anim;
+    public struct ActorAnim
+    {
+        public enum AnimType
+        {
+            Regular,
+            Staggered,
+            Sequence
+        }
+        public AnimType anim_type;
+        public string id;
+
+        public ActorAnim(AnimType _anim_type, string _id)
+        {
+            anim_type = _anim_type;
+            id = _id;
+        }
+    }
+
+    private ActorAnim idle_actor_anim;
+    private ActorAnim current_actor_anim;
+
+    HPAnimation default_anim;
 
     public Dictionary<string, AnimationManager.BoneMod> bone_mods;
 
@@ -41,24 +51,7 @@ public partial class ActorController : Node
 
     static AnimationManager.BoneMod frozen_bonemod = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1), true);
 
-    public void initializeAnimations()
-    {
-        //Freezes these bones in place when no animations are playing to stop infinite spin on lookats
-        bone_mods = new Dictionary<string, AnimationManager.BoneMod>()
-        {
-            ["jt_hips_bind"] = frozen_bonemod,
-            ["spine1_loResSpine2_bind"] = frozen_bonemod,
-            ["spine1_loResSpine3_bind"] = frozen_bonemod,
-            ["jt_head_bind"] = frozen_bonemod,
-        };
 
-        default_anim = new HPAnimation(Resources.Load("default") as AnimationClip);
-        default_anim.anim_clip.legacy = true;
-        if (config_hpactor is not null)
-        {
-            walk_animation = config_hpactor.animId_walk;
-        }
-    }
 
     protected override IEnumerator animationAlert(AnimationClip clip)
     {
@@ -75,154 +68,124 @@ public partial class ActorController : Node
         }
     }
 
-    public void playIdleAnimation()
+    private void playActorAnimation(ActorAnim actor_anim)
     {
-        if (waitForAnimateCharacterFinished != null) //Single Animates take priority over idle
-            return;
-        if (waitForAnimateCharacterSequenceFinished != null) //Played animation sequences also take priority
+        if (current_actor_anim.id == actor_anim.id && current_actor_anim.anim_type == actor_anim.anim_type)
             return;
         cleanupState();
-        if (idle_queued_animate != null)
+        if (actor_anim.anim_type == ActorAnim.AnimType.Sequence)
         {
-            playAnimateCharacter();
-        }
-        else if (idle_animation_sequence != null)
-        {
-            replaceCharacterIdleSequence(idle_animation_sequence);
+            playSequence(actor_anim);
         }
         else
         {
-            loadAnimationSet();
+            loadAnimationSet(actor_anim);
             if (current_anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
-            {                                  //next_anim_state = "outro";
-                                              //else
                 next_anim_state = "intro";
-            }
             if (reset_animation)
                 next_anim_state = "loop";
 
+            if (actor_anim.anim_type == ActorAnim.AnimType.Staggered)
+            {
+                next_anim_state = "loop";
+                reset_animation = true;
+            }
             updateAndPlayAnimationState();
         }
+        current_actor_anim = actor_anim;
     }
 
-    public void playWalkAnimation()
+    private void playSequence(ActorAnim actorAnim)
     {
-        cleanupState();
-
-        loadAnimationSet();
-        //if (anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
-        //    anim_state = "outro";
-        //else
         current_anim_state = "loop";
-        updateAndPlayAnimationState();
+        next_anim_state = "loop";
+        animation_previous_intro = null;
+        animation_previous_loop = null;
+        animation_previous_exit = null;
+        animation_current_intro = null;
+        animation_current_loop = null;
+        animation_current_exit = null;
+        if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
+            DestroyImmediate(GetComponent<ActorAnimSequence>());
+
+        var seq_component = gameObject.AddComponent<ActorAnimSequence>();
+        seq_component.initAnimSequence(actorAnim.id, false);
     }
 
+    /*------ Public Functions -----*/
 
-    public void replaceCharacterIdle(string anim_name)
+    //Regular animation, will play when actor switches to idle state
+    public void replaceCharacterIdle(string animation_id)
     {
-        if (idle_animation == anim_name && idle_animation_sequence == null)
-            return;
-        if (idle_animation_sequence != null)
-            next_anim_state = "loop";
-        if (idle_animation == anim_name)
-            next_anim_state = "loop";
-        idle_animation = anim_name;
-        idle_animation_sequence = null;
-        idle_queued_animate = null;
+        ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Regular, animation_id);
         if (actor_state == ActorState.Idle)
         {
-            playIdleAnimation();
+            playActorAnimation(new_anim);
         }
+        idle_actor_anim = new_anim;
     }
 
-    public void replaceCharacterIdleStaggered(string anim_name)
+    //Staggered animation, will play when actor switches to idle state
+    //Staggered animation skips the intro and has no crossfade
+
+    public void replaceCharacterIdleStaggered(string animation_id)
     {
-        if (idle_animation == anim_name && idle_animation_sequence == null)
-            return;
-        idle_animation = anim_name;
-        idle_animation_sequence = null;
-        idle_queued_animate = null;
+        ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Staggered, animation_id);
         if (actor_state == ActorState.Idle)
         {
-            playIdleAnimation();
-            next_anim_state = "loop";
-            updateAndPlayAnimationState();
+            playActorAnimation(new_anim);
         }
-    }
-
-    public void replaceCharacterWalk(string anim_name)
-    {
-        if (walk_animation == anim_name)
-            return;
-        walk_animation = anim_name;
-        if (actor_state == ActorState.Walk)
-        {
-            playWalkAnimation();
-        }
+        idle_actor_anim = new_anim;
     }
 
 
+    //Animation Sequence, will play when actor switches to idle state
     public void replaceCharacterIdleSequence(string sequence_id)
     {
-        idle_animation_sequence = sequence_id;
-        current_anim_state = "loop";
-        next_anim_state = "loop";
+        ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Sequence, sequence_id);
         if (actor_state == ActorState.Idle)
         {
-            animation_previous_intro = null;
-            animation_previous_loop = null;
-            animation_previous_exit = null;
-            animation_current_intro = null;
-            animation_current_loop = null;
-            animation_current_exit = null;
-            if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
-                DestroyImmediate(GetComponent<ActorAnimSequence>());
+            playActorAnimation(new_anim);
+        }
+        idle_actor_anim = new_anim;
+    }
 
-            var seq_component = gameObject.AddComponent<ActorAnimSequence>();
-            seq_component.initAnimSequence(idle_animation_sequence, false);
+    //Regular animation, will play only if actor is in idle state.
+    //Actor will no longer be in idle, therefore replace idles will not overwrite
+    public void animateCharacter(string anim_name)
+    {
+        ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Regular, anim_name);
+
+        if (actor_state == ActorState.Idle) //Ignored if not idle
+        {
+            setCharacterAnimate();
+            if (waitForAnimation != null)
+                StopCoroutine(waitForAnimation);
+            current_anim_state = "loop";
+            playActorAnimation(new_anim);
+
+            var new_anim_clip = AnimationManager.loadAnimationClip(anim_name, model, config_hpactor, null, bone_mods: bone_mods);
+            waitForAnimateCharacterFinished = WaitForAnimateCharacterFinished(new_anim_clip);
+            StartCoroutine(waitForAnimateCharacterFinished);
         }
     }
 
-    public void playCharacterIdleSequence(string sequence_id)
+
+    //Animation Sequence, will play only if actor is in idle state.
+    //Actor will no longer be in idle, therefore replace idles will not overwrite
+    public void playCharacterAnimSequence(string sequence_id)
     {
-        idle_animation_sequence = sequence_id;
-        current_anim_state = "loop";
-        next_anim_state = "loop";
-        if (actor_state == ActorState.Idle)
+        ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Sequence, sequence_id);
+        if (actor_state == ActorState.Idle) //If the character is not idle, do nothing
         {
-            animation_previous_intro = null;
-            animation_previous_loop = null;
-            animation_previous_exit = null;
-            animation_current_intro = null;
-            animation_current_loop = null;
-            animation_current_exit = null;
-            if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
-                DestroyImmediate(GetComponent<ActorAnimSequence>());
-
-            var seq_component = gameObject.AddComponent<ActorAnimSequence>();
-            seq_component.initAnimSequence(idle_animation_sequence, false);
-
-            waitForAnimateCharacterSequenceFinished = WaitForAnimateCharacterSequenceFinished(seq_component);
+            setCharacterAnimate();
+            playActorAnimation(new_anim);
+            waitForAnimateCharacterSequenceFinished = WaitForAnimateCharacterSequenceFinished(GetComponent<AnimationSequence>());
             StartCoroutine(waitForAnimateCharacterSequenceFinished);
         }
     }
 
-    //We cannot save the walk sequence
-    public void replaceCharacterWalkSequence(string sequence_id)
-    {
-        if (actor_state != ActorState.Walk)
-        {
-            throw new Exception("Tried to replace a characters walk sequence while not walking");
-        }
-        walk_animation = null;
-        walk_animation_sequence = sequence_id;
-        if (GetComponent<ActorAnimSequence>() != null) //Get rid of this shit with something cleaner
-            DestroyImmediate(GetComponent<ActorAnimSequence>());
-        var seq_component = gameObject.AddComponent<ActorAnimSequence>();
-        seq_component.initAnimSequence(sequence_id, true);
-    }
-
-
+    //Only used for rare cases. Not part of the main game.
     public void customAnimationCharacter(string anim_name)
     {
         reset_animation = true;
@@ -230,54 +193,52 @@ public partial class ActorController : Node
         queueAnimationOnComponent(new_anim);
     }
 
-    //Animate character plays once actor is idle
-    //ReplaceCharacterIdle will not replace the played animation, until it finishes
-    //If the animation is clamped, it is discarded at end and returns to regular idle anim
-    public void animateCharacter(string anim_name)
+    public void advanceAnimSequence()
     {
-        cleanupState();
-        if (!Configs.config_animation.Animation3D.ContainsKey(anim_name))
-        {
-            Debug.LogError("Couldn't find animation " + anim_name);
-            return;
-        }
-        //It seems we can't animate a character while they're walking
-        //Instead it gets queued
-        idle_queued_animate = anim_name;
-        if (actor_state == ActorState.Idle)
-        {
-            playAnimateCharacter();
+        if (gameObject.GetComponent<AnimationSequence>() != null) {
+            gameObject.GetComponent<AnimationSequence>().advanceAnimSequence();
         }
     }
 
-    private void playAnimateCharacter()
-    {
-        if (waitForAnimation != null)
-            StopCoroutine(waitForAnimation);
-        current_anim_state = "loop";
 
-        var new_anim = AnimationManager.loadAnimationClip(idle_queued_animate, model, config_hpactor, null, bone_mods: bone_mods);
-        idle_queued_animate = null;
-        queueAnimationOnComponent(new_anim);
-        waitForAnimateCharacterFinished = WaitForAnimateCharacterFinished(new_anim);
-        StartCoroutine(waitForAnimateCharacterFinished);
+    /*----- Private -----*/
+    private void replaceCharacterWalkSequence(string sequence_id)
+    {
+        ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Sequence, sequence_id);
+        if (actor_state == ActorState.Walk)
+        {
+            playActorAnimation(new_anim);
+        }
     }
 
-    private void loadAnimationSet()
+    private void replaceCharacterWalk(string anim_name)
     {
-        string animation_id;
-        switch (actor_state)
+        ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Regular, anim_name);
+        if (actor_state == ActorState.Walk)
         {
-            case ActorState.Walk:
-                animation_id = walk_animation;
-                break;
-            case ActorState.Idle:
-                animation_id = idle_animation;
-                break;
-            default:
-                throw new Exception("Unknown actor state.");
+            playActorAnimation(new_anim);
         }
+        idle_actor_anim = new_anim;
+    }
 
+    private void initializeAnimations()
+    {
+        //Freezes these bones in place when no animations are playing to stop infinite spin on lookats
+        bone_mods = new Dictionary<string, AnimationManager.BoneMod>()
+        {
+            ["jt_hips_bind"] = frozen_bonemod,
+            ["spine1_loResSpine2_bind"] = frozen_bonemod,
+            ["spine1_loResSpine3_bind"] = frozen_bonemod,
+            ["jt_head_bind"] = frozen_bonemod,
+        };
+
+        default_anim = new HPAnimation(Resources.Load("default") as AnimationClip);
+        default_anim.anim_clip.legacy = true;
+    }
+
+    private void loadAnimationSet(ActorAnim actor_anim)
+    {
+        string animation_id = actor_anim.id;
 
         if (!Configs.config_animation.Animation3D.ContainsKey(animation_id))
         {
@@ -314,18 +275,10 @@ public partial class ActorController : Node
         var animation = Configs.config_animation.Animation3D[animation_id];
 
         animation_current_loop = AnimationManager.loadAnimationClip(animation_id, model, config_hpactor, null, bone_mods:bone_mods);
-        //animation_current_loop.anim_clip.wrapMode = WrapMode.Loop; //Always loop even if the animation config says clamp
-        //Need some animation clips to clamp to crossfade properly. E.g. Y6C6 HOM Tonks to binss
-        //Possible alternate code if some animations freeze
-        //if (animation_current_intro != null || animation_current_exit != null)
-        //  animation_current_loop.anim_clip.wrapMode = WrapMode.Loop;
-
-
+        //Need some animation clips to clamp to crossfade properly. E.g. Y6C5 HOM Tonks to binss
 
         if (animation.introAnim != null)
             animation_current_intro = AnimationManager.loadAnimationClip(animation.introAnim, model, config_hpactor, null, bone_mods: bone_mods);
-        //if (animation.outroAnim != null)
-        //    animation_current_exit = AnimationManager.loadAnimationClip(animation.outroAnim, model, config_hpactor, null, bone_mods: bone_mods);
 
     }
 
@@ -351,31 +304,17 @@ public partial class ActorController : Node
             }
         }
 
-        if (next_anim_state == "intro" && animation_current_intro != null)// && animation_previous_exit != null)
+        if (next_anim_state == "intro" && animation_current_intro != null)
         {
-            //Outro to intro doesn't need crossfade
-            //if (current_anim_state == "outro")
-            //    queueAnimationOnComponent(animation_current_intro);//, 0.0f);
-            //else
             queueAnimationOnComponent(animation_current_intro);
             waitForAnimation = WaitForAnimation(animation_current_intro, "intro", false, false);
             StartCoroutine(waitForAnimation);
         }
-        /*else if (next_anim_state == "outro" && animation_current_intro != null && animation_previous_exit != null)
-        {
-            if (current_anim_state == "loop")
-                queueAnimationOnComponent(animation_previous_exit, animation_previous_exit.anim_clip.length / 2);
-            else
-                queueAnimationOnComponent(animation_previous_exit);
-            Debug.Log("Playing outro " + Time.frameCount);
-            waitForAnimation = WaitForAnimation(animation_previous_exit, "outro", true, true);
-            StartCoroutine(waitForAnimation);
-        }*/
         else
         {
             //Intro to loop doesn't need crossfade
             if (current_anim_state == "intro")
-                queueAnimationOnComponent(animation_current_loop);//, 0.0f);
+                queueAnimationOnComponent(animation_current_loop);
             else
                 queueAnimationOnComponent(animation_current_loop);
             next_anim_state = "loop";
@@ -397,7 +336,6 @@ public partial class ActorController : Node
             yield return new WaitForSeconds(animation.anim_clip.length / 2);
 
         GameStart.event_manager.notifyCharacterAnimationComplete(name, animation.anim_clip.name);
-
 
         if (current == "intro")
         {
@@ -421,7 +359,7 @@ public partial class ActorController : Node
         while(animSequence != null)
             yield return null;
         waitForAnimateCharacterSequenceFinished = null;
-        playIdleAnimation(); //This should trigger the regular idle to play
+        setCharacterIdle();
     }
 
     public IEnumerator WaitForAnimateCharacterFinished(HPAnimation animation)
@@ -430,9 +368,8 @@ public partial class ActorController : Node
         waitForAnimateCharacterFinished = null;
         if (animation.anim_clip.wrapMode != WrapMode.Loop)
         {
-            playIdleAnimation(); //This should trigger the regular idle to play
+            setCharacterIdle();
         }
     }
-    
 
 }

@@ -43,14 +43,6 @@ public abstract partial class AnimationSequence : MonoBehaviour
     }
     protected float playAnimation(string animation_id, string anim_sequence_id)
     {
-        if (base_node is ActorController)
-        {
-            if (walk == false) {
-                ActorController ac = base_node as ActorController;
-                ac.idle_animation_sequence = anim_sequence_id;
-            }
-        }
-
         HPAnimation animation;
         if (loadedAnimations.ContainsKey(animation_id))
             animation = loadedAnimations[animation_id];
