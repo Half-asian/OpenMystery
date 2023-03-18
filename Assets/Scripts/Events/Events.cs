@@ -30,7 +30,9 @@ public static class Events
                 break;
 
             case "animateCharacter":
-                Actor.getActor(action_params[0])?.animateCharacter(action_params[1]);
+                Actor.getActor(action_params[0])?.animateCharacter(action_params[1],
+                    action_params.Length > 2 ? int.Parse(action_params[2]) : 0
+                    );
                 break;
 
             case "replaceCharacterIdleStaggered":

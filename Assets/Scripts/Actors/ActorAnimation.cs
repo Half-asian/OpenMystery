@@ -82,8 +82,6 @@ public partial class ActorController : Node
             loadAnimationSet(actor_anim);
             if (current_anim_state == "loop") //If we are still introducing a new animation, don't bother playing outro
                 next_anim_state = "intro";
-            if (reset_animation)
-                next_anim_state = "loop";
 
             if (actor_anim.anim_type == ActorAnim.AnimType.Staggered)
             {
@@ -152,7 +150,7 @@ public partial class ActorController : Node
 
     //Regular animation, will play only if actor is in idle state.
     //Actor will no longer be in idle, therefore replace idles will not overwrite
-    public void animateCharacter(string anim_name)
+    public void animateCharacter(string anim_name, int max_loops)
     {
         ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Regular, anim_name);
 
@@ -165,7 +163,7 @@ public partial class ActorController : Node
             playActorAnimation(new_anim);
 
             var new_anim_clip = AnimationManager.loadAnimationClip(anim_name, model, config_hpactor, null, bone_mods: bone_mods);
-            waitForAnimateCharacterFinished = WaitForAnimateCharacterFinished(new_anim_clip);
+            waitForAnimateCharacterFinished = WaitForAnimateCharacterFinished(new_anim_clip, max_loops);
             StartCoroutine(waitForAnimateCharacterFinished);
         }
     }
@@ -362,14 +360,20 @@ public partial class ActorController : Node
         setCharacterIdle();
     }
 
-    public IEnumerator WaitForAnimateCharacterFinished(HPAnimation animation)
+    public IEnumerator WaitForAnimateCharacterFinished(HPAnimation animation, int max_loops)
     {
-        yield return new WaitForSeconds(animation.anim_clip.length);
-        waitForAnimateCharacterFinished = null;
-        if (animation.anim_clip.wrapMode != WrapMode.Loop)
+        int loop_count = 0;
+        while (true)
         {
-            setCharacterIdle();
+            yield return new WaitForSeconds(animation.anim_clip.length);
+            loop_count++;
+            if (animation.anim_clip.wrapMode != WrapMode.Loop)
+                break;
+            if (max_loops > 0 && loop_count >= max_loops)
+                break;
         }
+        waitForAnimateCharacterFinished = null;
+        setCharacterIdle();
     }
 
 }

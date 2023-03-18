@@ -306,7 +306,7 @@ public class Actor
         {
             house = actor_info.quidditchMaterialOptions.houseId;
         }
-        if (actor_info.quidditchMaterialOptions.mapping.Keys != null)
+        if (actor_info.quidditchMaterialOptions.mapping != null && actor_info.quidditchMaterialOptions.mapping.Keys != null)
         {
             foreach (string map in actor_info.quidditchMaterialOptions.mapping.Keys)
             {

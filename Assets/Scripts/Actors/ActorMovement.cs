@@ -319,9 +319,9 @@ public partial class ActorController : Node
         if (destination_waypoint.rotation != null)
         {
             rotation = Quaternion.Euler(destination_waypoint.getRotation());
-            coroutine_rotate = RotateCoroutine(rotation);
-            StartCoroutine(coroutine_rotate);
         }
+        coroutine_rotate = RotateCoroutine(rotation);
+        StartCoroutine(coroutine_rotate);
         coroutine_move = null;
         refreshLookAts();
         setCharacterIdle();
