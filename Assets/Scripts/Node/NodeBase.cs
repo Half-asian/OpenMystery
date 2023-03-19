@@ -24,18 +24,28 @@ public abstract partial class Node : MonoBehaviour
 
     public HPAnimation queued_anim = null;
 
-    public bool reset_animation = true;
-    private bool remove_reset = false;
+    public bool cancel_crossfade = true;
+    private bool remove_cancel_crossfade = false;
 
     private void Update()
     {
-        if (queued_anim != null && reset_animation == false)
-            playAnimationOnComponent();
-
-        if (remove_reset == true)
+        if (queued_anim != null)
         {
-            reset_animation = false;
-            remove_reset = false;
+            if (cancel_crossfade)
+            {
+                remove_cancel_crossfade = true;
+                playAnimationOnComponent(false);
+            }
+            else
+            {
+                playAnimationOnComponent(true);
+            }
+        }        
+
+        if (remove_cancel_crossfade == true)
+        {
+            cancel_crossfade = false;
+            remove_cancel_crossfade = false;
         }
 
         queued_anim = null;
@@ -78,18 +88,18 @@ public abstract partial class Node : MonoBehaviour
         {
             new_name = "flop";
         }
-        //Debug.Log("queueAnimationOnComponent on " + name + " " + animation.anim_clip.name + " as " + new_name);
+        Debug.Log("queueAnimationOnComponent on " + name + " " + animation.anim_clip.name + " as " + new_name);
         animation_component.AddClip(queued_anim.anim_clip, new_name);
 
-        if (reset_animation) //This needs to be on queue to prevent t-poses.
+        if (cancel_crossfade) //This needs to be on queue to prevent t-poses.
         {
-            remove_reset = true;
+            remove_cancel_crossfade = true;
             if (currentAnimationAlerter != null)
                 StopCoroutine(currentAnimationAlerter);
             if (shaderPlayer != null)
                 StopCoroutine(shaderPlayer);
 
-            //Debug.Log("Instantyly Playing " + queued_anim.anim_clip.name + " on " + name + " as " + new_name + " at " + Time.frameCount);
+            Debug.Log("Instantyly Playing " + queued_anim.anim_clip.name + " on " + name + " as " + new_name + " at " + Time.frameCount);
             animation_component.Play(new_name);
 
             currentAnimationAlerter = animationAlert(queued_anim.anim_clip);
@@ -106,7 +116,7 @@ public abstract partial class Node : MonoBehaviour
         }
     }
 
-    private void playAnimationOnComponent()
+    private void playAnimationOnComponent(bool crossfade)
     {
         if (currentAnimationAlerter != null)
             StopCoroutine(currentAnimationAlerter);
@@ -120,17 +130,15 @@ public abstract partial class Node : MonoBehaviour
             new_name = "flop";
             old_name = "flip";
         }
-        //Debug.Log("Playing " + queued_anim.anim_clip.name + " on " + name + " as " + new_name + " at " + Time.frameCount);
         if (animation_component.GetClip(old_name) != null) {
-            //Debug.Log("crossfading on " + name + "animation: " + queued_anim.anim_clip.name + " to " + animation_component.GetClip(old_name).name + " with time of " + queued_anim_fade_time);
+            Debug.Log("crossfading on " + name + "animation: " + queued_anim.anim_clip.name + " to " + animation_component.GetClip(old_name).name);
 
-            /*if (Configs.config_animation.Animation3D[animation_component.GetClip(old_name).name].wrapMode == "clamp") //Hack to crossfade clamped anims
-            {
-                animation_component.GetClip(old_name).wrapMode = WrapMode.ClampForever;
-            }*/
         }
 
-        animation_component.CrossFade(new_name, 0.3f);
+        if (crossfade)
+            animation_component.CrossFade(new_name, 0.3f);
+        else
+            animation_component.Play(new_name);
 
         currentAnimationAlerter = animationAlert(queued_anim.anim_clip);
         StartCoroutine(currentAnimationAlerter);
@@ -143,7 +151,6 @@ public abstract partial class Node : MonoBehaviour
 
         anim_flip_flop = !anim_flip_flop;
     }
-
 
     protected abstract IEnumerator animationAlert(AnimationClip clip);
 

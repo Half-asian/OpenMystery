@@ -242,7 +242,7 @@ public partial class ActorController : Node
 
         applyWaypoint();
 
-        reset_animation = true;
+        cancel_crossfade = true;
 
         setCharacterIdle();
         clearTurnHeadAt();

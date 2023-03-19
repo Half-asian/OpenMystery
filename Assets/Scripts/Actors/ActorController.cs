@@ -53,6 +53,14 @@ public partial class ActorController : Node
         actor_state = _actor_state;
     }
 
+    public void setCharacterIdle(string event_id)
+    {
+        modifying_events.Enqueue(event_id);
+        setActorState(ActorState.Idle);
+        finishMovement();
+        if (this != null) //The actor might die after finishing movement
+            playActorAnimation(idle_actor_anim);
+    }
     public void setCharacterIdle()
     {
         setActorState(ActorState.Idle);
@@ -63,7 +71,7 @@ public partial class ActorController : Node
     private void setCharacterWalk()
     {
         if (actor_state == ActorState.Idle)
-            reset_animation = true;
+            cancel_crossfade = true;
         setActorState(ActorState.Walk);
         playActorAnimation(new ActorAnim(ActorAnim.AnimType.Regular, config_hpactor.animId_walk));
     }

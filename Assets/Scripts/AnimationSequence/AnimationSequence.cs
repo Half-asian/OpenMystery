@@ -40,6 +40,11 @@ public abstract partial class AnimationSequence : MonoBehaviour
             return;
         }
 
+        if (config_sequence.useStagger) //If stagger is true, do not crossfade
+        {
+            base_node.cancel_crossfade = true;
+        }
+
         //Find index of starting node
 
         for (int i = 0; i < config_sequence.data.nodes.Length; i++)
@@ -58,7 +63,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         return;
     }
 
-    public void advanceAnimSequence()
+    private int getNextNodeIndex()
     {
         node_repeated = 0;
         //Find the new node
@@ -67,7 +72,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         int weight_total = 0;
         int generated_weight = Random.Range(1, 100);
 
-        for(int i = 0; i < config_sequence.data.nodes[node_index].edges.Length; i++) //Choose an edge to branch
+        for (int i = 0; i < config_sequence.data.nodes[node_index].edges.Length; i++) //Choose an edge to branch
         {
             weight_total += config_sequence.data.nodes[node_index].edges[i].weight;
             if (generated_weight <= weight_total || i == config_sequence.data.nodes[node_index].edges.Length - 1)
@@ -84,6 +89,12 @@ public abstract partial class AnimationSequence : MonoBehaviour
             if (config_sequence.data.nodes[i].nodeId == config_sequence.data.nodes[node_index].edges[edge_index].destinationId)
                 new_node_index = i;
         }
+        return new_node_index;
+    }
+
+    public void advanceAnimSequence()
+    {
+        int new_node_index = getNextNodeIndex();
 
         if (config_sequence.data.nodes[node_index].edges[config_sequence.data.nodes[node_index].edges.Length - 1].actions != null) //activate the actions
         {
@@ -143,9 +154,10 @@ public abstract partial class AnimationSequence : MonoBehaviour
     {
         if (config_sequence == null)
             return;
-        if (config_sequence.data.nodes[this.node_index].blocking == true)
+
+        //This is just a guess
+        if (config_sequence.data.nodes[this.node_index].blocking == true && getNextNodeIndex() != -1)
             return;
-        //Debug.Log("ANIMATION_SEQUENCE: waitforanimation finished for " + base_node.name + " playing anim seq " + config_sequence.sequenceId);
 
         // at this point, the animation has completed
         // min loops unimplemented. No idea how it works.

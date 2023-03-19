@@ -89,7 +89,7 @@ public class ModelInspector : MonoBehaviour
         {
             if (Configs.config_animation.Animation3D.ContainsKey(animation_input.text))
             {
-                actor_controller.replaceCharacterIdle(animation_input.text);
+                actor_controller.replaceCharacterIdle("", animation_input.text);
             }
             else if (Resources.Load(animation_input.text) != null)
             {
@@ -98,10 +98,7 @@ public class ModelInspector : MonoBehaviour
             }
             else
             {
-
-                actor_controller.gameObject.AddComponent<ActorAnimSequence>();
-                actor_controller.gameObject.GetComponent<ActorAnimSequence>().enabled = true;
-                actor_controller.gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(animation_input.text, false);
+                actor_controller.replaceCharacterIdleSequence("", animation_input.text);
             }
             model.game_object.GetComponent<Animation>().Play();
         }

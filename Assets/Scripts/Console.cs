@@ -94,10 +94,10 @@ public class Console : MonoBehaviour
                 Actor.spawnActor(parameters[1], null, parameters[1]);
                 break;
             case "animateCharacter":
-                Events.doEventAction("animateCharacter", new string[] { parameters[1], parameters[2] }, null);
+                Events.doEventAction("", "animateCharacter", new string[] { parameters[1], parameters[2] }, null);
                 break;
             default:
-                Events.doEventAction(parameters[0], actionParams, null);
+                Events.doEventAction("",parameters[0], actionParams, null);
 
                 break;
         }

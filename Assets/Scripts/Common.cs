@@ -187,5 +187,26 @@ public class Common
     static TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
     public static string titleCase(string input) => textInfo.ToTitleCase(input);
 
+    [Serializable]
+    public class FixedSizedQueue<T>
+    {
+        [SerializeField]   
+        List<T> list = new List<T>();
+        public int Size { get; private set; }
 
+        public FixedSizedQueue(int size)
+        {
+            Size = size;
+        }
+
+        public void Enqueue(T obj)
+        {
+            list.Add(obj);
+            while (list.Count > Size)
+            {
+                T outObj;
+                list.RemoveAt(0);
+            }
+        }
+    }
 }

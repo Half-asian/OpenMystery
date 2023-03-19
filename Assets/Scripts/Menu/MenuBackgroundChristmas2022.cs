@@ -94,17 +94,17 @@ public class MenuBackgroundChristmas2022 : MonoBehaviour, IMenuBackground
         car.game_object.transform.localScale = new Vector3(0.629999995f, 0.899999976f, 0.899999976f);
 
         Merula = Actor.spawnActor("c_Merula_skin", null, "Merula");
-        Merula.replaceCharacterIdle("c_Stu_DialogueConfident01sitting");
+        Merula.replaceCharacterIdle("", "c_Stu_DialogueConfident01sitting");
         Merula.transform.position = new Vector3(-107.416f, 75.4120026f, -32.2410011f);
         Merula.transform.eulerAngles = new Vector3(27.3902473f, 61.3430138f, 353.793396f);
 
         Bill = Actor.spawnActor("c_BillPrefect_skin", null, "Bill");
-        Bill.replaceCharacterIdle("c_Stu_DialogueExitedSitting01");
+        Bill.replaceCharacterIdle("","c_Stu_DialogueExitedSitting01");
         Bill.transform.position = new Vector3(-107.463997f, 75.3720016f, -32.4589043f);
         Bill.transform.eulerAngles = new Vector3(16.4332237f, 56.1122284f, 351.505005f);
 
         Charlie = Actor.spawnActor("c_Charlie_skin", null, "Charlie");
-        Charlie.replaceCharacterIdle("c_Stu_DialogueHappy01sitting");
+        Charlie.replaceCharacterIdle("", "c_Stu_DialogueHappy01sitting");
         Charlie.transform.position = new Vector3(-107.057999f, 75.2939987f, -32.4630013f);
         Charlie.transform.eulerAngles = new Vector3(19.1390762f, 53.4420357f, 350.998901f);
 

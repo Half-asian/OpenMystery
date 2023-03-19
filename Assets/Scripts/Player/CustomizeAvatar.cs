@@ -108,7 +108,7 @@ public class CustomizeAvatar : MonoBehaviour
         customizable_avatar = CustomizableAvatarSpawner.spawnCustomizableAvatar(avatar_components.actor_id, "CustomizableAvatar");
         ConfigHPActorInfo._HPActorInfo reference_character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id]; //We use this as a base to apply transforms to
 
-        customizable_avatar.replaceCharacterIdle("c_Stu_DialogueIdle01");
+        customizable_avatar.replaceCharacterIdle("", "c_Stu_DialogueIdle01");
 
         reference_model = ModelManager.loadModel(reference_character.modelId);
 
@@ -140,7 +140,7 @@ public class CustomizeAvatar : MonoBehaviour
 
         customizable_avatar_preview = CustomizableAvatarSpawner.spawnCustomizableAvatar(avatar_components_preview.actor_id, "CustomizableAvatarPreview");
         ConfigHPActorInfo._HPActorInfo reference_character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id]; //We use this as a base to apply transforms to
-        customizable_avatar_preview.replaceCharacterIdle("c_Stu_DialogueIdle01");
+        customizable_avatar_preview.replaceCharacterIdle("", "c_Stu_DialogueIdle01");
 
         reference_model_preview = ModelManager.loadModel(reference_character.modelId);
         /*customizable_avatar_preview.animation_component["default"].time = 0.01f;

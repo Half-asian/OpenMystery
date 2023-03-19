@@ -54,9 +54,9 @@ public class Graduation
         yield return new WaitForSeconds(3);
 
         if (Player.local_avatar_gender == "male")
-            avatar.replaceCharacterIdle("c_Stu_LevelUpMale01_maleLevelUp");
+            avatar.replaceCharacterIdle("","c_Stu_LevelUpMale01_maleLevelUp");
         else
-            avatar.replaceCharacterIdle("c_Stu_LevelUpFemale01_femaleLevelUp");
+            avatar.replaceCharacterIdle("", "c_Stu_LevelUpFemale01_femaleLevelUp");
         yield return new WaitForSeconds(2);
         GameStart.event_manager.main_event_player.removeCustomBlockings();
         GameStart.ui_manager.showExitMenuButton();

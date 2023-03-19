@@ -28,7 +28,7 @@ public class MenuBackgroundChristmas : MonoBehaviour, IMenuBackground
         merula_manager.transform.eulerAngles = new Vector3(0, 285.151855f, 0);
 
 
-        merula_manager.replaceCharacterIdle("c_Penny_DanceWithAvatar01_loop");
+        merula_manager.replaceCharacterIdle("", "c_Penny_DanceWithAvatar01_loop");
 
         _light = new GameObject();
         _light.AddComponent<Light>();

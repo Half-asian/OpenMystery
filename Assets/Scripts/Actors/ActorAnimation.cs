@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.UIElements;
 
 public partial class ActorController : Node
 {
@@ -20,13 +19,15 @@ public partial class ActorController : Node
     public string current_anim_state = "loop";
     public string next_anim_state = "loop";
 
+    [Serializable]
     public struct ActorAnim
     {
         public enum AnimType
         {
             Regular,
             Staggered,
-            Sequence
+            Sequence,
+            Finished
         }
         public AnimType anim_type;
         public string id;
@@ -38,18 +39,20 @@ public partial class ActorController : Node
         }
     }
 
-    private ActorAnim idle_actor_anim;
-    private ActorAnim current_actor_anim;
-
-    HPAnimation default_anim;
-
     public Dictionary<string, AnimationManager.BoneMod> bone_mods;
 
+    [SerializeField]
+    private ActorAnim idle_actor_anim;
+    [SerializeField]
+    private ActorAnim current_actor_anim;
+    [SerializeField] 
+    private Common.FixedSizedQueue<string> modifying_events = new Common.FixedSizedQueue<string>(5);
+    private HPAnimation default_anim;
     private IEnumerator waitForAnimation;
     private IEnumerator waitForAnimateCharacterSequenceFinished;
     private IEnumerator waitForAnimateCharacterFinished;
 
-    static AnimationManager.BoneMod frozen_bonemod = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1), true);
+    private static AnimationManager.BoneMod frozen_bonemod = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1), true);
 
 
 
@@ -86,7 +89,7 @@ public partial class ActorController : Node
             if (actor_anim.anim_type == ActorAnim.AnimType.Staggered)
             {
                 next_anim_state = "loop";
-                reset_animation = true;
+                cancel_crossfade = true;
             }
             updateAndPlayAnimationState();
         }
@@ -112,9 +115,15 @@ public partial class ActorController : Node
 
     /*------ Public Functions -----*/
 
-    //Regular animation, will play when actor switches to idle state
-    public void replaceCharacterIdle(string animation_id)
+    public void markCurrentAnimationFinished()
     {
+        current_actor_anim =  new ActorAnim(ActorAnim.AnimType.Finished, "");
+    }
+
+    //Regular animation, will play when actor switches to idle state
+    public void replaceCharacterIdle(string event_id, string animation_id)
+    {
+        modifying_events.Enqueue(event_id);
         ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Regular, animation_id);
         if (actor_state == ActorState.Idle)
         {
@@ -126,8 +135,9 @@ public partial class ActorController : Node
     //Staggered animation, will play when actor switches to idle state
     //Staggered animation skips the intro and has no crossfade
 
-    public void replaceCharacterIdleStaggered(string animation_id)
+    public void replaceCharacterIdleStaggered(string event_id, string animation_id)
     {
+        modifying_events.Enqueue(event_id);
         ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Staggered, animation_id);
         if (actor_state == ActorState.Idle)
         {
@@ -138,8 +148,9 @@ public partial class ActorController : Node
 
 
     //Animation Sequence, will play when actor switches to idle state
-    public void replaceCharacterIdleSequence(string sequence_id)
+    public void replaceCharacterIdleSequence(string event_id, string sequence_id)
     {
+        modifying_events.Enqueue(event_id);
         ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Sequence, sequence_id);
         if (actor_state == ActorState.Idle)
         {
@@ -150,8 +161,9 @@ public partial class ActorController : Node
 
     //Regular animation, will play only if actor is in idle state.
     //Actor will no longer be in idle, therefore replace idles will not overwrite
-    public void animateCharacter(string anim_name, int max_loops)
+    public void animateCharacter(string event_id, string anim_name, int max_loops)
     {
+        modifying_events.Enqueue(event_id);
         ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Regular, anim_name);
 
         if (actor_state == ActorState.Idle) //Ignored if not idle
@@ -171,8 +183,9 @@ public partial class ActorController : Node
 
     //Animation Sequence, will play only if actor is in idle state.
     //Actor will no longer be in idle, therefore replace idles will not overwrite
-    public void playCharacterAnimSequence(string sequence_id)
+    public void playCharacterAnimSequence(string event_id, string sequence_id)
     {
+        modifying_events.Enqueue(event_id);
         ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Sequence, sequence_id);
         if (actor_state == ActorState.Idle) //If the character is not idle, do nothing
         {
@@ -186,7 +199,7 @@ public partial class ActorController : Node
     //Only used for rare cases. Not part of the main game.
     public void customAnimationCharacter(string anim_name)
     {
-        reset_animation = true;
+        cancel_crossfade = true;
         var new_anim = AnimationManager.loadAnimationClip(anim_name, model, config_hpactor, null, bone_mods: bone_mods);
         queueAnimationOnComponent(new_anim);
     }
@@ -216,7 +229,6 @@ public partial class ActorController : Node
         {
             playActorAnimation(new_anim);
         }
-        idle_actor_anim = new_anim;
     }
 
     private void initializeAnimations()
@@ -347,8 +359,11 @@ public partial class ActorController : Node
         }
         else
         {
-            if (animation.anim_clip.wrapMode == WrapMode.ClampForever)
-                updateAndPlayAnimationState();
+            if (animation.anim_clip.wrapMode == WrapMode.ClampForever && actor_state != ActorState.Animate)
+            {
+                markCurrentAnimationFinished();
+                setCharacterIdle();
+            }
         }
     }
 

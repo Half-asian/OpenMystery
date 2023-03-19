@@ -20,7 +20,7 @@ public class MenuBackgroundYear1 : MonoBehaviour, IMenuBackground
         CameraManager.current.setFOV(58.3f);
 
         Merula = Actor.spawnActor("c_Merula_Normal_skin", null, "Merula");
-        Merula.replaceCharacterIdle("c_Stu_DialogueSerious01sitting");
+        Merula.replaceCharacterIdle("", "c_Stu_DialogueSerious01sitting");
         Merula.model.game_object.transform.position = new Vector3(2.32399988f, 0.119999997f, 0.550000012f);
         Merula.model.game_object.transform.rotation = new Quaternion(0, 0.980171442f, 0, 0.198151663f);
         background_model = ModelManager.loadModel("b_Lakeshore_skin");

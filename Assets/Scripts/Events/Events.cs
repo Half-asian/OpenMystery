@@ -9,34 +9,34 @@ using static CocosModel;
 public static class Events
 {
 
-    public static void doEventAction(string action_type, string[] action_params, EventPlayer event_player)
+    public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
     {
         switch (action_type)
         {
             case "replaceCharacterIdle":
-                Actor.getActor(action_params[0])?.replaceCharacterIdle(action_params[1]);
+                Actor.getActor(action_params[0])?.replaceCharacterIdle(event_id, action_params[1]);
                 break;
 
             case "setCharacterIdle":
-                Actor.getActor(action_params[0])?.setCharacterIdle();
+                Actor.getActor(action_params[0])?.setCharacterIdle(event_id);
                 break;
 
             case "replaceCharacterIdleSequence":
-                Actor.getActor(action_params[0])?.replaceCharacterIdleSequence(action_params[1]);
+                Actor.getActor(action_params[0])?.replaceCharacterIdleSequence(event_id, action_params[1]);
                 break;
 
             case "playCharacterAnimSequence":
-                Actor.getActor(action_params[0])?.playCharacterAnimSequence(action_params[1]);
+                Actor.getActor(action_params[0])?.playCharacterAnimSequence(event_id, action_params[1]);
                 break;
 
             case "animateCharacter":
-                Actor.getActor(action_params[0])?.animateCharacter(action_params[1],
+                Actor.getActor(action_params[0])?.animateCharacter(event_id, action_params[1],
                     action_params.Length > 2 ? int.Parse(action_params[2]) : 0
                     );
                 break;
 
             case "replaceCharacterIdleStaggered":
-                Actor.getActor(action_params[0])?.replaceCharacterIdleStaggered(action_params[1]);
+                Actor.getActor(action_params[0])?.replaceCharacterIdleStaggered(event_id, action_params[1]);
                 break;
 
             case "walkInCharacter": //Tp's character to closest connecting waypoint, then they walk to the destination
@@ -435,7 +435,7 @@ public static class Events
 
     public static void doEventAction(string event_name, int event_index, string[] action_params, EventPlayer event_player)
     {
-        doEventAction(Configs.config_script_events.ScriptEvents[event_name].action[event_index], action_params, event_player);
+        doEventAction(event_name, Configs.config_script_events.ScriptEvents[event_name].action[event_index], action_params, event_player);
     }
     
 

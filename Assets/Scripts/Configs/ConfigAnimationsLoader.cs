@@ -137,7 +137,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
         public _data data;
         public string sequenceId;
         public string type;
-        public bool useStagger;
+        public bool useStagger; //If true, do not crossfade. Otherwise, char animation may not be synced up with prop animations
         public bool isOneShot;
     }
 

@@ -142,7 +142,7 @@ public class Actor
 
         if (Scene.scene_model != null)
             actor_controller.model.game_object.transform.SetParent(GameStart.current.actors_holder);
-        actor_controller.replaceCharacterIdle(actor_controller.config_hpactor.animId_idle);
+        actor_controller.replaceCharacterIdle("", actor_controller.config_hpactor.animId_idle);
         actor_controllers_pool.Add(actor_controller);
         actor_controller.teleportCharacter(waypoint_id);
         return actor_controller;
@@ -221,7 +221,7 @@ public class Actor
 
             Enum.TryParse(serialized_actor[12], out am.actor_state);
             am.teleportCharacter(serialized_actor[13]);
-            am.replaceCharacterIdle(serialized_actor[14]);
+            am.replaceCharacterIdle("", serialized_actor[14]);
         }
     }
 
@@ -260,7 +260,7 @@ public class Actor
                 }
                 else
                 {
-                    actor_controllers[spawn.spawnId].replaceCharacterIdle(spawn.validSequences[random_sequence]);
+                    actor_controllers[spawn.spawnId].replaceCharacterIdle("", spawn.validSequences[random_sequence]);
                 }
             }
         }

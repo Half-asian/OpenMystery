@@ -18,9 +18,9 @@ public class ActorAnimSequence : AnimationSequence
 
     protected override void finishSequence()
     {
-        //Debug.Log("ACTOR_ANIM_SEQUENCE: " + actor_controller.name + " has finished sequence.");
         if (config_sequence.isOneShot)
         {
+            actor_controller.markCurrentAnimationFinished();
             actor_controller.setCharacterIdle();
         }
         base.finishSequence();
