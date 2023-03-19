@@ -98,11 +98,12 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void startSequentialPlayer(string[] events)
+    public void startSequentialPlayer(string id, string[] events)
     {
         Debug.Log("Starting sequential player");
         EventPlayer new_event_player = gameObject.AddComponent<EventPlayer>();
         new_event_player.is_sequential_player = true;
+        new_event_player.id = id;
         new_event_player.addEvents(events);
         sequential_event_players_to_add.Add(new_event_player);
     }
@@ -129,6 +130,21 @@ public class EventManager : MonoBehaviour
             sequential_event_players.Remove(remove);
         }
     }
+
+    public void stopSequentialScriptById(string id)
+    {
+        List<EventPlayer> to_remove = new List<EventPlayer>();
+        foreach (var sequential_player in sequential_event_players)
+        {
+            if (sequential_player.id == id)
+                to_remove.Add(sequential_player);
+        }
+        foreach (var remove in to_remove)
+        {
+            sequential_event_players.Remove(remove);
+        }
+    }
+
 
     /*IEnumerator waitSequentialEvents(string[] sequences, string[][] message_and_keys)
     {

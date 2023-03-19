@@ -424,7 +424,9 @@ public static class Events
                     Graduation.Graduate();
                 }
                 break;
-
+            case "stopSequentialScriptById":
+                GameStart.event_manager.stopSequentialScriptById(action_params[0]);
+                break;
             default:
                 Debug.LogWarning("Unknown event type " + action_type);
                 break;

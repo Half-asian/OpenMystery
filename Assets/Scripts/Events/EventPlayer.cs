@@ -7,6 +7,8 @@ using static EventPlayer.ActiveMessageKeys;
 
 public class EventPlayer : MonoBehaviour
 {
+    public string id = null;
+
     [Serializable]
     public class ActiveMessageKeys
     {
@@ -136,7 +138,7 @@ public class EventPlayer : MonoBehaviour
     }
 
     [SerializeField]
-    private List<(ActiveMessageKeys, string[], float)> awaiting_sequential_players = new List<(ActiveMessageKeys, string[], float)>();
+    private List<(ActiveMessageKeys, string, string[], float)> awaiting_sequential_players = new List<(ActiveMessageKeys, string, string[], float)>();
     [SerializeField]
     ActiveMessageKeys blocking_message_keys = new ActiveMessageKeys();
 
@@ -246,10 +248,10 @@ public class EventPlayer : MonoBehaviour
                         sequential_queue_message_keys.add(new List<string>(message_key_sets));
                     }
                 }
-                awaiting_sequential_players.Add((sequential_queue_message_keys, script_event.sequenceIds, script_event.duration != null ? Time.realtimeSinceStartup + script_event.Duration : float.MaxValue));
+                awaiting_sequential_players.Add((sequential_queue_message_keys, script_event.eventId, script_event.sequenceIds, script_event.duration != null ? Time.realtimeSinceStartup + script_event.Duration : float.MaxValue));
             }
             else
-                GameStart.event_manager.startSequentialPlayer(script_event.sequenceIds);
+                GameStart.event_manager.startSequentialPlayer(script_event.eventId, script_event.sequenceIds);
             event_time = 0.0f;//Sequential players continue immediately. Duration/blocking keys are only for starting the sequences.
         }
 
@@ -260,16 +262,16 @@ public class EventPlayer : MonoBehaviour
     {
         blocking_message_keys.update();
 
-        List<(ActiveMessageKeys, string[], float)> to_remove = new List<(ActiveMessageKeys, string[], float)>();
+        List<(ActiveMessageKeys, string, string[], float)> to_remove = new List<(ActiveMessageKeys, string, string[], float)>();
         var copy = awaiting_sequential_players.ToArray();
         foreach(var seq in copy)
         {
             if (seq.Item1 != null)
                 seq.Item1.update();
 
-            if (Time.realtimeSinceStartup > seq.Item3)
+            if (Time.realtimeSinceStartup > seq.Item4)
             {
-                GameStart.event_manager.startSequentialPlayer(seq.Item2);
+                GameStart.event_manager.startSequentialPlayer(seq.Item2, seq.Item3);
                 to_remove.Add(seq);
             }
         }
@@ -345,7 +347,7 @@ public class EventPlayer : MonoBehaviour
         total_block = false;
         block_duration = 0.0f;
         blocking_message_keys = new ActiveMessageKeys();
-        awaiting_sequential_players = new List<(ActiveMessageKeys, string[], float)>();
+        awaiting_sequential_players = new List<(ActiveMessageKeys, string, string[], float)>();
     }
 
     public void addCustomBlocking(List<string> strings)
@@ -366,9 +368,9 @@ public class EventPlayer : MonoBehaviour
     }
 
 
-    private void processSequentialBlocks(string message, string key)
+    private async void processSequentialBlocks(string message, string key)
     {
-        List<(ActiveMessageKeys, string[], float)> to_remove = new List<(ActiveMessageKeys, string[], float)>();
+        List<(ActiveMessageKeys, string, string[], float)> to_remove = new List<(ActiveMessageKeys, string, string[], float)>();
         foreach (var awaiting in awaiting_sequential_players)
         {
             if (awaiting.Item1 != null)
@@ -376,7 +378,7 @@ public class EventPlayer : MonoBehaviour
             
             if ((awaiting.Item1 != null && awaiting.Item1.Count == 0))
             {
-                GameStart.event_manager.startSequentialPlayer(awaiting.Item2);
+                GameStart.event_manager.startSequentialPlayer(awaiting.Item2, awaiting.Item3);
                 to_remove.Add(awaiting);
             }
         }
