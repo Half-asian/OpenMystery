@@ -288,17 +288,21 @@ public partial class ActorController : Node
         is_moving = true;
 
         ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
-            
+
+        Vector3 targetDirection = transform.position - next_waypoint.getWorldPosition();
+        Quaternion _rotation = Quaternion.LookRotation((targetDirection).normalized);
+        _rotation = Quaternion.Euler(new Vector3(0.0f, _rotation.eulerAngles.y + 180, 0.0f));
+        gameObject.transform.rotation = _rotation;
+        startRotateCoroutine(_rotation);
+
         while (gameObject.transform.position != destination_waypoint.getWorldPosition())
         {
-            if (transform.position != next_waypoint.getWorldPosition())
-            {
-                Vector3 targetDirection = transform.position - next_waypoint.getWorldPosition();
-                transform.rotation = Quaternion.LookRotation((targetDirection).normalized);
-                transform.rotation = Quaternion.Euler(new Vector3(0.0f, transform.rotation.eulerAngles.y + 180, 0.0f));
-            }
-
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (animation_current_loop != null ? animation_current_loop.speed * 0.01f : 0.4479245f) * Time.deltaTime);
+
+            if (Vector3.Distance(gameObject.transform.position, next_waypoint.getWorldPosition()) < 0.2f)
+            {
+                refreshLookAts(next_waypoint.getRotation());
+            }
 
             if (gameObject.transform.position == next_waypoint.getWorldPosition())
             {
@@ -306,6 +310,10 @@ public partial class ActorController : Node
                 {
                     next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
                     movement_path.RemoveAt(0);
+                    targetDirection = transform.position - next_waypoint.getWorldPosition();
+                    _rotation = Quaternion.LookRotation((targetDirection).normalized);
+                    _rotation = Quaternion.Euler(new Vector3(0.0f, _rotation.eulerAngles.y + 180, 0.0f));
+                    startRotateCoroutine(_rotation);
                 }
             }
 
@@ -320,11 +328,19 @@ public partial class ActorController : Node
         {
             rotation = Quaternion.Euler(destination_waypoint.getRotation());
         }
+        startRotateCoroutine(rotation);
+        coroutine_move = null;
+        setCharacterIdle();
+    }
+
+    private void startRotateCoroutine(Quaternion rotation)
+    {
+        if (coroutine_rotate != null)
+        {
+            StopCoroutine(coroutine_rotate);
+        }
         coroutine_rotate = RotateCoroutine(rotation);
         StartCoroutine(coroutine_rotate);
-        coroutine_move = null;
-        refreshLookAts();
-        setCharacterIdle();
     }
 
     private IEnumerator RotateCoroutine(Quaternion rotation)
@@ -332,9 +348,10 @@ public partial class ActorController : Node
         while (transform.rotation != rotation)
         {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, Time.deltaTime * 500);
+            refreshLookAts(rotation.eulerAngles);
             yield return null;
         }
-
+        coroutine_rotate = null;
     }
 
 }

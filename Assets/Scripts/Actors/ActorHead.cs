@@ -9,6 +9,8 @@ public partial class ActorController
     [SerializeField]
     private Vector3 target_rotation = Vector3.zero;
     [SerializeField]
+    private Vector3 target_direction = Vector3.zero;
+    [SerializeField]
     private bool is_head_only = false;
 
     private ActorController last_actor_controller = null;
@@ -99,14 +101,13 @@ public partial class ActorController
         last_prop = null;
     }
 
-    public void refreshLookAts()
+    public void refreshLookAts(Vector3 waypoint_euler_angles)
     {
-        if (last_actor_controller != null)
-            setActorTarget(last_actor_controller);
-        else if (last_prop != null)
-            setActorTarget(last_prop);
+        if (last_actor_controller != null || last_prop != null)
+            setTargetRotation(Quaternion.LookRotation(target_direction).eulerAngles - waypoint_euler_angles, true);
         else
-            setTargetRotation(last_vec3);
+            setTargetRotation(last_vec3, true);
+
     }
 
 
@@ -119,9 +120,9 @@ public partial class ActorController
             return;
         }
 
-        Vector3 targetDirection = target_actor.model.pose_bones["jt_head_bind"].position - model.pose_bones["jt_head_bind"].position;
+        target_direction = target_actor.model.pose_bones["jt_head_bind"].position - model.pose_bones["jt_head_bind"].position;
 
-        setTargetRotation(Quaternion.LookRotation(targetDirection).eulerAngles - transform.eulerAngles);
+        setTargetRotation(Quaternion.LookRotation(target_direction).eulerAngles - transform.eulerAngles);
     }
 
     private void setActorTarget(Prop target_prop)
@@ -133,12 +134,12 @@ public partial class ActorController
             return;
         }
 
-        Vector3 targetDirection = target_prop.model.pose_bones["jt_prop_bind"].position - model.pose_bones["jt_head_bind"].position;
+        target_direction = target_prop.model.pose_bones["jt_prop_bind"].position - model.pose_bones["jt_head_bind"].position;
 
-        setTargetRotation(Quaternion.LookRotation(targetDirection).eulerAngles - transform.eulerAngles);
+        setTargetRotation(Quaternion.LookRotation(target_direction).eulerAngles - transform.eulerAngles);
     }
 
-    private void setTargetRotation(Vector3 rotation)
+    private void setTargetRotation(Vector3 rotation, bool no_delay = false)
     {
         if (Mathf.Abs(rotation.y) > 180.0f)
             rotation.y = (rotation.y > 0 ? -360.0f : 360) + rotation.y;
@@ -147,10 +148,14 @@ public partial class ActorController
             rotation.x = (rotation.x > 0 ? -360.0f : 360) + rotation.x;
 
         target_rotation = rotation;
-        delayed_y_angle = Mathf.Abs(rotation.y * 0.5f);
-        y_current_delayed_angle = delayed_y_angle;
-        delayed_x_angle = Mathf.Abs(rotation.x * 0.5f);
-        x_current_delayed_angle = delayed_x_angle;
+
+        if (no_delay == false)
+        {
+            delayed_y_angle = Mathf.Abs(rotation.y * 0.5f);
+            y_current_delayed_angle = delayed_y_angle;
+            delayed_x_angle = Mathf.Abs(rotation.x * 0.5f);
+            x_current_delayed_angle = delayed_x_angle;
+        }
 
         if (current_rotation.x < target_rotation.x)
             aim_bigger_x = true;
