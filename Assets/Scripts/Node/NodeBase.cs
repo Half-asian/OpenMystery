@@ -25,30 +25,11 @@ public abstract partial class Node : MonoBehaviour
     public HPAnimation queued_anim = null;
 
     public bool cancel_crossfade = true;
-    private bool remove_cancel_crossfade = false;
 
     private void Update()
     {
         if (queued_anim != null)
-        {
-            if (cancel_crossfade)
-            {
-                remove_cancel_crossfade = true;
-                playAnimationOnComponent(false);
-            }
-            else
-            {
-                playAnimationOnComponent(true);
-            }
-        }        
-
-        if (remove_cancel_crossfade == true)
-        {
-            cancel_crossfade = false;
-            remove_cancel_crossfade = false;
-        }
-
-        queued_anim = null;
+            playAnimationOnComponent();
     }
 
     public void setup(Model _model)
@@ -83,62 +64,33 @@ public abstract partial class Node : MonoBehaviour
     {
         queued_anim = animation;
 
-        string new_name = "flip";
-        if (anim_flip_flop == true)
-        {
-            new_name = "flop";
-        }
-        Debug.Log("queueAnimationOnComponent on " + name + " " + animation.anim_clip.name + " as " + new_name);
-        animation_component.AddClip(queued_anim.anim_clip, new_name);
+        //Debug.Log("queueAnimationOnComponent on " + name + " " + animation.anim_clip.name + " as " + (anim_flip_flop ? "flop" : "flip"));
+        animation_component.AddClip(queued_anim.anim_clip, anim_flip_flop ? "flop" : "flip");
 
         if (cancel_crossfade) //This needs to be on queue to prevent t-poses.
         {
-            remove_cancel_crossfade = true;
-            if (currentAnimationAlerter != null)
-                StopCoroutine(currentAnimationAlerter);
-            if (shaderPlayer != null)
-                StopCoroutine(shaderPlayer);
-
-            Debug.Log("Instantyly Playing " + queued_anim.anim_clip.name + " on " + name + " as " + new_name + " at " + Time.frameCount);
-            animation_component.Play(new_name);
-
-            currentAnimationAlerter = animationAlert(queued_anim.anim_clip);
-            StartCoroutine(currentAnimationAlerter);
-
-            if (queued_anim.shaderAnimations != null)
-            {
-                shaderPlayer = shaderAnimPlayer(queued_anim.shaderAnimations, queued_anim.anim_clip);
-                StartCoroutine(shaderPlayer);
-            }
-
-            queued_anim = null;
-            anim_flip_flop = !anim_flip_flop;
+            playAnimationOnComponent();
         }
     }
 
-    private void playAnimationOnComponent(bool crossfade)
+    private void playAnimationOnComponent()
     {
+        string anim_name = anim_flip_flop ? "flop" : "flip";
+
         if (currentAnimationAlerter != null)
             StopCoroutine(currentAnimationAlerter);
         if (shaderPlayer != null)
             StopCoroutine(shaderPlayer);
 
-        string new_name = "flip";
-        string old_name = "flop";
-        if (anim_flip_flop == true)
+        if (cancel_crossfade == false)
         {
-            new_name = "flop";
-            old_name = "flip";
+            animation_component.CrossFade(anim_name, 0.3f);
         }
-        if (animation_component.GetClip(old_name) != null) {
-            Debug.Log("crossfading on " + name + "animation: " + queued_anim.anim_clip.name + " to " + animation_component.GetClip(old_name).name);
-
-        }
-
-        if (crossfade)
-            animation_component.CrossFade(new_name, 0.3f);
         else
-            animation_component.Play(new_name);
+        {
+            animation_component.Play(anim_name);
+            cancel_crossfade = false;
+        }
 
         currentAnimationAlerter = animationAlert(queued_anim.anim_clip);
         StartCoroutine(currentAnimationAlerter);
@@ -150,6 +102,7 @@ public abstract partial class Node : MonoBehaviour
         }
 
         anim_flip_flop = !anim_flip_flop;
+        queued_anim = null;
     }
 
     protected abstract IEnumerator animationAlert(AnimationClip clip);
