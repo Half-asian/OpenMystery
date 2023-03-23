@@ -16,7 +16,7 @@ namespace UI
         [SerializeField]
         protected Dropdown _goal_dropdown;
         public IQuestBox _quest_box;
-        UnityEvent<ConfigGoal.Goal> _event_goal_dropdown_changed;
+        UnityEvent<string> _event_goal_dropdown_changed;
 
         public void Awake()
         {
@@ -24,7 +24,7 @@ namespace UI
         }
 
 
-        public void setup(UnityEvent<ConfigGoal.Goal> event_goal_dropdown_changed)
+        public void setup(UnityEvent<string> event_goal_dropdown_changed)
         {
             setGoalChainDropdown();
             _quest_box.setQuest(getCurrentGoalChainId());
@@ -48,12 +48,12 @@ namespace UI
             _goal_dropdown.value = 0;
             setGoalDropdown();
             _quest_box.setQuest(getCurrentGoalChainId());
-            _event_goal_dropdown_changed.Invoke(Configs.config_goal.Goals[getCurrentGoalId()]);
+            _event_goal_dropdown_changed.Invoke(getCurrentGoalId());
         }
 
         public void goalSelected()
         {
-            _event_goal_dropdown_changed.Invoke(Configs.config_goal.Goals[getCurrentGoalId()]);
+            _event_goal_dropdown_changed.Invoke(getCurrentGoalId());
         }
 
         public void setGoalDropdown()
@@ -97,25 +97,26 @@ namespace UI
         public string getCurrentGoalId()
         {
             string current_goal_chain_id = getCurrentGoalChainId();
-            if (current_goal_chain_id != null)
-            {
-                /*if (current_goal_chain_id == "C2_v2")
-                { //HACK
-                    if (_goal_dropdown.value == 3) return "Y1_C2_P4_HUB_v2";
-                    if (_goal_dropdown.value == 4) return "Y1_C2_P4_v2";
-                }*/
-                int goal_count = Configs.config_goal_chain.GoalChain[current_goal_chain_id].goalIds.Count;
+            if (current_goal_chain_id == null)
+                return null;
 
-                if (_goal_dropdown.value < goal_count)
-                {
-                    return Configs.config_goal_chain.GoalChain[current_goal_chain_id].goalIds[_goal_dropdown.value][0];
-                }
-                else
-                {
-                    return Configs.config_goal_chain.GoalChain[current_goal_chain_id].classGoalIds[_goal_dropdown.value - goal_count];
-                }
+            var current_goal_chain = Configs.config_goal_chain.GoalChain[current_goal_chain_id];
+            int goal_count = current_goal_chain.goalIds != null ? current_goal_chain.goalIds.Count : 0;
+            int class_count = current_goal_chain.classGoalIds != null ? current_goal_chain.classGoalIds.Count : 0;
+            //int assignment_count = current_goal_chain.assignments != null ? current_goal_chain.assignments.Count : 0;
+
+            if (_goal_dropdown.value < goal_count)
+            {
+                return current_goal_chain.goalIds[_goal_dropdown.value][0];
             }
-            return null;
+            else if (_goal_dropdown.value < goal_count + class_count)
+            {
+                return current_goal_chain.classGoalIds[_goal_dropdown.value - goal_count];
+            }
+            else
+            {
+                return current_goal_chain.assignments[_goal_dropdown.value - goal_count - class_count];
+            }
         }
 
         public int getCurrentGoalIndex(GoalChainType goalChainType)

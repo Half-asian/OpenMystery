@@ -40,13 +40,13 @@ public class UiManager : MonoBehaviour
     [SerializeField]
     bool should_show_next = false;
 
-    UnityEvent<ConfigGoal.Goal> _event_goal_dropdown_changed;
+    UnityEvent<string> _event_goal_dropdown_changed;
 
     private void Awake()
     {
         _goal_dropdown = GetComponent<UI.IGoalDropdown>();
         _goal_popup = GetComponent<UI.GoalPopup>();
-        _event_goal_dropdown_changed = new UnityEvent<ConfigGoal.Goal>();
+        _event_goal_dropdown_changed = new UnityEvent<string>();
         _event_goal_dropdown_changed.AddListener(showPopup);
         _ui_image_loader = GetComponent<UiImageLoader>();
 
@@ -145,13 +145,24 @@ public class UiManager : MonoBehaviour
         should_show_next = true;
     }
 
-    public void showPopup(ConfigGoal.Goal goal_id)
+    public void showPopup(string goal_id)
     {
-        Debug.Log("ShowPopup");
-        _goal_popup.setPopup(goal_id);
+        if (Configs.config_goal.Goals.TryGetValue(goal_id, out var goal))
+        {
+            _goal_popup.setPopup(goal);
+        }
+        else if (Configs.config_assignment.Assignment.TryGetValue(goal_id, out var assignment))
+        {
+            _goal_popup.setPopup(assignment);
+        }
+        else
+        {
+            throw new Exception("Failed to show popup due to invalid goal id that wasn't a goal or assignment");
+        }
         should_show_popup = true;
     }
 
+    public void showPopup(ConfigGoal.Goal goal) => showPopup(goal.goal_id);
     public void setup()
     {
         StartCoroutine(_ui_image_loader.setup());
@@ -229,7 +240,7 @@ namespace UI
 {
     interface IGoalDropdown
     {
-        void setup(UnityEvent<ConfigGoal.Goal> event_goal_dropdown_changed);
+        void setup(UnityEvent<string> event_goal_dropdown_changed);
         string getCurrentGoalChainId();
         string getCurrentGoalId();
         int getCurrentGoalIndex(GoalChainType type);
