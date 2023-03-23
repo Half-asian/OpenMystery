@@ -56,7 +56,7 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\ModelViewerScreenShot.cs" />
+    <Compile Include="Assets\Scripts\Game\ModelViewerScreenShot.cs" />
     <Compile Include="Assets\Scripts\UI\CanvasImageLoader.cs" />
     <Compile Include="Assets\Scripts\Graduation\GraduationUI.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentHands.cs" />
@@ -75,7 +75,7 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentLegs.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerFile.cs" />
     <Compile Include="Assets\Scripts\Predicate\NewPredicate.cs" />
-    <Compile Include="Assets\Scripts\Common.cs" />
+    <Compile Include="Assets\Scripts\Game\Common.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigScriptEventsLoader.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveMatchComplete.cs" />
     <Compile Include="Assets\Scripts\Events\EventManager.cs" />
@@ -90,7 +90,7 @@
     <Compile Include="Assets\Scripts\UI\TlsqBox.cs" />
     <Compile Include="Assets\Scripts\UI\TitleCardCanvas.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigInteractionLoader.cs" />
-    <Compile Include="Assets\Scripts\GlobalEngineVariables.cs" />
+    <Compile Include="Assets\Scripts\Game\GlobalEngineVariables.cs" />
     <Compile Include="Assets\Scripts\Player\CustomizableAvatarSpawner.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionFastTap.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentOnePiece.cs" />
@@ -101,6 +101,7 @@
     <Compile Include="Assets\Scripts\Scenario\Tappie.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveVisitLocation.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTriggers.cs" />
+    <Compile Include="Assets\Scripts\Game\VariantManager.cs" />
     <Compile Include="Assets\Scripts\Objectives\Objective.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundQuidditch.cs" />
     <Compile Include="Assets\Scripts\Particle\PUMaterialSpawner.cs" />
@@ -114,9 +115,10 @@
     <Compile Include="Assets\Scripts\Scene\LocationScenarioMenu.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveBlank.cs" />
     <Compile Include="Assets\Scripts\Goals\Goal.cs" />
-    <Compile Include="Assets\Scripts\Debugger.cs" />
+    <Compile Include="Assets\Scripts\Game\Debugger.cs" />
     <Compile Include="Assets\Scripts\Scene\SceneLight.cs" />
     <Compile Include="Assets\Scripts\Encounter\EncounterDate.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\Speaker.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentGlasses.cs" />
     <Compile Include="Assets\Scripts\UI\QuizUI.cs" />
     <Compile Include="Assets\Scripts\Player\ComponentButton.cs" />
@@ -125,7 +127,7 @@
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionProject.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionOptional.cs" />
     <Compile Include="Assets\Scripts\Particle\PUParticle.cs" />
-    <Compile Include="Assets\Scripts\PostProcess.cs" />
+    <Compile Include="Assets\Scripts\Game\PostProcess.cs" />
     <Compile Include="Assets\Scripts\Project\Project.cs" />
     <Compile Include="Assets\Scripts\Particle\PUCommon.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionBubble.cs" />
@@ -137,7 +139,7 @@
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionMatch.cs" />
     <Compile Include="Assets\Scripts\Menu\SplashText.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigReward.cs" />
-    <Compile Include="Assets\Scripts\PauseMenu.cs" />
+    <Compile Include="Assets\Scripts\Game\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Scenario\Scenario.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigAnimationsLoader.cs" />
     <Compile Include="Assets\Scripts\Actors\Actor.cs" />
@@ -161,9 +163,9 @@
     <Compile Include="Assets\Scripts\Events\EventPlayer.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveFriendTutComplete.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundYear1.cs" />
-    <Compile Include="Assets\Scripts\Quidditch.cs" />
+    <Compile Include="Assets\Scripts\Game\Quidditch.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveSocialEncounterComplete.cs" />
-    <Compile Include="Assets\Scripts\TimedPromo.cs" />
+    <Compile Include="Assets\Scripts\Game\TimedPromo.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentArms.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundHalloween2022.cs" />
     <Compile Include="Assets\Scripts\Cocos3D\c3bLoader.cs" />
@@ -216,7 +218,7 @@
     <Compile Include="Assets\Scripts\Actors\ActorController.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ModelMaterials.cs" />
     <Compile Include="Assets\Scripts\Scene\LocationHubMenu.cs" />
-    <Compile Include="Assets\Scripts\GameStart.cs" />
+    <Compile Include="Assets\Scripts\Game\GameStart.cs" />
     <Compile Include="Assets\Scripts\Cocos3D\C3T.cs" />
     <Compile Include="Assets\Scripts\Scene\Location.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionQTE.cs" />
@@ -245,10 +247,20 @@
     <Compile Include="Assets\Scripts\Objectives\ObjectiveProjectSuccess.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveY1C1P6Complete.cs" />
     <Compile Include="Assets\Scripts\Camera\SimpleCameraController.cs" />
-    <Compile Include="Assets\Scripts\Console.cs" />
+    <Compile Include="Assets\Scripts\Game\Console.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
+    <Compile Include="Assets\Scripts\Common.cs" />
+    <Compile Include="Assets\Scripts\PauseMenu.cs" />
+    <Compile Include="Assets\Scripts\GlobalEngineVariables.cs" />
+    <Compile Include="Assets\Scripts\Console.cs" />
+    <Compile Include="Assets\Scripts\ModelViewerScreenShot.cs" />
+    <Compile Include="Assets\Scripts\TimedPromo.cs" />
+    <Compile Include="Assets\Scripts\GameStart.cs" />
+    <Compile Include="Assets\Scripts\Quidditch.cs" />
+    <Compile Include="Assets\Scripts\Debugger.cs" />
+    <Compile Include="Assets\Scripts\PostProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
