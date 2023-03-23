@@ -62,8 +62,7 @@ public class HubNPC
                     Actor.spawnActor(config.actorId, config.hubWaypoint, config.hubNpcId);
                     if (config.avatarWaypoint != null)
                     {
-                        if (Actor.actor_controllers.ContainsKey("Avatar"))
-                            Actor.actor_controllers["Avatar"].teleportCharacter(config.avatarWaypoint);
+                        Actor.getActor("Avatar")?.teleportCharacter(config.avatarWaypoint);
                     }
                     if (config.primaryDialogue != null)
                     {

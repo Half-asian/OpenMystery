@@ -56,7 +56,7 @@ public class EncounterDate : Encounter
 
         date_prompt = Configs.config_date_prompt.DatePrompt[config_encounter.datePromptIds[0]];
 
-        Actor.actor_controllers[Player.local_avatar_onscreen_name].teleportCharacter(date_prompt.avatarSpawn);
+        Actor.getActor(Player.local_avatar_onscreen_name)?.teleportCharacter(date_prompt.avatarSpawn);
 
         Actor.spawnActor(companion_id, date_prompt.dateSpawn, "opponent");
 
@@ -87,9 +87,9 @@ public class EncounterDate : Encounter
                 ConfigDatePrompt._DatePrompt date_prompt = Configs.config_date_prompt.DatePrompt[config_encounter.datePromptIds[date_prompt_counter]];
 
 
-                Actor.actor_controllers[Player.local_avatar_onscreen_name].teleportCharacter(date_prompt.avatarSpawn);
+                Actor.getActor(Player.local_avatar_onscreen_name)?.teleportCharacter(date_prompt.avatarSpawn);
 
-                Actor.actor_controllers["opponent"].teleportCharacter(date_prompt.dateSpawn);
+                Actor.getActor("opponent")?.teleportCharacter(date_prompt.dateSpawn);
 
                 DialogueManager.onDialogueFinishedEventPrimary += dialogueCallback;
                 

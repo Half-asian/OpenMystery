@@ -317,18 +317,20 @@ public class Scenario
                 throw new Exception("Unknown changeClothes type: " + clothing_type);
         }
 
-        if (Actor.actor_controllers.ContainsKey(Player.local_avatar_onscreen_name))
+        if (Actor.getActor(Player.local_avatar_onscreen_name) != null)
         {
             if (current.appliedClothes == null)
             {
-                Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.resetFromPlayerFile();
-                Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.spawnComponents();
+                Actor.getActor(Player.local_avatar_onscreen_name).avatar_components.resetFromPlayerFile();
+                Actor.getActor(Player.local_avatar_onscreen_name).avatar_components.spawnComponents();
             }
             else
+            {
                 foreach (var component in current.appliedClothes)
                 {
-                    Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.equipAvatarComponent(component);
+                    Actor.getActor(Player.local_avatar_onscreen_name).avatar_components.equipAvatarComponent(component);
                 }
+            }
         }
         else
         {
@@ -338,16 +340,16 @@ public class Scenario
 
     public static void setQuidditchHelmet(string predicate)
     {
-        if (Actor.actor_controllers.ContainsKey(Player.local_avatar_onscreen_name))
+        if (Actor.getActor(Player.local_avatar_onscreen_name) != null)
         {
             if (predicate.ToLower() == "true")
             {
-                Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.equipAvatarComponent("o_quidditchHouseCupHelmet"); //These helmets all seem to be the same across components
+                Actor.getActor(Player.local_avatar_onscreen_name).avatar_components.equipAvatarComponent("o_quidditchHouseCupHelmet"); //These helmets all seem to be the same across components
             }
             else
             {
                 string avatar_hair_id = PlayerManager.current.customization_categories["hair"].component_id;
-                Actor.actor_controllers[Player.local_avatar_onscreen_name].avatar_components.equipAvatarComponent(avatar_hair_id);
+                Actor.getActor(Player.local_avatar_onscreen_name).avatar_components.equipAvatarComponent(avatar_hair_id);
             }
         }
     }

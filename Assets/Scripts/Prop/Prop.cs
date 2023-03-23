@@ -232,7 +232,7 @@ public class Prop : Node
         if (name == null)
             name = model_id;
 
-        if (!Actor.actor_controllers.ContainsKey(character))
+        if (Actor.getActor(character) == null)
             return;
 
         Prop prop;
@@ -249,7 +249,7 @@ public class Prop : Node
             spawned_props[name] = prop;
         }
 
-        prop.model.game_object.transform.parent =  Actor.actor_controllers[character].model.pose_bones[bone];
+        prop.model.game_object.transform.parent =  Actor.getActor(character).model.pose_bones[bone];
         prop.model.game_object.transform.localPosition = Vector3.zero;
         prop.model.game_object.transform.localRotation = Quaternion.identity;
     }

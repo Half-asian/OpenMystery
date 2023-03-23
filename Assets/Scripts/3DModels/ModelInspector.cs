@@ -155,8 +155,7 @@ public class ModelInspector : MonoBehaviour
         }
         if (actor_controller != null)
         {
-            Actor.actor_controllers.Remove(actor_controller.name);
-            actor_controller.destroy();
+            Actor.destroyCharacter(actor_controller.name);
         }
 
         actor_controller = Actor.spawnActor(actor_input.text, null, actor_input.text);

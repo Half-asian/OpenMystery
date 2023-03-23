@@ -43,13 +43,12 @@ public class EncounterSocial : Encounter
         base.activate();
 
         config_companion = Configs.config_companion.Companion[config_encounter.companionId];
-        if (!Actor.actor_controllers.ContainsKey(config_encounter.companionId))
+        if (Actor.getActor(config_encounter.companionId) == null)
             Actor.spawnActor(config_companion.actorId, config_encounter.opponentWaypoint, config_encounter.companionId);
         else
-            Actor.actor_controllers[config_encounter.companionId].teleportCharacter(config_encounter.opponentWaypoint);
+            Actor.getActor(config_encounter.companionId)?.teleportCharacter(config_encounter.opponentWaypoint);
         config_opposition = Configs.config_encounter_opposition.EncounterOpposition[config_encounter.oppositionId];
-        Actor.actor_controllers["opponent"] = Actor.actor_controllers[config_encounter.companionId];
-        Actor.actor_controllers.Remove(config_encounter.companionId); //The original actor becomes opponent.
+        Actor.renameActor("opponent", config_encounter.companionId);
 
     }
 
@@ -186,8 +185,7 @@ public class EncounterSocial : Encounter
 
     public override void cleanup()
     {
-        Actor.actor_controllers[config_encounter.companionId] = Actor.actor_controllers["opponent"]; //We put it back how it was originally.
-        Actor.actor_controllers.Remove("opponent");
+        Actor.renameActor(config_encounter.companionId, "opponent");//We put it back how it was originally.
 
         SocialQuizUI.onSocialQuizGameFinished -= onQuizQuestionFinished;
 

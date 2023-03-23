@@ -219,12 +219,12 @@ public static class Events
                 break;
 
             case "hideCharacter":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
+                if (Actor.getActor(action_params[0]) != null)
                 {
 
                     if (action_params[0] == Player.local_avatar_onscreen_name)
                     {
-                        AvatarComponents a = Actor.actor_controllers["Avatar"].avatar_components;
+                        AvatarComponents a = Actor.getActor("Avatar").avatar_components;
                         foreach (SkinnedMeshRenderer smr in a.base_model.game_object.GetComponentsInChildren<SkinnedMeshRenderer>())
                         {
                             smr.enabled = false;
@@ -236,7 +236,7 @@ public static class Events
                     }
                     else
                     {
-                        foreach (SkinnedMeshRenderer smr in Actor.actor_controllers[action_params[0]].gameObject.transform.GetComponentsInChildren<SkinnedMeshRenderer>())
+                        foreach (SkinnedMeshRenderer smr in Actor.getActor(action_params[0]).gameObject.transform.GetComponentsInChildren<SkinnedMeshRenderer>())
                         {
                             smr.enabled = false;
                         }
@@ -244,12 +244,12 @@ public static class Events
                 }
                 break;
             case "showCharacter":
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
+                if (Actor.getActor(action_params[0]) != null)
                 {
 
                     if (action_params[0] == Player.local_avatar_onscreen_name)
                     {
-                        AvatarComponents a = Actor.actor_controllers["Avatar"].avatar_components;
+                        AvatarComponents a = Actor.getActor("Avatar").avatar_components;
                         foreach (SkinnedMeshRenderer smr in a.base_model.game_object.GetComponentsInChildren<SkinnedMeshRenderer>())
                         {
                             smr.enabled = true;
@@ -261,7 +261,7 @@ public static class Events
                     }
                     else
                     {
-                        foreach (SkinnedMeshRenderer smr in Actor.actor_controllers[action_params[0]].gameObject.transform.GetComponentsInChildren<SkinnedMeshRenderer>())
+                        foreach (SkinnedMeshRenderer smr in Actor.getActor(action_params[0]).gameObject.transform.GetComponentsInChildren<SkinnedMeshRenderer>())
                         {
                             smr.enabled = true;
                         }
@@ -320,9 +320,9 @@ public static class Events
                 break;
 
             case "safeAdvanceAnimSequenceTo": //This shit is used ONCE in the entire game
-                if (Actor.actor_controllers.ContainsKey(action_params[0]))
+                if (Actor.getActor(action_params[0]) != null)
                 {
-                    Actor.actor_controllers[action_params[0]].gameObject.GetComponent<ActorAnimSequence>().safeAdvanceAnimSequenceTo(action_params[2]); //action_param 1 might be starting node (immediate set node).
+                    Actor.getActor(action_params[0]).gameObject.GetComponent<ActorAnimSequence>().safeAdvanceAnimSequenceTo(action_params[2]); //action_param 1 might be starting node (immediate set node).
                 }
                 else
                 {
@@ -384,9 +384,9 @@ public static class Events
 
 
             case "equipAvatarComponent":
-                Actor.actor_controllers["Avatar"].avatar_components.equipAvatarComponent(action_params[0]);
-
+                Actor.getActor("Avatar")?.avatar_components.equipAvatarComponent(action_params[0]);
                 break;
+
             case "wearClothingType":
                 Debug.Log("wearClothingType " + action_params[0]);
                 if (action_params.Length < 2)
@@ -441,7 +441,7 @@ public static class Events
 
     public static void lookAt(string[] action_params) //Up to 4 parameters. Idk what 4 is for.
     {
-        if (!Actor.actor_controllers.ContainsKey(action_params[0]))                     //Check Actor exists 
+        if (Actor.getActor(action_params[0]) == null)                     //Check Actor exists 
         {
             Debug.LogWarning("Lookat could not find actor: " + action_params[0]);
             return;
@@ -449,10 +449,7 @@ public static class Events
 
         if (action_params.Length < 2)                                                   //Actor clear
         {
-            if (Actor.actor_controllers.ContainsKey(action_params[0]))
-            {
-                Actor.actor_controllers[action_params[0]].clearLookat();
-            }
+            Actor.getActor(action_params[0]).clearLookat();
             return;
         }
 
@@ -468,15 +465,15 @@ public static class Events
         //There is a mystery param 4 as well
         //TLSQS3HouseCupP9_PennyWatchBackgroundLeave is the only case it is not set to 1
 
-        if (Actor.actor_controllers.ContainsKey(action_params[1]))                      //Actor look at target actor
+        if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
         {
-            Actor.actor_controllers[action_params[0]].setLookAt(
-                Actor.actor_controllers[action_params[1]], speed);
+            Actor.getActor(action_params[0]).setLookAt(
+                Actor.getActor(action_params[1]), speed);
             return;
         }
         else if (Prop.spawned_props.ContainsKey(action_params[1]))
         {
-            Actor.actor_controllers[action_params[0]].setLookAt(
+            Actor.getActor(action_params[0]).setLookAt(
                 Prop.spawned_props[action_params[1]], speed);
             return;
         }
@@ -491,11 +488,11 @@ public static class Events
                     x = float.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
                 if (x == 0 && y == 0)
                 {
-                    Actor.actor_controllers[action_params[0]].clearLookat();
+                    Actor.getActor(action_params[0]).clearLookat();
                 }
                 else
                 {
-                    Actor.actor_controllers[action_params[0]].setLookAt(-x, y, speed);
+                    Actor.getActor(action_params[0]).setLookAt(-x, y, speed);
                 }
             }
             catch
@@ -507,7 +504,7 @@ public static class Events
 
     public static void turnHeadAt(string[] action_params)
     {
-        if (!Actor.actor_controllers.ContainsKey(action_params[0]))                     //Check Actor exists 
+        if (Actor.getActor(action_params[0]) == null)                     //Check Actor exists 
         {
             Debug.LogWarning("Lookat could not find actor: " + action_params[0]);
             return;
@@ -515,10 +512,7 @@ public static class Events
 
         if (action_params.Length < 2)                                                   //Actor clear
         {
-            if (Actor.actor_controllers.ContainsKey(action_params[0]))
-            {
-                Actor.actor_controllers[action_params[0]].clearTurnHeadAt();
-            }
+            Actor.getActor(action_params[0])?.clearTurnHeadAt();
             return;
         }
 
@@ -531,15 +525,15 @@ public static class Events
             //QuidditchS1C10P3_hoochSlowLookOrion
         }
 
-        if (Actor.actor_controllers.ContainsKey(action_params[1]))                      //Actor look at target actor
+        if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
         {
-            Actor.actor_controllers[action_params[0]].setTurnHeadAt(
-                Actor.actor_controllers[action_params[1]], speed);
+            Actor.getActor(action_params[0]).setTurnHeadAt(
+                Actor.getActor(action_params[1]), speed);
             return;
         }
         else if (Prop.spawned_props.ContainsKey(action_params[1]))
         {
-            Actor.actor_controllers[action_params[0]].setTurnHeadAt(
+            Actor.getActor(action_params[0]).setTurnHeadAt(
                 Prop.spawned_props[action_params[1]], speed);
             return;
         }
@@ -554,11 +548,11 @@ public static class Events
                     x = int.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
                 if (x == 0 && y == 0)
                 {
-                    Actor.actor_controllers[action_params[0]].clearLookat();
+                    Actor.getActor(action_params[0]).clearLookat();
                 }
                 else
                 {
-                    Actor.actor_controllers[action_params[0]].setTurnHeadAt(-x, y, speed);
+                    Actor.getActor(action_params[0]).setTurnHeadAt(-x, y, speed);
                 }
             }
             catch

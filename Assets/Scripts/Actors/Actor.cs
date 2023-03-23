@@ -10,11 +10,12 @@ using System.IO;
 public class Actor
 {
     //Later on, change this from dictionary look up to using events
-    public static Dictionary<string, ActorController> actor_controllers = new Dictionary<string, ActorController>();
+    private static Dictionary<string, ActorController> actor_controllers = new Dictionary<string, ActorController>();
 
 
     //This is just used for cleanup
     private static List<ActorController> actor_controllers_pool = new List<ActorController>(); //we can't use the character dictionary as a complete reference of all spawned characters. This is because there is no unique spawn identifier.
+
 
     public static void Initialize()
     {
@@ -36,14 +37,25 @@ public class Actor
     public static ActorController getActor(string instance_id)
     {
         if (actor_controllers.ContainsKey(instance_id))
-        {
             return actor_controllers[instance_id];
-        }
-        else
-        {
-            Debug.Log("Couldn't find actor" + instance_id);
-            return null;
-        }
+        return null;
+    }
+
+    public static void renameActor(string new_name, string old_name)
+    {
+        actor_controllers[new_name] = actor_controllers[old_name];
+        actor_controllers.Remove(old_name);
+    }
+
+    public static void addAlias(string alias, string id)
+    {
+        if (actor_controllers.ContainsKey(id))
+            actor_controllers[alias] = actor_controllers[id];
+    }
+
+    public static void removeAlias(string alias)
+    {
+        actor_controllers.Remove(alias);
     }
 
     //Actors will still spawn with invalid waypoint_id. Tested in retail.

@@ -123,7 +123,7 @@ public class EventPlayer : MonoBehaviour
             }
             foreach(var actor_instance_id in actorsAwaitingMovement)
             {
-                if (!Actor.actor_controllers.ContainsKey(actor_instance_id) || Actor.actor_controllers[actor_instance_id].actor_state != ActorState.Walk)
+                if (Actor.getActor(actor_instance_id) == null || Actor.getActor(actor_instance_id).actor_state != ActorState.Walk)
                 {
                     GameStart.event_manager.notifyMoveComplete(actor_instance_id);
                 }
@@ -313,16 +313,17 @@ public class EventPlayer : MonoBehaviour
 
         for (int i = anim_sequences_to_add.Count - 1; i >= 0; i--)
         {
-            if (Actor.actor_controllers.ContainsKey(anim_sequences_to_add[i][0]))
+            var actor = Actor.getActor(anim_sequences_to_add[i][0]);
+            if (actor != null)
             {
-                if (Actor.actor_controllers[anim_sequences_to_add[i][0]].actor_state == ActorState.Idle)
+                if (actor.actor_state == ActorState.Idle)
                 {
                     Debug.Log("late anim sequence set for " + anim_sequences_to_add[i][0] + " " + anim_sequences_to_add[i][1]);
-                    if (Actor.actor_controllers[anim_sequences_to_add[i][0]].gameObject.GetComponent<ActorAnimSequence>() == null)
+                    if (actor.gameObject.GetComponent<ActorAnimSequence>() == null)
                     {
-                        Actor.actor_controllers[anim_sequences_to_add[i][0]].gameObject.AddComponent<ActorAnimSequence>();
+                        actor.gameObject.AddComponent<ActorAnimSequence>();
                     }
-                    Actor.actor_controllers[anim_sequences_to_add[i][0]].gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(anim_sequences_to_add[i][1], false);
+                    actor.gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(anim_sequences_to_add[i][1], false);
                     anim_sequences_to_add.RemoveAt(i);
                 }
             }
