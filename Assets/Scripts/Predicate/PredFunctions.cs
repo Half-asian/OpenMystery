@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
+
 public partial class NewPredicate
 {
 
@@ -56,6 +57,7 @@ public partial class NewPredicate
         {"numCompletedDatesWithPartner" , new Func<SymbolConstantString, SymbolConstantInteger>(numCompletedDatesWithPartner) },
         {"attributeLevel"               , new Func<SymbolConstantString, SymbolConstantInteger>(attributeLevel) },
         {"hasCompletedNux"              , new Func<SymbolConstantBool>(hasCompletedNux) },
+        {"decidedOnBreakUp"             , new Func<SymbolConstantString,  SymbolConstantBool>(decidedOnBreakUp) },
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -327,7 +329,9 @@ public partial class NewPredicate
     }
     static SymbolConstantInteger numCompletedDatesWithPartner(SymbolConstantString partner)
     {
-        return new SymbolConstantInteger(100);
+        if (partner.toString().ToLower() == GlobalEngineVariables.exclusively_dating.ToLower())
+            return new SymbolConstantInteger(100);
+        return new SymbolConstantInteger(0);
     }
     static SymbolConstantInteger attributeLevel(SymbolConstantString attribute)
     {
@@ -337,5 +341,10 @@ public partial class NewPredicate
     static SymbolConstantBool hasCompletedNux()
     {
         return new SymbolConstantBool(true);
+    }
+
+    static SymbolConstantBool decidedOnBreakUp(SymbolConstantString date)
+    {
+        return new SymbolConstantBool(false);
     }
 }
