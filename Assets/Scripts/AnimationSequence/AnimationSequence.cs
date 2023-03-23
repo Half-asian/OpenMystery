@@ -155,9 +155,13 @@ public abstract partial class AnimationSequence : MonoBehaviour
         if (config_sequence == null)
             return;
 
-        //This is just a guess
-        if (config_sequence.data.nodes[this.node_index].blocking == true && getNextNodeIndex() != -1)
-            return;
+        //If we're a one shot and the next is theend, ignore block
+
+        if (config_sequence.data.nodes[this.node_index].blocking == true)
+        {
+            if (!(config_sequence.isOneShot && getNextNodeIndex() == -1))
+                return;
+        }
 
         // at this point, the animation has completed
         // min loops unimplemented. No idea how it works.

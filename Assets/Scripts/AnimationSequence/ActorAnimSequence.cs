@@ -18,13 +18,14 @@ public class ActorAnimSequence : AnimationSequence
 
     protected override void finishSequence()
     {
-        bool isOneShot = config_sequence.isOneShot;
+        string exitAnim = config_sequence.data.exitAnim;
         base.finishSequence();
 
-        if (isOneShot)
+        actor_controller.markCurrentAnimationFinished();
+        actor_controller.setCharacterIdle();
+        if (exitAnim != null)
         {
-            actor_controller.markCurrentAnimationFinished();
-            actor_controller.setCharacterIdle();
+            actor_controller.replaceCharacterIdle("Engine finishSequence", exitAnim);
         }
 
         //If not one shot, freeze

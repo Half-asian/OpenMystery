@@ -83,7 +83,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
         [System.Serializable]
         public class _data
         {
-            public string exitAnim; //todo
+            public string exitAnim;
             [System.Serializable]
             public class action
             {
