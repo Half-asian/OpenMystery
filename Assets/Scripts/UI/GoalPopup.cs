@@ -25,8 +25,7 @@ namespace UI
 
         public void setPopup(ConfigGoal.Goal goal)
         {
-            if (goal == null)
-                throw new Exception("setPopup goal was null");
+            Debug.Log("setPopup Goal: " + goal.goal_id);
             latest_goal = goal;
 
             if (character != null)
@@ -36,11 +35,25 @@ namespace UI
             }
             _popup.SetActive(true);
 
-            if (goal.ready_text != null) _description.text = LocalData.getLine(goal.ready_text); else _description.text = "";
-            if (goal.goal_name != null) _title.text = LocalData.getLine(goal.goal_name); else _title.text = "";
-
+            _title.text = goal.goal_name != null ? LocalData.getLine(goal.goal_name) : "";
+            _description.text = goal.ready_text != null ? LocalData.getLine(goal.ready_text) : "";
 
             StartCoroutine(spawnCharacter(goal));
+        }
+        public void setPopup(ConfigAssignment._Assignment assignment)
+        {
+            Debug.Log("setPopup Assigment: " + assignment.id);
+            //latest_goal = goal;
+
+            if (character != null)
+            {
+                Actor.destroyCharacter(character.name);
+                character = null;
+            }
+            _popup.SetActive(true);
+
+            _title.text = LocalData.getLine(assignment.name);
+            _description.text = "";
         }
 
         private IEnumerator spawnCharacter(ConfigGoal.Goal goal)

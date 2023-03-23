@@ -109,6 +109,7 @@ public class Configs{
 
     public static ConfigGoalChain config_goal_chain;
     public static ConfigGoal config_goal;
+    public static ConfigAssignment config_assignment;
     public static ConfigObjective config_objective;
     public static ConfigScenario config_scenario;
     public static ConfigTexture config_texture;
@@ -563,6 +564,7 @@ public class Configs{
         config_objective = ConfigObjective.getJObjectsConfigsListST("Objectives");
         config_goal_chain = ConfigGoalChain.getJObjectsConfigsListST("GoalChain");
         config_goal = ConfigGoal.getJObjectsConfigsListST("Goals");
+        config_assignment = ConfigAssignment.getJObjectsConfigsListST("Assignment");
         config_interaction = ConfigInteraction.getConfig();
         config_local_data = ConfigLocalData.getConfig();
         config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");

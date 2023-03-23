@@ -84,7 +84,40 @@ public class ConfigGoal : Config<ConfigGoal>
     }
 }
 
+public class ConfigAssignment : Config<ConfigAssignment>
+{
+    [System.Serializable]
+    public class _Assignment
+    {
+        public string completedDesc;
+        public string finalizeDialogTrigger;
+        public string icon;
+        public string id;
+        public string introScenario;
+        public string name;
+        public string outroScenario;
+        public string skill;
+        public string startDialogTrigger;
+        public string[] objectives;
+    }
+    public Dictionary<string, _Assignment> Assignment;
 
+    public override ConfigAssignment combine(List<ConfigAssignment> other_list)
+    {
+        for (int i = 1; i < other_list.Count; i++)
+        {
+            foreach (string key in other_list[i].Assignment.Keys)
+            {
+                Assignment[key] = other_list[i].Assignment[key];
+            }
+        }
+        return this;
+    }
+    public static void getConfig()
+    {
+        Configs.config_assignment = getJObjectsConfigsListST("Assignment");
+    }
+}
 
 public class ConfigObjective : Config<ConfigObjective>
 {
