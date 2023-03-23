@@ -131,6 +131,7 @@ public class Configs{
     public static ConfigScriptEvents config_script_events;
     public static ConfigInteraction config_interaction;
     public static ConfigProject config_project;
+    public static ConfigStation config_station;
     public static ConfigHPDialogueLine config_hp_dialogue_line;
     public static ConfigDialogueChoice config_dialogue_choices;
     public static ConfigTimeLimitedSideQuest config_time_limited_side_quest;
@@ -570,6 +571,7 @@ public class Configs{
         config_hub_npc = ConfigHubNPC.getJObjectsConfigsListST("HubNpc");
         config_npc_waypoint_spawn = ConfigNpcWaypointSpawn.getJObjectsConfigsListST("NpcWaypointSpawn");
         config_project = ConfigProject.getJObjectsConfigsListST("Project");
+        config_station = ConfigStation.getJObjectsConfigsListST("Station");
         config_years = ConfigYears.getJObjectsConfigsListST("Years");
         config_time_limited_side_quest = ConfigTimeLimitedSideQuest.getJObjectsConfigsListST("TimeLimitedSideQuest");
         config_quidditch_team = ConfigQuidditchTeam.getJObjectsConfigsListST("QuidditchTeam");

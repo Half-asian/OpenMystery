@@ -66,7 +66,7 @@ public class DialogueManager : MonoBehaviour
     public void showBubbleDialogue(string speaker, string dialogue)
     {
         in_dialogue = true;
-        speaker = speaker == "Avatar" ? "You" : mapSpeakerName(speaker);
+        speaker = Speaker.mapSpeakerName(speaker);
         setDialogueUIActive.Invoke(true);
         setDialogueText.Invoke(LocalData.getLine(dialogue));
         setNameText.Invoke(speaker); 
@@ -82,6 +82,9 @@ public class DialogueManager : MonoBehaviour
     //When we only know the dialogue id
     public bool activateDialogue(string dialogue)
     {
+        if (Configs.dialogue_dict.ContainsKey(VariantManager.getVariantForId(dialogue)))
+            dialogue = VariantManager.getVariantForId(dialogue);
+
         in_dialogue = true;
 
         dialogue_id = dialogue;
@@ -124,7 +127,7 @@ public class DialogueManager : MonoBehaviour
         return activateDialogueLine(initial_dialogue_line);
     }
 
-    public bool activateDialogueLine(string dialogue_name)
+    private bool activateDialogueLine(string dialogue_name)
     {
         in_dialogue = true;
 
@@ -159,9 +162,7 @@ public class DialogueManager : MonoBehaviour
 
         dialogueLineStartActions(dialogue_line);
 
-        string name = "";
-        if (dialogue_line.speakerId != null)
-            name = dialogue_line.speakerId == "Avatar" ? "You" : mapSpeakerName(dialogue_line.speakerId);
+        string name = Speaker.mapSpeakerName(dialogue_line.speakerId);
         string text = "";
 
 
@@ -389,27 +390,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public string mapSpeakerName(string speaker)
-    {
-        if (EncounterDate.companion != null)
-            speaker = speaker.Replace("::Date::", Configs.config_companion.Companion[EncounterDate.companion].speakerId);
-        foreach(ConfigDialogueSpeakerMapping._DialogueSpeakerMapping mapping in Configs.config_dialogue_speaker_mapping.DialogueSpeakerMapping)
-        {
-            if (mapping.mapId == speaker)
-            {
-                if (Predicate.parsePredicate(mapping.predicate))
-                    speaker = mapping.speakerId;
-            }
-        }
-        if (!Configs.config_dialogue_speakers.DialogueSpeaker.ContainsKey(speaker))
-        {
-            Debug.LogError("Could not find speaker from id " + speaker);
-            return speaker;
-        }
 
-        string name = Configs.config_dialogue_speakers.DialogueSpeaker[speaker].name;
-        return LocalData.getLine(name); 
-    }
 
 
     public void activateDialogueOption1()

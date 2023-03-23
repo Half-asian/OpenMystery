@@ -18,9 +18,7 @@ public class InteractionTitleCard : Interaction
 
     public override void onFinishedEnterEvents()
     {
-        string title = LocalData.getLine(config_interaction.titleCardTitle);
-        if (title != null)
-            onShowTitleCard.Invoke(title);
+        onShowTitleCard.Invoke(LocalData.getLine(config_interaction.titleCardTitle));
         base.onFinishedEnterEvents();
         StartCoroutine(enumerator());
     }

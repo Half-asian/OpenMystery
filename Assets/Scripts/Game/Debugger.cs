@@ -65,9 +65,9 @@ public class Debugger : MonoBehaviour
 
         text += "\nDialogue Status: " + GameStart.dialogue_manager.dialogue_status.ToString();
 
-        if (Project.config_project != null)
+        if (Project.project_config != null)
         {
-            text += "\nProject: " + Project.config_project.projectId + " Progress: " + Project.current_progress + "/" + Project.getProgressNeeded();
+            text += "\nProject: " + Project.project_config.projectId + " Progress: " + Project.current_progress + "/" + Project.getProgressNeeded();
         }
 
         if (Scene.current != null)

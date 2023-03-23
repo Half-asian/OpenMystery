@@ -8,8 +8,9 @@ using System;
 public class Project
 {
     public static event Action<string> onProjectFinished = delegate { };
-    public static ConfigProject._Project project_config = null;
+    public static ConfigProject._Project config_project = null;
     public static int current_progress;
+    static int station_progress = 0;
     static bool addonce = false;
 
     public static void startProject(string new_project)
@@ -23,42 +24,48 @@ public class Project
         {
             throw new System.Exception("Invalid project id " + new_project);
         }
-        if (project_config != null) throw new System.Exception("Tried to start a project while we are already in a project.");
-        project_config = Configs.config_project.Project[new_project];
+        if (config_project != null) throw new System.Exception("Tried to start a project while we are already in a project.");
+        config_project = Configs.config_project.Project[new_project];
+        VariantManager.setVariant(config_project.variantTag);
         current_progress = 0;
-
+        station_progress = 0;
         Scenario.onScenarioLoaded += onScenarioLoaded;
-        Scenario.Activate(project_config.scenarioId, Scenario.current.objective);
-        Scenario.Load(project_config.scenarioId);
+        Scenario.Activate(config_project.scenarioId, Scenario.current.objective);
+        Scenario.Load(config_project.scenarioId);
     }
 
     private static void onScenarioLoaded()
     {
         Scenario.onScenarioLoaded -= onScenarioLoaded;
-        if (project_config.startPlaylistIds != null)
-            foreach (string playlistId in project_config.startPlaylistIds)
+        if (config_project.startPlaylistIds != null)
+            foreach (string playlistId in config_project.startPlaylistIds)
                 Sound.playBark(playlistId);
+        if (config_project.classIntro != null)
+        {
+            startStation();
+        }
     }
+
 
     private static void cleanup()
     {
         InteractionManager.all_interactions_destroyed_event -= finishProject;
         current_progress = 0;
-        project_config = null;
+        config_project = null;
     }
 
     public static void addProgress(int progress)
     {       
-        if (project_config == null) return;
+        if (config_project == null) return;
         if (current_progress != -1)
             current_progress += progress;
         int stars = 0;
-        foreach(int[] progress_for_stars in project_config.progressForStars)
+        foreach(int[] progress_for_stars in config_project.progressForStars)
         {
             if (current_progress >= progress_for_stars[1])
                 stars = progress_for_stars[0];
         }
-        if (stars >= project_config.progressForStars.Length - 1)
+        if (stars >= config_project.progressForStars.Length - 1)
         {
             current_progress = -1;
         }
@@ -67,39 +74,156 @@ public class Project
         if (stars >= 1 && addonce == false)
         {
             addonce = true;
-            InteractionManager.all_interactions_destroyed_event += finishProject;
+            if (config_project.stations == null) //Stations work differently. They trigger the end of the project by themselves.
+                InteractionManager.all_interactions_destroyed_event += finishProject;
         }
     }
 
     public static int getProgressNeeded()
     {
-        return project_config.progressForStars[project_config.progressForStars.Length - 1][1];
+        return config_project.progressForStars[config_project.progressForStars.Length - 1][1];
     }
 
     public static void finishProject()
     {
         InteractionManager.all_interactions_destroyed_event -= finishProject;
 
-        Debug.Log("Project was finished with id " + project_config.projectId);
+        Debug.Log("Project was finished with id " + config_project.projectId);
 
-        if (project_config.rewardsForStars != null)
+        if (config_project.rewardsForStars != null)
         {
-            foreach(string[] r in project_config.rewardsForStars)
+            foreach(string[] r in config_project.rewardsForStars)
             {
                 Reward.getReward(r[1]);
             }
         }
-        if (project_config.skillId != null)
+        if (config_project.skillId != null)
         {
-            Reward.getSkill(project_config.skillId);
+            Reward.getSkill(config_project.skillId);
+        }
+        VariantManager.removeVariant();
+
+        Scenario.Activate(config_project.outroScenarioId, Scenario.current.objective);
+        Scenario.Load(config_project.outroScenarioId);
+        if (config_project.passPlaylistIds != null)
+            foreach (string playlistId in config_project.passPlaylistIds)
+                Sound.playBark(playlistId);
+        onProjectFinished.Invoke(config_project.projectId);
+        config_project = null;
+    }
+
+    /*----- Stations -----*/
+    private static void startStation()
+    {
+        if (station_progress >= config_project.stations.Length)
+        {
+            finishProject();
+            return;
         }
 
-        Scenario.Activate(project_config.outroScenarioId, Scenario.current.objective);
-        Scenario.Load(project_config.outroScenarioId);
-        if (project_config.passPlaylistIds != null)
-            foreach (string playlistId in project_config.passPlaylistIds)
-                Sound.playBark(playlistId);
-        onProjectFinished.Invoke(project_config.projectId);
-        project_config = null;
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        if (project_station.actorAliases != null)
+        {
+            foreach(var actor_alias in project_station.actorAliases)
+            {
+                Actor.addAlias(actor_alias.Key, actor_alias.Value);
+            }
+        }
+        if (project_station.speakerAliases != null)
+        {
+            foreach (var speaker_alias in project_station.speakerAliases)
+            {
+                Speaker.addAlias(speaker_alias.Key, speaker_alias.Value);
+            }
+        }
+        GameStart.interaction_manager.spawnInteraction(station.title);
+        InteractionManager.all_interactions_destroyed_event += onStationTitleComplete;
     }
+
+    private static void onStationTitleComplete()
+    {
+        InteractionManager.all_interactions_destroyed_event -= onStationTitleComplete;
+
+        if (station_progress == 0)
+        {
+            GameStart.interaction_manager.spawnInteraction(config_project.classIntro);
+            InteractionManager.all_interactions_destroyed_event += onClassIntroComplete;
+            return;
+        }
+
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        GameStart.interaction_manager.spawnInteraction(station.stationIntro);
+        InteractionManager.all_interactions_destroyed_event += onStationIntroComplete;
+    }
+
+    private static void onClassIntroComplete()
+    {
+        InteractionManager.all_interactions_destroyed_event -= onClassIntroComplete;
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        GameStart.interaction_manager.spawnInteraction(station.stationIntro);
+        InteractionManager.all_interactions_destroyed_event += onStationIntroComplete;
+    }
+
+    private static void onStationIntroComplete()
+    {
+        InteractionManager.all_interactions_destroyed_event -= onStationIntroComplete;
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        GameStart.interaction_manager.spawnInteraction(station.progress);
+        InteractionManager.all_interactions_destroyed_event += onStationProgressComplete;
+    }
+
+    private static void onStationProgressComplete()
+    {
+        InteractionManager.all_interactions_destroyed_event -= onStationProgressComplete;
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        GameStart.interaction_manager.spawnInteraction(station.outro);
+        InteractionManager.all_interactions_destroyed_event += onStationOutroComplete;
+    }
+
+    private static void onStationOutroComplete()
+    {
+        InteractionManager.all_interactions_destroyed_event -= onStationOutroComplete;
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        GameStart.interaction_manager.spawnInteraction(station.quiz);
+        InteractionManager.all_interactions_destroyed_event += onStationQuizComplete;
+    }
+
+    private static void onStationQuizComplete()
+    {
+        InteractionManager.all_interactions_destroyed_event -= onStationQuizComplete;
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        GameStart.interaction_manager.spawnInteraction(station.onComplete);
+        InteractionManager.all_interactions_destroyed_event += onStationComplete;
+    }
+    
+    private static void onStationComplete()
+    {
+        InteractionManager.all_interactions_destroyed_event -= onStationComplete;
+        var project_station = config_project.stations[station_progress];
+        if (project_station.actorAliases != null)
+        {
+            foreach (var actor_alias in project_station.actorAliases)
+            {
+                Actor.removeAlias(actor_alias.Key);
+            }
+        }
+        if (project_station.speakerAliases != null)
+        {
+            foreach (var speaker_alias in project_station.speakerAliases)
+            {
+                Speaker.removeAlias(speaker_alias.Key);
+            }
+        }
+        station_progress++;
+        startStation();
+    }
+
+
 }

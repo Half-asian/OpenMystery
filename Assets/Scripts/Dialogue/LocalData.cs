@@ -90,6 +90,10 @@ public class LocalData : MonoBehaviour
 
     public static string getLine(string line_id)
     {
+        string variant_id = VariantManager.getVariantForId(line_id);
+        if (Configs.config_local_data.LocalData.ContainsKey(variant_id))
+            line_id = variant_id;
+
         if (!Configs.config_local_data.LocalData.ContainsKey(line_id))
         {
             Debug.LogError("Could not find localdataline " + line_id);

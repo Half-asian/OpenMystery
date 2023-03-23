@@ -52,6 +52,11 @@ public class InteractionManager : MonoBehaviour {
 
         GameObject interaction_gameobject = null;
 
+        if (Configs.config_interaction.Interactions[interaction_name].filterPredicate == "false") //This is a hack
+        {
+            return null;
+        }
+
         switch (new_interaction.type)
         {
             //There can only ever be one group interaction at one time.
