@@ -369,7 +369,7 @@ public class EventPlayer : MonoBehaviour
     }
 
 
-    private async void processSequentialBlocks(string message, string key)
+    private void processSequentialBlocks(string message, string key)
     {
         List<(ActiveMessageKeys, string, string[], float)> to_remove = new List<(ActiveMessageKeys, string, string[], float)>();
         foreach (var awaiting in awaiting_sequential_players)
@@ -431,6 +431,10 @@ public class EventPlayer : MonoBehaviour
                     break;
                 }
             }
+        }
+        if (blocking_message_keys.Count == 0)
+        {
+            removeBlock();
         }
     }
     public void notifyMoveComplete(string character) => processNotifyBlocks("CharMovementEnded", character);

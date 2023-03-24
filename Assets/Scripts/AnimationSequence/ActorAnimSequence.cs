@@ -35,7 +35,7 @@ public class ActorAnimSequence : AnimationSequence
         //If not one shot, freeze
         //Reference Y5 Chapter 22 P6 Charlie prefect bath, charlies frozen
         //If one shot, repeat
-        //Reference Y4 Capter 3 bowtruckle class, bowtruckle feeding bug
+        //Reference Y4 Chapter 3 bowtruckle class, bowtruckle feeding bug
     }
 
     protected override void attachBroom(string target)
