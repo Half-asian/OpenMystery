@@ -141,8 +141,11 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     protected virtual void finishSequence()
     {
-        cleanup();
-        Destroy(this);
+        if (config_sequence.isOneShot)
+        {
+            cleanup();
+            Destroy(this);
+        }
     }
 
     protected virtual void OnDestroy()

@@ -49,7 +49,6 @@ public partial class ActorController : Node
     private Common.FixedSizedQueue<string> modifying_events = new Common.FixedSizedQueue<string>(5);
     private HPAnimation default_anim;
     private IEnumerator waitForAnimation;
-    private IEnumerator waitForAnimateCharacterSequenceFinished;
     private IEnumerator waitForAnimateCharacterFinished;
 
     private static AnimationManager.BoneMod frozen_bonemod = new AnimationManager.BoneMod(Vector3.zero, Quaternion.identity, new Vector3(1, 1, 1), true);
@@ -191,8 +190,6 @@ public partial class ActorController : Node
         {
             setCharacterAnimate();
             playActorAnimation(new_anim);
-            waitForAnimateCharacterSequenceFinished = WaitForAnimateCharacterSequenceFinished(GetComponent<AnimationSequence>());
-            StartCoroutine(waitForAnimateCharacterSequenceFinished);
         }
     }
 
@@ -365,14 +362,6 @@ public partial class ActorController : Node
                 setCharacterIdle();
             }
         }
-    }
-
-    public IEnumerator WaitForAnimateCharacterSequenceFinished(AnimationSequence animSequence)
-    {
-        while(animSequence != null)
-            yield return null;
-        waitForAnimateCharacterSequenceFinished = null;
-        setCharacterIdle();
     }
 
     public IEnumerator WaitForAnimateCharacterFinished(HPAnimation animation, int max_loops)
