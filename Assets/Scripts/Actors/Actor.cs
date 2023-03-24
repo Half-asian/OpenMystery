@@ -202,6 +202,7 @@ public class Actor
         if (actor_controllers.ContainsKey(character_name))
         {
             actor_controllers[character_name].gameObject.SetActive(false);
+            actor_controllers[character_name].markCurrentAnimationFinished();
         }
     }
 

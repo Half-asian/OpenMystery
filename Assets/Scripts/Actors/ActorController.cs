@@ -38,8 +38,6 @@ public partial class ActorController : Node
         model.jt_all_bind.localRotation = Quaternion.identity;
         if (waitForAnimateCharacterFinished != null)
             StopCoroutine(waitForAnimateCharacterFinished);
-        if (waitForAnimateCharacterSequenceFinished != null)
-            StopCoroutine(waitForAnimateCharacterSequenceFinished);
     }
 
     private void setActorState(ActorState _actor_state)
