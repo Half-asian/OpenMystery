@@ -203,10 +203,10 @@ public class EventPlayer : MonoBehaviour
             }
         }
 
-        if (Configs.config_script_events.ScriptEvents[event_name].type == "Blocking" && Configs.config_script_events.ScriptEvents[event_name].Duration == 0.0f && Configs.config_script_events.ScriptEvents[event_name].messageAndKeys != null) //There are some blocking events with no way to exit and no time. Just leftover junk maybe?
-        {
-            total_block = true;
-        }
+        //if (Configs.config_script_events.ScriptEvents[event_name].type == "Blocking" && Configs.config_script_events.ScriptEvents[event_name].Duration == 0.0f && Configs.config_script_events.ScriptEvents[event_name].messageAndKeys != null) //There are some blocking events with no way to exit and no time. Just leftover junk maybe?
+        //{
+        //    total_block = true;
+        //}
 
         //Some interactions are erroneously marked as sequential
         //Probably function like blocking instead
@@ -397,46 +397,7 @@ public class EventPlayer : MonoBehaviour
             removeBlock();
     }
 
-    public void notifyCharacterAnimationComplete(string character, string animation)
-    {
-        processSequentialBlocks("CharAnimEnded", character + ":" + animation);
-
-        if (blocking_message_keys.Count == 0)
-            return;
-        bool removed = blocking_message_keys.checkRemoveMessageKey("CharAnimEnded", character + ":" + animation);
-        if (blocking_message_keys.Count == 0)
-        {
-            removeBlock();
-        }
-        if (removed == true)
-        {
-            return;
-        }
-
-        /*Hack*/
-        /*It seems that if the animation misses 3 times, then remove block anyway*/
-
-        foreach (ActiveMessageKeys.MessageKey a in blocking_message_keys.message_key_set)
-        {
-            if (a.message == "CharAnimEnded")
-            {
-                if (a.keys[0].Split(':')[0] == character)
-                {
-                    anim_block_miss_count++;
-                    if (anim_block_miss_count >= 3)
-                    {
-                        anim_block_miss_count = 0;
-                        blocking_message_keys.checkRemoveMessageKey("CharAnimEnded", a.keys[0]);
-                    }
-                    break;
-                }
-            }
-        }
-        if (blocking_message_keys.Count == 0)
-        {
-            removeBlock();
-        }
-    }
+    public void notifyCharacterAnimationComplete(string character, string animation) => processNotifyBlocks("CharAnimEnded", character + ":" + animation);
     public void notifyMoveComplete(string character) => processNotifyBlocks("CharMovementEnded", character);
     public void notifyCamAnimFinished(string animation) => processNotifyBlocks("CamAnimFinished", animation);
     public void notifyPropAnimationComplete(string prop, string animation) => processNotifyBlocks("PropAnimEnded", prop + ":" + animation);

@@ -17,7 +17,7 @@ public class ConfigScriptEvents : Config<ConfigScriptEvents>
         public bool looping; //unimplemented
         public bool persisting;//unimplemented
 
-        public float Duration => duration ?? 0.0f;
+        public float Duration => duration ?? 20.0f; //Tested
     }
     public Dictionary<string, ScriptEvent> ScriptEvents;
     ScriptEvent combineScriptEvents(ScriptEvent a, ScriptEvent b)
