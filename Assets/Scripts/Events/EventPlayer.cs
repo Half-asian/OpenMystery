@@ -166,6 +166,9 @@ public class EventPlayer : MonoBehaviour
 
     public float activateEvent(string event_name)
     {
+        if (Configs.config_script_events.ScriptEvents.ContainsKey(VariantManager.getVariantForId(event_name)))
+            event_name = VariantManager.getVariantForId(event_name);
+
         if (!Configs.config_script_events.ScriptEvents.ContainsKey(event_name))
         {
             Debug.Log("Couldn't find event " + event_name);
