@@ -38,6 +38,23 @@ public class ActorAnimSequence : AnimationSequence
         //Reference Y4 Chapter 3 bowtruckle class, bowtruckle feeding bug
     }
 
+    protected override float playAnimation(string animation_id, string anim_sequence_id)
+    {
+        HPAnimation animation;
+        if (loadedAnimations.ContainsKey(animation_id))
+            animation = loadedAnimations[animation_id];
+        else
+        {
+            animation = AnimationManager.loadAnimationClip(animation_id, base_node.model, actor_controller.config_hpactor, config_sequence.data.triggerReplacement);
+            loadedAnimations[animation_id] = animation;
+        }
+
+        if (animation == null) return 0.0f;
+
+        base_node.queueAnimationOnComponent(animation);
+        return animation.anim_clip.length;
+    }
+
     protected override void attachBroom(string target)
     {
         string broom_skin_name = getBroomSkinName(actor_controller.config_hpactor.actorId);

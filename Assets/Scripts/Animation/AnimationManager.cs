@@ -71,7 +71,7 @@ public static partial class AnimationManager
 		return _loadAnimationClip();
 	}
 
-	public static HPAnimation _loadAnimationClip()
+	private static HPAnimation _loadAnimationClip()
 	{
 		if (string.IsNullOrEmpty(animation_name))
 		{

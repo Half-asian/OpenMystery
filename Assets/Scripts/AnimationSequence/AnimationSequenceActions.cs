@@ -41,7 +41,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
                 break;
         }
     }
-    protected float playAnimation(string animation_id, string anim_sequence_id)
+    protected virtual float playAnimation(string animation_id, string anim_sequence_id)
     {
         HPAnimation animation;
         if (loadedAnimations.ContainsKey(animation_id))
