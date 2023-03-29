@@ -54,7 +54,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         //Perform the entry actions
 
         if (config_sequence.data.startEdge.actions != null)
-            foreach (ConfigCharAnimSequence._CharAnimSequence._data.action action in config_sequence.data.startEdge.actions)
+            foreach (var action in config_sequence.data.startEdge.actions)
                 processAction(action);
 
 
@@ -98,7 +98,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
         if (config_sequence.data.nodes[node_index].edges[config_sequence.data.nodes[node_index].edges.Length - 1].actions != null) //activate the actions
         {
-            foreach (ConfigCharAnimSequence._CharAnimSequence._data.action action in config_sequence.data.nodes[node_index].edges[config_sequence.data.nodes[node_index].edges.Length - 1].actions)
+            foreach (var action in config_sequence.data.nodes[node_index].edges[config_sequence.data.nodes[node_index].edges.Length - 1].actions)
                 processAction(action);
         }
 
@@ -117,16 +117,16 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
         //Activate the actions
 
-        if (config_sequence.data.nodes[this.node_index].entryActions != null)
-            foreach (ConfigCharAnimSequence._CharAnimSequence._data.action action in config_sequence.data.nodes[this.node_index].entryActions)
+        if (config_sequence.data.nodes[node_index].entryActions != null)
+            foreach (var action in config_sequence.data.nodes[this.node_index].entryActions)
                 processAction(action);
 
 
         //Play the main animation
-        if (config_sequence.data.nodes[this.node_index].walkAnimName != null)
-            current_animation_name = config_sequence.data.nodes[this.node_index].walkAnimName;
-        else if (config_sequence.data.nodes[this.node_index].animName != null)
-            current_animation_name = config_sequence.data.nodes[this.node_index].animName;
+        if (config_sequence.data.nodes[node_index].walkAnimName != null)
+            current_animation_name = config_sequence.data.nodes[node_index].walkAnimName;
+        else if (config_sequence.data.nodes[node_index].animName != null)
+            current_animation_name = config_sequence.data.nodes[node_index].animName;
         else
             return;
         playAnimation(current_animation_name, config_sequence.sequenceId);
@@ -158,9 +158,13 @@ public abstract partial class AnimationSequence : MonoBehaviour
         if (config_sequence == null)
             return;
 
+        if (config_sequence.data.nodes[node_index].exitActions != null)
+            foreach (var action in config_sequence.data.nodes[node_index].exitActions)
+                processAction(action);
+
         //If we're a one shot and the next is theend, ignore block
 
-        if (config_sequence.data.nodes[this.node_index].blocking == true)
+        if (config_sequence.data.nodes[node_index].blocking == true)
         {
             if (!(config_sequence.isOneShot && getNextNodeIndex() == -1))
                 return;
@@ -168,7 +172,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
         // at this point, the animation has completed
         // min loops unimplemented. No idea how it works.
-        if (node_repeated >= config_sequence.data.nodes[this.node_index].maxLoops)
+        if (node_repeated >= config_sequence.data.nodes[node_index].maxLoops)
             advanceAnimSequence();
         else
             activateNode();

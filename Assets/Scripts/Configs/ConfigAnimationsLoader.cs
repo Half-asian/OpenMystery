@@ -119,6 +119,7 @@ public class ConfigCharAnimSequence : Config<ConfigCharAnimSequence>
                 }
                 public edge[] edges;
                 public action[] entryActions;
+                public action[] exitActions;
                 public string animName;
                 public string walkAnimName;
                 public string type;
