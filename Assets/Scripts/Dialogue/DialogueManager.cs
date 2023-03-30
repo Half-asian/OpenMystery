@@ -286,14 +286,14 @@ public class DialogueManager : MonoBehaviour
                 if (dialogue_line._headOnly != null && dialogue_line._headOnly.Length > i)
                 {
                     if (dialogue_line._headOnly[i] == "true")
-                        Events.turnHeadAt(action_params);
+                        Actor.getActor(action_params[0])?.queueTurnHeadAt(action_params);
                     else if (dialogue_line._headOnly[i] == "false")
-                        Events.lookAt(action_params);
+                        Actor.getActor(action_params[0])?.queueLookAt(action_params);
                     else
                         Debug.LogError("Unknown headOnly parameter in dialogue: " + dialogue_line._headOnly[i]);
                 }
                 else
-                    Events.lookAt(action_params);
+                    Actor.getActor(action_params[0])?.queueLookAt(action_params);
             }
         }
         if (dialogue_line.cameraShot != null)

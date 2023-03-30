@@ -53,11 +53,11 @@ public static class Events
                 break;
 
             case "turnHeadAt": //Don't move shoulders
-                turnHeadAt(action_params);
+                Actor.getActor(action_params[0])?.queueTurnHeadAt(action_params);
                 break;
 
             case "lookAt":
-                lookAt(action_params);
+                Actor.getActor(action_params[0])?.queueLookAt(action_params);
                 break;
 
             case "teleportCharacter":
@@ -436,129 +436,5 @@ public static class Events
     public static void doEventAction(string event_name, int event_index, string[] action_params, EventPlayer event_player)
     {
         doEventAction(event_name, Configs.config_script_events.ScriptEvents[event_name].action[event_index], action_params, event_player);
-    }
-    
-
-    public static void lookAt(string[] action_params) //Up to 4 parameters. Idk what 4 is for.
-    {
-        if (Actor.getActor(action_params[0]) == null)                     //Check Actor exists 
-        {
-            Debug.LogWarning("Lookat could not find actor: " + action_params[0]);
-            return;
-        }
-
-        if (action_params.Length < 2)                                                   //Actor clear
-        {
-            Actor.getActor(action_params[0]).clearLookat();
-            return;
-        }
-
-        float speed = 3.0f;
-
-        if (action_params.Length > 2)
-        {
-            float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out speed);
-
-            //QuidditchS1C10P3_hoochSlowLookOrion
-        }
-
-        //There is a mystery param 4 as well
-        //TLSQS3HouseCupP9_PennyWatchBackgroundLeave is the only case it is not set to 1
-
-        if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
-        {
-            Actor.getActor(action_params[0]).setLookAt(
-                Actor.getActor(action_params[1]), speed);
-            return;
-        }
-        else if (Prop.spawned_props.ContainsKey(action_params[1]))
-        {
-            Actor.getActor(action_params[0]).setLookAt(
-                Prop.spawned_props[action_params[1]], speed);
-            return;
-        }
-        else                                                                            //Actor look in specific direction
-        {
-            try
-            {
-                float x = 0;
-                string[] numbers = action_params[1].Split(',');
-                float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
-                if (numbers.Length > 1)
-                    x = float.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
-                if (x == 0 && y == 0)
-                {
-                    Actor.getActor(action_params[0]).clearLookat();
-                }
-                else
-                {
-                    Actor.getActor(action_params[0]).setLookAt(-x, y, speed);
-                }
-            }
-            catch
-            {
-                Debug.LogError("Unknown second param for lookat " + action_params[0] + " " + action_params[1]);
-            }
-        }
-    }
-
-    public static void turnHeadAt(string[] action_params)
-    {
-        if (Actor.getActor(action_params[0]) == null)                     //Check Actor exists 
-        {
-            Debug.LogWarning("Lookat could not find actor: " + action_params[0]);
-            return;
-        }
-
-        if (action_params.Length < 2)                                                   //Actor clear
-        {
-            Actor.getActor(action_params[0])?.clearTurnHeadAt();
-            return;
-        }
-
-        float speed = 3.0f;
-
-        if (action_params.Length > 2)
-        {
-            speed = float.Parse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture);
-
-            //QuidditchS1C10P3_hoochSlowLookOrion
-        }
-
-        if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
-        {
-            Actor.getActor(action_params[0]).setTurnHeadAt(
-                Actor.getActor(action_params[1]), speed);
-            return;
-        }
-        else if (Prop.spawned_props.ContainsKey(action_params[1]))
-        {
-            Actor.getActor(action_params[0]).setTurnHeadAt(
-                Prop.spawned_props[action_params[1]], speed);
-            return;
-        }
-        else                                                                            //Actor look in specific direction
-        {
-            try
-            {
-                float x = 0;
-                string[] numbers = action_params[1].Split(',');
-                float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
-                if (numbers.Length > 1)
-                    x = int.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
-                if (x == 0 && y == 0)
-                {
-                    Actor.getActor(action_params[0]).clearLookat();
-                }
-                else
-                {
-                    Actor.getActor(action_params[0]).setTurnHeadAt(-x, y, speed);
-                }
-            }
-            catch
-            {
-                Debug.LogError("Unknown second param for turnheadat " + action_params[0] + " " + action_params[1]);
-            }
-        }
     }
 }

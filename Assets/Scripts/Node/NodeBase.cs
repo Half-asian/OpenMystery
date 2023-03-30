@@ -30,6 +30,12 @@ public abstract partial class Node : MonoBehaviour
     {
         if (queued_anim != null)
             playAnimationOnComponent();
+        OnUpdate();
+    }
+
+    protected virtual void OnUpdate()
+    {
+
     }
 
     public void setup(Model _model)

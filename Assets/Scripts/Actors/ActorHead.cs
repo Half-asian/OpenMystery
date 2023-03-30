@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public partial class ActorController
@@ -29,6 +31,143 @@ public partial class ActorController
     bool aim_bigger_x = false;
     bool aim_bigger_y = false;
 
+    [SerializeField]
+    private string target_id;
+
+    private string[] queued_lookat = null;
+    private string[] queued_turnheadat = null;
+
+    public void queueLookAt(string[] action_params)
+    {
+        queued_lookat = action_params;
+    }
+    public void queueTurnHeadAt(string[] action_params)
+    {
+        queued_turnheadat = action_params;
+    }
+    private void headUpdate()
+    {
+        if (queued_lookat != null)
+        {
+            lookAt(queued_lookat);
+            queued_lookat = null;
+        }
+        if (queued_turnheadat != null)
+        {
+            turnHeadAt(queued_turnheadat);
+            queued_turnheadat = null;
+        }
+    }
+
+    public void lookAt(string[] action_params)
+    {
+        if (action_params.Length < 2)                                                   //Actor clear
+        {
+            clearLookat();
+            return;
+        }
+
+        float speed = 3.0f;
+
+        if (action_params.Length > 2)
+        {
+            float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out speed);
+
+            //QuidditchS1C10P3_hoochSlowLookOrion
+        }
+
+        //There is a mystery param 4 as well
+        //TLSQS3HouseCupP9_PennyWatchBackgroundLeave is the only case it is not set to 1
+
+        if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
+        {
+            setLookAt(Actor.getActor(action_params[1]), speed);
+            return;
+        }
+        else if (Prop.spawned_props.ContainsKey(action_params[1]))
+        {
+            setLookAt(Prop.spawned_props[action_params[1]], speed);
+            return;
+        }
+        else                                                                            //Actor look in specific direction
+        {
+            try
+            {
+                float x = 0;
+                string[] numbers = action_params[1].Split(',');
+                float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (numbers.Length > 1)
+                    x = float.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (x == 0 && y == 0)
+                {
+                    clearLookat();
+                }
+                else
+                {
+                    setLookAt(-x, y, speed);
+                }
+            }
+            catch
+            {
+                Debug.LogError("Unknown second param for lookat " + action_params[0] + " " + action_params[1]);
+            }
+        }
+    }
+
+    private void turnHeadAt(string[] action_params)
+    {
+        if (action_params.Length < 2)                                                   //Actor clear
+        {
+            clearTurnHeadAt();
+            return;
+        }
+
+        float speed = 3.0f;
+
+        if (action_params.Length > 2)
+        {
+            speed = float.Parse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture);
+
+            //QuidditchS1C10P3_hoochSlowLookOrion
+        }
+
+        if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
+        {
+            setTurnHeadAt(
+                Actor.getActor(action_params[1]), speed);
+            return;
+        }
+        else if (Prop.spawned_props.ContainsKey(action_params[1]))
+        {
+            setTurnHeadAt(
+                Prop.spawned_props[action_params[1]], speed);
+            return;
+        }
+        else                                                                            //Actor look in specific direction
+        {
+            try
+            {
+                float x = 0;
+                string[] numbers = action_params[1].Split(',');
+                float y = float.Parse(numbers[0], NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (numbers.Length > 1)
+                    x = int.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
+                if (x == 0 && y == 0)
+                {
+                    clearLookat();
+                }
+                else
+                {
+                    setTurnHeadAt(-x, y, speed);
+                }
+            }
+            catch
+            {
+                Debug.LogError("Unknown second param for turnheadat " + action_params[0] + " " + action_params[1]);
+            }
+        }
+    }
+
     public void setLookAt(ActorController target_actor, float new_speed = 3.0f)
     {
         setActorTarget(target_actor);
@@ -39,6 +178,7 @@ public partial class ActorController
         last_actor_controller = target_actor;
         last_prop = null;
         last_vec3 = Vector3.zero;
+        target_id = target_actor.name;
     }
 
     public void setLookAt(Prop target_prop, float new_speed = 3.0f)
@@ -51,6 +191,7 @@ public partial class ActorController
         last_actor_controller = null;
         last_prop = target_prop;
         last_vec3 = Vector3.zero;
+        target_id = target_prop.name;
     }
 
     public void setLookAt(float x, float y, float new_speed = 3.0f)
@@ -63,6 +204,7 @@ public partial class ActorController
         last_vec3 = new Vector3(x, y, 0);
         last_actor_controller = null;
         last_prop = null;
+        target_id = x + " " + y;
     }
 
     public void setTurnHeadAt(ActorController target_actor, float new_speed = 3.0f)
@@ -75,6 +217,7 @@ public partial class ActorController
         last_actor_controller = target_actor;
         last_prop = null;
         last_vec3 = Vector3.zero;
+        target_id = target_actor.name;
     }
 
     public void setTurnHeadAt(Prop target_prop, float new_speed = 3.0f)
@@ -87,6 +230,7 @@ public partial class ActorController
         last_actor_controller = null;
         last_prop = target_prop;
         last_vec3 = Vector3.zero;
+        target_id = target_prop.name;
     }
 
     public void setTurnHeadAt(float x, float y, float new_speed = 3.0f)
@@ -99,6 +243,7 @@ public partial class ActorController
         last_vec3 = new Vector3(x, y, 0);
         last_actor_controller = null;
         last_prop = null;
+        target_id = x + " " + y;
     }
 
     public void refreshLookAts(Vector3 waypoint_euler_angles)

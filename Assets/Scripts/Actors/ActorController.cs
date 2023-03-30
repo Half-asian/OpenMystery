@@ -16,6 +16,11 @@ public partial class ActorController : Node
         ApplyHeadTurns();
     }
 
+    protected override void OnUpdate()
+    {
+        headUpdate();
+    }
+
     public new void setup(Model _model)
     {
         base.setup(_model);
