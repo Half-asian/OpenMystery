@@ -158,6 +158,9 @@ public abstract partial class AnimationSequence : MonoBehaviour
         if (config_sequence == null)
             return;
 
+        if (Configs.config_animation.Animation3D[animation_name].wrapMode == "loop")
+            return;
+
         if (config_sequence.data.nodes[node_index].exitActions != null)
             foreach (var action in config_sequence.data.nodes[node_index].exitActions)
                 processAction(action);
