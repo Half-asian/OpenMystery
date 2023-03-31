@@ -148,64 +148,64 @@ public class Project
         if (station_progress == 0)
         {
             GameStart.interaction_manager.spawnInteraction(config_project.classIntro);
-            InteractionManager.all_interactions_destroyed_event += onClassIntroComplete;
+            InteractionManager.all_interactions_destroyed_event += spawnStationIntro;
             return;
         }
 
         var project_station = config_project.stations[station_progress];
         var station = Configs.config_station.Station[project_station.id];
         GameStart.interaction_manager.spawnInteraction(station.stationIntro);
-        InteractionManager.all_interactions_destroyed_event += onStationIntroComplete;
+        InteractionManager.all_interactions_destroyed_event += spawnStationProgress;
     }
 
-    private static void onClassIntroComplete()
+    private static void spawnStationIntro()
     {
-        InteractionManager.all_interactions_destroyed_event -= onClassIntroComplete;
+        InteractionManager.all_interactions_destroyed_event -= spawnStationIntro;
         var project_station = config_project.stations[station_progress];
         var station = Configs.config_station.Station[project_station.id];
         GameStart.interaction_manager.spawnInteraction(station.stationIntro);
-        InteractionManager.all_interactions_destroyed_event += onStationIntroComplete;
+        InteractionManager.all_interactions_destroyed_event += spawnStationProgress;
     }
 
-    private static void onStationIntroComplete()
+    private static void spawnStationProgress()
     {
-        InteractionManager.all_interactions_destroyed_event -= onStationIntroComplete;
+        InteractionManager.all_interactions_destroyed_event -= spawnStationProgress;
         var project_station = config_project.stations[station_progress];
         var station = Configs.config_station.Station[project_station.id];
         GameStart.interaction_manager.spawnInteraction(station.progress);
-        InteractionManager.all_interactions_destroyed_event += onStationProgressComplete;
+        InteractionManager.all_interactions_destroyed_event += spawnStationOnComplete;
     }
 
-    private static void onStationProgressComplete()
+    private static void spawnStationOnComplete()
     {
-        InteractionManager.all_interactions_destroyed_event -= onStationProgressComplete;
-        var project_station = config_project.stations[station_progress];
-        var station = Configs.config_station.Station[project_station.id];
-        GameStart.interaction_manager.spawnInteraction(station.outro);
-        InteractionManager.all_interactions_destroyed_event += onStationOutroComplete;
-    }
-
-    private static void onStationOutroComplete()
-    {
-        InteractionManager.all_interactions_destroyed_event -= onStationOutroComplete;
-        var project_station = config_project.stations[station_progress];
-        var station = Configs.config_station.Station[project_station.id];
-        GameStart.interaction_manager.spawnInteraction(station.quiz);
-        InteractionManager.all_interactions_destroyed_event += onStationQuizComplete;
-    }
-
-    private static void onStationQuizComplete()
-    {
-        InteractionManager.all_interactions_destroyed_event -= onStationQuizComplete;
+        InteractionManager.all_interactions_destroyed_event -= spawnStationOnComplete;
         var project_station = config_project.stations[station_progress];
         var station = Configs.config_station.Station[project_station.id];
         GameStart.interaction_manager.spawnInteraction(station.onComplete);
-        InteractionManager.all_interactions_destroyed_event += onStationComplete;
+        InteractionManager.all_interactions_destroyed_event += spawnStationOutro;
+    }
+
+    private static void spawnStationOutro()
+    {
+        InteractionManager.all_interactions_destroyed_event -= spawnStationOutro;
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        GameStart.interaction_manager.spawnInteraction(station.outro);
+        InteractionManager.all_interactions_destroyed_event += spawnStationQuiz;
+    }
+
+    private static void spawnStationQuiz()
+    {
+        InteractionManager.all_interactions_destroyed_event -= spawnStationQuiz;
+        var project_station = config_project.stations[station_progress];
+        var station = Configs.config_station.Station[project_station.id];
+        GameStart.interaction_manager.spawnInteraction(station.quiz);
+        InteractionManager.all_interactions_destroyed_event += completeStation;
     }
     
-    private static void onStationComplete()
+    private static void completeStation()
     {
-        InteractionManager.all_interactions_destroyed_event -= onStationComplete;
+        InteractionManager.all_interactions_destroyed_event -= completeStation;
         var project_station = config_project.stations[station_progress];
         if (project_station.actorAliases != null)
         {
