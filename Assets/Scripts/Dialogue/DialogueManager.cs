@@ -79,23 +79,9 @@ public class DialogueManager : MonoBehaviour
         setDialogueUIActive.Invoke(false);
     }
 
-    //When we only know the dialogue id
-    public bool activateDialogue(string dialogue)
+    public static string getFirstDialogueLine(string dialogue)
     {
-        if (Configs.dialogue_dict.ContainsKey(VariantManager.getVariantForId(dialogue)))
-            dialogue = VariantManager.getVariantForId(dialogue);
-
-        in_dialogue = true;
-
-        dialogue_id = dialogue;
-
         string initial_dialogue_line = null;
-
-        if (!Configs.dialogue_dict.ContainsKey(dialogue))
-        {
-            Debug.LogError("DialogueManager:activateNewDialogue - Config empty for dialogue " + dialogue + " in HPDialogueLines");
-            return false;
-        }
 
         foreach (ConfigHPDialogueLine.HPDialogueLine i in Configs.dialogue_dict[dialogue])
         {
@@ -105,7 +91,8 @@ public class DialogueManager : MonoBehaviour
                 break; //There can be multiple. Take the first one.
             }
         }
-        if (initial_dialogue_line is null) {
+        if (initial_dialogue_line is null)
+        {
             foreach (ConfigHPDialogueLine.HPDialogueLine i in Configs.dialogue_dict[dialogue])
             {
                 if (i.id == dialogue + "1")
@@ -124,7 +111,26 @@ public class DialogueManager : MonoBehaviour
         if (initial_dialogue_line is null)
             initial_dialogue_line = Configs.dialogue_dict[dialogue][0].id; //No initial turn? Thats fine. Take the first match.
 
-        return activateDialogueLine(initial_dialogue_line);
+        return initial_dialogue_line;
+    }
+
+    //When we only know the dialogue id
+    public bool activateDialogue(string dialogue)
+    {
+        if (Configs.dialogue_dict.ContainsKey(VariantManager.getVariantForId(dialogue)))
+            dialogue = VariantManager.getVariantForId(dialogue);
+
+        in_dialogue = true;
+
+        dialogue_id = dialogue;
+
+        if (!Configs.dialogue_dict.ContainsKey(dialogue))
+        {
+            Debug.LogError("DialogueManager:activateNewDialogue - Config empty for dialogue " + dialogue + " in HPDialogueLines");
+            return false;
+        }
+
+        return activateDialogueLine(getFirstDialogueLine(dialogue));
     }
 
     private bool activateDialogueLine(string dialogue_name)
