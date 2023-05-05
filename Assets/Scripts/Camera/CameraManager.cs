@@ -38,6 +38,9 @@ public class CameraManager : MonoBehaviour
     private Transform camera_jt_anim_bind_transform;
     [SerializeField]
 
+    //Used for scrolling back and forth a scene
+    private HPAnimation scene_cam_animation;
+
     private CameraState camera_state;
     private Model camera_model;
     private IEnumerator lerpCoroutine;
@@ -104,6 +107,8 @@ public class CameraManager : MonoBehaviour
 
     public ConfigScene._Scene.Camera focusCam(ref string[] action_params)
     {
+        Debug.LogError("focusCam " + action_params[0]);
+
         if (camera_state == CameraState.StateLerp)
         {
             camera_transform.localPosition = Vector3.zero;
@@ -135,6 +140,7 @@ public class CameraManager : MonoBehaviour
         }
         else
         {
+            scene_cam_animation = null;
             if (float.TryParse(action_params[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float time))
                 last_camera = lerpFocusCam(action_params[0], time);
             else
@@ -186,6 +192,7 @@ public class CameraManager : MonoBehaviour
     //Camera can still be moved by the player
     public void panCamOnTrack(string animation)
     {
+        Debug.LogError("panCamOnTrack!");
         if (animation == null)
             return;
 
@@ -197,6 +204,29 @@ public class CameraManager : MonoBehaviour
         camera_holder_animation_component.Play("default");
         StartCoroutine(waitPanCam(anim_clip_pancam.length));
     }
+
+    public void moveCamOnTrackCharacter(string character_id)
+    {
+        if (scene_cam_animation == null) return;
+        var character = Actor.getActor(character_id);
+        if (character == null) return;
+        float best_time = 0f;
+        float best_distance = 9999f;
+        for (float time = 0f; time < scene_cam_animation.anim_clip.length; time += 0.01f)
+        {
+            scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, time);
+            float distance = Vector3.Distance(character.gameObject.transform.position, camera_jt_cam_bind_transform.position);
+            Debug.Log("Sample time " + time + " distance " + distance);
+            if (distance < best_distance)
+            {
+                best_time = time;
+                best_distance = distance;
+            }
+        }
+        scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, best_time);
+        Debug.Log("moveCamOnTrackCharacter " + best_time + " " + scene_cam_animation.anim_clip.length + " " + best_distance);
+    }
+
 
     /*----------        Private        ----------*/
     private void Awake()
@@ -259,8 +289,6 @@ public class CameraManager : MonoBehaviour
     //Camera can still be moved by the player
     private ConfigScene._Scene.Camera staticFocusCam(string camera_name)
     {
-        Debug.Log("Static FocusCam " + camera_name);
-
         setCameraState(CameraState.StateStatic);
 
         //Get the scene camera
@@ -278,12 +306,15 @@ public class CameraManager : MonoBehaviour
         camera_jt_cam_bind_transform.transform.localRotation = camera_transform.rotation;
 
         //Set the sampled animation
-        if (camera.animation != null)
+        if (camera.animation == null)
         {
-            var animation = AnimationManager.loadAnimationClip(
+            scene_cam_animation = null;
+        }
+        else
+        {
+            scene_cam_animation = AnimationManager.loadAnimationClip(
                 camera.animation, camera_model, null, null, null, is_camera: true);
-            if (animation!= null)
-                animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, 0.0f);
+            scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, 0.0f);
         }
 
         //Game defined Field of View is often pretty bad. Usually looks better if its constant.
@@ -299,8 +330,6 @@ public class CameraManager : MonoBehaviour
     //Player cannot be moved by the player
     private ConfigScene._Scene.Camera lerpFocusCam(string camera_name, float time)
     {
-        Debug.Log("Lerp cam");
-
         setCameraState(CameraState.StateLerp);
 
         //Get Camera
