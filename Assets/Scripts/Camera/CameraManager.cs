@@ -107,8 +107,6 @@ public class CameraManager : MonoBehaviour
 
     public ConfigScene._Scene.Camera focusCam(ref string[] action_params)
     {
-        Debug.LogError("focusCam " + action_params[0]);
-
         if (camera_state == CameraState.StateLerp)
         {
             camera_transform.localPosition = Vector3.zero;
@@ -192,7 +190,6 @@ public class CameraManager : MonoBehaviour
     //Camera can still be moved by the player
     public void panCamOnTrack(string animation)
     {
-        Debug.LogError("panCamOnTrack!");
         if (animation == null)
             return;
 
@@ -216,7 +213,6 @@ public class CameraManager : MonoBehaviour
         {
             scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, time);
             float distance = Vector3.Distance(character.gameObject.transform.position, camera_jt_cam_bind_transform.position);
-            Debug.Log("Sample time " + time + " distance " + distance);
             if (distance < best_distance)
             {
                 best_time = time;
@@ -224,7 +220,6 @@ public class CameraManager : MonoBehaviour
             }
         }
         scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, best_time);
-        Debug.Log("moveCamOnTrackCharacter " + best_time + " " + scene_cam_animation.anim_clip.length + " " + best_distance);
     }
 
 

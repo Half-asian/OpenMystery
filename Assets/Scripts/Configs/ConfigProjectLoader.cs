@@ -73,10 +73,9 @@ public class ConfigProject : Config<ConfigProject>
             ConfigScenario.getAllReferences(project.introScenarioId, ref reference_tree);
         if (project.outroScenarioId != null)
             ConfigScenario.getAllReferences(project.outroScenarioId, ref reference_tree);
-        if (project.variantTag != null)
         if (project.scenarioId != null)
             ConfigScenario.getAllReferences(project.scenarioId, ref reference_tree);
-        if (project.variantTag != null) ;
+        if (project.variantTag != null)
             VariantManager.setVariant(project.variantTag);
         if (project.classIntro != null)
             ConfigInteraction.getAllReferences(project.classIntro, ref reference_tree);
