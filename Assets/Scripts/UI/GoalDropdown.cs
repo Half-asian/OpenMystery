@@ -17,6 +17,10 @@ namespace UI
         protected Dropdown _goal_dropdown;
         public IQuestBox _quest_box;
         UnityEvent<string> _event_goal_dropdown_changed;
+        [SerializeField]
+        protected GameObject warning_popup;
+        [SerializeField]
+        protected TMPro.TMP_Text warning_text;
 
         public void Awake()
         {
@@ -105,18 +109,51 @@ namespace UI
             int class_count = current_goal_chain.classGoalIds != null ? current_goal_chain.classGoalIds.Count : 0;
             //int assignment_count = current_goal_chain.assignments != null ? current_goal_chain.assignments.Count : 0;
 
+            string goal;
+
+
             if (_goal_dropdown.value < goal_count)
             {
-                return current_goal_chain.goalIds[_goal_dropdown.value][0];
+                goal = current_goal_chain.goalIds[_goal_dropdown.value][0];
             }
             else if (_goal_dropdown.value < goal_count + class_count)
             {
-                return current_goal_chain.classGoalIds[_goal_dropdown.value - goal_count];
+                goal = current_goal_chain.classGoalIds[_goal_dropdown.value - goal_count];
             }
             else
             {
-                return current_goal_chain.assignments[_goal_dropdown.value - goal_count - class_count];
+                goal = current_goal_chain.assignments[_goal_dropdown.value - goal_count - class_count];
             }
+
+            Configs.reference_tree = new ReferenceTree();
+            ConfigGoal.getAllReferences(goal, ref Configs.reference_tree);
+            List<string> missing_actions = new List<string>();
+            foreach (var script_event in Configs.reference_tree.script_events)
+            {
+                foreach (var action in Configs.config_script_events.ScriptEvents[script_event].action ?? Enumerable.Empty<string>())
+                {
+                    if (!EventActions.implemented_actions.Contains(action) && !missing_actions.Contains(action))
+                    {
+                        missing_actions.Add(action);
+                    }
+                }
+            }
+            if (missing_actions.Count > 0)
+            {
+                warning_popup.SetActive(true);
+                string text = "Warning: the selected goal uses the following event actions that are currently unimplemented: ";
+                foreach(var action in missing_actions)
+                {
+                    text += action + "\n";
+                }
+                text += "There is a possibility that this may impact your experience.";
+                warning_text.text = text;
+            }
+            else
+            {
+                warning_popup.SetActive(false);
+            }
+            return goal;
         }
 
         public int getCurrentGoalIndex(GoalChainType goalChainType)

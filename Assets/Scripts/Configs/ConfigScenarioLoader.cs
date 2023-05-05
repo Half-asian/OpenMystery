@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using static ConfigInteraction;
 
 public class ConfigScenario : Config<ConfigScenario>
 {
@@ -20,9 +21,9 @@ public class ConfigScenario : Config<ConfigScenario>
         }
         public CharSpawn[] charSpawns;
         public List<string[]> randomSpawns;
-        public string[] enterEvents;
-        public string[] resumeEvents; //What is this?
-        public string[] tappies;
+        public List<string> enterEvents;
+        public List<string> resumeEvents; //What is this?
+        public List<string> tappies;
         public string firstAction;
         public string mapLocationId;
         [JsonProperty(PropertyName = "ignoreme")]
@@ -53,6 +54,29 @@ public class ConfigScenario : Config<ConfigScenario>
             }
         }
         return this;
+    }
+    public static void getAllReferences(string scenario_id, ref ReferenceTree reference_tree)
+    {
+        if (!reference_tree.scenarios.Contains(scenario_id))
+            reference_tree.scenarios.Add(scenario_id);
+        else
+            return;
+
+        var scenario = Configs.config_scenario.Scenario[scenario_id];
+        foreach (var script_event in scenario.enterEvents ?? Enumerable.Empty<string>())
+        {
+            if (!reference_tree.script_events.Contains(script_event))
+                reference_tree.script_events.Add(script_event);
+        }
+        foreach (var script_event in scenario.resumeEvents ?? Enumerable.Empty<string>())
+        {
+            if (!reference_tree.script_events.Contains(script_event))
+                reference_tree.script_events.Add(script_event);
+        }
+        if (scenario.firstAction != null)
+        {
+            ConfigInteraction.getAllReferences(scenario.firstAction, ref reference_tree);
+        }
     }
 
 }

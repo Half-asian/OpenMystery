@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+
 public class ConfigScriptEvents : Config<ConfigScriptEvents>
 {
     [System.Serializable]
@@ -54,6 +56,17 @@ public class ConfigScriptEvents : Config<ConfigScriptEvents>
         List<ConfigScriptEvents> configs = getConfigList(type);
         configs[0].combine(configs);
         return configs[0];
+    }
+
+    public static void getAllReferences(string script_event_id, ref ReferenceTree reference_tree)
+    {
+        if (Configs.config_script_events.ScriptEvents.ContainsKey(VariantManager.getVariantForId(script_event_id)))
+            script_event_id = VariantManager.getVariantForId(script_event_id);
+
+        if (!reference_tree.script_events.Contains(script_event_id))
+            reference_tree.script_events.Add(script_event_id);
+        else
+            return;
     }
 }
 

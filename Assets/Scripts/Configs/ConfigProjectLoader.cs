@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using static ConfigProject._Project;
 
 public class ConfigProject : Config<ConfigProject>
 {
@@ -55,6 +56,37 @@ public class ConfigProject : Config<ConfigProject>
     {
         Configs.config_project = getJObjectsConfigsListST("Project");
     }
+
+    public static void getAllReferences(string project_id, ref ReferenceTree reference_tree)
+    {
+        if (!reference_tree.projects.Contains(project_id))
+            reference_tree.projects.Add(project_id);
+        else
+            return;
+
+        var project = Configs.config_project.Project[project_id];
+
+
+        if (project.failureOutroScenarioId != null)
+            ConfigScenario.getAllReferences(project.failureOutroScenarioId, ref reference_tree);
+        if (project.introScenarioId != null)
+            ConfigScenario.getAllReferences(project.introScenarioId, ref reference_tree);
+        if (project.outroScenarioId != null)
+            ConfigScenario.getAllReferences(project.outroScenarioId, ref reference_tree);
+        if (project.variantTag != null)
+        if (project.scenarioId != null)
+            ConfigScenario.getAllReferences(project.scenarioId, ref reference_tree);
+        if (project.variantTag != null) ;
+            VariantManager.setVariant(project.variantTag);
+        if (project.classIntro != null)
+            ConfigInteraction.getAllReferences(project.classIntro, ref reference_tree);
+        foreach (var station in project.stations ?? Enumerable.Empty<Station>())
+        {
+            ConfigStation.getAllReferences(station.id, ref reference_tree);
+        }
+
+        VariantManager.removeVariant();
+    }
 }
 
 public class ConfigStation : Config<ConfigStation>
@@ -86,5 +118,27 @@ public class ConfigStation : Config<ConfigStation>
     public static void getConfig()
     {
         Configs.config_station = getJObjectsConfigsListST("Station");
+    }
+    public static void getAllReferences(string station_id, ref ReferenceTree reference_tree)
+    {
+        if (!reference_tree.stations.Contains(station_id))
+            reference_tree.stations.Add(station_id);
+        else
+            return;
+
+        var station = Configs.config_station.Station[station_id];
+
+        if (station.onComplete != null)
+            ConfigInteraction.getAllReferences(station.onComplete, ref reference_tree);
+        if (station.outro != null)
+            ConfigInteraction.getAllReferences(station.outro, ref reference_tree);
+        if (station.progress != null)
+            ConfigInteraction.getAllReferences(station.progress, ref reference_tree);
+        if (station.quiz != null)
+            ConfigInteraction.getAllReferences(station.quiz, ref reference_tree);
+        if (station.stationIntro != null)
+            ConfigInteraction.getAllReferences(station.stationIntro, ref reference_tree);
+        if (station.title != null)
+            ConfigInteraction.getAllReferences(station.title, ref reference_tree);
     }
 }

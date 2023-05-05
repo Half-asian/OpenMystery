@@ -83,6 +83,20 @@ public class ConfigHubNPC : Config<ConfigHubNPC>
     {
         Configs.config_hub_npc = getJObjectsConfigsListST("HubNpc");
     }
+    public static void getAllReferences(string hub_npc_id, ref ReferenceTree reference_tree)
+    {
+        if (!reference_tree.hub_npcs.Contains(hub_npc_id))
+            reference_tree.hub_npcs.Add(hub_npc_id);
+        else
+            return;
+
+        var hub_npc = Configs.config_hub_npc.HubNPC[hub_npc_id];
+        if (hub_npc.primaryDialogue != null)
+        {
+            ConfigHPDialogueLine.getAllReferences(DialogueManager.getFirstDialogueLine(hub_npc.primaryDialogue), ref reference_tree);
+        }
+
+    }
 }
 
 public class ConfigNpcWaypointSpawn : Config<ConfigNpcWaypointSpawn>

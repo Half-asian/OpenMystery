@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using static ConfigGoal;
 
 public class ConfigGoalChain : Config<ConfigGoalChain>
 {
@@ -41,6 +42,29 @@ public class ConfigGoalChain : Config<ConfigGoalChain>
     {
         Configs.config_goal_chain = getJObjectsConfigsListST("GoalChain");
     }
+
+    public static void getAllReferences(string goal_chain_id, ref ReferenceTree reference_tree)
+    {
+        if (!reference_tree.goal_chains.Contains(goal_chain_id))
+            reference_tree.goal_chains.Add(goal_chain_id);
+        else
+            return;
+
+        var goal_chain = Configs.config_goal_chain.GoalChain[goal_chain_id];
+        foreach (var goal_list in goal_chain.goalIds)
+        {
+            foreach (var goal in goal_list)
+            {
+                ConfigGoal.getAllReferences(goal, ref reference_tree);
+            }
+        }
+        foreach(var class_goal_id in goal_chain.classGoalIds)
+        {
+            ConfigGoal.getAllReferences(class_goal_id, ref reference_tree);
+        }
+        //TODO: Assignments
+    }
+
 }
 
 public class ConfigGoal : Config<ConfigGoal>
@@ -81,6 +105,19 @@ public class ConfigGoal : Config<ConfigGoal>
     public static void getConfig()
     {
         Configs.config_goal = getJObjectsConfigsListST("Goals");
+    }
+    public static void getAllReferences(string goal_id, ref ReferenceTree reference_tree)
+    {
+        if (!reference_tree.goals.Contains(goal_id))
+            reference_tree.goals.Add(goal_id);
+        else
+            return;
+
+        var goal = Configs.config_goal.Goals[goal_id];
+        foreach(var objective_id in goal.required_steps)
+        {
+            ConfigObjective.getAllReferences(objective_id, ref reference_tree);
+        }
     }
 }
 
@@ -158,5 +195,24 @@ public class ConfigObjective : Config<ConfigObjective>
     public static void getConfig()
     {
         Configs.config_objective = getJObjectsConfigsListST("Objectives");
+    }
+
+    public static void getAllReferences(string objective_id, ref ReferenceTree reference_tree)
+    {
+        if (!reference_tree.objectives.Contains(objective_id))
+            reference_tree.objectives.Add(objective_id);
+        else
+            return;
+
+        var objective = Configs.config_objective.Objectives[objective_id];
+        if (objective.objectiveScenario != null)
+        {
+            ConfigScenario.getAllReferences(objective.objectiveScenario, ref reference_tree);
+        }
+        foreach(var objective_hub_npc in objective.objectiveHubNpcs ?? Enumerable.Empty<string>())
+        {
+            ConfigHubNPC.getAllReferences(objective_hub_npc, ref reference_tree);
+        }
+
     }
 }

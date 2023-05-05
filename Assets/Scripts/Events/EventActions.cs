@@ -37,10 +37,10 @@ public static class EventActions
             return;
         }
 
-        //if (!Configs.r.script_events.Contains(event_id))
-        //{
-        //    throw new System.Exception("Reference tree did not contain " +  event_id);
-        //}
+        if (Application.isEditor && !Configs.reference_tree.script_events.Contains(event_id))
+        {
+            Debug.LogError("Reference tree did not contain " +  event_id);
+        }
 
         switch (action_type)
         {

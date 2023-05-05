@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using static ConfigScriptEvents;
 
 public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
 {
@@ -76,6 +78,42 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
         List<ConfigHPDialogueLine> configs = getConfigList(type);
         configs[0].combine(configs);
         return configs[0];
+    }
+
+    public static void getAllReferences(string dialogue_id, ref ReferenceTree reference_tree)
+    {
+        if (Configs.config_hp_dialogue_line.HPDialogueLines.ContainsKey(VariantManager.getVariantForId(dialogue_id)))
+            dialogue_id = VariantManager.getVariantForId(dialogue_id);
+
+        if (!reference_tree.dialogues.Contains(dialogue_id))
+            reference_tree.dialogues.Add(dialogue_id);
+        else
+            return;
+        var dialogue = Configs.config_hp_dialogue_line.HPDialogueLines[dialogue_id];
+        foreach (var script_event in dialogue.enterEvents ?? Enumerable.Empty<string>())
+        {
+            if (!reference_tree.script_events.Contains(script_event))
+                reference_tree.script_events.Add(script_event);
+        }
+        foreach (var script_event in dialogue.exitEvents ?? Enumerable.Empty<string>())
+        {
+            if (!reference_tree.script_events.Contains(script_event))
+                reference_tree.script_events.Add(script_event);
+        }
+        foreach (var script_event in dialogue.emoteEvents ?? Enumerable.Empty<string>())
+        {
+            if (!reference_tree.script_events.Contains(script_event))
+                reference_tree.script_events.Add(script_event);
+        }
+        foreach (var script_event in dialogue.emoteResetEvents ?? Enumerable.Empty<string>())
+        {
+            if (!reference_tree.script_events.Contains(script_event))
+                reference_tree.script_events.Add(script_event);
+        }
+        foreach(var next_turn_id in dialogue.nextTurnIds ?? Enumerable.Empty<string>())
+        {
+            getAllReferences(next_turn_id, ref reference_tree);
+        }
     }
 }
 

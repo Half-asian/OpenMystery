@@ -512,6 +512,8 @@ public class Configs{
         Configs.config_hp_actor_info.HPActorInfo["c_TonksMasquerade_skin"].modelPatches = new string[] { "c_NymphadoraTonksFaceClavicle_skin", "c_NPC_wand_generic_skin", "c_Female_MasqueradeBallOutfit_outfit_skin", "c_StudentHandsWhite_skin" };
     }
 
+    public static ReferenceTree reference_tree;
+
     public static void loadConfigModelInspector()
     {
         config_texture = ConfigTexture.getJObjectsConfigsListST("TextureConfig");

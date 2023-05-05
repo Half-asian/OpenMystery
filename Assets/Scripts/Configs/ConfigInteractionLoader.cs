@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using static ConfigInteraction;
 using static ConfigQuizGroup;
 
@@ -112,6 +113,56 @@ public class ConfigInteraction : Config<ConfigInteraction>
         List<ConfigInteraction> configs = getConfigList(type);
         configs[0].combine(configs);
         return configs[0];
+    }
+
+    public static void getAllReferences(string interaction_id, ref ReferenceTree reference_tree)
+    {
+        if (!reference_tree.interactions.Contains(interaction_id))
+            reference_tree.interactions.Add(interaction_id);
+        else
+            return;
+        var interaction = Configs.config_interaction.Interactions[interaction_id];
+        foreach (var script_event in interaction.enterEvents ?? Enumerable.Empty<string>())
+        {
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
+        }
+        foreach (var script_event in interaction.exitEvents ?? Enumerable.Empty<string>())
+        {
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
+        }
+        foreach (var script_event in interaction.qteSuccessEvents ?? Enumerable.Empty<string>())
+        {
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
+        }
+        foreach (var script_event in interaction.qteFailEvents ?? Enumerable.Empty<string>())
+        {
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
+        }
+        foreach (var script_event in interaction.successEvents ?? Enumerable.Empty<string>())
+        {
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
+        }
+        foreach (var script_event in interaction.failEvents ?? Enumerable.Empty<string>())
+        {
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
+        }
+        if (interaction.dialogId != null)
+            ConfigHPDialogueLine.getAllReferences(DialogueManager.getFirstDialogueLine(interaction.dialogId), ref reference_tree);
+        if (interaction.projectId != null)
+            ConfigProject.getAllReferences(interaction.projectId, ref reference_tree);
+
+        //encounterId
+        if (interaction.scenarioId != null)
+            ConfigScenario.getAllReferences(interaction.scenarioId, ref reference_tree);
+        //matchId
+        foreach (var group_member_id in interaction.groupMembers ?? Enumerable.Empty<string>())
+        {
+            getAllReferences(group_member_id, ref reference_tree);
+        }
+        foreach (var leads_to_id in interaction.leadsTo ?? Enumerable.Empty<string>())
+        {
+            getAllReferences(leads_to_id, ref reference_tree);
+        }
     }
 
 }
