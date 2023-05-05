@@ -195,8 +195,7 @@ public partial class ActorController : Node
 
         if (is_moving == false)
         {
-            clearLookat();
-            clearTurnHeadAt();
+            clearAllLooking();
             coroutine_move = MoveCoroutine();
             StartCoroutine(coroutine_move);
             setCharacterWalk();
@@ -245,8 +244,7 @@ public partial class ActorController : Node
         cancel_crossfade = true;
 
         setCharacterIdle();
-        clearTurnHeadAt();
-        clearLookat();
+        clearAllLooking();
 
     }
 

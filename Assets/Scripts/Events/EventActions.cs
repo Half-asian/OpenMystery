@@ -5,12 +5,43 @@ using UnityEngine.UI;
 using ModelLoading;
 using System.Globalization;
 using static CocosModel;
+using System.Linq;
 
-public static class Events
+public static class EventActions
 {
+    //These are most likely mistakes and shouldn't trigger unimplemented action errors
+    public static readonly string[] blacklisted_actions = new string[]
+    {
+        ".", "Avatar", "Blocking",
+        "LookAt", "MoveCharacter", "QuidditchS1C10P2_skye", "ScriptEvents", "TLSQS1HouseCupP10_rath", "The7thMan", "TurnHeadAt", "Y5C10P2Bill",
+        "Y5C10P2Jae", "Y5C10P2Merula", "animateprop", "bill", "brennan", "cam_CY_D2wallStairs", "cam_intro", "charlie", "despawn", "despawnCharacfter", 
+        "f", "firstyear", "looAt", "lookaT", "lootAt", "moveCharater", "penny", "replaceCharacterAnimationSeqeucne", "replacecharacterIdle", "sixthyear",
+        "student18", "student3", "teleCharacter" /*Surely is wrong*/, "teleportChaacter", "teleportCharacterC"
+    };
+
+    public static readonly string[] implemented_actions = new string[]
+    {
+        "replaceCharacterIdle", "setCharacterIdle", "replaceCharacterIdleSequence", "playCharacterAnimSequence", "animateCharacter",  "replaceCharacterIdleStaggered",
+         "walkInCharacter", "moveCharacter", "turnHeadAt", "lookAt", "teleportCharacter", "teleportProp", "spawnCharacter", "despawnCharacter", "spawnProp",
+         "removeProp", "despawnProp", "attachProp", "detachProp", "hideEntity", "showEntity", "playCameraAnimation", "playCinematicCameraAnimation",
+         "focusCamera", "panCamOnTrack", "hideCharacter", "showCharacter", "screenFadeTo", "fadeToBlack", "screenFadeFrom", "fadeFromBlack", "safeAdvanceAnimSequenceTo",
+         "advanceAnimSequence", "moveCharacterWithSequence", "animateProp", "playPropAnimSequence", "replaceScenarioBGMusic", "equipAvatarComponent", "wearClothingType",
+         "setQuidditchHelmetEquipped", "setForcedQuidditchPosition", "setOpponentHouse", "playSound", "awardReward", "setContentVar", "popupVC", "stopSequentialScriptById", 
+        "turnHeadTowards"
+    };
 
     public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
     {
+        if (action_type.Contains(':') || blacklisted_actions.Contains(action_type)) //This happens when the params are accidentally put as the action. Ignore these
+        {
+            return;
+        }
+
+        //if (!Configs.r.script_events.Contains(event_id))
+        //{
+        //    throw new System.Exception("Reference tree did not contain " +  event_id);
+        //}
+
         switch (action_type)
         {
             case "replaceCharacterIdle":
@@ -52,13 +83,16 @@ public static class Events
 
                 break;
 
-            case "turnHeadAt": //Don't move shoulders
-                Actor.getActor(action_params[0])?.queueTurnHeadAt(action_params);
-                break;
-
             case "lookAt":
                 Actor.getActor(action_params[0])?.queueLookAt(action_params);
                 break;
+            case "turnHeadAt": //Don't move shoulders
+                Actor.getActor(action_params[0])?.queueTurnHeadAt(action_params);
+                break;
+            case "turnHeadTowards":
+                Actor.getActor(action_params[0])?.queueTurnHeadTowards(action_params);
+                break;
+
 
             case "teleportCharacter":
                 if (action_params.Length < 2) break;
@@ -109,7 +143,7 @@ public static class Events
                 }
                 break;
 
-            case "removeProp":
+            case "removeProp": //Probably wrong
             case "despawnProp":
                 //string despawn_id
                 //int mode

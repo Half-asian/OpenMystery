@@ -36,7 +36,7 @@ public partial class ActorController
 
     private string[] queued_lookat = null;
     private string[] queued_turnheadat = null;
-
+    private string[] queued_turnheadtowards = null;
     public void queueLookAt(string[] action_params)
     {
         queued_lookat = action_params;
@@ -44,6 +44,10 @@ public partial class ActorController
     public void queueTurnHeadAt(string[] action_params)
     {
         queued_turnheadat = action_params;
+    }
+    public void queueTurnHeadTowards(string[] action_params)
+    {
+        queued_turnheadtowards = action_params;
     }
     private void headUpdate()
     {
@@ -57,13 +61,18 @@ public partial class ActorController
             turnHeadAt(queued_turnheadat);
             queued_turnheadat = null;
         }
+        if (queued_turnheadtowards != null)
+        {
+            turnHeadTowards(queued_turnheadtowards);
+            queued_turnheadtowards = null;
+        }
     }
 
     public void lookAt(string[] action_params)
     {
         if (action_params.Length < 2)                                                   //Actor clear
         {
-            clearLookat();
+            clearAllLooking();
             return;
         }
 
@@ -100,7 +109,7 @@ public partial class ActorController
                     x = float.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
                 if (x == 0 && y == 0)
                 {
-                    clearLookat();
+                    clearAllLooking();
                 }
                 else
                 {
@@ -118,7 +127,7 @@ public partial class ActorController
     {
         if (action_params.Length < 2)                                                   //Actor clear
         {
-            clearTurnHeadAt();
+            clearAllLooking();
             return;
         }
 
@@ -154,7 +163,7 @@ public partial class ActorController
                     x = int.Parse(numbers[1], NumberStyles.Any, CultureInfo.InvariantCulture);
                 if (x == 0 && y == 0)
                 {
-                    clearLookat();
+                    clearAllLooking();
                 }
                 else
                 {
@@ -165,6 +174,39 @@ public partial class ActorController
             {
                 Debug.LogError("Unknown second param for turnheadat " + action_params[0] + " " + action_params[1]);
             }
+        }
+    }
+
+    private void turnHeadTowards(string[] action_params)
+    {
+        if (action_params.Length < 2)                                                   //Actor clear
+        {
+            clearAllLooking();
+            return;
+        }
+        float speed = 3.0f;
+
+        if (action_params.Length > 3)
+        {
+            speed = float.Parse(action_params[3], NumberStyles.Any, CultureInfo.InvariantCulture);
+        }
+
+        string bone = null;
+        if (action_params.Length > 2){
+            bone = action_params[2];
+        }
+
+        if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
+        {
+            setTurnHeadTowards(
+                Actor.getActor(action_params[1]), bone, speed);
+            return;
+        }
+        else if (Prop.spawned_props.ContainsKey(action_params[1]))
+        {
+            setTurnHeadTowards(
+                Prop.spawned_props[action_params[1]], bone, speed);
+            return;
         }
     }
 
@@ -205,6 +247,37 @@ public partial class ActorController
         last_actor_controller = null;
         last_prop = null;
         target_id = x + " " + y;
+    }
+
+    public void setTurnHeadTowards(ActorController target_actor, string bone, float new_speed = 3.0f)
+    {
+        if (bone != null)
+            setActorTarget(target_actor, bone);
+        else
+            setActorTarget(target_actor);
+        is_head_only = true;
+        speed_boost = new_speed;
+        if (speed_boost == 0.0)
+            speed_boost = 1000.0f;
+        last_actor_controller = target_actor;
+        last_prop = null;
+        last_vec3 = Vector3.zero;
+        target_id = target_actor.name;
+    }
+    public void setTurnHeadTowards(Prop target_prop, string bone, float new_speed = 3.0f)
+    {
+        if (bone != null)
+            setActorTarget(target_prop, bone);
+        else
+            setActorTarget(target_prop);
+        is_head_only = true;
+        speed_boost = new_speed;
+        if (speed_boost == 0.0)
+            speed_boost = 1000.0f;
+        last_actor_controller = null;
+        last_prop = target_prop;
+        last_vec3 = Vector3.zero;
+        target_id = target_prop.name;
     }
 
     public void setTurnHeadAt(ActorController target_actor, float new_speed = 3.0f)
@@ -256,30 +329,30 @@ public partial class ActorController
     }
 
 
-    private void setActorTarget(ActorController target_actor)
+    private void setActorTarget(ActorController target_actor, string bone = "jt_head_bind")
     {
-        if (!target_actor.model.pose_bones.ContainsKey("jt_head_bind"))
+        if (!target_actor.model.pose_bones.ContainsKey(bone))
         {
-            Debug.LogError("Couldn't find jt_head_bind for lookat on " + target_actor.name);
-            clearLookat();
+            Debug.LogError("Couldn't find " + bone + " for lookat on " + target_actor.name);
+            clearAllLooking();
             return;
         }
 
-        target_direction = target_actor.model.pose_bones["jt_head_bind"].position - model.pose_bones["jt_head_bind"].position;
+        target_direction = target_actor.model.pose_bones[bone].position - model.pose_bones["jt_head_bind"].position;
 
         setTargetRotation(Quaternion.LookRotation(target_direction).eulerAngles - transform.eulerAngles);
     }
 
-    private void setActorTarget(Prop target_prop)
+    private void setActorTarget(Prop target_prop, string bone = "jt_prop_bind")
     {
         if (!target_prop.model.pose_bones.ContainsKey("jt_prop_bind"))
         {
-            Debug.LogError("Couldn't find jt_prop_bind for lookat on " + target_prop.name);
-            clearLookat();
+            Debug.LogError("Couldn't find " + bone + " for lookat on " + target_prop.name);
+            clearAllLooking();
             return;
         }
 
-        target_direction = target_prop.model.pose_bones["jt_prop_bind"].position - model.pose_bones["jt_head_bind"].position;
+        target_direction = target_prop.model.pose_bones[bone].position - model.pose_bones["jt_head_bind"].position;
 
         setTargetRotation(Quaternion.LookRotation(target_direction).eulerAngles - transform.eulerAngles);
     }
@@ -314,15 +387,7 @@ public partial class ActorController
 
     }
 
-    public void clearLookat()
-    {
-        speed_boost = 3.0f;
-        setTargetRotation(Vector3.zero);
-        last_actor_controller = null;
-        last_vec3 = Vector3.zero;
-    }
-
-    public void clearTurnHeadAt()
+    public void clearAllLooking()
     {
         speed_boost = 3.0f;
         setTargetRotation(Vector3.zero);
