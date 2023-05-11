@@ -179,6 +179,19 @@ public partial class ActorController : Node
         }
     }
 
+    //Replaces idle with the one specified in the config
+    //Staggered may not be the correct choice.
+    //It seems to replace animations faster, but not instantly
+    //But not when changing from walking to idle
+    public void resetCharacterIdle(string event_id)
+    {
+        modifying_events.Enqueue(event_id);
+        if (actor_state == ActorState.Idle)
+            replaceCharacterIdleStaggered(null, config_hpactor.animId_idle);
+        else
+            replaceCharacterIdle(null, config_hpactor.animId_idle);
+    }
+
 
     //Animation Sequence, will play only if actor is in idle state.
     //Actor will no longer be in idle, therefore replace idles will not overwrite

@@ -27,7 +27,7 @@ public static class EventActions
          "focusCamera", "panCamOnTrack", "hideCharacter", "showCharacter", "screenFadeTo", "fadeToBlack", "screenFadeFrom", "fadeFromBlack", "safeAdvanceAnimSequenceTo",
          "advanceAnimSequence", "moveCharacterWithSequence", "animateProp", "playPropAnimSequence", "replaceScenarioBGMusic", "equipAvatarComponent", "wearClothingType",
          "setQuidditchHelmetEquipped", "setForcedQuidditchPosition", "setOpponentHouse", "playSound", "awardReward", "setContentVar", "popupVC", "stopSequentialScriptById", 
-        "turnHeadTowards", "moveCamOnTrackCharacter"
+        "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack"
     };
 
     public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
@@ -51,6 +51,10 @@ public static class EventActions
 
             case "setCharacterIdle":
                 Actor.getActor(action_params[0])?.setCharacterIdle(event_id);
+                break;
+
+            case "resetCharacterIdle":
+                Actor.getActor(action_params[0])?.resetCharacterIdle(event_id);
                 break;
 
             case "replaceCharacterIdleSequence":
@@ -93,8 +97,9 @@ public static class EventActions
             case "turnHeadTowards":
                 Actor.getActor(action_params[0])?.queueTurnHeadTowards(action_params);
                 break;
-
-
+            case "turnTowards": //From what I can tell, it behaves the same way as turnHeadTowards
+                Actor.getActor(action_params[0])?.queueTurnTowards(action_params);
+                break;
             case "teleportCharacter":
                 if (action_params.Length < 2) break;
                 Actor.getActor(action_params[0])?.teleportCharacter(action_params[1]);
@@ -461,6 +466,9 @@ public static class EventActions
                 break;
             case "stopSequentialScriptById":
                 GameStart.event_manager.stopSequentialScriptById(action_params[0]);
+                break;
+            case "moveCamOnTrack":
+                CameraManager.current.moveCamOnTrack(action_params[0]);
                 break;
             case "moveCamOnTrackCharacter":
                 CameraManager.current.moveCamOnTrackCharacter(action_params[0]);

@@ -202,6 +202,13 @@ public class CameraManager : MonoBehaviour
         StartCoroutine(waitPanCam(anim_clip_pancam.length));
     }
 
+    public void moveCamOnTrack(string time)
+    {
+        if (scene_cam_animation == null) return;
+        if (!float.TryParse(time, out float float_time)) return;
+        scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, float_time);
+    }
+
     public void moveCamOnTrackCharacter(string character_id)
     {
         if (scene_cam_animation == null) return;

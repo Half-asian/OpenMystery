@@ -49,6 +49,11 @@ public partial class ActorController
     {
         queued_turnheadtowards = action_params;
     }
+    //From what I can tell, this is no different to turnHeadAt
+    public void queueTurnTowards(string[] action_params)
+    {
+        queued_turnheadat = action_params;
+    }
     private void headUpdate()
     {
         if (queued_lookat != null)
