@@ -224,7 +224,6 @@ public class EventPlayer : MonoBehaviour
 
             if (script_event.messageAndKeys != null)
             {
-                anim_block_miss_count = 0;
                 foreach (var message_key_sets in script_event.messageAndKeys)
                 {
                     blocking_message_keys.add(new List<string>(message_key_sets));
