@@ -152,7 +152,6 @@ public class EventPlayer : MonoBehaviour
 
 
     public bool is_sequential_player;
-    int anim_block_miss_count = 0;
 
 
 

@@ -67,6 +67,11 @@ public class ConfigScriptEvents : Config<ConfigScriptEvents>
             reference_tree.script_events.Add(script_event_id);
         else
             return;
+
+        foreach (var sequential in Configs.config_script_events.ScriptEvents[script_event_id].sequenceIds ?? Enumerable.Empty<string>())
+        {
+            getAllReferences(sequential, ref reference_tree);
+        }
     }
 }
 

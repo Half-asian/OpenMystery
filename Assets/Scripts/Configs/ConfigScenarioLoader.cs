@@ -65,13 +65,11 @@ public class ConfigScenario : Config<ConfigScenario>
         var scenario = Configs.config_scenario.Scenario[scenario_id];
         foreach (var script_event in scenario.enterEvents ?? Enumerable.Empty<string>())
         {
-            if (!reference_tree.script_events.Contains(script_event))
-                reference_tree.script_events.Add(script_event);
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
         }
         foreach (var script_event in scenario.resumeEvents ?? Enumerable.Empty<string>())
         {
-            if (!reference_tree.script_events.Contains(script_event))
-                reference_tree.script_events.Add(script_event);
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
         }
         if (scenario.firstAction != null)
         {

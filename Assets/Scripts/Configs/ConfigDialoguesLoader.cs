@@ -92,25 +92,21 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
         var dialogue = Configs.config_hp_dialogue_line.HPDialogueLines[dialogue_id];
         foreach (var script_event in dialogue.enterEvents ?? Enumerable.Empty<string>())
         {
-            if (!reference_tree.script_events.Contains(script_event))
-                reference_tree.script_events.Add(script_event);
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
         }
         foreach (var script_event in dialogue.exitEvents ?? Enumerable.Empty<string>())
         {
-            if (!reference_tree.script_events.Contains(script_event))
-                reference_tree.script_events.Add(script_event);
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
         }
         foreach (var script_event in dialogue.emoteEvents ?? Enumerable.Empty<string>())
         {
-            if (!reference_tree.script_events.Contains(script_event))
-                reference_tree.script_events.Add(script_event);
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
         }
         foreach (var script_event in dialogue.emoteResetEvents ?? Enumerable.Empty<string>())
         {
-            if (!reference_tree.script_events.Contains(script_event))
-                reference_tree.script_events.Add(script_event);
+            ConfigScriptEvents.getAllReferences(script_event, ref reference_tree);
         }
-        foreach(var next_turn_id in dialogue.nextTurnIds ?? Enumerable.Empty<string>())
+        foreach (var next_turn_id in dialogue.nextTurnIds ?? Enumerable.Empty<string>())
         {
             getAllReferences(next_turn_id, ref reference_tree);
         }
