@@ -75,7 +75,7 @@ public partial class ActorController
 
     public void lookAt(string[] action_params)
     {
-        if (action_params.Length < 2)                                                   //Actor clear
+        if (action_params.Length < 2 || action_params[0] == action_params[1])                                                   //Actor clear
         {
             clearAllLooking();
             return;
@@ -130,7 +130,7 @@ public partial class ActorController
 
     private void turnHeadAt(string[] action_params)
     {
-        if (action_params.Length < 2)                                                   //Actor clear
+        if (action_params.Length < 2 || action_params[0] == action_params[1])                                                   //Actor clear
         {
             clearAllLooking();
             return;
@@ -184,7 +184,7 @@ public partial class ActorController
 
     private void turnHeadTowards(string[] action_params)
     {
-        if (action_params.Length < 2)                                                   //Actor clear
+        if (action_params.Length < 2 || action_params[0] == action_params[1])                                                   //Actor clear
         {
             clearAllLooking();
             return;
