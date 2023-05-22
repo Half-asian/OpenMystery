@@ -58,6 +58,8 @@ public partial class NewPredicate
         {"attributeLevel"               , new Func<SymbolConstantString, SymbolConstantInteger>(attributeLevel) },
         {"hasCompletedNux"              , new Func<SymbolConstantBool>(hasCompletedNux) },
         {"decidedOnBreakUp"             , new Func<SymbolConstantString,  SymbolConstantBool>(decidedOnBreakUp) },
+        {"activeProjectId"              , new Func<SymbolConstantString>(activeProjectId) },
+
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -346,5 +348,12 @@ public partial class NewPredicate
     static SymbolConstantBool decidedOnBreakUp(SymbolConstantString date)
     {
         return new SymbolConstantBool(false);
+    }
+
+    static SymbolConstantString activeProjectId()
+    {
+        if (Project.config_project != null)
+            return new SymbolConstantString(Project.config_project.projectId);
+        return new SymbolConstantString("null");
     }
 }

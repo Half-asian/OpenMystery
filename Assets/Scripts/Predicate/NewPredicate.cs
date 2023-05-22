@@ -103,6 +103,21 @@ public partial class NewPredicate
         {
             return value;
         }
+        public static Dictionary<string, Delegate> functions = new Dictionary<string, Delegate>
+        {
+            { "find"                , new Func<SymbolConstantString, SymbolConstantString, SymbolConstantInteger, SymbolConstantBool, SymbolConstantInteger>(find) }
+
+        };
+
+        static SymbolConstantInteger find(SymbolConstantString base_string, SymbolConstantString pattern, SymbolConstantInteger start_index, SymbolConstantBool plain)
+        {
+            if (plain.value == false)
+            {
+                throw new Exception("String.Find doesn't have nonplain search available");
+            }
+            int index = base_string.value.IndexOf(pattern.value, start_index.value, StringComparison.Ordinal);
+            return new SymbolConstantInteger(index);
+        }
     }
 
     class SymbolConstantSeparator : Symbol, IConstant
@@ -148,6 +163,8 @@ public partial class NewPredicate
         public string function_name = null;
         public override int getPriority()
         {
+            if (function_name != null && function_name.StartsWith(":"))
+                return 6;
             return 7;
         }
 
@@ -507,8 +524,34 @@ public partial class NewPredicate
                                 string aliasId = sb.function_name.Substring(6);
                                 if (!Configs.predicate_alias_dict.ContainsKey(aliasId))
                                     throw new Exception("Unknown predicate alias " + aliasId);
+                                Debug.Log("Predicate alias: " + Configs.predicate_alias_dict[aliasId].aliasedPredicate);
                                 Symbol result = new SymbolConstantBool(parsePredicate(Configs.predicate_alias_dict[aliasId].aliasedPredicate));
                                 base_symbol.children[i] = result;
+                            }
+                            else if (sb.function_name.StartsWith(":"))
+                            {
+                                Symbol operatingSymbol = base_symbol.children[i - 1];
+                                Symbol result;
+                                List<object> args = new List<object> { operatingSymbol };
+                                args.AddRange(bracketSetToFunctionParameters(sb));
+                                try
+                                {
+                                    if (operatingSymbol is SymbolConstantString)
+                                    {
+                                        result = (Symbol)SymbolConstantString.functions[sb.function_name.Substring(1)].DynamicInvoke(args.ToArray());
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Unimplemented class function for predicate symbol");
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.LogError(e.Message);
+                                    result = new SymbolConstantBool(true);
+                                }
+                                base_symbol.children[i - 1] = result;
+                                base_symbol.children.RemoveAt(i);
                             }
                             else if (functions.ContainsKey(sb.function_name))
                             {
@@ -553,6 +596,7 @@ public partial class NewPredicate
         }
         else
         {
+            base_symbol.print();
             throw new System.Exception("Could not resolve bracketset");
         }
     }
