@@ -13,10 +13,12 @@ public static class EventActions
     public static readonly string[] blacklisted_actions = new string[]
     {
         ".", "Avatar", "Blocking",
-        "LookAt", "MoveCharacter", "QuidditchS1C10P2_skye", "ScriptEvents", "TLSQS1HouseCupP10_rath", "The7thMan", "TurnHeadAt", "Y5C10P2Bill",
+        "LookAt", "MoveCharacter", "QuidditchS1C10P2_skye", "Regular", "ScriptEvents", "TLSQS1HouseCupP10_rath", "The7thMan", "TurnHeadAt", "Y5C10P2Bill",
         "Y5C10P2Jae", "Y5C10P2Merula", "animateprop", "bill", "brennan", "cam_CY_D2wallStairs", "cam_intro", "charlie", "despawn", "despawnCharacfter", 
-        "f", "firstyear", "looAt", "lookaT", "lootAt", "moveCharater", "penny", "replaceCharacterAnimationSeqeucne", "replacecharacterIdle", "sixthyear",
-        "student18", "student3", "teleCharacter" /*Surely is wrong*/, "teleportChaacter", "teleportCharacterC"
+        "f", "firstyear", "hideProp", "looAt", "lookaT", "lootAt", "moveCharater", "penny", "replaceCharacter", "replaceCharacterAnimSequence",
+        "replaceCharacterAnimationSeqeucne", "replaceCharacterIdleSequenceSequence", "replacecharacterIdle", "replaceCharacterIdleStaggeredSequence",
+        "replaceCharacterIdleStaggeredStaggered", "showProp", "sixthyear",
+        "student18", "student3", "teleCharacter", "teleportChaacter", "teleportCharacterC", "turnHead"
     };
 
     public static readonly string[] implemented_actions = new string[]
