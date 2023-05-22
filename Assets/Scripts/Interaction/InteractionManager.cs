@@ -159,7 +159,10 @@ public class InteractionManager : MonoBehaviour {
                 interaction_gameobject = new GameObject();
                 active_interactions.Add(interaction_gameobject.AddComponent<InteractionSwipeSortQTE>().setup(ref new_interaction));
                 break;
-
+            case "MemoryMatchQTE":
+                interaction_gameobject = new GameObject();
+                active_interactions.Add(interaction_gameobject.AddComponent<InteractionMemoryMatchQTE>().setup(ref new_interaction));
+                break;
             case "Quiz":
                 interaction_gameobject = new GameObject();
                 active_interactions.Add(interaction_gameobject.AddComponent<InteractionQuiz>().setup(ref new_interaction));

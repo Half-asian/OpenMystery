@@ -1,4 +1,4 @@
-﻿public class InteractionSwipeSortQTE : Interaction
+﻿public class InteractionMemoryMatchQTE : Interaction
 {
     public override Interaction setup(ref ConfigInteraction.Interaction _interaction)
     {
