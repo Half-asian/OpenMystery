@@ -9,7 +9,7 @@ using UnityEngine;
 using System.Diagnostics;
 public abstract class Config<T>
 {
-    public static T getJObjectsConfigsListST(string type, MergeArrayHandling mergeType = MergeArrayHandling.Union)
+    public static T getJObjectsConfigsListST(string type, MergeArrayHandling mergeType = MergeArrayHandling.Replace)
     {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
@@ -517,7 +517,7 @@ public class Configs{
     public static void loadConfigModelInspector()
     {
         config_texture = ConfigTexture.getJObjectsConfigsListST("TextureConfig");
-        config_3dmodel = Config3DModel.getJObjectsConfigsListST("3DModelConfig", Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
+        config_3dmodel = Config3DModel.getJObjectsConfigsListST("3DModelConfig");
         config_animation = ConfigAnimation.getJObjectsConfigsListST("Animation3D");
         config_char_anim_sequence = ConfigCharAnimSequence.getJObjectsConfigsListST("CharAnimSequence");
         config_avatar_components = ConfigAvatarComponents.getJObjectsConfigsListST("AvatarComponents");
@@ -525,7 +525,7 @@ public class Configs{
         config_avatar_outfit_data = ConfigAvatarOutfitData.getJObjectsConfigsListST("AvatarOutfitData");
         config_avatar_patch_config = ConfigAvatarPatchConfig.getJObjectsConfigsListST("AvatarPatchConfig");
         config_scripted_clothing_set = ConfigScriptedClothingSet.getJObjectsConfigsListST("ScriptedClothingSet");
-        config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo", Newtonsoft.Json.Linq.MergeArrayHandling.Replace);
+        config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
         config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
         config_house = ConfigHouse.getJObjectsConfigsListST("House");
         config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
@@ -540,7 +540,7 @@ public class Configs{
     public static void loadConfigAll()
     {
         config_texture = ConfigTexture.getJObjectsConfigsListST("TextureConfig");
-        config_3dmodel = Config3DModel.getJObjectsConfigsListST("3DModelConfig", Newtonsoft.Json.Linq.MergeArrayHandling.Merge);
+        config_3dmodel = Config3DModel.getJObjectsConfigsListST("3DModelConfig");
         config_animation = ConfigAnimation.getJObjectsConfigsListST("Animation3D");
         config_char_anim_sequence = ConfigCharAnimSequence.getJObjectsConfigsListST("CharAnimSequence");
         config_avatar_components = ConfigAvatarComponents.getJObjectsConfigsListST("AvatarComponents");
@@ -588,7 +588,7 @@ public class Configs{
         config_scenario = ConfigScenario.getJObjectsConfigsListST("Scenario");
         config_scene = ConfigScene.getJObjectsConfigsListST("Scene");
         config_script_events = ConfigScriptEvents.getConfig();
-        config_sound = ConfigSound.getJObjectsConfigsListST("Playlist");
+        config_sound = ConfigSound.getJObjectsConfigsListST("Playlist", MergeArrayHandling.Union);
         config_tappie = ConfigTappie.getJObjectsConfigsListST("Tappie");
         config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
         config_quiz_group = ConfigQuizGroup.getJObjectsConfigsListST("QuizGroup");
