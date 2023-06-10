@@ -640,11 +640,17 @@ float4 main_float(){
             #endif
         }
         else if (USE_EMISSIVE_COLOR == true) {
-            #ifdef USE_EMISSIVE_VERT_COLOR
+            /*#ifdef USE_EMISSIVE_VERT_COLOR
                         emissiveComponent += (u_emissiveColor * v_vertColor.g);
             #else
                         emissiveComponent += u_emissiveColor;
-            #endif
+            #endif*/
+            if (EmissiveVertexColor_SWITCH){
+                emissiveComponent += (u_emissiveColor * v_vertColor.g);
+            }
+            else{
+                emissiveComponent += u_emissiveColor;
+            }
         }
     #endif
     
