@@ -45,13 +45,18 @@ public class MainMenu : MonoBehaviour
         canvas.SetActive(true);
         Sound.playBGMusic("BGM");
 
-        if (Objective.active_objectives.Count == 0)
+        if (Assignment.active_assignments.Count == 0)
         {
-            Debug.LogError("Objectives count was 0!");
+            if (Objective.active_objectives.Count == 0)
+            {
+                Debug.LogError("Objectives count was 0!");
+            }
+            Objective.active_objectives[0].LoadScenarioIfValid();
         }
-
-        Objective.active_objectives[0].LoadScenarioIfValid();
-
+        else
+        {
+            Assignment.active_assignments[0].startIntroScenario();
+        }
         menu_object.SetActive(false);
         GameStart.menu_background.destroy();
     }

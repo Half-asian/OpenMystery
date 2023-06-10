@@ -109,7 +109,7 @@ public class GoalChain
                     GoalChainCompleted();
                     return;
                 }
-                Goal.startGoal(goal_chain_config.assignments[active_goal_index]);
+                Assignment.startAssignment(goal_chain_config.assignments[active_goal_index]);
                 break;
         }
     }

@@ -55,11 +55,21 @@ public class UiManager : MonoBehaviour
     private void checkRemovePopup()
     {
         var current_goal = Goal.getGoalById(_goal_popup.latest_goal.goal_id);
-        if (current_goal == null)
+        var current_assignment = Assignment.active_assignments.Count > 0 ? Assignment.active_assignments[0] : null;
+        if (current_goal == null && current_assignment == null)
         {
             return;
         }
-        var current_ob_scenario = current_goal.active_objective.objective_config.objectiveScenario;
+        string current_ob_scenario;
+
+        if (current_goal != null)
+            current_ob_scenario = current_goal.active_objective.objective_config.objectiveScenario;
+        else
+        {
+            if (current_assignment.active_objective == null)
+                return;
+            current_ob_scenario = current_assignment.active_objective.objective_config.objectiveScenario;
+        }
         if (current_ob_scenario == null && current_goal.active_objective.objective_config.objectiveHubNpcs == null)
         {
             if (Scenario.current.scenario_config != null)
@@ -72,7 +82,7 @@ public class UiManager : MonoBehaviour
             return;
         }
 
-        if (Scenario.current.scenario_config == null)
+        if (Scenario.current == null || Scenario.current.scenario_config == null)
         {
             return;
         }
@@ -102,10 +112,9 @@ public class UiManager : MonoBehaviour
 
     private void Update()
     {
+        checkRemovePopup();
         if (should_show_popup)
         {
-            checkRemovePopup();
-
             if (DialogueManager.in_dialogue || EventManager.are_events_active || LoadingScreenCanvas.is_loading)
                 goal_popup_gameobject.SetActive(false);
             else
@@ -184,8 +193,16 @@ public class UiManager : MonoBehaviour
     IEnumerator nextAreaButtonClickedDelay()
     {
         yield return null;
-        Goal g = Goal.getGoalById(_goal_popup.latest_goal.goal_id);
-        g.loadObjectiveScenario();
+        if (Assignment.active_assignments.Count == 0)
+        {
+            Goal g = Goal.getGoalById(_goal_popup.latest_goal.goal_id);
+            g.loadObjectiveScenario();
+        }
+        else
+        {
+            Assignment assignment = Assignment.active_assignments[0];
+            assignment.loadCurrentObjectiveScenario();
+        }
     }
 
 

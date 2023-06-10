@@ -15,6 +15,7 @@ public class ConfigProject : Config<ConfigProject>
         public string failureOutroScenarioId;
         public string introScenarioId;
         public string outroScenarioId;
+        public string parentProjectId;
         public string projectDuration;
         public string projectId;
         public string progressType;
@@ -25,6 +26,7 @@ public class ConfigProject : Config<ConfigProject>
         public string variantTag;
         public int starsToPass;
         public int[][] progressForStars;
+        public string[] repeatableOptions;
         public string[] passPlaylistIds;
         public string[] startPlaylistIds;
         public string[][] rewardsForStars;

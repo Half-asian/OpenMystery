@@ -70,6 +70,9 @@ public abstract class Objective
             case "socialEncounterComplete":
                 new_objective = new ObjectiveSocialEncounterComplete(objective);
                 break;
+            case "earnParentProjectStars":
+                new_objective = new ObjectiveEarnParentProjectStars(objective);
+                break;
             case null:
                 new_objective = new ObjectiveBlank(objective);
                 break;

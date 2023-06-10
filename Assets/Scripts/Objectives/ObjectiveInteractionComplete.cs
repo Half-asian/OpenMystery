@@ -15,7 +15,6 @@ public class ObjectiveInteractionComplete : Objective
     {
         if (keys.Contains(interaction_id))
         {
-            keys.Remove(interaction_id);
             keys_completed++;
         }
         if (keys_completed >= objective_config.required_count)

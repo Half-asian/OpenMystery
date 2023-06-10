@@ -22,7 +22,6 @@ public class ObjectiveVisitLocation : Objective
         {
             if (keys.Contains(Location.current.locationId))
             {
-                keys.Remove(Location.current.locationId);
                 keys_completed++;
             }
             if (keys_completed >= objective_config.required_count)

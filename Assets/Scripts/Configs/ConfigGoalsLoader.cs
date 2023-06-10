@@ -170,7 +170,7 @@ public class ConfigObjective : Config<ConfigObjective>
         public string objective_id;
         public string objectiveScenario;
         [JsonProperty(PropertyName = "required-count")]
-        public int required_count;
+        public int required_count; //Keys can be complete multiple times!
         public bool updateHousePointsOnComplete;
         public bool restartScenarioOnComplete;
         public string[] objectiveHubNpcs;

@@ -41,7 +41,7 @@ public static class EventActions
 
         if (Application.isEditor && !Configs.reference_tree.script_events.Contains(event_id))
         {
-            Debug.LogError("Reference tree did not contain " +  event_id);
+            //Debug.LogError("Reference tree did not contain " +  event_id);
             //throw new System.Exception  ("Reference tree did not contain " + event_id);
         }
 

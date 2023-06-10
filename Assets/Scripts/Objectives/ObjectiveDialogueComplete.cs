@@ -16,7 +16,6 @@ public class ObjectiveDialogueComplete : Objective
     {
         if (keys.Contains(dialogue_id))
         {
-            keys.Remove(dialogue_id);
             keys_completed++;
         }
         if (keys_completed >= objective_config.required_count)

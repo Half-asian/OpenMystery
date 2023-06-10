@@ -110,7 +110,7 @@ namespace UI
             //int assignment_count = current_goal_chain.assignments != null ? current_goal_chain.assignments.Count : 0;
 
             string goal;
-
+            bool is_assignment = false;
 
             if (_goal_dropdown.value < goal_count)
             {
@@ -123,36 +123,43 @@ namespace UI
             else
             {
                 goal = current_goal_chain.assignments[_goal_dropdown.value - goal_count - class_count];
+                is_assignment = true;
             }
 
             Configs.reference_tree = new ReferenceTree();
-            ConfigGoal.getAllReferences(goal, ref Configs.reference_tree);
-            List<string> missing_actions = new List<string>();
-            foreach (var script_event in Configs.reference_tree.script_events)
+            if (!is_assignment)
             {
-                foreach (var action in Configs.config_script_events.ScriptEvents[script_event].action ?? Enumerable.Empty<string>())
+                ConfigGoal.getAllReferences(goal, ref Configs.reference_tree);
+                List<string> missing_actions = new List<string>();
+                foreach (var script_event in Configs.reference_tree.script_events)
                 {
-                    if (!EventActions.implemented_actions.Contains(action) && !missing_actions.Contains(action))
+                    foreach (var action in Configs.config_script_events.ScriptEvents[script_event].action ?? Enumerable.Empty<string>())
                     {
-                        missing_actions.Add(action);
+                        if (action.Contains(":"))
+                            continue;
+                        if (EventActions.blacklisted_actions.Contains(action))
+                            continue;
+                        if (!EventActions.implemented_actions.Contains(action) && !missing_actions.Contains(action))
+                        {
+                            missing_actions.Add(action);
+                        }
                     }
                 }
-            }
-            if (missing_actions.Count > 0)
-            {
-                warning_popup.SetActive(true);
-                string text = "Warning: the selected goal uses the following event actions that are currently unimplemented: ";
-                foreach(var action in missing_actions)
+                if (missing_actions.Count > 0)
                 {
-                    text += action + "\n";
+                    warning_popup.SetActive(true);
+                    string text = "Warning: the selected goal uses the following event actions that are currently unimplemented: ";
+                    foreach (var action in missing_actions)
+                    {
+                        text += action + "\n";
+                    }
+                    text += "There is a possibility that this may impact your experience.";
+                    warning_text.text = text;
+                    return goal;
                 }
-                text += "There is a possibility that this may impact your experience.";
-                warning_text.text = text;
+
             }
-            else
-            {
-                warning_popup.SetActive(false);
-            }
+            warning_popup.SetActive(false);
             return goal;
         }
 

@@ -18,7 +18,6 @@ public class ObjectiveMatchComplete : Objective
     {
         if (keys.Contains(match_id))
         {
-            keys.Remove(match_id);
             keys_completed++;
         }
         if (keys_completed >= objective_config.required_count)

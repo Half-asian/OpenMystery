@@ -26,6 +26,12 @@ public class Project
         }
         if (config_project != null) throw new System.Exception("Tried to start a project while we are already in a project.");
         config_project = Configs.config_project.Project[new_project];
+
+        if (config_project.repeatableOptions != null) //Some projects are just links to other projects of various time limits
+        {
+            config_project = Configs.config_project.Project[config_project.repeatableOptions[0]];
+        }
+
         VariantManager.setVariant(config_project.variantTag);
         current_progress = 0;
         station_progress = 0;
@@ -40,7 +46,7 @@ public class Project
         if (config_project.startPlaylistIds != null)
             foreach (string playlistId in config_project.startPlaylistIds)
                 Sound.playBark(playlistId);
-        if (config_project.classIntro != null)
+        if (config_project.classIntro != null || config_project.stations != null)
         {
             startStation();
         }
@@ -145,7 +151,7 @@ public class Project
     {
         InteractionManager.all_interactions_destroyed_event -= onStationTitleComplete;
 
-        if (station_progress == 0)
+        if (station_progress == 0 && config_project.classIntro != null)
         {
             GameStart.interaction_manager.spawnInteraction(config_project.classIntro);
             InteractionManager.all_interactions_destroyed_event += spawnStationIntro;

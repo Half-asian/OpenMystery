@@ -17,7 +17,6 @@ public class ObjectiveProjectSuccess : Objective
         Debug.Log("project callback " + project_id);
         if (keys.Contains(project_id))
         {
-            keys.Remove(project_id);
             keys_completed++;
         }
         if (keys_completed >= objective_config.required_count)
