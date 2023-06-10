@@ -53,18 +53,15 @@ public class Quidditch
         }
 
         current_match = Configs.config_match.Match[match_name];
-        if (Player.local_avatar_quidditch_position == null)
-        {
-            if (current_match.practisePosition != null)
-            {
-                Player.local_avatar_quidditch_position = current_match.practisePosition;
-            }
-            else
-            {
-                Player.local_avatar_quidditch_position = "chaser";
-            }
-        }
 
+        if (current_match.practicePosition != null)
+        {
+            Player.local_avatar_quidditch_position = current_match.practicePosition;
+        }
+        else if (Player.local_avatar_quidditch_position == null)
+        {
+            Player.local_avatar_quidditch_position = "chaser";
+        }
 
         Scenario.Activate(current_match.scenarioId, Scenario.current.objective);
         Scenario.Load(current_match.scenarioId);

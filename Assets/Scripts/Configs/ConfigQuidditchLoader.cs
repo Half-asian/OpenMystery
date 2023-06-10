@@ -28,7 +28,7 @@ public class ConfigMatch : Config<ConfigMatch>
         public string teamId_rPlayer;
         public string teamId_sOpponent;
         public string teamId_sPlayer;
-        public string practisePosition;
+        public string practicePosition;
         public string[] outroPlays;
         public string[] pivotalPlaySlots;
         public int startDifficulty;
