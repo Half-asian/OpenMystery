@@ -51,6 +51,8 @@ public class ActorAnimSequence : AnimationSequence
 
         if (animation == null) return 0.0f;
 
+        current_animation = animation;
+
         base_node.queueAnimationOnComponent(animation);
         return animation.anim_clip.length;
     }

@@ -298,7 +298,14 @@ public partial class ActorController : Node
 
         while (gameObject.transform.position != destination_waypoint.getWorldPosition())
         {
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), (animation_current_loop != null ? animation_current_loop.speed * 0.01f : 0.4479245f) * Time.deltaTime);
+            float speed = 0.0f;
+            if (animation_current_loop != null)
+                speed = animation_current_loop.speed * 0.01f;
+            else if (GetComponent<ActorAnimSequence>() != null && GetComponent<ActorAnimSequence>().current_animation != null)
+                speed = GetComponent<ActorAnimSequence>().current_animation.speed * 0.01f;
+            if (speed <= 0.001f)
+                speed = 0.4479245f;
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next_waypoint.getWorldPosition(), speed * Time.deltaTime);
 
             if (Vector3.Distance(gameObject.transform.position, next_waypoint.getWorldPosition()) < 0.2f)
             {

@@ -21,6 +21,8 @@ public abstract partial class AnimationSequence : MonoBehaviour
     //Not the anim sequence node
     protected Node base_node;
 
+    public HPAnimation current_animation;
+
     public virtual void initAnimSequence(string _anim_sequence, bool _walk)
     {
         base_node.onAnimationFinished += WaitForAnimation;
