@@ -41,9 +41,9 @@ public class LocationScenarioMenu : MonoBehaviour
             }
         }
 
-        if (Location.activeScenarios.ContainsKey(location))
+        if (Location.activeScenarios.ContainsKey(location_id))
         {
-            foreach (Scenario scenario in Location.activeScenarios[location])
+            foreach (Scenario scenario in Location.activeScenarios[location_id])
             {
                 options.Add(scenario.scenario_config.scenarioId);
             }

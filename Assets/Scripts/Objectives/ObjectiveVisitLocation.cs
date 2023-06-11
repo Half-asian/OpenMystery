@@ -20,7 +20,7 @@ public class ObjectiveVisitLocation : Objective
     {
         if (keys != null)
         {
-            if (keys.Contains(Location.current.locationId))
+            if (keys.Contains(Location.current))
             {
                 keys_completed++;
             }

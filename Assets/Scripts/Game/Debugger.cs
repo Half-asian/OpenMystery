@@ -74,7 +74,7 @@ public class Debugger : MonoBehaviour
         {
             text += "\nScene: " + Scene.current.layoutId;
             if (Location.current != null)
-                text += "\n Location: " + Location.current.locationId;
+                text += "\n Location: " + Location.current;
             else
                 text += "\n Location: None";
             if (LocationHub.current != null)
@@ -88,11 +88,11 @@ public class Debugger : MonoBehaviour
         {
             text += "\n\nActive Scenarios: ";
 
-            foreach (ConfigLocation._Location location in Location.activeScenarios.Keys)
+            foreach (var location in Location.activeScenarios.Keys)
             {
                 foreach (Scenario scenario in Location.activeScenarios[location])
                 {
-                    text += "\n LocationId: " + location.locationId + " ScenarioId: " + scenario.scenario_config.scenarioId;
+                    text += "\n LocationId: " + location + " ScenarioId: " + scenario.scenario_config.scenarioId;
                 }
             }
         }

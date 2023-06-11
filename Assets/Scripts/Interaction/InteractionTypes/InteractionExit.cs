@@ -28,7 +28,7 @@ public class InteractionExit : Interaction
         if (Scenario.current.scenario_config.mapLocationId != null) //We're in a location
         {
             Scenario.ExitSave();
-            LocationHub.loadLocationHub(Location.current.hubId);
+            LocationHub.loadLocationHub(Configs.config_location.Location[Location.current].hubId);
             interactionComplete();
         }
         else //We're in a hub
