@@ -160,7 +160,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         if (config_sequence == null)
             return;
 
-        if (Configs.config_animation.Animation3D[animation_name].wrapMode == "loop")
+        if (Configs.config_animation.Animation3D[animation_name].wrapMode == "loop" && config_sequence.data.nodes[node_index].maxLoops == 0)
             return;
 
         if (config_sequence.data.nodes[node_index].exitActions != null)
