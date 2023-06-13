@@ -136,7 +136,13 @@ public class Prop : Node
                 {
                     continue;
                 }
-                Material mat = child.GetComponent<SkinnedMeshRenderer>().material;
+                Material mat;
+                var smr = child.GetComponent<SkinnedMeshRenderer>();
+                if (smr != null)
+                    mat = smr.material;
+                else
+                    mat = child.GetComponent<MeshRenderer>().material;
+
                 var material = prop_locator.material_dict[child.name];
 
                 if (material.stringValueKeys != null)
