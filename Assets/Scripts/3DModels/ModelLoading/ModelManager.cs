@@ -267,7 +267,7 @@ namespace ModelLoading {
 
             SkinnedMeshRenderer skinned_mesh_renderer = null;
 
-			if (c3m.name[0] == 'b')
+			if (node_part.bones == null)
 			{
 				MeshRenderer mesh_renderer = node_part_gameobject.AddComponent<MeshRenderer>();
 				MeshFilter mesh_filter = node_part_gameobject.AddComponent<MeshFilter>();
