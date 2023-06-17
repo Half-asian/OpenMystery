@@ -208,7 +208,10 @@ public partial class ActorController : Node
             else
                 replaceCharacterWalk(actor_anim_id);
         }
-
+        else if (config_hpactor.animId_walk != null)
+        {
+            replaceCharacterWalk(config_hpactor.animId_walk);
+        }
     }
 
     public void finishMovement()

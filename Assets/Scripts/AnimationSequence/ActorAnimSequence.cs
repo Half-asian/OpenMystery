@@ -25,7 +25,14 @@ public class ActorAnimSequence : AnimationSequence
         if (isOneShot)
         {
             actor_controller.markCurrentAnimationFinished();
-            actor_controller.setCharacterIdle();
+            if (actor_controller.actor_state == ActorState.Walk)
+            {
+                actor_controller.setCharacterWalk();
+            }
+            else
+            {
+                actor_controller.setCharacterIdle();
+            }
         }
         if (exitAnim != null)
         {

@@ -44,6 +44,8 @@ public partial class ActorController : Node
     [SerializeField]
     private ActorAnim idle_actor_anim;
     [SerializeField]
+    private ActorAnim walk_actor_anim;
+    [SerializeField]
     private ActorAnim current_actor_anim;
     [SerializeField] 
     private Common.FixedSizedQueue<string> modifying_events = new Common.FixedSizedQueue<string>(5);
@@ -226,6 +228,7 @@ public partial class ActorController : Node
     private void replaceCharacterWalkSequence(string sequence_id)
     {
         ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Sequence, sequence_id);
+        walk_actor_anim = new_anim;
         if (actor_state == ActorState.Walk)
         {
             playActorAnimation(new_anim);
@@ -235,6 +238,7 @@ public partial class ActorController : Node
     private void replaceCharacterWalk(string anim_name)
     {
         ActorAnim new_anim = new ActorAnim(ActorAnim.AnimType.Regular, anim_name);
+        walk_actor_anim = new_anim;
         if (actor_state == ActorState.Walk)
         {
             playActorAnimation(new_anim);

@@ -8,6 +8,7 @@ using System;
 using UnityEngine.Experimental.GlobalIllumination;
 using static ConfigScene._Scene._Lighting;
 using System.Globalization;
+using UnityEngine.UIElements;
 
 namespace ModelLoading
 {
@@ -234,7 +235,6 @@ namespace ModelLoading
 			{
 				mat.SetFloat("USE_UNLIT_DIFFUSE", value);
 			}
-
         }
 
         public static Material applyModelMaterial(Config3DModel._Config3DModel.JsonData.Material material, bool force_transparent)
@@ -253,7 +253,8 @@ namespace ModelLoading
 			{
 				material_name += "_transparent";
             }
-			if (material_dict.ContainsKey(material_name))
+
+            if (material_dict.ContainsKey(material_name))
 			{
 				default_material = material_dict[material_name];
 			}
@@ -330,6 +331,9 @@ namespace ModelLoading
 					case "additive":
                         mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                         mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.One);
+						break;
+					case "premultiply":
+						mat.SetFloat("UseAsCutout_SWITCH", 0); //Used on the moon in astronomy
 						break;
                 }
 

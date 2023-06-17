@@ -194,30 +194,15 @@ float4 main_float(){
             if (HAS_DIFFUSE_TEXTURE) {  //all diffuse textures can be assumed to have transparency   if (USE_TRANSPARENCY_TEXTURE) {
                 diffuseTexColor = tex2D(tex_u_diffuseMap, v_diffuseCoords);
                 #ifdef USE_ALPHA_TEST
-                if (UseAsCutout_SWITCH) {
+                if (UseAsCutout_SWITCH){
                     if (diffuseTexColor.a < u_alphaTestReferenceValue) {
-                        return float4(0, 0, 0, 0);
+                        return float4(1, 0, 0, 0);
                     }
                 }
                 #endif
                 if (USE_DIFFUSE_COLOR == false) {
                     diffuseColor = diffuseTexColor.rgb;
                 }
-            }
-            else {
-            #if defined(USE_ALPHA_TEST)
-                diffuseTexColor = tex2D(tex_u_diffuseMap, v_diffuseCoords);
-                if (diffuseTexColor.a < u_alphaTestReferenceValue) {
-                    return float4(0, 0, 0, 0);
-                }
-                if (USE_DIFFUSE_COLOR == false) {
-                    diffuseColor = diffuseTexColor.rgb;
-                }
-            #else 
-                if (USE_DIFFUSE_COLOR == false) {
-                    diffuseColor = tex2D(tex_u_diffuseMap, v_diffuseCoords).rgb;
-                }
-            #endif
             }
         }
 
@@ -700,7 +685,7 @@ float4 main_float(){
         //float opacity = 1.0;//diffuseTexColor.a;
         float opacity = u_opacityAmount;
         if (HAS_DIFFUSE_TEXTURE)
-            opacity = diffuseTexColor.a;
+            opacity *= diffuseTexColor.a;
         /*#if defined(USE_TRANSPARENCY_TEXTURE) && defined(USE_TRANSPARENCY_VERTEX)
             float opacity = diffuseTexColor.a * v_vertColor.a;
 
@@ -818,7 +803,7 @@ float4 main_float(){
             gl_FragColor = float4(finalColor, pow(opacity, 2.2));
         }
     #else
-        gl_FragColor = float4(finalColor, opacity * alpha);
+        gl_FragColor = float4(finalColor, pow(opacity, 2.2) * alpha);
     #endif
 
     return gl_FragColor;

@@ -71,12 +71,20 @@ public partial class ActorController : Node
         if (this != null) //The actor might die after finishing movement
             playActorAnimation(idle_actor_anim);
     }
-    private void setCharacterWalk()
+    public void setCharacterWalk()
     {
         if (actor_state == ActorState.Idle)
             cancel_crossfade = true;
         setActorState(ActorState.Walk);
-        playActorAnimation(new ActorAnim(ActorAnim.AnimType.Regular, config_hpactor.animId_walk));
+        if (walk_actor_anim.id != null)
+        {
+            playActorAnimation(walk_actor_anim);
+        }
+        else if (config_hpactor.animId_walk != null)
+        {
+            walk_actor_anim = new ActorAnim(ActorAnim.AnimType.Regular, config_hpactor.animId_walk);
+            playActorAnimation(walk_actor_anim);
+        }
     }
     private void setCharacterAnimate()
     {

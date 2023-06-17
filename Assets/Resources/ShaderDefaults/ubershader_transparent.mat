@@ -27,7 +27,6 @@ Material:
   - TransparentDepthPostpass
   - TransparentBackface
   - RayTracingPrepass
-  - TransparentDepthPrepass
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -204,6 +203,7 @@ Material:
     - HAS_DIFFUSE2_TEXTURE: 0
     - HAS_DIFFUSE3_TEXTURE: 0
     - HAS_DIFFUSE_TEXTURE: 0
+    - HAS_EMISSIVE_TEXTURE: 0
     - HAS_LIGHTMAP_TEXTURE: 0
     - IS_QUIDDITCH_SHADER: 0
     - IS_SKIN_SHADER: 1
@@ -220,6 +220,7 @@ Material:
     - USE_BAKED_DIFFUSE: 0
     - USE_DIFFUSE_COLOR: 1
     - USE_EMBLEM_IN_DIFFUSE: 0
+    - USE_EMISSIVE_COLOR: 0
     - USE_FOG: 1
     - USE_HOUSE_COLORS: 0
     - USE_HOUSE_EMBLEM: 0
@@ -227,6 +228,7 @@ Material:
     - USE_RIM: 1
     - USE_TRANSPARENCY: 1
     - USE_TRANSPARENCY_TEXTURE: 0
+    - USE_UNLIT_DIFFUSE: 0
     - UseAsCutout_SWITCH: 0
     - UseTeamTexture_SWITCH: 0
     - _AORemapMax: 1
@@ -247,6 +249,7 @@ Material:
     - _AlphaToMaskInspectorValue: 0
     - _Anisotropy: 0
     - _BlendMode: 0
+    - _Boolean: 0
     - _CoatMask: 0
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 2
@@ -337,7 +340,7 @@ Material:
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentDepthPostpassEnable: 0
-    - _TransparentDepthPrepassEnable: 0
+    - _TransparentDepthPrepassEnable: 1
     - _TransparentSortPriority: 0
     - _TransparentWritingMotionVec: 0
     - _TransparentZWrite: 1
@@ -366,7 +369,7 @@ Material:
     - u_SpotLightSourceRangeInverse1: 0
     - u_SpotLightSourceRangeInverse2: 0
     - u_SpotLightSourceRangeInverse3: 0
-    - u_alphaTestReferenceValue: 0.001
+    - u_alphaTestReferenceValue: 0.9
     - u_brightness: 1
     - u_diffuseColorAdjust_Switch: 0
     - u_flatness: 1
@@ -436,6 +439,7 @@ Material:
     - u_SpotLightSourcePosition3: {r: 0, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 1, g: 1, b: 1, a: 0}
     - u_emblemTexOffset: {r: 0, g: 0, b: 0, a: 0}
+    - u_emissiveColor: {r: 0, g: 0, b: 0, a: 0}
     - u_firstTintColor: {r: 0, g: 0, b: 0, a: 0}
     - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
     - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
