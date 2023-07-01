@@ -511,7 +511,9 @@ public class Configs{
         Configs.config_hp_actor_info.HPActorInfo["c_TonksMasquerade_skin"].modelId = "c_hair_Tonks_skin";
         Configs.config_hp_actor_info.HPActorInfo["c_TonksMasquerade_skin"].modelPatches = new string[] { "c_NymphadoraTonksFaceClavicle_skin", "c_NPC_wand_generic_skin", "c_Female_MasqueradeBallOutfit_outfit_skin", "c_StudentHandsWhite_skin" };
 
-        Configs.config_hp_actor_info.HPActorInfo["c_Penny_skin"].modelId = "c_PennyHeavyset_skin";
+        Configs.predicate_alias_dict["isAdultContext"] = new ConfigPredicateAlias._PredicateAlias();
+        Configs.predicate_alias_dict["isAdultContext"].aliasId = "isAdultContext";
+        Configs.predicate_alias_dict["isAdultContext"].aliasedPredicate = "false";
     }
 
     public static ReferenceTree reference_tree;

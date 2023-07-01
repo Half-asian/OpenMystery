@@ -428,7 +428,7 @@ public partial class NewPredicate
         //VARIABLE DETECTION
         if (char_buf.EndsWith(" ") || is_last_char)
         {
-            if (char_buf.Trim() == "isMemoryActiveWithTag" || char_buf.Trim() == "nil" || char_buf.Trim() == "inScenarioForTlsqWithTag")
+            if (char_buf.Trim() == "isMemoryActiveWithTag" || char_buf.Trim() == "nil" || char_buf.Trim() == "inScenarioForTlsqWithTag" || char_buf.Trim() == "isGreetingActiveWithScenarioTag")
             {
                 symbols.Add(new SymbolConstantNil());
                 char_buf = "";
@@ -709,7 +709,6 @@ public partial class NewPredicate
             new SymbolConstantBool(true).toString()
         );
     }
-
 
 
 }
