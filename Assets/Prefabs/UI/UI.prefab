@@ -4176,6 +4176,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _goal_chain_dropdown: {fileID: 9077459274743645574}
   _goal_dropdown: {fileID: 859315376807221292}
+  warning_popup: {fileID: 0}
+  warning_text: {fileID: 0}
 --- !u!114 &8453526324508905653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4226,6 +4228,9 @@ MonoBehaviour:
   exit_to_menu_button: {fileID: 3821158231528635117}
   pause_menu: {fileID: 8371112430138279043}
   main_menu: {fileID: 1227092822292925294}
+  should_show_exit: 0
+  should_show_popup: 0
+  should_show_next: 0
 --- !u!114 &5029986767418866596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4239,11 +4244,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu_go: {fileID: 0}
+  volumeProfile: {fileID: 0}
   fullscreen_mode_dropdown: {fileID: 0}
   resolution_dropdown: {fileID: 0}
-  graphics_dropdown: {fileID: 0}
   render_scale_slider: {fileID: 0}
   render_scale_text: {fileID: 0}
+  anti_aliasing_dropdown: {fileID: 0}
+  bloom_dropdown: {fileID: 0}
+  ambient_occlusion_dropdown: {fileID: 0}
+  global_illumination_dropdown: {fileID: 0}
+  tonemapping_dropdown: {fileID: 0}
+  chromatic_aberration_dropdown: {fileID: 0}
+  vignette_dropdown: {fileID: 0}
+  exposure_slider: {fileID: 0}
+  depth_of_field_dropdown: {fileID: 0}
 --- !u!1 &3208075972889284025
 GameObject:
   m_ObjectHideFlags: 0

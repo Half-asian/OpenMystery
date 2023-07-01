@@ -4,6 +4,7 @@
     using UnityEngine.InputSystem.Controls;
 #endif
 
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -123,7 +124,7 @@ public class SimpleCameraController : MonoBehaviour
             return;
 
         GameObject current = EventSystem.current.currentSelectedGameObject;
-        if (current != null && current.gameObject != null && current.gameObject.GetComponent<InputField>() != null)
+        if (current != null && current.gameObject != null && current.gameObject.GetComponent<TMP_InputField>() != null)
         {
             return;
         }

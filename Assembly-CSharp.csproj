@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\Node\NodeChildren.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveInteractionComplete.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionTitleCard.cs" />
+    <Compile Include="Assets\Scripts\Poser\PoserWand.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentLegs.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerFile.cs" />
     <Compile Include="Assets\Scripts\Predicate\NewPredicate.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionFastTap.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentOnePiece.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveEarnParentProjectStars.cs" />
+    <Compile Include="Assets\Scripts\Poser\PoserUI.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentBrows.cs" />
     <Compile Include="Assets\Scripts\Dialogue\LocalData.cs" />
     <Compile Include="Assets\Scripts\UI\ScreenFade.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="Assets\Scripts\Scenario\Tappie.cs" />
     <Compile Include="Assets\Scripts\Objectives\ObjectiveVisitLocation.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTriggers.cs" />
+    <Compile Include="Assets\Scripts\Poser\Poser.cs" />
     <Compile Include="Assets\Scripts\Game\VariantManager.cs" />
     <Compile Include="Assets\Scripts\Objectives\Objective.cs" />
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundQuidditch.cs" />
@@ -159,6 +162,7 @@
     <Compile Include="Assets\Scripts\Configs\ConfigLocalDataLoader.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionGoalDialog.cs" />
     <Compile Include="Assets\Scripts\UI\CCDisplay.cs" />
+    <Compile Include="Assets\Scripts\Poser\PoserWandText.cs" />
     <Compile Include="Assets\Scripts\Prop\Prop.cs" />
     <Compile Include="Assets\Scripts\Predicate\PredFunctions.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionLocationHubButton.cs" />
@@ -190,6 +194,7 @@
     <Compile Include="Assets\Scripts\Menu\MenuBackgroundChristmas2022.cs" />
     <Compile Include="Assets\Scripts\Scene\LocationButton.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigSoundsLoader.cs" />
+    <Compile Include="Assets\Scripts\Others\SearchableDropDown.cs" />
     <Compile Include="Assets\Scripts\Particle\Particle.cs" />
     <Compile Include="Assets\Scripts\AnimationSequence\ActorAnimSequence.cs" />
     <Compile Include="Assets\Scripts\AnimationSequence\PropAnimSequence.cs" />

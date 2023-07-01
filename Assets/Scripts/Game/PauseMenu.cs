@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.HighDefinition;
 using System.IO;
+using UnityEngine.EventSystems;
+using TMPro;
+
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pause_menu;
@@ -48,6 +51,13 @@ public class PauseMenu : MonoBehaviour
 
     void Update()
     {
+        GameObject current = EventSystem.current.currentSelectedGameObject;
+        if (current != null && current.gameObject != null && current.gameObject.GetComponent<TMP_InputField>() != null)
+        {
+            return;
+        }
+
+
         if (Input.GetKeyDown("escape")){
             if (pause_menu.activeSelf)
             {
@@ -58,6 +68,8 @@ public class PauseMenu : MonoBehaviour
                 pause_menu.SetActive(true);
             }
         }
+
+
 
         if (Input.GetKeyDown("r"))
         {
