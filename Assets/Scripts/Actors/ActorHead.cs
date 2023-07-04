@@ -37,6 +37,7 @@ public partial class ActorController
     private string[] queued_lookat = null;
     private string[] queued_turnheadat = null;
     private string[] queued_turnheadtowards = null;
+    private string[] queued_turntowards = null;
     public void queueLookAt(string[] action_params)
     {
         queued_lookat = action_params;
@@ -49,10 +50,9 @@ public partial class ActorController
     {
         queued_turnheadtowards = action_params;
     }
-    //From what I can tell, this is no different to turnHeadAt
     public void queueTurnTowards(string[] action_params)
     {
-        queued_turnheadat = action_params;
+        queued_turntowards = action_params;
     }
     private void headUpdate()
     {
@@ -71,6 +71,11 @@ public partial class ActorController
             turnHeadTowards(queued_turnheadtowards);
             queued_turnheadtowards = null;
         }
+        if (queued_turntowards != null)
+        {
+            turnTowards(queued_turntowards);
+            queued_turntowards = null;
+        }
     }
 
     public void lookAt(string[] action_params)
@@ -85,7 +90,8 @@ public partial class ActorController
 
         if (action_params.Length > 2)
         {
-            float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out speed);
+            if (!float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out speed))
+                Debug.LogError("Failed to parse lookAt speed float: " + action_params[2]);
 
             //QuidditchS1C10P3_hoochSlowLookOrion
         }
@@ -140,8 +146,8 @@ public partial class ActorController
 
         if (action_params.Length > 2)
         {
-            speed = float.Parse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture);
-
+            if (!float.TryParse(action_params[2], NumberStyles.Any, CultureInfo.InvariantCulture, out speed))
+                Debug.LogError("Failed to parse turnHeadAt speed float: " + action_params[2]);
             //QuidditchS1C10P3_hoochSlowLookOrion
         }
 
@@ -193,7 +199,8 @@ public partial class ActorController
 
         if (action_params.Length > 3)
         {
-            speed = float.Parse(action_params[3], NumberStyles.Any, CultureInfo.InvariantCulture);
+            if (!float.TryParse(action_params[3], NumberStyles.Any, CultureInfo.InvariantCulture, out speed))
+                Debug.LogError("Failed to parse turnHeadTowards speed float: " + action_params[3]);
         }
 
         string bone = null;
@@ -210,6 +217,41 @@ public partial class ActorController
         else if (Prop.spawned_props.ContainsKey(action_params[1]))
         {
             setTurnHeadTowards(
+                Prop.spawned_props[action_params[1]], bone, speed);
+            return;
+        }
+    }
+
+    private void turnTowards(string[] action_params)
+    {
+        if (action_params.Length < 2 || action_params[0] == action_params[1])                                                   //Actor clear
+        {
+            clearAllLooking();
+            return;
+        }
+        float speed = 3.0f;
+
+        if (action_params.Length > 3)
+        {
+            if (!float.TryParse(action_params[3], NumberStyles.Any, CultureInfo.InvariantCulture, out speed))
+                Debug.LogError("Failed to parse turnHeadTowards speed float: " + action_params[3]);
+        }
+
+        string bone = null;
+        if (action_params.Length > 2)
+        {
+            bone = action_params[2];
+        }
+
+        if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
+        {
+            setTurnTowards(
+                Actor.getActor(action_params[1]), bone, speed);
+            return;
+        }
+        else if (Prop.spawned_props.ContainsKey(action_params[1]))
+        {
+            setTurnTowards(
                 Prop.spawned_props[action_params[1]], bone, speed);
             return;
         }
@@ -324,6 +366,35 @@ public partial class ActorController
         target_id = x + " " + y;
     }
 
+    public void setTurnTowards(ActorController target_actor, string bone, float new_speed = 3.0f)
+    {
+        if (bone != null)
+            setActorTarget(target_actor, bone);
+        else
+            setActorTarget(target_actor); is_head_only = false;
+        speed_boost = new_speed;
+        if (speed_boost == 0.0)
+            speed_boost = 1000.0f;
+        last_actor_controller = target_actor;
+        last_prop = null;
+        last_vec3 = Vector3.zero;
+        target_id = target_actor.name;
+    }
+    public void setTurnTowards(Prop target_prop, string bone, float new_speed = 3.0f)
+    {
+        if (bone != null)
+            setActorTarget(target_prop, bone);
+        else
+            setActorTarget(target_prop);
+        is_head_only = false;
+        speed_boost = new_speed;
+        if (speed_boost == 0.0)
+            speed_boost = 1000.0f;
+        last_actor_controller = null;
+        last_prop = target_prop;
+        last_vec3 = Vector3.zero;
+        target_id = target_prop.name;
+    }
     public void refreshLookAts(Vector3 waypoint_euler_angles)
     {
         if (last_actor_controller != null || last_prop != null)
@@ -350,7 +421,7 @@ public partial class ActorController
 
     private void setActorTarget(Prop target_prop, string bone = "jt_prop_bind")
     {
-        if (!target_prop.model.pose_bones.ContainsKey("jt_prop_bind"))
+        if (!target_prop.model.pose_bones.ContainsKey(bone))
         {
             Debug.LogError("Couldn't find " + bone + " for lookat on " + target_prop.name);
             clearAllLooking();

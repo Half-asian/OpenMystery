@@ -96,7 +96,7 @@ public static class EventActions
             case "turnHeadTowards":
                 Actor.getActor(action_params[0])?.queueTurnHeadTowards(action_params);
                 break;
-            case "turnTowards": //From what I can tell, it behaves the same way as turnHeadTowards
+            case "turnTowards":
                 Actor.getActor(action_params[0])?.queueTurnTowards(action_params);
                 break;
             case "teleportCharacter":
