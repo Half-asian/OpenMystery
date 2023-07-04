@@ -31,6 +31,9 @@ public class Poser : MonoBehaviour
             }
         }
 
+        if (!poser_enabled)
+            return;
+
         if (Input.GetMouseButton(1)
             && Input.GetMouseButton(0))
         {
