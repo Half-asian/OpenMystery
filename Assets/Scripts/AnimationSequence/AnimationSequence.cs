@@ -23,10 +23,11 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     public HPAnimation current_animation;
 
+    protected List<Node> local_props = new List<Node>();
+
     public virtual void initAnimSequence(string _anim_sequence, bool _walk)
     {
         base_node.onAnimationFinished += WaitForAnimation;
-        destroyProps();
         walk = _walk;
         //Find the animation sequence in the config
 
@@ -137,7 +138,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
     private void cleanup()
     {
         base_node.onAnimationFinished -= WaitForAnimation;
-        destroyProps();
+        destroyPropsMadeFromSequence();
         config_sequence = null;
     }
 
@@ -158,6 +159,9 @@ public abstract partial class AnimationSequence : MonoBehaviour
     private void WaitForAnimation(string animation_name)
     {
         if (config_sequence == null)
+            return;
+
+        if (node_index == -1)
             return;
 
         if (config_sequence.data.nodes[node_index].exitActions != null)
@@ -185,10 +189,13 @@ public abstract partial class AnimationSequence : MonoBehaviour
         advanceAnimSequence();
     }
 
-    protected void destroyProps()
+    protected void destroyPropsMadeFromSequence()
     {
-        if (base_node != null)
-            base_node.destroyProps();
+        foreach (var prop in local_props)
+        {
+            if (prop != null)
+                base_node.removeProp(prop.name);
+        }
     }
 
     protected static string getBroomSkinName(string actor_id)

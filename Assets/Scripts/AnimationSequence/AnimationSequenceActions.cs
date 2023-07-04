@@ -61,7 +61,11 @@ public abstract partial class AnimationSequence : MonoBehaviour
     }
     protected void attachChildNode(string prop_model_id, string alias, string target)
     {
-        base_node.attachChildNode(prop_model_id, alias, target);
+        var prop = base_node.attachChildNode(prop_model_id, alias, target);
+        if (prop != null)
+        {
+            local_props.Add(prop);
+        }
     }
 
     protected void removeChildNode(string prop_id)
