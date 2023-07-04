@@ -238,6 +238,11 @@ public partial class ActorController : Node
             return;
 
         finishMovement();
+        if (coroutine_rotate != null)
+        {
+            StopCoroutine(coroutine_rotate);
+            coroutine_rotate = null;
+        }
 
         destination_waypoint = Scene.current.waypoint_dict[waypoint_id];
         destination_waypoint_name = (destination_waypoint == null) ? "" : destination_waypoint.name;
