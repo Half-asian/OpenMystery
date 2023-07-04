@@ -238,7 +238,8 @@ public class Prop : Node
         if (name == null)
             name = model_id;
 
-        if (Actor.getActor(character) == null)
+        var actor = Actor.getActor(character);
+        if (actor == null)
             return;
 
         Prop prop;
@@ -258,6 +259,8 @@ public class Prop : Node
         prop.model.game_object.transform.parent =  Actor.getActor(character).model.pose_bones[bone];
         prop.model.game_object.transform.localPosition = Vector3.zero;
         prop.model.game_object.transform.localRotation = Quaternion.identity;
+
+        actor.child_nodes.Add(name, prop);
     }
 
     public static void detachPropFromEvent(string character, string name)

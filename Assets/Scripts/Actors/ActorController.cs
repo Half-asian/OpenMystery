@@ -37,7 +37,9 @@ public partial class ActorController : Node
         {
             DestroyImmediate(actoranimseq);
         }
-        destroyProps();
+        //I don't see why we'd need to destroy props
+        //destroyProps();
+        destroyParticles();
         //Some animations change these
         model.jt_all_bind.localPosition = Vector3.zero;
         model.jt_all_bind.localRotation = Quaternion.identity;

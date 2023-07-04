@@ -41,6 +41,8 @@ public class CameraManager : MonoBehaviour
     //Used for scrolling back and forth a scene
     private HPAnimation scene_cam_animation;
 
+    AnimationClip anim_clip;
+
     private CameraState camera_state;
     private Model camera_model;
     private IEnumerator lerpCoroutine;
@@ -163,7 +165,7 @@ public class CameraManager : MonoBehaviour
         }
 
         var hpanim = AnimationManager.loadAnimationClip(animation, camera_model, null, null, bone_mods: bone_mods, is_camera: true);
-        AnimationClip anim_clip = hpanim.anim_clip;
+        anim_clip = hpanim.anim_clip;
 
         camera_holder_animation_component.AddClip(anim_clip, "default");
         camera_holder_animation_component.Play("default");
@@ -176,6 +178,12 @@ public class CameraManager : MonoBehaviour
 
         wait_camera_coroutine = waitCameraAnimation(anim_clip, animation);
         StartCoroutine(wait_camera_coroutine);
+    }
+
+    public void stopCameraAnimation(string animation)
+    {
+        if (anim_clip.name == animation)
+            setCameraState(CameraState.StateStatic);
     }
 
     //Plays a camera lerp between two scene cameras

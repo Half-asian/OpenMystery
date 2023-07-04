@@ -11,7 +11,7 @@ using static UnityEngine.ParticleSystem;
 public partial class Node : MonoBehaviour
 {
 
-    protected Dictionary<string, Node> child_nodes = new Dictionary<string, Node>();
+    public Dictionary<string, Node> child_nodes = new Dictionary<string, Node>();
     public List<GameObject> particles = new List<GameObject>();
 
     private Node getChildNode(string name)
@@ -27,10 +27,10 @@ public partial class Node : MonoBehaviour
         return null;
     }
 
-    public void attachChildNode(string prop_model_id, string alias, string target)
+    public Node attachChildNode(string prop_model_id, string alias, string target)
     {
         if (child_nodes.ContainsKey(alias != null ? alias : prop_model_id))
-            return;
+            return null;
 
         Transform bone_to_attach = null;
         if (target != null)
@@ -44,7 +44,7 @@ public partial class Node : MonoBehaviour
         if (prop_model == null)
         {
             Debug.LogError("Failed to attach prop " + prop_model_id + " due to invalid id");
-            return;
+            return null;
         }
 
         Prop prop = prop_model.game_object.AddComponent<Prop>();
@@ -93,6 +93,7 @@ public partial class Node : MonoBehaviour
         }
         prop.model.game_object.transform.localPosition = Vector3.zero;
         prop.model.game_object.transform.rotation = Quaternion.identity;
+        return prop;
     }
 
     //Animation event
@@ -163,11 +164,16 @@ public partial class Node : MonoBehaviour
         {
             DestroyImmediate(g);
         }
+        child_nodes.Clear();
+        destroyParticles();
+    }
+
+    public void destroyParticles()
+    {
         foreach (GameObject particle in particles)
         {
             DestroyImmediate(particle);
         }
-        child_nodes.Clear();
     }
 
     public void AttachParticleSystem(string parameters)

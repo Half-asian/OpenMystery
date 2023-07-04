@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using ModelLoading;
 using System.Globalization;
-using static CocosModel;
 using System.Linq;
 
 public static class EventActions
@@ -29,7 +26,7 @@ public static class EventActions
          "focusCamera", "panCamOnTrack", "hideCharacter", "showCharacter", "screenFadeTo", "fadeToBlack", "screenFadeFrom", "fadeFromBlack", "safeAdvanceAnimSequenceTo",
          "advanceAnimSequence", "moveCharacterWithSequence", "animateProp", "playPropAnimSequence", "replaceScenarioBGMusic", "equipAvatarComponent", "wearClothingType",
          "setQuidditchHelmetEquipped", "setForcedQuidditchPosition", "setOpponentHouse", "playSound", "awardReward", "setContentVar", "popupVC", "stopSequentialScriptById", 
-        "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack"
+        "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack", "stopCameraAnimation", "forceScenarioSwitch", "playAttachedPropAnim"
     };
 
     public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
@@ -39,11 +36,11 @@ public static class EventActions
             return;
         }
 
-        if (Application.isEditor && !Configs.reference_tree.script_events.Contains(event_id))
+        /*if (Application.isEditor && !Configs.reference_tree.script_events.Contains(event_id))
         {
             //Debug.LogError("Reference tree did not contain " +  event_id);
             //throw new System.Exception  ("Reference tree did not contain " + event_id);
-        }
+        }*/
 
         switch (action_type)
         {
@@ -212,6 +209,13 @@ public static class EventActions
                 Prop.detachPropFromEvent(action_params[0], action_params[1]);
                 break;
 
+            case "playAttachedPropAnim":
+
+                var actor = Actor.getActor(action_params[0]);
+                if (actor == null)
+                    return;
+                actor.playPropAnim(action_params[1], action_params[2]);
+                break;
             case "hideEntity":
                 if (Prop.spawned_props.ContainsKey(action_params[0]))
                 {
@@ -239,7 +243,9 @@ public static class EventActions
                 Debug.Log("Playing camera anim " + action_params[0]);
                 CameraManager.current.playCameraAnimation(action_params[0], true);
                 break;
-
+            case "stopCameraAnimation":
+                CameraManager.current.stopCameraAnimation(action_params[0]);
+                break;
             case "playCinematicCameraAnimation":
                 if (action_params.Length > 1)
                 {
@@ -474,6 +480,10 @@ public static class EventActions
                 break;
             case "moveCamOnTrackCharacter":
                 CameraManager.current.moveCamOnTrackCharacter(action_params[0]);
+                break;
+            case "forceScenarioSwitch":
+                Scenario.Activate(action_params[0]);
+                Scenario.Load(action_params[0]);
                 break;
 
             default:
