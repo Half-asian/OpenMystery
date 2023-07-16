@@ -139,6 +139,7 @@
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionBubble.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigAvatarLoader.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionEncounter.cs" />
+    <Compile Include="Assets\Scripts\Poser\PoserCollider.cs" />
     <Compile Include="Assets\Scripts\Player\StaticAvatarSpawner.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigQuestsLoader.cs" />
     <Compile Include="Assets\Scripts\Graduation\Graduation.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Assets\Scripts\Configs\ConfigAnimationsLoader.cs" />
     <Compile Include="Assets\Scripts\Actors\Actor.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigDialoguesLoader.cs" />
+    <Compile Include="Assets\Scripts\Poser\PoserTranslateTool.cs" />
     <Compile Include="Assets\Scripts\Encounter\EncounterManager.cs" />
     <Compile Include="Assets\Scripts\Particle\PUParticleSpawner.cs" />
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentRightWrist.cs" />
@@ -238,6 +240,7 @@
     <Compile Include="Assets\Scripts\Player\CustomizeAvatarPreviewImages.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigProjectLoader.cs" />
     <Compile Include="Assets\Scripts\Node\NodeBase.cs" />
+    <Compile Include="Assets\Scripts\Poser\PoserRotateTool.cs" />
     <Compile Include="Assets\Scripts\3DModels\Model.cs" />
     <Compile Include="Assets\Scripts\Mods\ModLoader.cs" />
     <Compile Include="Assets\Scripts\Configs\ConfigSceneLoader.cs" />
@@ -266,45 +269,73 @@
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTCommon\Resources\UnlitColorClip.shader" />
     <None Include="Assets\Hlsl\neweyes.hlsl" />
+    <None Include="Assets\Battlehub\README.txt" />
     <None Include="Assets\Hlsl\eyes.hlsl" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Shaders\Resources\Grid.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\Hlsl\skin.hlsl" />
     <None Include="Assets\Hlsl\vertexdiffusergba_vfx.hlsl" />
     <None Include="Assets\Resources\RenderTextures\ui_remove_depth.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTCommon\Resources\UnlitColor.shader" />
     <None Include="Assets\Hlsl\panningb_vfx.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Shaders\Resources\BoxSelectionShader.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTCommon\Resources\RenderTextureOverlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\Hlsl\simpletexture.hlsl" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Prefabs\Models\Materials\Shaders\DepthMaskColorBillboardShader.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Resources\Animations\MCHalloween2022.txt" />
     <None Include="Assets\Hlsl\worldpanalpha_vfx.hlsl" />
     <None Include="Assets\Hlsl\shadowplane_vfx.hlsl" />
     <None Include="Assets\Resources\Animations\JaneHalloween2022.txt" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Prefabs\Models\Materials\Shaders\ArrowShader.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Prefabs\Models\Materials\Shaders\DepthMaskColorShader.shader" />
     <None Include="Assets\Hlsl\panningbfresnel_vfx.hlsl" />
     <None Include="Assets\Hlsl\transitionstaticfadeemissive_vfx.hlsl" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTCommon\Resources\Billboard.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Shaders\Resources\LineBillboard.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Fonts\FontLicense!.txt" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Prefabs\Models\Materials\Shaders\SSCircleShader.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\Hlsl\pan2directions_vfx.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Prefabs\Models\Materials\Shaders\AxisShader.shader" />
     <None Include="Assets\Hlsl\invisibility_vfx.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Shaders\Resources\VertexColorClipUsingClipPlane.shader" />
     <None Include="Assets\Hlsl\vertexdiffusergb_vfx.hlsl" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Prefabs\Models\Materials\Shaders\SSQuadShader.shader" />
     <None Include="Assets\Hlsl\ubershader.hlsl" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Shaders\Resources\Shape.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Prefabs\Models\Materials\Shaders\QuadShader.shader" />
     <None Include="Assets\Hlsl\eyeball.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTCommon\Resources\Point.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTCommon\Resources\LineBillboard.shader" />
     <None Include="Assets\Hlsl\transitionstaticfade_vfx.hlsl" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Outline\Resources\UnityOutline.cginc" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTCommon\Resources\SceenSpaceDecal.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\Resources\Blackboard\Blackboard_Empty_v3@4x.txt" />
+    <None Include="Assets\Battlehub\RTEditorHDRP\Content\Runtime\RTHandles\Outline\Selection_Fullscreen.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Shaders\Resources\RawImage.shader" />
+    <None Include="Assets\Battlehub\RTEditorHDRP\Content\Runtime\RTHandles\Outline\Selection_Objects.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Outline\Resources\UnityOutline.shader" />
     <None Include="Assets\Resources\Animations\MerulaHalloween2022.txt" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Shaders\Resources\LineBillboardClip.shader" />
+    <None Include="Assets\Battlehub\RTEditor\Content\Runtime\RTHandles\Shaders\Resources\PointBillboard.shader" />
     <None Include="Assets\Hlsl\screendoor.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
@@ -1034,6 +1065,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Battlehub.RTEditor.Editor.csproj">
+      <Project>{874245F5-43B2-F3BC-8D09-A330F6502E40}</Project>
+      <Name>Battlehub.RTEditor.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Battlehub.RTEditor.HDRP.Editor.csproj">
+      <Project>{4236DF2B-953B-8568-0FA3-0E9FF7CEE248}</Project>
+      <Name>Battlehub.RTEditor.HDRP.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Battlehub.RTEditor.csproj">
+      <Project>{3FB98F17-4F3D-C6FA-FE0C-FE8EFB804A74}</Project>
+      <Name>Battlehub.RTEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Battlehub.RTEditor.Demo.csproj">
+      <Project>{B1E9AD90-FD99-102F-F3EB-EC3202CB8FDA}</Project>
+      <Name>Battlehub.RTEditor.Demo</Name>
+    </ProjectReference>
+    <ProjectReference Include="UIShapesKit.csproj">
+      <Project>{EA5F8EAF-236D-75C3-6CDE-7AA3CE064095}</Project>
+      <Name>UIShapesKit</Name>
+    </ProjectReference>
+    <ProjectReference Include="Battlehub.RTEditor.HDRP.csproj">
+      <Project>{A885B6BF-4BB2-87BA-75BB-573823598B9E}</Project>
+      <Name>Battlehub.RTEditor.HDRP</Name>
+    </ProjectReference>
+    <ProjectReference Include="UIShapesKit.Editor.csproj">
+      <Project>{A684E9C5-3169-D47B-91DE-FDF834DACBBF}</Project>
+      <Name>UIShapesKit.Editor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

@@ -241,5 +241,6 @@ public class GameStart : MonoBehaviour
         ui_manager.please_wait_text.enabled = false;
         ui_manager.press_space_text.enabled = true;
         main_menu.state = MainMenu.State.stateLoadingScreenAwait;
+        Configs.predicate_alias_dict["rowanY6Look"].aliasedPredicate = "false";
     }
 }

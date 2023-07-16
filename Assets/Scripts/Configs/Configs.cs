@@ -447,6 +447,18 @@ public class Configs{
             //Remove check to see if player has completed part of Y2
             Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true";
         }
+        ConfigHPActorInfo._HPActorInfo chiara_adult = new ConfigHPActorInfo._HPActorInfo();
+        chiara_adult.actorId = "chiara_adult";
+        chiara_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
+        chiara_adult.modelId = "c_Chiara_adult_Casual_skin";
+        Configs.config_hp_actor_info.HPActorInfo.Add("chiara_adult", chiara_adult);
+
+        ConfigHPActorInfo._HPActorInfo chiara_mungos = new ConfigHPActorInfo._HPActorInfo();
+        chiara_mungos.actorId = "chiara_mungos";
+        chiara_mungos.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
+        chiara_mungos.modelId = "c_Chiara_adult_StMungosHealer_skin";
+        Configs.config_hp_actor_info.HPActorInfo.Add("chiara_mungos", chiara_mungos);
+
         ConfigHPActorInfo._HPActorInfo merula_adult = new ConfigHPActorInfo._HPActorInfo();
         merula_adult.actorId = "merula_adult";
         merula_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
@@ -501,6 +513,13 @@ public class Configs{
         ruby.modelId = "c_RubyHead_Y8_skin";
         ruby.modelPatches = new string[] { "c_RubyBody_Y8_skin", "c_StudentHandsWhite_skin" };
         Configs.config_hp_actor_info.HPActorInfo.Add("ruby", ruby);
+
+        ConfigHPActorInfo._HPActorInfo skye_adult = new ConfigHPActorInfo._HPActorInfo();
+        skye_adult.actorId = "skye_adult";
+        skye_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
+        skye_adult.modelId = "c_SkyeParkin_Head_Y8_skin";
+        skye_adult.modelPatches = new string[] { "c_SkyeParkin_Body_Y8_skin" };
+        Configs.config_hp_actor_info.HPActorInfo.Add("skye_adult", skye_adult);
 
         ConfigHPActorInfo._HPActorInfo harry = new ConfigHPActorInfo._HPActorInfo();
         harry.actorId = "harry";

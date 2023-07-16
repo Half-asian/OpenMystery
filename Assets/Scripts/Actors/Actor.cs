@@ -10,7 +10,7 @@ using System.IO;
 public class Actor
 {
     //Later on, change this from dictionary look up to using events
-    private static Dictionary<string, ActorController> actor_controllers = new Dictionary<string, ActorController>();
+    public static Dictionary<string, ActorController> actor_controllers = new Dictionary<string, ActorController>();
 
 
     //This is just used for cleanup

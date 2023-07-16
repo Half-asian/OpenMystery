@@ -120,13 +120,16 @@ public class SimpleCameraController : MonoBehaviour
         m_TargetCameraState.SetFromTransform(transform);
         m_InterpolatingCameraState.SetFromTransform(transform);
 
-        if (!CameraManager.current.getCameraControllable())
+        if (CameraManager.current != null && !CameraManager.current.getCameraControllable())
             return;
 
-        GameObject current = EventSystem.current.currentSelectedGameObject;
-        if (current != null && current.gameObject != null && current.gameObject.GetComponent<TMP_InputField>() != null)
+        if (EventSystem.current != null)
         {
-            return;
+            GameObject current = EventSystem.current.currentSelectedGameObject;
+            if (current != null && current.gameObject != null && current.gameObject.GetComponent<TMP_InputField>() != null)
+            {
+                return;
+            }
         }
 
         Vector3 translation = Vector3.zero;
