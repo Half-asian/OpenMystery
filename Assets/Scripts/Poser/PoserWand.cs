@@ -11,7 +11,6 @@ public class PoserWand : MonoBehaviour
     {
         mesh_renderer = GetComponent<MeshRenderer>();
         Poser.on_poser_enabled += toggleModel;
-        Poser.on_tool_used += toolUsed;
     }
 
     void toggleModel(bool enabled)

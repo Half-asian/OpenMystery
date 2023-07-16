@@ -31,7 +31,6 @@ public class PoserTranslateTool : MonoBehaviour
     float speed = 0.05f;
     private void Update()
     {
-        return;
         Quaternion q = _camera.transform.rotation * Quaternion.Euler(new Vector3(0, 90, 0));
 
         float z_camera_mod = (Mathf.Abs(_camera.transform.rotation.y) - 0.5f) * -2.0f;

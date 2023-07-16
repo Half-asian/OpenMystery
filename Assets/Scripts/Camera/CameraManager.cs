@@ -50,6 +50,8 @@ public class CameraManager : MonoBehaviour
     private IEnumerator wait_camera_coroutine;
     private IEnumerator aov_player_coroutine;
 
+    float pan_cam_on_track_pct = 0.0f;
+
     /*----------        Public        ----------*/
     public void initialise()
     {
@@ -196,18 +198,10 @@ public class CameraManager : MonoBehaviour
 
     //The camera pans over a track specified as an animation
     //Camera can still be moved by the player
-    public void panCamOnTrack(string animation)
+    public void panCamOnTrack(float target_pos, float duration)
     {
-        if (animation == null)
-            return;
-
         setCameraState(CameraState.StatePanCamOnTrack);
-
-        AnimationClip anim_clip_pancam = AnimationManager.loadAnimationClip(animation, camera_model, null, null, null, is_camera: true).anim_clip;
-        anim_clip_pancam.wrapMode = WrapMode.Once;
-        camera_holder_animation_component.AddClip(anim_clip_pancam, "default");
-        camera_holder_animation_component.Play("default");
-        StartCoroutine(waitPanCam(anim_clip_pancam.length));
+        StartCoroutine(panCamCoroutine(target_pos, duration));
     }
 
     public void moveCamOnTrack(string time)
@@ -420,9 +414,25 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    private IEnumerator waitPanCam(float length)
+    private IEnumerator panCamCoroutine(float target_pct, float length)
     {
-        yield return new WaitForSeconds(length);
-        setCameraState(CameraState.StateStatic);
+        float start_time = Time.realtimeSinceStartup;
+
+        float start_pct = pan_cam_on_track_pct;
+
+        while (Time.realtimeSinceStartup < length + start_time)
+        {
+            if (camera_state != CameraState.StatePanCamOnTrack)
+                yield break;
+            float elapsed_time = Time.realtimeSinceStartup - start_time;
+            float progress = elapsed_time / length;
+
+            pan_cam_on_track_pct = Mathf.Lerp(start_pct, target_pct, progress);
+
+            scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, scene_cam_animation.anim_clip.length * pan_cam_on_track_pct);
+            yield return null;
+        }
+        pan_cam_on_track_pct = target_pct;
+        scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, scene_cam_animation.anim_clip.length * pan_cam_on_track_pct);
     }
 }

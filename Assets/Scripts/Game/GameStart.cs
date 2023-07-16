@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System;
 using UnityEngine.SceneManagement;
 using ModelLoading;
+using UnityEngine.EventSystems;
+
 public class GameStart : MonoBehaviour
 {
     public static GameStart current;
@@ -34,6 +36,7 @@ public class GameStart : MonoBehaviour
 
     public Transform actors_holder;
     public Transform props_holder;
+
     void Update()
     {
         onUpdate.Invoke();
@@ -241,6 +244,6 @@ public class GameStart : MonoBehaviour
         ui_manager.please_wait_text.enabled = false;
         ui_manager.press_space_text.enabled = true;
         main_menu.state = MainMenu.State.stateLoadingScreenAwait;
-        Configs.predicate_alias_dict["rowanY6Look"].aliasedPredicate = "false";
+        //Configs.predicate_alias_dict["rowanY6Look"].aliasedPredicate = "false";
     }
 }

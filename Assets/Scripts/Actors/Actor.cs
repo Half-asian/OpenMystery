@@ -9,6 +9,8 @@ using System.IO;
 
 public class Actor
 {
+    public static event Action OnActorsModified = delegate { };
+
     //Later on, change this from dictionary look up to using events
     public static Dictionary<string, ActorController> actor_controllers = new Dictionary<string, ActorController>();
 
@@ -32,10 +34,13 @@ public class Actor
         }
         actor_controllers_pool.Clear();
         actor_controllers.Clear();
+        OnActorsModified.Invoke();
     }
 
     public static ActorController getActor(string instance_id)
     {
+        if (instance_id == null)
+            return null;
         if (actor_controllers.ContainsKey(instance_id))
             return actor_controllers[instance_id];
         return null;
@@ -45,17 +50,20 @@ public class Actor
     {
         actor_controllers[new_name] = actor_controllers[old_name];
         actor_controllers.Remove(old_name);
+        OnActorsModified.Invoke();
     }
 
     public static void addAlias(string alias, string id)
     {
         if (actor_controllers.ContainsKey(id))
             actor_controllers[alias] = actor_controllers[id];
+        OnActorsModified.Invoke();
     }
 
     public static void removeAlias(string alias)
     {
         actor_controllers.Remove(alias);
+        OnActorsModified.Invoke();
     }
 
     //Actors will still spawn with invalid waypoint_id. Tested in retail.
@@ -157,6 +165,7 @@ public class Actor
         actor_controller.replaceCharacterIdle("", actor_controller.config_hpactor.animId_idle);
         actor_controllers_pool.Add(actor_controller);
         actor_controller.teleportCharacter(waypoint_id);
+        OnActorsModified.Invoke();
         return actor_controller;
     }
 
@@ -195,6 +204,7 @@ public class Actor
             actor_controllers[character_name] = null;
         }
         actor_controllers.Remove(character_name);
+        OnActorsModified.Invoke();
     }
 
     public static void despawnCharacterInScene(string character_name)
@@ -204,12 +214,14 @@ public class Actor
             actor_controllers[character_name].gameObject.SetActive(false);
             actor_controllers[character_name].markCurrentAnimationFinished();
         }
+        OnActorsModified.Invoke();
     }
 
     public static void respawnCharacterInScene(string character_name)
     {
         actor_controllers[character_name].gameObject.SetActive(true);
         actor_controllers[character_name].setCharacterIdle();
+        OnActorsModified.Invoke();
     }
 
     public static string[][] serializeActors()

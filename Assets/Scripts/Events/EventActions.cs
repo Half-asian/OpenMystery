@@ -262,8 +262,12 @@ public static class EventActions
                 break;
 
             case "panCamOnTrack":
-                if (action_params[0] != "0:0" && event_player != null) //no clue what this means but it seems faulty
-                    CameraManager.current.panCamOnTrack(event_player.last_camera.animation);
+                if (!float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float target_pos))
+                    break;
+                if (!float.TryParse(action_params[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float duration))
+                    break;
+
+                CameraManager.current.panCamOnTrack(target_pos, duration);
                 break;
 
             case "hideCharacter":

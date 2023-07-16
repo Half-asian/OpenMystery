@@ -9,7 +9,6 @@ public class PoserWandText : MonoBehaviour
     void Start()
     {
         text = GetComponent<Text>();
-        Poser.on_tool_changed += changeText;
     }
 
     void changeText(string new_text)
