@@ -108,7 +108,11 @@ public partial class NewPredicate
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantBool(i1.value != i2.value);
             }
-            throw new System.Exception("Invalid equals comparison between " + v1.GetType() + " and " + v2.GetType());
+            else if (t1.Equals(typeof(SymbolConstantNil)) && t2.Equals(typeof(SymbolConstantNil)))
+            {
+                return new SymbolConstantBool(false);
+            }
+            throw new System.Exception("Invalid not equals comparison between " + v1.GetType() + " and " + v2.GetType());
         }
         public override void print()
         {

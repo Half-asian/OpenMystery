@@ -6,6 +6,12 @@ using System;
 
 public class Quidditch
 {
+    public bool isInMatch() => state != State.state_not_in_match;
+    public void cleanup()
+    {
+        state = State.state_not_in_match;
+    }
+
     public event Action<string> match_finished_event = delegate { };
 
     int match_pivotal_play_index;
@@ -14,12 +20,13 @@ public class Quidditch
     bool has_played_pivotal_outro;
     public enum State
     {
+        state_not_in_match,
         state_not_waiting,
         state_waiting_enter_events,
         state_waiting_dialogue,
         state_waiting_exit_events,
     };
-    public State state;
+    public State state = State.state_not_in_match;
 
     string phase;
 
@@ -499,7 +506,7 @@ public class Quidditch
     public void finishMatch()
     {
         Debug.Log("Finished match");
-
+        state = State.state_not_in_match;
         if (current_match.perfectRewardId != null) //Lets assume we did it perfectly.
         {
             Reward.getReward(current_match.perfectRewardId);

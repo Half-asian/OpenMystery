@@ -94,6 +94,7 @@ public class GameStart : MonoBehaviour
         interaction_manager.destroyAllInteractions();
         Scene.destroyScenePrefab();
         CameraManager.current.cleanup();
+        quidditch_manager.cleanup();
         GraduationUI.current.hideGraduation();
 
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("hud_dialog"))

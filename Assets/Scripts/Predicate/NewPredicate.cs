@@ -428,7 +428,14 @@ public partial class NewPredicate
         //VARIABLE DETECTION
         if (char_buf.EndsWith(" ") || is_last_char)
         {
-            if (char_buf.Trim() == "isMemoryActiveWithTag" || char_buf.Trim() == "nil" || char_buf.Trim() == "inScenarioForTlsqWithTag" || char_buf.Trim() == "isGreetingActiveWithScenarioTag")
+            if (char_buf.Trim() == "isMemoryActiveWithTag" 
+                || char_buf.Trim() == "nil" 
+                || char_buf.Trim() == "inScenarioForTlsqWithTag" 
+                || char_buf.Trim() == "isGreetingActiveWithScenarioTag" 
+                || char_buf.Trim() == "inScenarioForHogwartsSidequest"
+                || char_buf.Trim() == "isGreetingActiveForHogwartsSidequest"
+                || char_buf.Trim() == "forceAdulthood"
+                )
             {
                 symbols.Add(new SymbolConstantNil());
                 char_buf = "";
@@ -558,15 +565,15 @@ public partial class NewPredicate
                                 if (sb.function_name == "isExclusive" && sb.children.Count == 0)
                                     sb.function_name = "isExclusiveEmpty";
                                 Symbol result;
-                                try
-                                {
+                                //try
+                                //{
                                     result = (Symbol)functions[sb.function_name].DynamicInvoke(bracketSetToFunctionParameters(sb));
-                                }
-                                catch (Exception e)
-                                {
-                                    Debug.LogError(e.Message);
-                                    result = new SymbolConstantBool(true);
-                                }
+                                //}
+                                //catch (Exception e)
+                                //{
+                                  //  Debug.LogError(e.Message);
+                                   // result = new SymbolConstantBool(true);
+                                //}
                                 base_symbol.children[i] = result; 
                             }
                             else

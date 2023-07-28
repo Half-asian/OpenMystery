@@ -10,57 +10,61 @@ public partial class NewPredicate
 
     static Dictionary<string, Delegate> functions = new Dictionary<string, Delegate>()
     {
-        {"multiplyStuff"                    , new Func<SymbolConstantInteger, SymbolConstantInteger, SymbolConstantInteger>(multiplyStuff) },
-        {"skillUnlocked"                    , new Func<SymbolConstantString, SymbolConstantBool>(skillUnlocked) },
-        {"interactionComplete"              , new Func<SymbolConstantString, SymbolConstantBool>(interactionComplete) },
-        {"isGoalComplete"                   , new Func<SymbolConstantString, SymbolConstantBool>(isGoalComplete) },
-        {"goalChainComplete"                , new Func<SymbolConstantString, SymbolConstantBool>(goalChainComplete) },
-        {"isTLSQComplete"                   , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQComplete) },
-        {"isTLSQFailed"                     , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQFailed) },
-        {"isTimedPromoExpired"              , new Func<SymbolConstantString, SymbolConstantBool>(isTimedPromoExpired) },
-        {"featuredModalCompleteCount"       , new Func<SymbolConstantString, SymbolConstantInteger>(featuredModalCompleteCount) },
-        {"matchWon"                         , new Func<SymbolConstantString, SymbolConstantBool>(matchWon) },
-        {"quidditchPosition"                , new Func<SymbolConstantString>(quidditchPosition) },
-        {"madeChoice"                       , new Func<SymbolConstantString, SymbolConstantBool>(madeChoice) },
-        {"isInHouse"                        , new Func<SymbolConstantString, SymbolConstantBool>(isInHouse) },
-        {"isAvatarFemale"                   , new Func<SymbolConstantBool>(isAvatarFemale) },
-        {"isAvatarMale"                     , new Func<SymbolConstantBool>(isAvatarMale) },
-        {"playerYear"                       , new Func<SymbolConstantInteger>(playerYear) },
-        {"currentScenario"                  , new Func<SymbolConstantString>(currentScenario) },
-        {"tutorialStepComplete"             , new Func<SymbolConstantString, SymbolConstantString, SymbolConstantBool>(tutorialStepComplete) },
-        {"lastPivotalPlaySuccessful"        , new Func<SymbolConstantBool>(lastPivotalPlaySuccessful) },
-        {"lastPivotalPlayFailed"            , new Func<SymbolConstantBool>(lastPivotalPlayFailed) },
-        {"lastPivotalPlayHasQTEPhase"       , new Func<SymbolConstantBool>(lastPivotalPlayHasQTEPhase) },
-        {"winningCurrentMatch"              , new Func<SymbolConstantBool>(winningCurrentMatch) },
-        {"opponentHouse"                    , new Func<SymbolConstantString>(opponentHouse) },
-        {"isTLSQActive"                     , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQActive) },
-        {"isTimedPromoActive"               , new Func<SymbolConstantString, SymbolConstantBool>(isTimedPromoActive) },
-        {"isGoalInProgress"                 , new Func<SymbolConstantString, SymbolConstantBool>(isGoalInProgress) },
-        {"isMemoryActiveWithTag"            , new Func<SymbolConstantString, SymbolConstantBool>(isMemoryActiveWithTag) },
-        {"isGreetingActiveWithScenarioTag"  , new Func<SymbolConstantString, SymbolConstantBool>(isGreetingActiveWithScenarioTag) },
-        {"inScenarioForTlsqWithTag"         , new Func<SymbolConstantString, SymbolConstantBool>(inScenarioForTlsqWithTag) },
-        {"getContentVar"                    , new Func<SymbolConstantString, SymbolConstantString, SymbolConstantInteger>(getContentVar) },
-        {"placeOfHouse"                     , new Func<SymbolConstantString, SymbolConstantInteger>(placeOfHouse) },
-        {"placeOfPlayer"                    , new Func<SymbolConstantInteger>(placeOfPlayer) },
-        {"currentLocation"                  , new Func<SymbolConstantString>(currentLocation) },
-        {"isRomanticallyBusy"               , new Func<SymbolConstantString, SymbolConstantBool>(isRomanticallyBusy) },
-        {"romanceLevelWithPartner"          , new Func<SymbolConstantString, SymbolConstantInteger>(romanceLevelWithPartner) },
-        {"isExclusiveEmpty"                 , new Func<SymbolConstantBool>(isExclusiveEmpty) },
-        {"isExclusive"                      , new Func<SymbolConstantString, SymbolConstantBool>(isExclusive) },
-        {"isPetOwned"                       , new Func<SymbolConstantString, SymbolConstantBool>(isPetOwned) },
-        {"isCreatureUnlocked"               , new Func<SymbolConstantString, SymbolConstantBool>(isCreatureUnlocked) },
-        {"goalViewed"                       , new Func<SymbolConstantString, SymbolConstantBool>(goalViewed) },
-        {"creatureAffinityLevel"            , new Func<SymbolConstantString, SymbolConstantInteger>(creatureAffinityLevel) },
-        {"random"                           , new Func<SymbolConstantFloat>(random) },
-        {"sessionRandom"                    , new Func<SymbolConstantFloat>(random) },
-        {"isVersionAtLeast"                 , new Func<SymbolConstantString, SymbolConstantBool>(isVersionAtLeast) },
-        {"companionLevel"                   , new Func<SymbolConstantString, SymbolConstantInteger >(companionLevel) },
-        {"numCompletedDatesWithPartner"     , new Func<SymbolConstantString, SymbolConstantInteger>(numCompletedDatesWithPartner) },
-        {"attributeLevel"                   , new Func<SymbolConstantString, SymbolConstantInteger>(attributeLevel) },
-        {"hasCompletedNux"                  , new Func<SymbolConstantBool>(hasCompletedNux) },
-        {"decidedOnBreakUp"                 , new Func<SymbolConstantString,  SymbolConstantBool>(decidedOnBreakUp) },
-        {"activeProjectId"                  , new Func<SymbolConstantString>(activeProjectId) },
-
+        {"multiplyStuff"                        , new Func<SymbolConstantInteger, SymbolConstantInteger, SymbolConstantInteger>(multiplyStuff) },
+        {"skillUnlocked"                        , new Func<SymbolConstantString, SymbolConstantBool>(skillUnlocked) },
+        {"interactionComplete"                  , new Func<SymbolConstantString, SymbolConstantBool>(interactionComplete) },
+        {"isGoalComplete"                       , new Func<SymbolConstantString, SymbolConstantBool>(isGoalComplete) },
+        {"goalChainComplete"                    , new Func<SymbolConstantString, SymbolConstantBool>(goalChainComplete) },
+        {"isTLSQComplete"                       , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQComplete) },
+        {"isTLSQFailed"                         , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQFailed) },
+        {"isTimedPromoExpired"                  , new Func<SymbolConstantString, SymbolConstantBool>(isTimedPromoExpired) },
+        {"featuredModalCompleteCount"           , new Func<SymbolConstantString, SymbolConstantInteger>(featuredModalCompleteCount) },
+        {"matchWon"                             , new Func<SymbolConstantString, SymbolConstantBool>(matchWon) },
+        {"quidditchPosition"                    , new Func<SymbolConstantString>(quidditchPosition) },
+        {"madeChoice"                           , new Func<SymbolConstantString, SymbolConstantBool>(madeChoice) },
+        {"isInHouse"                            , new Func<SymbolConstantString, SymbolConstantBool>(isInHouse) },
+        {"isAvatarFemale"                       , new Func<SymbolConstantBool>(isAvatarFemale) },
+        {"isAvatarMale"                         , new Func<SymbolConstantBool>(isAvatarMale) },
+        {"playerYear"                           , new Func<SymbolConstantInteger>(playerYear) },
+        {"currentScenario"                      , new Func<SymbolConstantString>(currentScenario) },
+        {"tutorialStepComplete"                 , new Func<SymbolConstantString, SymbolConstantString, SymbolConstantBool>(tutorialStepComplete) },
+        {"lastPivotalPlaySuccessful"            , new Func<SymbolConstantBool>(lastPivotalPlaySuccessful) },
+        {"lastPivotalPlayFailed"                , new Func<SymbolConstantBool>(lastPivotalPlayFailed) },
+        {"lastPivotalPlayHasQTEPhase"           , new Func<SymbolConstantBool>(lastPivotalPlayHasQTEPhase) },
+        {"winningCurrentMatch"                  , new Func<SymbolConstantBool>(winningCurrentMatch) },
+        {"opponentHouse"                        , new Func<SymbolConstantString>(opponentHouse) },
+        {"isTLSQActive"                         , new Func<SymbolConstantString, SymbolConstantBool>(isTLSQActive) },
+        {"isTimedPromoActive"                   , new Func<SymbolConstantString, SymbolConstantBool>(isTimedPromoActive) },
+        {"isGoalInProgress"                     , new Func<SymbolConstantString, SymbolConstantBool>(isGoalInProgress) },
+        {"isMemoryActiveWithTag"                , new Func<SymbolConstantString, SymbolConstantBool>(isMemoryActiveWithTag) },
+        {"isGreetingActiveWithScenarioTag"      , new Func<SymbolConstantString, SymbolConstantBool>(isGreetingActiveWithScenarioTag) },
+        {"inScenarioForTlsqWithTag"             , new Func<SymbolConstantString, SymbolConstantBool>(inScenarioForTlsqWithTag) },
+        {"getContentVar"                        , new Func<SymbolConstantString, SymbolConstantString, SymbolConstantInteger>(getContentVar) },
+        {"placeOfHouse"                         , new Func<SymbolConstantString, SymbolConstantInteger>(placeOfHouse) },
+        {"placeOfPlayer"                        , new Func<SymbolConstantInteger>(placeOfPlayer) },
+        {"currentLocation"                      , new Func<SymbolConstantString>(currentLocation) },
+        {"isRomanticallyBusy"                   , new Func<SymbolConstantString, SymbolConstantBool>(isRomanticallyBusy) },
+        {"romanceLevelWithPartner"              , new Func<SymbolConstantString, SymbolConstantInteger>(romanceLevelWithPartner) },
+        {"isExclusiveEmpty"                     , new Func<SymbolConstantBool>(isExclusiveEmpty) },
+        {"isExclusive"                          , new Func<SymbolConstantString, SymbolConstantBool>(isExclusive) },
+        {"isPetOwned"                           , new Func<SymbolConstantString, SymbolConstantBool>(isPetOwned) },
+        {"isCreatureUnlocked"                   , new Func<SymbolConstantString, SymbolConstantBool>(isCreatureUnlocked) },
+        {"goalViewed"                           , new Func<SymbolConstantString, SymbolConstantBool>(goalViewed) },
+        {"creatureAffinityLevel"                , new Func<SymbolConstantString, SymbolConstantInteger>(creatureAffinityLevel) },
+        {"random"                               , new Func<SymbolConstantFloat>(random) },
+        {"sessionRandom"                        , new Func<SymbolConstantFloat>(random) },
+        {"isVersionAtLeast"                     , new Func<SymbolConstantString, SymbolConstantBool>(isVersionAtLeast) },
+        {"companionLevel"                       , new Func<SymbolConstantString, SymbolConstantInteger >(companionLevel) },
+        {"numCompletedDatesWithPartner"         , new Func<SymbolConstantString, SymbolConstantInteger>(numCompletedDatesWithPartner) },
+        {"attributeLevel"                       , new Func<SymbolConstantString, SymbolConstantInteger>(attributeLevel) },
+        {"hasCompletedNux"                      , new Func<SymbolConstantBool>(hasCompletedNux) },
+        {"decidedOnBreakUp"                     , new Func<SymbolConstantString,  SymbolConstantBool>(decidedOnBreakUp) },
+        {"activeProjectId"                      , new Func<SymbolConstantString>(activeProjectId) },
+        {"clubRankOf"                           , new Func<SymbolConstantString, SymbolConstantInteger>(clubRankOf) },
+        {"forceAdulthood"                       , new Func<SymbolConstantBool>(forceAdulthood) },
+        {"isInMatch"                            , new Func<SymbolConstantBool>(isInMatch) },
+        {"isGreetingActiveForHogwartsSidequest" , new Func<SymbolConstantBool>(isGreetingActiveForHogwartsSidequest) },
+        {"inScenarioForHogwartsSidequest"       , new Func<SymbolConstantBool>(inScenarioForHogwartsSidequest) },
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -362,5 +366,28 @@ public partial class NewPredicate
         if (Project.config_project != null)
             return new SymbolConstantString(Project.config_project.projectId);
         return new SymbolConstantString("null");
+    }
+
+    static SymbolConstantInteger clubRankOf(SymbolConstantString club)
+    {
+        return new SymbolConstantInteger(99);
+    }
+
+    static SymbolConstantBool forceAdulthood()
+    {
+        return new SymbolConstantBool(false);
+    }
+
+    static SymbolConstantBool isInMatch()
+    {
+        return new SymbolConstantBool(GameStart.quidditch_manager.isInMatch());
+    }
+    static SymbolConstantBool isGreetingActiveForHogwartsSidequest()
+    {
+        return new SymbolConstantBool(false);
+    }
+    static SymbolConstantBool inScenarioForHogwartsSidequest()
+    {
+        return new SymbolConstantBool(false);
     }
 }
