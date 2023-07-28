@@ -311,6 +311,18 @@ namespace ModelLoading
 			}
 			if (material.intSettingIds != null)
 			{
+				//lightmap uvs
+				int second_diffuse_idx = material.intSettingIds.ToList().IndexOf("SecondDiffuse_UvSet");
+				if (second_diffuse_idx != -1 && !material.intSettingIds.Contains("Lightmap_UvSet"))
+				{
+
+					if (material.intSettingValues[second_diffuse_idx] != 2)
+					{
+						material.intSettingIds = material.intSettingIds.Append("Lightmap_UvSet").ToArray();
+						material.intSettingValues = material.intSettingValues.Append(2).ToArray();
+					}
+				}
+
 				for (int i = 0; i < material.intSettingIds.Length; i++)
 				{
 					mat.SetFloat(material.intSettingIds[i], material.intSettingValues[i]);
