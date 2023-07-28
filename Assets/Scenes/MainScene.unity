@@ -11653,6 +11653,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2832297246592578429, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2832297246592578429, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 5197045317790843043, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_Intensity
       value: 10000
@@ -11769,9 +11777,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera Holder
       objectReference: {fileID: 0}
+    - target: {fileID: 7339653518560060793, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7339653518560060794, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339653518560060798, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
+      propertyPath: m_SensorSize.x
+      value: 43.5
       objectReference: {fileID: 0}
     - target: {fileID: 7339653518560060798, guid: a7ae96d4e3db8cf4a9a8e5d4e882c556, type: 3}
       propertyPath: m_AllowDynamicResolution

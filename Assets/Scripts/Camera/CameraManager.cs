@@ -85,7 +85,7 @@ public class CameraManager : MonoBehaviour
 
     public void setAOV(float aov)
     {
-        camera_component.fieldOfView = aov * 1.35f;
+        camera_component.fieldOfView = aov;
     }
 
     public void setFOV(float fov)
@@ -106,7 +106,7 @@ public class CameraManager : MonoBehaviour
         camera_jt_cam_bind_transform.transform.localPosition = Vector3.zero;
         camera_jt_cam_bind_transform.transform.localEulerAngles = Vector3.zero;
         camera_transform.localEulerAngles = new Vector3(0, 180, 0);
-        camera_transform.position = Vector3.zero;//new Vector3(0, 0.05f, 0); //idk?
+        camera_transform.localPosition = Vector3.zero;
     }
 
     public ConfigScene._Scene.Camera focusCam(ref string[] action_params)
@@ -433,6 +433,7 @@ public class CameraManager : MonoBehaviour
             yield return null;
         }
         pan_cam_on_track_pct = target_pct;
-        scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, scene_cam_animation.anim_clip.length * pan_cam_on_track_pct);
+        if (scene_cam_animation != null)
+            scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, scene_cam_animation.anim_clip.length * pan_cam_on_track_pct);
     }
 }
