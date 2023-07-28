@@ -113,7 +113,7 @@ public static class EventActions
                 ConfigScene._Scene.WayPoint waypoint_c = Scene.current.waypoint_dict[action_params[1]];
                 if (Prop.spawned_props.ContainsKey(action_params[0]))
                 {
-                    Common.setWaypointTransform(ref Prop.spawned_props[action_params[0]].model.game_object, waypoint_c);
+                    Common.setWaypointTransform(Prop.spawned_props[action_params[0]].model.game_object, waypoint_c);
                 }
                 else
                 {

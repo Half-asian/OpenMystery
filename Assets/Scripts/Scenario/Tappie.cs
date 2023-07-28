@@ -63,7 +63,7 @@ public class Tappie
 
             m.game_object.transform.parent = tappiego.transform;
 
-            Common.setWaypointTransform(ref tappiego, Scene.current.waypoint_dict[tappie.activeWaypoint]);
+            Common.setWaypointTransform(tappiego, Scene.current.waypoint_dict[tappie.activeWaypoint]);
             tappies.Add(tappiego);
         }
     }

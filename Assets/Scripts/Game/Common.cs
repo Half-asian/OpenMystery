@@ -51,7 +51,7 @@ public class Common
         }
     }
 
-    public static void setWaypointTransform(ref GameObject prop, ConfigScene._Scene.WayPoint prop_locator)
+    public static void setWaypointTransform(GameObject prop, ConfigScene._Scene.WayPoint prop_locator)
     {
         if (prop_locator == null)
             return;
@@ -59,6 +59,8 @@ public class Common
         {
             prop.transform.position = new Vector3(prop_locator.position[0] * -0.01f, prop_locator.position[1] * 0.01f, prop_locator.position[2] * 0.01f);
         }
+        else
+            prop.transform.position = Vector3.zero;
         if (prop_locator.rotation != null)
         {
             prop.transform.rotation = Quaternion.identity;
@@ -66,10 +68,14 @@ public class Common
             prop.transform.Rotate(new Vector3(0, -prop_locator.rotation[1], 0));
             prop.transform.Rotate(new Vector3(prop_locator.rotation[0], 0, 0));
         }
+        else
+            prop.transform.rotation = Quaternion.identity;
         if (prop_locator.scale != null)
         {
             prop.transform.localScale = new Vector3(prop_locator.scale[0], prop_locator.scale[1], prop_locator.scale[2]);
         }
+        else
+            prop.transform.localScale = Vector3.one;
     }
 
     public static void setSceneTransform(ref GameObject obj, Vector3 position, Vector3 rotation)
