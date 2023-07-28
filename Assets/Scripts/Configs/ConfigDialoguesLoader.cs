@@ -27,6 +27,7 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
         public string[] lookAt;
         public string[] _headOnly;
         public dynamic headOnly; //some fucker entered an integer
+        public string[][] stateUpdates;
 
         public float CameraTransitionTime => cameraTransitionTime ?? 0.0f;
     }
@@ -130,6 +131,7 @@ public class ConfigDialogueChoice : Config<ConfigDialogueChoice>
         public string qteId; //unused
         public string successTurnId;
         public string reward; //todo
+        public string[][] stateUpdates;
     }
 
     public Dictionary<string, _DialogueChoice> DialogueChoice;

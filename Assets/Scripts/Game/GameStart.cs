@@ -171,6 +171,7 @@ public class GameStart : MonoBehaviour
         string goalchains_complete_txt = Path.Combine(GlobalEngineVariables.player_folder, "goalchains_complete.txt");
         string matches_won_txt = Path.Combine(GlobalEngineVariables.player_folder, "matches_won.txt");
         string skills_unlocked_txt = Path.Combine(GlobalEngineVariables.player_folder, "skills_unlocked.txt");
+        string content_vars_txt = Path.Combine(GlobalEngineVariables.player_folder, "content_vars.txt");
 
         if (!Directory.Exists(screenshots_folder))
         {
@@ -204,6 +205,12 @@ public class GameStart : MonoBehaviour
         if (!File.Exists(skills_unlocked_txt))
         {
             oFileStream = new System.IO.FileStream(skills_unlocked_txt, System.IO.FileMode.Create);
+            oFileStream.Close();
+        }
+
+        if (!File.Exists(content_vars_txt))
+        {
+            oFileStream = new System.IO.FileStream(content_vars_txt, System.IO.FileMode.Create);
             oFileStream.Close();
         }
 

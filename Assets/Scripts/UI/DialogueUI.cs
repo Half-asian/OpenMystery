@@ -111,8 +111,16 @@ public class DialogueUI : MonoBehaviour
         choice_2_gameobject.SetActive(false);
         choice_3_gameobject.SetActive(false);
 
-        string choices_made_txt = Path.Combine(GlobalEngineVariables.player_folder, "choices_made.txt");
+        var dialogue_choice = Configs.config_dialogue_choices.DialogueChoice[GameStart.dialogue_manager.choices[0]];
+        if (dialogue_choice.stateUpdates != null)
+        {
+            foreach (var state_update in dialogue_choice.stateUpdates)
+            {
+                Scenario.setContentVar(state_update);
+            }
+        }
 
+        string choices_made_txt = Path.Combine(GlobalEngineVariables.player_folder, "choices_made.txt");
         if (!File.ReadAllText(choices_made_txt).Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[0] + "\")"))
         {
             StreamWriter writer = new StreamWriter(choices_made_txt, true);
@@ -133,6 +141,15 @@ public class DialogueUI : MonoBehaviour
         choice_2_gameobject.SetActive(false);
         choice_3_gameobject.SetActive(false);
 
+        var dialogue_choice = Configs.config_dialogue_choices.DialogueChoice[GameStart.dialogue_manager.choices[1]];
+        if (dialogue_choice.stateUpdates != null)
+        {
+            foreach (var state_update in dialogue_choice.stateUpdates)
+            {
+                Scenario.setContentVar(state_update);
+            }
+        }
+
         string choices_made_txt = Path.Combine(GlobalEngineVariables.player_folder, "choices_made.txt");
         if (!File.ReadAllText(choices_made_txt).Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[1] + "\")"))
         {
@@ -152,6 +169,15 @@ public class DialogueUI : MonoBehaviour
         choice_1_gameobject.SetActive(false);
         choice_2_gameobject.SetActive(false);
         choice_3_gameobject.SetActive(false);
+
+        var dialogue_choice = Configs.config_dialogue_choices.DialogueChoice[GameStart.dialogue_manager.choices[2]];
+        if (dialogue_choice.stateUpdates != null)
+        {
+            foreach (var state_update in dialogue_choice.stateUpdates)
+            {
+                Scenario.setContentVar(state_update);
+            }
+        }
 
         string choices_made_txt = Path.Combine(GlobalEngineVariables.player_folder, "choices_made.txt");
         if (!File.ReadAllText(choices_made_txt).Contains("madeChoice(\"" + GameStart.dialogue_manager.choices[2] + "\")"))

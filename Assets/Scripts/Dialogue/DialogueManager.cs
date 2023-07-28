@@ -171,7 +171,13 @@ public class DialogueManager : MonoBehaviour
         string name = Speaker.mapSpeakerName(dialogue_line.speakerId);
         string text = "";
 
-
+        if (dialogue_line.stateUpdates != null)
+        {
+            foreach (var state_update in dialogue_line.stateUpdates)
+            {
+                Scenario.setContentVar(state_update);
+            }
+        }
 
         if (dialogue_line.token != null)
         {

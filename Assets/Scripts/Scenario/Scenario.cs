@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using ModelLoading;
+using System.IO;
 
 public class SerializedScenario
 {
     public string[][] interactions;
     public string[][] actors;
     public List<string> appliedClothes = null;
-    public Dictionary<string, Dictionary<string, int>> contentVars;
 }
 
 public class Scenario
@@ -26,7 +26,6 @@ public class Scenario
     public ConfigScenario._Scenario scenario_config;
     public Objective objective;
     public Dictionary<string, List<string>> scenario_interactions_completed = new Dictionary<string, List<string>>();
-    public Dictionary<string, Dictionary<string, int>> contentVars = new Dictionary<string, Dictionary<string, int>>();
 
     public List<string> appliedClothes = null; //This is stored in the scenario, because it probably resets on scenario change
 
@@ -88,20 +87,35 @@ public class Scenario
     {
         string keya = parameters[0];
         string keyb = parameters[1];
-        int value = int.Parse(parameters[2]);
 
-        if (!current.contentVars.ContainsKey(keya))
-            current.contentVars[keya] = new Dictionary<string, int>();
-        current.contentVars[keya][keyb] = value;
+        string content_vars_txt = Path.Combine(GlobalEngineVariables.player_folder, "content_vars.txt");
+        string text = File.ReadAllText(content_vars_txt);
+        int keya_index = text.IndexOf(keya + ":");
+        if (keya_index != -1)
+        {
+            int next_line = text.IndexOf("\n", keya_index);
+            Debug.Log("Duplicate contentVar! removing " + keya_index + " " + (next_line - keya_index));
+            text = text.Remove(keya_index, next_line - keya_index + 1);
+        }
+        text += keya + ":" + keyb + "\n";
+        Debug.Log("setContentVar " + keya + ":" + keyb + "\n");
+        File.WriteAllText(content_vars_txt, text);
     }
 
+    //keya not used
     public static int getContentVar(string keya, string keyb)
     {
-        if (!current.contentVars.ContainsKey(keya))
-            return 0;
-        if (!current.contentVars[keya].ContainsKey(keyb))
-            return 0;
-        return current.contentVars[keya][keyb];
+        string content_vars_txt = Path.Combine(GlobalEngineVariables.player_folder, "content_vars.txt");
+        string text = File.ReadAllText(content_vars_txt);
+        int keya_index = text.IndexOf(keyb + ":");
+        if (keya_index != -1)
+        {
+            int next_line = text.IndexOf("\n", keya_index);
+            string value = text.Substring(keya_index + keyb.Length + 1, next_line - keyb.Length - keya_index - 1);
+            Debug.Log("Reading content var: " + keyb + " " + value);
+            return int.Parse(value);
+        }
+        throw new Exception("Unknown content var " + keyb);
     }
 
 
@@ -212,13 +226,11 @@ public class Scenario
         {
             var serialized = scenarios_serialized[current.scenario_config.scenarioId];
             Actor.spawnSerializedActors(serialized.actors);
-            current.contentVars = serialized.contentVars;
             current.appliedClothes = serialized.appliedClothes;
         }
         else
         {
             Actor.spawnScenarioActors();
-            current.contentVars = new Dictionary<string, Dictionary<string, int>>();
             current.appliedClothes = null;
         }
         Tappie.spawnTappies();
@@ -366,7 +378,6 @@ public class Scenario
         SerializedScenario serialized_scenario = new SerializedScenario();
         serialized_scenario.interactions = GameStart.interaction_manager.serializeInteractions();
         serialized_scenario.actors = Actor.serializeActors();
-        serialized_scenario.contentVars = current.contentVars;
         serialized_scenario.appliedClothes = current.appliedClothes;
         scenarios_serialized[current.scenario_config.scenarioId] = serialized_scenario;
     }

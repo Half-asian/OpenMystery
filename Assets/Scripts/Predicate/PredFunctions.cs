@@ -227,6 +227,7 @@ public partial class NewPredicate
     static SymbolConstantInteger getContentVar(SymbolConstantString a, SymbolConstantString b) //Content vars are like scenario variables from what I gather
     {
         int value = Scenario.getContentVar(a.value, b.value);
+        Debug.Log("GetContentVar: " + b.toString() + " " + value);
         return new SymbolConstantInteger(value);
     }
 
