@@ -401,11 +401,11 @@ public static partial class AnimationManager
 		if (Path.GetFileName(bone_name) == "jt_all_bind")
 			is_jt_all_bind = true;
 
-		if (Path.GetFileName(bone_name) == "head1_neck_bind" && head_animation_scale != 0.0f)
+		if (Path.GetFileName(bone_name) == "jt_head_bind" && head_animation_scale != 0.0f)
 		{
-			keyframe.scale[0] *= head_animation_scale;
-			keyframe.scale[1] *= head_animation_scale;
-			keyframe.scale[2] *= head_animation_scale;
+			keyframe.scale[0] = head_animation_scale;
+			keyframe.scale[1] = head_animation_scale;
+			keyframe.scale[2] = head_animation_scale;
 		}
 
 		if (use_bone_mod && bone_mods[bone_name].CameraHack)
@@ -415,13 +415,13 @@ public static partial class AnimationManager
 			keyframe.scale[1] *= bone_mods[bone_name].scale.z;
 		}
 
-		//AnimationScale takes the place of jt_all_bind
+        //AnimationScale takes the place of jt_all_bind
 
-		Keyframe keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? keyframe.scale[0] * animation_scale : keyframe.scale[0]);
-		Keyframe keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? keyframe.scale[1] * animation_scale : keyframe.scale[1]);
-		Keyframe keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? keyframe.scale[2] * animation_scale : keyframe.scale[2]);
+        Keyframe keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? animation_scale : keyframe.scale[0]);
+        Keyframe keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? animation_scale : keyframe.scale[1]);
+        Keyframe keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? animation_scale : keyframe.scale[2]);
 
-		keyframe_sca_x.weightedMode = WeightedMode.Both;
+        keyframe_sca_x.weightedMode = WeightedMode.Both;
 		keyframe_sca_y.weightedMode = WeightedMode.Both;
 		keyframe_sca_z.weightedMode = WeightedMode.Both;
 
