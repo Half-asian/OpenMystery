@@ -176,33 +176,29 @@ public class EventPlayer : MonoBehaviour
 
         Debug.Log("Activating Event " + event_name + " is sequential player: " + is_sequential_player + " Frame: " + Time.frameCount);
 
-        if (!string.IsNullOrEmpty( Configs.config_script_events.ScriptEvents[event_name].shouldRun))
-        {
-            if (Predicate.parsePredicate(Configs.config_script_events.ScriptEvents[event_name].shouldRun) == false)
-            {
-                return 0.0f;
-            }
-        }
-
-        float event_time = 0.0f;
         var script_event = Configs.config_script_events.ScriptEvents[event_name];
+        float event_time = 0.0f;
 
-        if (script_event.action != null)
+        if (string.IsNullOrEmpty(script_event.shouldRun) || Predicate.parsePredicate(script_event.shouldRun) == true)
         {
-            for (int event_index = 0; event_index < script_event.action.Length; event_index++)
+            if (script_event.action != null)
             {
+                for (int event_index = 0; event_index < script_event.action.Length; event_index++)
+                {
 
-                string[] action_params;
-                if (script_event.param != null)
-                    if (event_index < script_event.param.Length)
-                        action_params = script_event.param[event_index].Split(':');
+                    string[] action_params;
+                    if (script_event.param != null)
+                        if (event_index < script_event.param.Length)
+                            action_params = script_event.param[event_index].Split(':');
+                        else
+                            continue;
                     else
-                        continue;
-                else
-                    action_params = new string[0];
+                        action_params = new string[0];
 
-                EventActions.doEventAction(event_name, event_index, action_params, this);
+                    EventActions.doEventAction(event_name, event_index, action_params, this);
+                }
             }
+            event_time = script_event.Duration;
         }
 
         //if (Configs.config_script_events.ScriptEvents[event_name].type == "Blocking" && Configs.config_script_events.ScriptEvents[event_name].Duration == 0.0f && Configs.config_script_events.ScriptEvents[event_name].messageAndKeys != null) //There are some blocking events with no way to exit and no time. Just leftover junk maybe?
@@ -220,8 +216,6 @@ public class EventPlayer : MonoBehaviour
 
         if (script_event.type == "Blocking")
         {
-            event_time = script_event.Duration;
-
             if (script_event.messageAndKeys != null)
             {
                 foreach (var message_key_sets in script_event.messageAndKeys)
@@ -230,7 +224,10 @@ public class EventPlayer : MonoBehaviour
                 }
                 blocking_message_keys.print();
             }
-
+        }
+        else
+        {
+            event_time = 0.0f;
         }
 
         //Year 6 Chapter 12 Part 1 is the ultimate challenge of whether sequential players and looping events are implemented correctly.
