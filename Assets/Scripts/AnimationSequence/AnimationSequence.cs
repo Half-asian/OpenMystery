@@ -194,7 +194,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
         foreach (var prop in local_props)
         {
             if (prop != null)
-                base_node.removeProp(prop.name);
+                base_node.removeChildNode(prop.name);
         }
     }
 

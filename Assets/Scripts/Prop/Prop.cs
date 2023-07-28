@@ -230,47 +230,7 @@ public class Prop : Node
 
         prop.model.game_object.transform.SetParent(GameStart.current.props_holder);
 
-        Common.setWaypointTransform(ref prop.model.game_object, waypoint);
-    }
-
-    public static void attachPropFromEvent(string character, string bone, string model_id, string name = null)
-    {
-        if (name == null)
-            name = model_id;
-
-        var actor = Actor.getActor(character);
-        if (actor == null)
-            return;
-
-        Prop prop;
-        if (Prop.spawned_props.ContainsKey(name))
-        {
-            prop = spawned_props[name];
-        }
-        else
-        {
-            Model model = ModelManager.loadModel(model_id);
-            prop = model.game_object.AddComponent<Prop>();
-            prop.setup(name, model, spawner.Event, "");
-            model.game_object.name = name;
-            spawned_props[name] = prop;
-        }
-
-        prop.model.game_object.transform.parent =  Actor.getActor(character).model.pose_bones[bone];
-        prop.model.game_object.transform.localPosition = Vector3.zero;
-        prop.model.game_object.transform.localRotation = Quaternion.identity;
-
-        actor.child_nodes.Add(name, prop);
-    }
-
-    public static void detachPropFromEvent(string character, string name)
-    {
-        if (Prop.spawned_props.ContainsKey(name))
-        {
-            GameObject.Destroy(Prop.spawned_props[name].model.game_object);
-
-            Prop.spawned_props.Remove(name);
-        }
+        Common.setWaypointTransform(prop.model.game_object, waypoint);
     }
 
     public static void animateProp(string prop, string animation, Dictionary<string, string> triggerReplacement = null)

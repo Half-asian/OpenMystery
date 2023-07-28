@@ -198,24 +198,40 @@ public static class EventActions
 
                 break;
 
+                //0: actor
+                //1: bone
+                //2: model id
+                //3: alias
+
             case "attachProp": //used to attach something to a character
-                if (action_params.Length < 4)
-                    Prop.attachPropFromEvent(action_params[0], action_params[1], action_params[2]);
-                else
-                    Prop.attachPropFromEvent(action_params[0], action_params[1], action_params[2], action_params[3]);
-                break;
+                {
+                    var actor = Actor.getActor(action_params[0]);
+                    if (actor == null)
+                        break;
 
+                    if (action_params.Length < 4)
+                        actor.attachChildNode(action_params[2], action_params[2], action_params[1]);
+                    else
+                        actor.attachChildNode(action_params[2], action_params[3], action_params[1]);
+                    break;
+                }
             case "detachProp":
-                Prop.detachPropFromEvent(action_params[0], action_params[1]);
-                break;
+                {
+                    var actor = Actor.getActor(action_params[0]);
+                    if (actor == null)
+                        return;
 
+                    actor.removeChildNode(action_params[1]);
+                    break;
+                }
             case "playAttachedPropAnim":
-
-                var actor = Actor.getActor(action_params[0]);
-                if (actor == null)
-                    return;
-                actor.playPropAnim(action_params[1], action_params[2]);
-                break;
+                {
+                    var actor = Actor.getActor(action_params[0]);
+                    if (actor == null)
+                        return;
+                    actor.playPropAnim(action_params[1], action_params[2]);
+                    break;
+                }
             case "hideEntity":
                 if (Prop.spawned_props.ContainsKey(action_params[0]))
                 {

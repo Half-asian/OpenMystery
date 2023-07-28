@@ -70,7 +70,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     protected void removeChildNode(string prop_id)
     {
-        base_node.removeProp(prop_id);
+        base_node.removeChildNode(prop_id);
     }
 
     protected abstract void attachBroom(string target);

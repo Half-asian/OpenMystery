@@ -126,7 +126,7 @@ public partial class Node : MonoBehaviour
         playPropAnim(split[0], split[1]);
     }
 
-    public void removeProp(string id)
+    public void removeChildNode(string id)
     {
         if (child_nodes.ContainsKey(id))
         {
