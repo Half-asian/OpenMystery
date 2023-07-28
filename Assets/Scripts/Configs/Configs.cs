@@ -447,92 +447,9 @@ public class Configs{
             //Remove check to see if player has completed part of Y2
             Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true";
         }
-        ConfigHPActorInfo._HPActorInfo chiara_adult = new ConfigHPActorInfo._HPActorInfo();
-        chiara_adult.actorId = "chiara_adult";
-        chiara_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        chiara_adult.modelId = "c_Chiara_adult_Casual_skin";
-        Configs.config_hp_actor_info.HPActorInfo.Add("chiara_adult", chiara_adult);
-
-        ConfigHPActorInfo._HPActorInfo chiara_mungos = new ConfigHPActorInfo._HPActorInfo();
-        chiara_mungos.actorId = "chiara_mungos";
-        chiara_mungos.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        chiara_mungos.modelId = "c_Chiara_adult_StMungosHealer_skin";
-        Configs.config_hp_actor_info.HPActorInfo.Add("chiara_mungos", chiara_mungos);
-
-        ConfigHPActorInfo._HPActorInfo merula_adult = new ConfigHPActorInfo._HPActorInfo();
-        merula_adult.actorId = "merula_adult";
-        merula_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        merula_adult.modelId = "c_MerulaHead_Y8_skin";
-        merula_adult.modelPatches = new string[] { "c_MerulaBody_Y8_skin", "c_StudentHandsRosyPeach_skin" };
-        Configs.config_hp_actor_info.HPActorInfo.Add("merula_adult", merula_adult);
-
-        ConfigHPActorInfo._HPActorInfo barnaby_adult = new ConfigHPActorInfo._HPActorInfo();
-        barnaby_adult.actorId = "barnaby_adult";
-        barnaby_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        barnaby_adult.modelId = "c_BarnabyHead_Y8_skin";
-        barnaby_adult.modelPatches = new string[] { "c_BarnabyBody_Y8_skin", "c_StudentHandsWhite_skin" };
-        Configs.config_hp_actor_info.HPActorInfo.Add("barnaby_adult", barnaby_adult);
-
-        ConfigHPActorInfo._HPActorInfo penny_adult = new ConfigHPActorInfo._HPActorInfo();
-        penny_adult.actorId = "penny_adult";
-        penny_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        penny_adult.modelId = "c_Penny_Y8_skin";
-        Configs.config_hp_actor_info.HPActorInfo.Add("penny_adult", penny_adult);
-
-        ConfigHPActorInfo._HPActorInfo jae_adult = new ConfigHPActorInfo._HPActorInfo();
-        jae_adult.actorId = "jae_adult";
-        jae_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        jae_adult.modelId = "c_JaeKimHead_Y8_skin";
-        jae_adult.modelPatches = new string[] { "c_JaeKimBody_Y8_skin", "c_StudentHandsWhite_skin" };
-        Configs.config_hp_actor_info.HPActorInfo.Add("jae_adult", jae_adult);
-
-        ConfigHPActorInfo._HPActorInfo tonks_adult = new ConfigHPActorInfo._HPActorInfo();
-        tonks_adult.actorId = "tonks_adult";
-        tonks_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        tonks_adult.modelId = "c_NymphadoraTonksHead_Y8_skin";
-        tonks_adult.modelPatches = new string[] { "c_NymphadoraTonksBody_Y8_skin", "c_NymphadoraTonksHands_Y8_skin" };
-        Configs.config_hp_actor_info.HPActorInfo.Add("tonks_adult", tonks_adult);
-
-        ConfigHPActorInfo._HPActorInfo tulip_adult = new ConfigHPActorInfo._HPActorInfo();
-        tulip_adult.actorId = "tulip_adult";
-        tulip_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        tulip_adult.modelId = "c_TulipHead_Y8_skin";
-        tulip_adult.modelPatches = new string[] { "c_TulipBody_Y8_skin", "c_StudentHandsWhite_skin" };
-        Configs.config_hp_actor_info.HPActorInfo.Add("tulip_adult", tulip_adult);
-
-        ConfigHPActorInfo._HPActorInfo murphy_adult = new ConfigHPActorInfo._HPActorInfo();
-        murphy_adult.actorId = "murphy_adult";
-        murphy_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        murphy_adult.modelId = "c_MurphyMcNullyHead_Y8_skin";
-        murphy_adult.modelPatches = new string[] { "c_MurphyMcNullyArms_Y8_skin", "c_MurphyMcNullyBody_Y8_skin" };
-        Configs.config_hp_actor_info.HPActorInfo.Add("murphy_adult", murphy_adult);
-
-        ConfigHPActorInfo._HPActorInfo ruby = new ConfigHPActorInfo._HPActorInfo();
-        ruby.actorId = "ruby";
-        ruby.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        ruby.modelId = "c_RubyHead_Y8_skin";
-        ruby.modelPatches = new string[] { "c_RubyBody_Y8_skin", "c_StudentHandsWhite_skin" };
-        Configs.config_hp_actor_info.HPActorInfo.Add("ruby", ruby);
-
-        ConfigHPActorInfo._HPActorInfo skye_adult = new ConfigHPActorInfo._HPActorInfo();
-        skye_adult.actorId = "skye_adult";
-        skye_adult.animId_idle = "c_Stu_IdleStandingNeutral01-Y8";
-        skye_adult.modelId = "c_SkyeParkin_Head_Y8_skin";
-        skye_adult.modelPatches = new string[] { "c_SkyeParkin_Body_Y8_skin" };
-        Configs.config_hp_actor_info.HPActorInfo.Add("skye_adult", skye_adult);
-
-        ConfigHPActorInfo._HPActorInfo harry = new ConfigHPActorInfo._HPActorInfo();
-        harry.actorId = "harry";
-        harry.animId_idle = "c_Stu_IdleStanding01";
-        harry.modelId = "c_HarryPotter_skin";
-        Configs.config_hp_actor_info.HPActorInfo.Add("harry", harry);
 
         Configs.config_hp_actor_info.HPActorInfo["c_TonksMasquerade_skin"].modelId = "c_hair_Tonks_skin";
         Configs.config_hp_actor_info.HPActorInfo["c_TonksMasquerade_skin"].modelPatches = new string[] { "c_NymphadoraTonksFaceClavicle_skin", "c_NPC_wand_generic_skin", "c_Female_MasqueradeBallOutfit_outfit_skin", "c_StudentHandsWhite_skin" };
-
-        Configs.predicate_alias_dict["isAdultContext"] = new ConfigPredicateAlias._PredicateAlias();
-        Configs.predicate_alias_dict["isAdultContext"].aliasId = "isAdultContext";
-        Configs.predicate_alias_dict["isAdultContext"].aliasedPredicate = "false";
     }
 
     public static ReferenceTree reference_tree;
@@ -549,9 +466,9 @@ public class Configs{
         config_avatar_patch_config = ConfigAvatarPatchConfig.getJObjectsConfigsListST("AvatarPatchConfig");
         config_scripted_clothing_set = ConfigScriptedClothingSet.getJObjectsConfigsListST("ScriptedClothingSet");
         config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
-        config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
+        config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping", MergeArrayHandling.Concat);
         config_house = ConfigHouse.getJObjectsConfigsListST("House");
-        config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
+        config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias", MergeArrayHandling.Concat);
         config_shader_animation = ConfigShaderAnimation.getJObjectsConfigsListST("ShaderAnimation");
         config_quidditch_broom_info = ConfigQuidditchBroomInfo.getJObjectsConfigsListST("QuidditchBroomInfo");
         config_local_data = ConfigLocalData.getConfig();
@@ -572,7 +489,7 @@ public class Configs{
         config_avatar_patch_config = ConfigAvatarPatchConfig.getJObjectsConfigsListST("AvatarPatchConfig");
         config_scripted_clothing_set = ConfigScriptedClothingSet.getJObjectsConfigsListST("ScriptedClothingSet");
         config_hp_actor_info = ConfigHPActorInfo.getJObjectsConfigsListST("HPActorInfo");
-        config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping");
+        config_actor_mapping = ConfigActorMapping.getJObjectsConfigsListST("ActorMapping", MergeArrayHandling.Concat);
         config_house = ConfigHouse.getJObjectsConfigsListST("House");
         config_hp_dialogue_line = ConfigHPDialogueLine.getConfig();
         config_dialogue_choices = ConfigDialogueChoice.getConfig();
@@ -592,7 +509,7 @@ public class Configs{
         config_assignment = ConfigAssignment.getJObjectsConfigsListST("Assignment");
         config_interaction = ConfigInteraction.getConfig();
         config_local_data = ConfigLocalData.getConfig();
-        config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias");
+        config_predicate_alias = ConfigPredicateAlias.getJObjectsConfigsListST("PredicateAlias", MergeArrayHandling.Concat);
         config_location = ConfigLocation.getJObjectsConfigsListST("Location");
         config_location_hub = ConfigLocationHub.getJObjectsConfigsListST("LocationHub");
         config_hub_npc = ConfigHubNPC.getJObjectsConfigsListST("HubNpc");
