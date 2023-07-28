@@ -55,7 +55,7 @@ public class ConfigPredicateAlias : Config<ConfigPredicateAlias>
     }
     public static void getConfig()
     {
-        Configs.config_predicate_alias = getJObjectsConfigsListST("PredicateAlias", MergeArrayHandling.Concat);
+        Configs.config_predicate_alias = getJObjectsConfigsListST("PredicateAlias", Newtonsoft.Json.Linq.MergeArrayHandling.Concat);
     }
 }
 
