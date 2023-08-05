@@ -161,6 +161,8 @@ public class PoserUI : MonoBehaviour
 
     void updateActorButtons()
     {
+        if (GameStart.current.model_inspector == true)
+            return;
         List<string> unhit_keys = actor_buttons.Keys.ToList();
 
 
