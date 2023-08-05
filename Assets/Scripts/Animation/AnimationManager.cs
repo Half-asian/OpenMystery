@@ -23,8 +23,8 @@ public static partial class AnimationManager
 {
 	static private string						animation_name;
 	static private Dictionary<string, string>	bone_fullname_dict;
-	static private float						animation_scale;
-	static private float						head_animation_scale;
+	static private float?						animation_scale;
+	static private float?						head_animation_scale;
 	static private Model						model;
 	static private Dictionary<string, string>	triggerReplacement;
 	static private Dictionary<string, BoneMod>	bone_mods;
@@ -65,8 +65,8 @@ public static partial class AnimationManager
 		}
 		else
 		{
-			animation_scale = 1.0f;
-			head_animation_scale = 1.0f;
+			animation_scale = null;
+			head_animation_scale = null;
 		}
 		return _loadAnimationClip();
 	}
@@ -243,6 +243,7 @@ public static partial class AnimationManager
 
 		if (!bone_fullname_dict.ContainsKey(new_name))
 			return;
+
 		new_name = bone_fullname_dict[new_name];
 
 		key_frames_pos_x = new List<Keyframe>();
@@ -392,20 +393,20 @@ public static partial class AnimationManager
 	}
 
 	public static void processAnimationScale(
-		string								bone_name,
-		bool								use_bone_mod,
-		CocosModel.Animation.Bone.Keyframe	keyframe
+		string bone_name,
+		bool use_bone_mod,
+		CocosModel.Animation.Bone.Keyframe keyframe
 		)
 	{
 		bool is_jt_all_bind = false;
 		if (Path.GetFileName(bone_name) == "jt_all_bind")
 			is_jt_all_bind = true;
 
-		if (Path.GetFileName(bone_name) == "jt_head_bind" && head_animation_scale != 0.0f)
+		if (Path.GetFileName(bone_name) == "jt_head_bind" && head_animation_scale != null && head_animation_scale != 0.0f)
 		{
-			keyframe.scale[0] = head_animation_scale;
-			keyframe.scale[1] = head_animation_scale;
-			keyframe.scale[2] = head_animation_scale;
+			keyframe.scale[0] = (float)head_animation_scale;
+			keyframe.scale[1] = (float)head_animation_scale;
+			keyframe.scale[2] = (float)head_animation_scale;
 		}
 
 		if (use_bone_mod && bone_mods[bone_name].CameraHack)
@@ -415,11 +416,24 @@ public static partial class AnimationManager
 			keyframe.scale[1] *= bone_mods[bone_name].scale.z;
 		}
 
+		Keyframe keyframe_sca_x;
+		Keyframe keyframe_sca_y;
+		Keyframe keyframe_sca_z;
         //AnimationScale takes the place of jt_all_bind
+        if (is_jt_all_bind && animation_scale != null)
+		{
+            keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, (float)animation_scale);
+            keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, (float)animation_scale);
+            keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, (float)animation_scale);
+        }
+		else
+		{
+            keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[0]);
+            keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[1]);
+            keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, keyframe.scale[2]);
+        }
 
-        Keyframe keyframe_sca_x = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? animation_scale : keyframe.scale[0]);
-        Keyframe keyframe_sca_y = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? animation_scale : keyframe.scale[1]);
-        Keyframe keyframe_sca_z = new Keyframe(keyframe.keytime * animation_length, is_jt_all_bind ? animation_scale : keyframe.scale[2]);
+
 
         keyframe_sca_x.weightedMode = WeightedMode.Both;
 		keyframe_sca_y.weightedMode = WeightedMode.Both;
