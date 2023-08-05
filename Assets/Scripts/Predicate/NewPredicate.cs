@@ -206,9 +206,6 @@ public partial class NewPredicate
             return;
         }
 
-
-
-
         //BRACKET DETECTION
 
         if (char_buf.EndsWith("(")) //brackets!
@@ -269,7 +266,7 @@ public partial class NewPredicate
             return;
         }
 
-        if (char_buf.Trim() == "not")
+        if (char_buf.Trim().ToLower() == "not")
         {
             symbols.Add(new SymbolOperatorNot());
             char_buf = "";
@@ -283,20 +280,20 @@ public partial class NewPredicate
             return;
         }
 
-        if (char_buf == "false")
+        if (char_buf.ToLower() == "false")
         {
             symbols.Add(new SymbolConstantBool(false));
             char_buf = "";
             return;
         }
-        if (char_buf == "true")
+        if (char_buf.ToLower() == "true")
         {
             symbols.Add(new SymbolConstantBool(true));
             char_buf = "";
             return;
         }
 
-        if (char_buf.Trim() == "and")
+        if (char_buf.Trim().ToLower() == "and")
         {
             if (is_last_char == true || predicate[string_pointer + 1] == ' ')
             {
@@ -306,7 +303,7 @@ public partial class NewPredicate
             }
         }
 
-        if (char_buf.Trim() == "or")
+        if (char_buf.Trim().ToLower() == "or")
         {
             if (is_last_char == true || predicate[string_pointer + 1] == ' ')
             {

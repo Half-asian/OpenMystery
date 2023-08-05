@@ -65,6 +65,8 @@ public partial class NewPredicate
         {"isInMatch"                            , new Func<SymbolConstantBool>(isInMatch) },
         {"isGreetingActiveForHogwartsSidequest" , new Func<SymbolConstantBool>(isGreetingActiveForHogwartsSidequest) },
         {"inScenarioForHogwartsSidequest"       , new Func<SymbolConstantBool>(inScenarioForHogwartsSidequest) },
+        {"isGoalActiveOrComplete"               , new Func<SymbolConstantString, SymbolConstantBool>(isGoalActiveOrComplete) },
+
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -388,6 +390,15 @@ public partial class NewPredicate
     }
     static SymbolConstantBool inScenarioForHogwartsSidequest()
     {
+        return new SymbolConstantBool(false);
+    }
+
+    static SymbolConstantBool isGoalActiveOrComplete(SymbolConstantString goal_id)
+    {
+        if (File.ReadAllText(GlobalEngineVariables.player_folder + "\\goals_complete.txt").Contains("isGoalComplete(\"" + goal_id.value + "\")"))
+            return new SymbolConstantBool(true);
+        if (Goal.isGoalInProgress(goal_id.toString()))
+            return new SymbolConstantBool(true);
         return new SymbolConstantBool(false);
     }
 }

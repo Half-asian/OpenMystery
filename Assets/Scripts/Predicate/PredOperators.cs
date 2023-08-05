@@ -56,7 +56,18 @@ public partial class NewPredicate
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantBool(i1.value == i2.value);
             }
-
+            else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantInteger)))
+            {
+                SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
+                return new SymbolConstantBool(i1.value == i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantInteger)) && t2.Equals(typeof(SymbolConstantFloat)))
+            {
+                SymbolConstantInteger i1 = (SymbolConstantInteger)v1;
+                SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
+                return new SymbolConstantBool(i1.value == i2.value);
+            }
             throw new System.Exception("Invalid equals comparison between " + v1.GetType() + " and " + v2.GetType());
         }
         public override void print()
@@ -105,6 +116,18 @@ public partial class NewPredicate
             else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantFloat)))
             {
                 SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
+                return new SymbolConstantBool(i1.value != i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantInteger)))
+            {
+                SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
+                return new SymbolConstantBool(i1.value != i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantInteger)) && t2.Equals(typeof(SymbolConstantFloat)))
+            {
+                SymbolConstantInteger i1 = (SymbolConstantInteger)v1;
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantBool(i1.value != i2.value);
             }
@@ -189,6 +212,18 @@ public partial class NewPredicate
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantBool(i1.value > i2.value);
             }
+            else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantInteger)))
+            {
+                SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
+                return new SymbolConstantBool(i1.value > i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantInteger)) && t2.Equals(typeof(SymbolConstantFloat)))
+            {
+                SymbolConstantInteger i1 = (SymbolConstantInteger)v1;
+                SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
+                return new SymbolConstantBool(i1.value > i2.value);
+            }
             throw new System.Exception("Invalid greater than comparison between " + v1.GetType() + " and " + v2.GetType());
         }
         public override void print()
@@ -226,6 +261,18 @@ public partial class NewPredicate
             else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantFloat)))
             {
                 SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
+                return new SymbolConstantBool(i1.value >= i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantInteger)))
+            {
+                SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
+                return new SymbolConstantBool(i1.value >= i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantInteger)) && t2.Equals(typeof(SymbolConstantFloat)))
+            {
+                SymbolConstantInteger i1 = (SymbolConstantInteger)v1;
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantBool(i1.value >= i2.value);
             }
@@ -269,6 +316,18 @@ public partial class NewPredicate
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantBool(i1.value < i2.value);
             }
+            else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantInteger)))
+            {
+                SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
+                return new SymbolConstantBool(i1.value < i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantInteger)) && t2.Equals(typeof(SymbolConstantFloat)))
+            {
+                SymbolConstantInteger i1 = (SymbolConstantInteger)v1;
+                SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
+                return new SymbolConstantBool(i1.value < i2.value);
+            }
             throw new System.Exception("Invalid lesser than comparison between " + v1.GetType() + " and " + v2.GetType());
         }
         public override void print()
@@ -306,6 +365,18 @@ public partial class NewPredicate
             else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantFloat)))
             {
                 SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
+                return new SymbolConstantBool(i1.value <= i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantInteger)))
+            {
+                SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
+                return new SymbolConstantBool(i1.value <= i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantInteger)) && t2.Equals(typeof(SymbolConstantFloat)))
+            {
+                SymbolConstantInteger i1 = (SymbolConstantInteger)v1;
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantBool(i1.value <= i2.value);
             }
@@ -419,6 +490,18 @@ public partial class NewPredicate
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantFloat(i1.value + i2.value);
             }
+            else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantInteger)))
+            {
+                SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
+                return new SymbolConstantFloat(i1.value + i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantInteger)) && t2.Equals(typeof(SymbolConstantFloat)))
+            {
+                SymbolConstantInteger i1 = (SymbolConstantInteger)v1;
+                SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
+                return new SymbolConstantFloat(i1.value + i2.value);
+            }
             throw new System.Exception("Invalid addition between " + v1.GetType() + " and " + v2.GetType());
         }
         public override void print()
@@ -456,6 +539,18 @@ public partial class NewPredicate
             else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantFloat)))
             {
                 SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
+                return new SymbolConstantFloat(i1.value - i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantFloat)) && t2.Equals(typeof(SymbolConstantInteger)))
+            {
+                SymbolConstantFloat i1 = (SymbolConstantFloat)v1;
+                SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
+                return new SymbolConstantFloat(i1.value - i2.value);
+            }
+            else if (t1.Equals(typeof(SymbolConstantInteger)) && t2.Equals(typeof(SymbolConstantFloat)))
+            {
+                SymbolConstantInteger i1 = (SymbolConstantInteger)v1;
                 SymbolConstantFloat i2 = (SymbolConstantFloat)v2;
                 return new SymbolConstantFloat(i1.value - i2.value);
             }
