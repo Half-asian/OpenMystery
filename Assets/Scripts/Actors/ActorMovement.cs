@@ -26,8 +26,7 @@ public partial class ActorController : Node
         foreach (ConfigScene._Scene.WayPointConnection connection in Scene.current.waypointconnections)
         {
             //Check if the waypoint connection defines invalid waypoints
-            if (!Scene.current.waypoint_dict.ContainsKey(connection.connection[0]) ||
-                !Scene.current.waypoint_dict.ContainsKey(connection.connection[1]))
+            if (!Scene.isValidWayPoint(connection.connection[0]) || !Scene.isValidWayPoint(connection.connection[1]))
                 continue;
 
             if (connection.connection[0] == visited[visited.Count - 1])
@@ -109,7 +108,7 @@ public partial class ActorController : Node
 
     public void walkInCharacter(string destination_waypoint_id)
     {
-        if (!Scene.current.waypoint_dict.ContainsKey(destination_waypoint_id))
+        if (!Scene.isValidWayPoint(destination_waypoint_id))
         {
             Debug.LogError("COULDN'T FIND WAYPOINT " + destination_waypoint_id + " IN CURRENT SCENE!");
             return;
@@ -143,7 +142,7 @@ public partial class ActorController : Node
     {
         if (destination_waypoint_id == null)
             return;
-        if (!Scene.current.waypoint_dict.ContainsKey(destination_waypoint_id))
+        if (!Scene.isValidWayPoint(destination_waypoint_id))
         {
             Debug.LogWarning("COULDN'T FIND WAYPOINT " + destination_waypoint_id + " IN CURRENT SCENE! for character move");
             return;
@@ -188,8 +187,10 @@ public partial class ActorController : Node
         }
 
         Debug.Log("moveCharacter: " + name);
-        destination_waypoint = Scene.current.waypoint_dict[path.Last()];
-        destination_waypoint_name = (destination_waypoint == null) ? "" : destination_waypoint.name;
+        if (Scene.getWayPointData(path.Last(), out destination_waypoint))
+            destination_waypoint_name = destination_waypoint.name;
+        else
+            destination_waypoint_name = "";
 
         movement_path.AddRange(path);
 
@@ -224,7 +225,7 @@ public partial class ActorController : Node
         if (coroutine_move != null) //Early finish
         {
             StopCoroutine(coroutine_move);
-            applyWaypoint();
+            Scene.setGameObjectToWaypoint(gameObject, destination_waypoint_name);
             coroutine_move = null;
             if (GameStart.current != null)
                 GameStart.current.GetComponent<EventManager>().notifyMoveComplete(gameObject.name);
@@ -234,7 +235,9 @@ public partial class ActorController : Node
 
     public void teleportCharacter(string waypoint_id)
     {
-        if (waypoint_id == null || !Scene.current.waypoint_dict.ContainsKey(waypoint_id))
+
+
+        if (waypoint_id == null || !Scene.isValidWayPoint(waypoint_id))
             return;
 
         finishMovement();
@@ -244,10 +247,12 @@ public partial class ActorController : Node
             coroutine_rotate = null;
         }
 
-        destination_waypoint = Scene.current.waypoint_dict[waypoint_id];
-        destination_waypoint_name = (destination_waypoint == null) ? "" : destination_waypoint.name;
+        if (Scene.getWayPointData(waypoint_id, out destination_waypoint))
+            destination_waypoint_name = destination_waypoint.name;
+        else
+            destination_waypoint_name = "";
 
-        applyWaypoint();
+        Scene.setGameObjectToWaypoint(gameObject, waypoint_id);
 
         cancel_crossfade = true;
 
@@ -255,34 +260,6 @@ public partial class ActorController : Node
         clearAllLooking();
 
     }
-
-    private void applyWaypoint()
-    {
-        //Debug.Log("applying waypoint for " + name + " waypoint: " + destination_waypoint.name);
-        if (destination_waypoint == null)
-            return;
-        Vector3 position = Vector3.zero;
-        Vector3 rotation = Vector3.zero;
-
-        if (destination_waypoint.position != null)
-            position = destination_waypoint.getWorldPosition();
-        gameObject.transform.position = position;
-
-        if (destination_waypoint.rotation != null)
-            rotation = new Vector3(destination_waypoint.rotation[0], destination_waypoint.rotation[1], destination_waypoint.rotation[2]);
-
-        gameObject.transform.rotation = Quaternion.identity;
-        gameObject.transform.Rotate(new Vector3(0, 0, -rotation[2]));
-        gameObject.transform.Rotate(new Vector3(0, -rotation[1], 0));
-        gameObject.transform.Rotate(new Vector3(rotation[0], 0, 0));
-
-        if (destination_waypoint.scale != null)
-        {
-            gameObject.transform.localScale = new Vector3(destination_waypoint.scale[0], destination_waypoint.scale[1], destination_waypoint.scale[2]);
-        }
-
-    }
-
 
     /*----------        COROUTINES      ----------*/
 
@@ -293,7 +270,7 @@ public partial class ActorController : Node
 
         is_moving = true;
 
-        ConfigScene._Scene.WayPoint next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
+        Scene.getWayPointData(movement_path[0], out ConfigScene._Scene.WayPoint next_waypoint);
 
         Vector3 target_direction = transform.position - next_waypoint.getWorldPosition();
         if (target_direction != Vector3.zero)
@@ -324,7 +301,8 @@ public partial class ActorController : Node
             {
                 if (movement_path.Count != 0)
                 {
-                    next_waypoint = Scene.current.waypoint_dict[movement_path[0]];
+
+                    Scene.getWayPointData(movement_path[0], out next_waypoint);
                     movement_path.RemoveAt(0);
                     target_direction = transform.position - next_waypoint.getWorldPosition();
                     if (target_direction != Vector3.zero)

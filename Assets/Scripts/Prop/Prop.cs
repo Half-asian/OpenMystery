@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ModelLoading;
 using System.Linq;
+using static ConfigScene._Scene;
 
 public class Prop : Node
 {
@@ -136,7 +137,7 @@ public class Prop : Node
                 {
                     continue;
                 }
-                Material mat;
+                UnityEngine.Material mat;
                 var smr = child.GetComponent<SkinnedMeshRenderer>();
                 if (smr != null)
                     mat = smr.material;
@@ -196,12 +197,12 @@ public class Prop : Node
         }
     }
 
-    public static void spawnPropFromEvent(string model_id, ConfigScene._Scene.WayPoint waypoint, string name, string group)
+    public static void spawnPropFromEvent(string model_id, string waypoint_id, string name, string group)
     {
         ModelMaterials.lighting_layers = new List<string>();
         if (Scene.current.Lighting != null)
         {
-            if (waypoint != null)
+            if (Scene.getWayPointData(waypoint_id, out var waypoint))
             {
                 if (waypoint.lightLayerOverride != null)
                 {
@@ -221,6 +222,7 @@ public class Prop : Node
         }
         else
         {
+            Debug.Log("Loading model " + model_id);
             Model model = ModelManager.loadModel(model_id);
             prop = model.game_object.AddComponent<Prop>();
             prop.setup(name, model, spawner.Event, group);
@@ -230,7 +232,7 @@ public class Prop : Node
 
         prop.model.game_object.transform.SetParent(GameStart.current.props_holder);
 
-        Common.setWaypointTransform(prop.model.game_object, waypoint);
+        Scene.setGameObjectToWaypoint(prop.model.game_object, waypoint_id);
     }
 
     public static void animateProp(string prop, string animation, Dictionary<string, string> triggerReplacement = null)

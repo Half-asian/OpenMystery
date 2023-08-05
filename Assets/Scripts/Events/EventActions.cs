@@ -105,15 +105,14 @@ public static class EventActions
                 break;
 
             case "teleportProp":
-                if (!Scene.current.waypoint_dict.ContainsKey(action_params[1]))
+                if (!Scene.isValidWayPoint(action_params[1]))
                 {
                     Debug.LogWarning("COULDN'T FIND WAYPOINT " + action_params[1] + " IN CURRENT SCENE!");
                     break;
                 }
-                ConfigScene._Scene.WayPoint waypoint_c = Scene.current.waypoint_dict[action_params[1]];
                 if (Prop.spawned_props.ContainsKey(action_params[0]))
                 {
-                    Common.setWaypointTransform(Prop.spawned_props[action_params[0]].model.game_object, waypoint_c);
+                    Scene.setGameObjectToWaypoint(Prop.spawned_props[action_params[0]].model.game_object, action_params[1]);
                 }
                 else
                 {
@@ -137,15 +136,12 @@ public static class EventActions
             case "spawnProp":
                 //string model_id, string waypoint_id, string name_id, string group_id
 
-                if (Scene.current.waypoint_dict.ContainsKey(action_params[1]))
-                {
-                    if (action_params.Length == 3)
-                        Prop.spawnPropFromEvent(action_params[0], Scene.current.waypoint_dict[action_params[1]], action_params[2], "");
-                    else if (action_params.Length == 4)
-                        Prop.spawnPropFromEvent(action_params[0], Scene.current.waypoint_dict[action_params[1]], action_params[2], action_params[3]);
-                    else
-                        Prop.spawnPropFromEvent(action_params[0], Scene.current.waypoint_dict[action_params[1]], action_params[0], "");
-                }
+                if (action_params.Length == 3)
+                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[2], "");
+                else if (action_params.Length == 4)
+                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[2], action_params[3]);
+                else
+                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[0], "");
                 break;
 
             case "removeProp": //Probably wrong

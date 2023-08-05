@@ -455,20 +455,53 @@ public class Scene
         scene_postprocessing_and_lighting = null;
     }
 
-    public static ConfigScene._Scene.WayPoint getWayPoint(string waypoint_id)
+    public static bool isValidWayPoint(string waypoint_id)
     {
         if (current == null || waypoint_id == null)
-            return null;
-        if (current.waypoint_dict == null)
-            return null;
-        if (!current.waypoint_dict.ContainsKey(waypoint_id))
+            return false;
+        if (current.waypoint_dict != null && current.waypoint_dict.ContainsKey(waypoint_id))
         {
-            Debug.LogError("Scene.getWayPoint(string waypoint_id): Current scene does not contain waypoint " + waypoint_id);
-            return null;
+            return true;
         }
-        return current.waypoint_dict[waypoint_id];
+        foreach (var p in Prop.spawned_props.Values)
+        {
+            if (p.model.config == null)
+                continue;
+            if (p.model.config.waypoints == null)
+                continue;
+            if (p.model.config.waypoints.ContainsKey(waypoint_id))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
+    public static bool getWayPointData(string waypoint_id, out ConfigScene._Scene.WayPoint waypoint)
+    {
+        waypoint = null;
+        if (current == null || waypoint_id == null)
+            return false;
+        if (current.waypoint_dict != null && current.waypoint_dict.ContainsKey(waypoint_id)) {
+            waypoint = current.waypoint_dict[waypoint_id];
+            return true;
+        }
+        foreach(var p in Prop.spawned_props.Values)
+        {
+            if (p.model.config == null)
+                continue;
+            if (p.model.config.waypoints == null)
+                continue;
+            if (p.model.config.waypoints.ContainsKey(waypoint_id))
+            {
+                waypoint = p.model.config.waypoints[waypoint_id];
+                return true;
+            }
+        }
+        Debug.LogError("Scene.getWayPoint(string waypoint_id): Current scene does not contain waypoint " + waypoint_id);
+        return false;
+
+    }
 
     public static List<string> addMasterSceneItems(ConfigScene._Scene current_scene, List<string> master_scenes = null)
     {
@@ -655,41 +688,79 @@ public class Scene
 
     public static void setGameObjectToWaypoint(GameObject actor_gameobject, string waypoint_id)
     {
-        if (current.waypoint_dict != null)
-        {
-            if (current.waypoint_dict.ContainsKey(waypoint_id))
-            {
-                ConfigScene._Scene.WayPoint w = Scene.current.waypoint_dict[waypoint_id];
+        if (current.waypoint_dict == null)
+            return;
 
-                if (actor_gameobject != null)
+        GameObject prop_gameobject = null;
+
+        ConfigScene._Scene.WayPoint waypoint = null;
+
+        if (current.waypoint_dict.ContainsKey(waypoint_id))
+        {
+            waypoint = current.waypoint_dict[waypoint_id];
+        }
+        else {
+            foreach (var p in Prop.spawned_props.Values)
+            {
+                if (p.model.config == null)
+                    continue;
+                if (p.model.config.waypoints == null)
+                    continue;
+                if (p.model.config.waypoints.ContainsKey(waypoint_id))
                 {
-                    Vector3 temp = new Vector3(w.position[0] * -0.01f, w.position[1] * 0.01f, w.position[2] * 0.01f);
-                    actor_gameobject.transform.position = temp;
-                    if (w.rotation != null)
-                    {
-                        actor_gameobject.transform.rotation = Quaternion.identity;
-                        actor_gameobject.transform.Rotate(new Vector3(0, 0, -w.rotation[2]));
-                        actor_gameobject.transform.Rotate(new Vector3(0, -w.rotation[1], 0));
-                        actor_gameobject.transform.Rotate(new Vector3(w.rotation[0], 0, 0));
-                    }
-                    else
-                    {
-                        actor_gameobject.transform.rotation = Quaternion.Euler(Vector3.zero);
-                    }
-                    if (w.scale != null)
-                    {
-                        actor_gameobject.transform.localScale = new Vector3(w.scale[0], w.scale[1], w.scale[2]); 
-                    }
+                    waypoint = p.model.config.waypoints[waypoint_id];
+                    prop_gameobject = p.gameObject;
                 }
             }
-            else
-            {
-                Debug.LogError("Scene " + current.envId + " does not define waypoint " + waypoint_id);
-            }
+        }
+        if (waypoint is null)
+        {
+            Debug.LogError("Failed to find waypoint " + waypoint_id);
+            return;
+        }
+        if (actor_gameobject is null)
+        {
+            Debug.LogError("Gameobject was null for setting waypoint");
+            return;
+        }
+
+        if (waypoint.position != null)
+        {
+            actor_gameobject.transform.position = new Vector3(waypoint.position[0] * -0.01f, waypoint.position[1] * 0.01f, waypoint.position[2] * 0.01f);
         }
         else
         {
-            Debug.LogError("Scene " + current.envId + " does not have any waypoints. Tried to find " + waypoint_id);
+            actor_gameobject.transform.position = Vector3.zero;
         }
+        if (waypoint.rotation != null)
+        {
+            actor_gameobject.transform.rotation = Quaternion.identity;
+            actor_gameobject.transform.Rotate(new Vector3(0, 0, -waypoint.rotation[2]));
+            actor_gameobject.transform.Rotate(new Vector3(0, -waypoint.rotation[1], 0));
+            actor_gameobject.transform.Rotate(new Vector3(waypoint.rotation[0], 0, 0));
+        }
+        else
+        {
+            actor_gameobject.transform.rotation = Quaternion.Euler(Vector3.zero);
+        }
+        if (waypoint.scale != null)
+        {
+            actor_gameobject.transform.localScale = new Vector3(waypoint.scale[0], waypoint.scale[1], waypoint.scale[2]);
+        }
+        else
+        {
+            actor_gameobject.transform.localScale = Vector3.one;
+        }
+
+        if (prop_gameobject is null)
+            return;
+
+        actor_gameobject.transform.position += prop_gameobject.transform.position;
+        actor_gameobject.transform.eulerAngles += prop_gameobject.transform.eulerAngles;
+        actor_gameobject.transform.localScale =
+            new Vector3(
+                prop_gameobject.transform.localScale.x * actor_gameobject.transform.localScale.x,
+                prop_gameobject.transform.localScale.x * actor_gameobject.transform.localScale.y,
+                prop_gameobject.transform.localScale.x * actor_gameobject.transform.localScale.z);
     }
 }

@@ -82,8 +82,7 @@ public class Actor
 
         ModelMaterials.lighting_layers = new List<string>();
 
-        var waypoint = Scene.getWayPoint(waypoint_id);
-        if (Scene.getWayPoint(waypoint_id) != null)
+        if (Scene.getWayPointData(waypoint_id, out var waypoint))
         {
             if (waypoint.lightLayerOverride != null)
             {

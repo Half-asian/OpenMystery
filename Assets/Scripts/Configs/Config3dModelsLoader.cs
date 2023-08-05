@@ -64,6 +64,8 @@ public class Config3DModel : Config<Config3DModel>
             public int rigVersion;
         }
         public JsonData[] jsonData;
+        public Dictionary<string, ConfigScene._Scene.WayPoint> waypoints;
+
     }
     [JsonProperty(PropertyName = "3DModelConfig")]
     public Dictionary<string, _Config3DModel> ModelConfig;

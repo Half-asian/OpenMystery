@@ -38,7 +38,7 @@ public class Tappie
                 continue;
             }
 
-            if (Scene.current.waypoint_dict == null || tappie.activeWaypoint == null || !Scene.current.waypoint_dict.ContainsKey(tappie.activeWaypoint))
+            if (tappie.activeWaypoint == null || !Scene.isValidWayPoint(tappie.activeWaypoint))
             {
                 Debug.LogError("Failed to spawn tappie " + tappie_id + " due to missing waypoint in scene.");
                 continue;
@@ -63,7 +63,7 @@ public class Tappie
 
             m.game_object.transform.parent = tappiego.transform;
 
-            Common.setWaypointTransform(tappiego, Scene.current.waypoint_dict[tappie.activeWaypoint]);
+            Scene.setGameObjectToWaypoint(tappiego, tappie.activeWaypoint);
             tappies.Add(tappiego);
         }
     }
