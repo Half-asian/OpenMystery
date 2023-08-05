@@ -96,7 +96,8 @@ public class EncounterSocial : Encounter
             answer_pool.Clear();
             foreach(var choice in config_question.playerChoiceWhitelist)
             {
-                answer_pool.Add(choice);
+                var encounter_choice = Configs.config_encounter_choice.EncounterChoice[choice];
+                answer_pool.Add(encounter_choice.name);
             }
         }
         if (config_question.playerChoiceBlacklist != null)
@@ -117,7 +118,7 @@ public class EncounterSocial : Encounter
 
 
         SocialQuizUI.onSocialQuizGameFinished += onQuizQuestionFinished;
-        SocialQuizUI.startSocialQuiz(config_question.choiceId, correct_pool, okay_pool, incorrect_pool);
+        SocialQuizUI.startSocialQuiz(config_question.name, correct_pool, okay_pool, incorrect_pool);
 
 
     }
