@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using static ConfigScene._Scene;
 
 public class HubNPC
 {
@@ -84,13 +85,7 @@ public class HubNPC
         }
         else
         {
-            Vector3 location = Vector3.zero;
-            foreach (ConfigScene._Scene.WayPoint hotspot in Scene.current.waypoints)
-            {
-                if (hotspot.name == config_hubnpc.hubWaypoint)
-                    location = new Vector3(hotspot.position[0] * -0.01f, hotspot.position[1] * 0.01f + 1.1f, hotspot.position[2] * 0.01f);
-            }
-            GameStart.interaction_manager.spawnHubNPCInteraction(ref config_hubnpc.primaryDialogue, ref location);
+            GameStart.interaction_manager.spawnHubNPCInteraction(ref config_hubnpc.primaryDialogue, config_hubnpc.hubWaypoint);
         }
     }
 }

@@ -19,11 +19,11 @@ public class InteractionManager : MonoBehaviour {
 
     public static event Action all_interactions_destroyed_event;
 
-    public void spawnHubNPCInteraction(ref string dialogue_id, ref Vector3 location)
+    public void spawnHubNPCInteraction(ref string dialogue_id, string waypoint_id)
     {
         GameObject interaction_gameobject = GameObject.Instantiate(Resources.Load<GameObject>("hud_important"), Vector3.zero, Quaternion.identity);
         InteractionHubNPCDialog hub_npc_interaction = interaction_gameobject.AddComponent<InteractionHubNPCDialog>();
-        hub_npc_interaction.hubNpcDialogSetup(ref dialogue_id, ref location);
+        hub_npc_interaction.hubNpcDialogSetup(ref dialogue_id, waypoint_id);
     }
 
     public GameObject spawnInteraction(string interaction_name) 

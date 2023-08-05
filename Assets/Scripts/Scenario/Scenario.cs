@@ -216,9 +216,9 @@ public class Scenario
             if (current.scenario_config.sceneOverrides.TryGetValue(Player.local_avatar_house, out chosen_scene) == false)
                 chosen_scene = current.scenario_config.scene;
         }
-        Scene.setCurrentScene(chosen_scene);
-
         onScenarioCallClear.Invoke();
+
+        Scene.setCurrentScene(chosen_scene);
 
         Prop.spawnScenarioProps();
 
