@@ -412,6 +412,8 @@ public class Scene
             {
                 for (int i = 0; i < material.stringValueKeys.Length; i++) {
                     mat.SetTexture(material.stringIds[i], TextureManager.loadTexture(material.stringValueKeys[i]));
+                    if (material.stringIds[i] == "u_lightmapMap") //For scene s_TransfigurationChessDeskMS_rig
+                        mat.SetInt("Lightmap_UvSet", 1);
                 }
             }
             if (material.floatIds != null)
