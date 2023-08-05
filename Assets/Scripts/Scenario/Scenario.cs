@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using ModelLoading;
 using System.IO;
+using System.Linq;
 
 public class SerializedScenario
 {
@@ -85,37 +86,51 @@ public class Scenario
 
     public static void setContentVar(string[] parameters)
     {
-        string keya = parameters[0];
-        string keyb = parameters[1];
+        string keya = "";
+        string keyb = "";
+        string value = "";
 
+
+        if (parameters.Length > 2)
+        {
+            keyb = parameters[1];
+            value = parameters[2];
+        }
+        else
+        {
+            keyb = parameters[0];
+            value = parameters[1];
+        }
+        //only care about keyb for now
         string content_vars_txt = Path.Combine(GlobalEngineVariables.player_folder, "content_vars.txt");
         string text = File.ReadAllText(content_vars_txt);
-        int keya_index = text.IndexOf(keya + ":");
-        if (keya_index != -1)
+        int key_index = text.IndexOf(keyb + ":");
+        if (key_index != -1)
         {
-            int next_line = text.IndexOf("\n", keya_index);
-            Debug.Log("Duplicate contentVar! removing " + keya_index + " " + (next_line - keya_index));
-            text = text.Remove(keya_index, next_line - keya_index + 1);
+            int next_line = text.IndexOf("\n", key_index);
+            Debug.Log("Duplicate contentVar! removing " + key_index + " " + (next_line - key_index));
+            text = text.Remove(key_index, next_line - key_index + 1);
         }
-        text += keya + ":" + keyb + "\n";
-        Debug.Log("setContentVar " + keya + ":" + keyb + "\n");
+        text += keyb + ":" + value + "\n";
+        Debug.Log("setContentVar " + keyb + ":" + value);
         File.WriteAllText(content_vars_txt, text);
     }
 
     //keya not used
     public static int getContentVar(string keya, string keyb)
     {
+        string key = keyb;
         string content_vars_txt = Path.Combine(GlobalEngineVariables.player_folder, "content_vars.txt");
         string text = File.ReadAllText(content_vars_txt);
-        int keya_index = text.IndexOf(keyb + ":");
+        int keya_index = text.IndexOf(key + ":");
         if (keya_index != -1)
         {
             int next_line = text.IndexOf("\n", keya_index);
-            string value = text.Substring(keya_index + keyb.Length + 1, next_line - keyb.Length - keya_index - 1);
-            Debug.Log("Reading content var: " + keyb + " " + value);
+            string value = text.Substring(keya_index + keyb.Length + 1, next_line - key.Length - keya_index - 1);
+            Debug.Log("Reading content var: " + key + " " + value);
             return int.Parse(value);
         }
-        throw new Exception("Unknown content var " + keyb);
+        return 0;
     }
 
 
