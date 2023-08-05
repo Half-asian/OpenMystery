@@ -98,6 +98,15 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public void notifyGestureRecognitionComplete()
+    {
+        main_event_player.notifyGestureRecognitionComplete();
+        foreach (EventPlayer sequential_event_player in sequential_event_players)
+        {
+            sequential_event_player.notifyGestureRecognitionComplete();
+        }
+    }
+
     public void startSequentialPlayer(string id, string[] events)
     {
         Debug.Log("Starting sequential player");

@@ -28,6 +28,7 @@ public static class EventActions
          "setQuidditchHelmetEquipped", "setForcedQuidditchPosition", "setOpponentHouse", "playSound", "awardReward", "setContentVar", "popupVC", "stopSequentialScriptById", 
         "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack", "stopCameraAnimation", "forceScenarioSwitch", "playAttachedPropAnim",
         "hideFlatStuff", "showFlatStuff"
+        , "doGestureRecognition"
     };
 
     public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
@@ -508,6 +509,9 @@ public static class EventActions
             case "showFlatStuff":
                 Dorm.showFlatStuff();
                 break;
+            case "doGestureRecognition":
+                GameStart.current.StartCoroutine(GestureRecognition());
+                break;
             default:
                 Debug.LogWarning("Unknown event type " + action_type);
                 break;
@@ -518,4 +522,11 @@ public static class EventActions
     {
         doEventAction(event_name, Configs.config_script_events.ScriptEvents[event_name].action[event_index], action_params, event_player);
     }
+
+    public static IEnumerator GestureRecognition()
+    {
+        yield return new WaitForSeconds(2);
+        GameStart.event_manager.notifyGestureRecognitionComplete();
+    }
+
 }

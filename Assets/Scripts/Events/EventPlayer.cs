@@ -288,11 +288,6 @@ public class EventPlayer : MonoBehaviour
             block_duration = 0.0f;
         }
 
-        if (block_duration > 1000 && !is_sequential_player) //Cast a spell
-        {
-            block_duration = 1f;
-        }
-
         if (event_stack.Count == 0 && is_sequential_player)
         {
             Destroy(this);
@@ -402,6 +397,8 @@ public class EventPlayer : MonoBehaviour
     public void notifySequenceNodeExited(string node_name) => processNotifyBlocks("SequenceNodeExited", node_name);
     public void notifyScriptTrigger(string trigger) => processNotifyBlocks("AnimationScriptTriggerHit", trigger);
     public void notifyScreenFadeComplete() => processNotifyBlocks("ScreenFadeComplete", null);
+
+    public void notifyGestureRecognitionComplete() => processNotifyBlocks("modalClosed", "GestureCheckVC");
     private void removeBlock()
     {
         total_block = false;
