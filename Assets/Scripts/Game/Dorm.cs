@@ -5,7 +5,9 @@ using static CocosModel;
 
 public class Dorm
 {
-    /*public static void LoadDorm()
+
+    static List<Node> flatStuff = new List<Node>();
+    public static void LoadDorm(bool is_flat = false)
     {
         foreach(var ft in Configs.config_furniture_type.FurnitureType.Values)
         {
@@ -17,11 +19,22 @@ public class Dorm
 
         foreach (var pet in Configs.config_pet.Pet.Values)
         {
-            string waypoint_id = pet.surfaceWaypointMap[Scenario.current.scenario_config.scenarioId];
+            string waypoint_id = null;
 
+            if (is_flat)
+            {
+                waypoint_id = pet.flatWaypoint;
+            }
+            else
+            {
+                waypoint_id = pet.surfaceWaypointMap[Scenario.current.scenario_config.scenarioId];
+            }
+            Debug.Log("Spawning pet " + pet.modelId + " " + waypoint_id);
             Prop.spawnPropFromEvent(pet.modelId, waypoint_id, pet.id, null);
             Prop.spawned_props[pet.id].playAnimSequence(pet.animSequence);
             Prop.spawned_props[pet.id].GetComponent<AnimationSequence>().advanceAnimSequence();
+            flatStuff.Add(Prop.spawned_props[pet.id]);
+
             //GameStart.current.StartCoroutine(waitABit(pet.id, pet.an));
         }
 
@@ -32,15 +45,47 @@ public class Dorm
         var furniture_config = Configs.config_furniture.Furniture[component_id];
 
         if (furniture_config.modelId_default != null)
-            Prop.spawnPropFromEvent(furniture_config.modelId_default, waypoint_id, name, null);
+        {
+            if (Scene.isValidWayPoint(waypoint_id))
+            {
+                Prop.spawnPropFromEvent(furniture_config.modelId_default, waypoint_id, name, null);
+                flatStuff.Add(Prop.spawned_props[name]);
+            }
+        }
         else
             Debug.Log("furniture component " + furniture_config.componentId + " does not have modelId_default");
     }
 
-    static IEnumerator waitABit(string pet_id, string animation)
+    public static void hideFlatStuff()
     {
-        yield return new WaitForSeconds(3);
-        Prop.spawned_props[pet_id].playAnimSequence(animation);
+        List<Node> nullStuff = new List<Node>();
+        foreach (var stuff in flatStuff)
+        {
+            if (stuff == null)
+                nullStuff.Add(stuff);
+            else
+                stuff.model.game_object.SetActive(false);
+        }
+        foreach (var n in nullStuff)
+        {
+            flatStuff.Remove(n);
+        }
     }
-    */
+
+    public static void showFlatStuff()
+    {
+        List<Node> nullStuff = new List<Node>();
+        foreach (var stuff in flatStuff)
+        {
+            if (stuff == null)
+                nullStuff.Add(stuff);
+            else
+                stuff.model.game_object.SetActive(true);
+        }
+        foreach (var n in nullStuff)
+        {
+            flatStuff.Remove(n);
+        }
+    }
+
 }

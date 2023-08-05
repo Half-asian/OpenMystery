@@ -95,6 +95,7 @@ public class ConfigPet : Config<ConfigPet>
         public string surfacePredicate;
         public string unlockDescription;
         public string unlockPredicate;
+        public string flatWaypoint;
         public string[] attachedPreviewModelOffset;
         public string[] characterSheetModelOffset;
         public string[] loctags;

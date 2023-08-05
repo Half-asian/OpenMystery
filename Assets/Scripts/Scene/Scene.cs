@@ -5,6 +5,7 @@ using UnityEngine;
 using ModelLoading;
 using System.Globalization;
 using static SceneEnvOverrides;
+using System.Linq;
 
 public class Scene
 {
@@ -15,6 +16,9 @@ public class Scene
     public static GameObject scene_postprocessing_and_lighting;
 
     public static Dictionary<string, SceneLight> scene_lights;
+
+    public static string flat_scene = "s_AvatarFlat_MS_rig";
+    public static string dorm_scene = "s_DormsV6_MS_rig";
 
     public static void Initialize(){
         GameStart.onReturnToMenu += cleanup;
@@ -44,7 +48,15 @@ public class Scene
         current = Configs.config_scene.Scene[scene_id];
         overrideScene(ref current);
         List<string> related_scenes = addMasterSceneItems(current);
-
+        bool is_dorm = false;
+        bool is_flat = false;
+        foreach(var related_scene in related_scenes)
+        {
+            if (related_scene == dorm_scene)
+                is_dorm = true;
+            if (related_scene == flat_scene)
+                is_flat = true;
+        }
 
         if (scene_has_changed)
         {
@@ -65,6 +77,8 @@ public class Scene
             applySceneMaterials();
             setMainCamera();
         }
+        if (is_dorm || is_flat)
+            Dorm.LoadDorm(is_flat);
     }
 
     private static void spawnSceneModel()

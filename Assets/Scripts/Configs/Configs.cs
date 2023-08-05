@@ -163,6 +163,9 @@ public class Configs{
     public static ConfigQuiz config_quiz;
     public static ConfigParticleConfig config_particle_config;
     public static ConfigParticleInstance config_particle_instance;
+    public static ConfigFurnitureType config_furniture_type;
+    public static ConfigFurniture config_furniture;
+    public static ConfigPet config_pet;
     public static SceneEnvOverrides config_scene_env_override;
 
     public static Dictionary<string, ConfigSound._Ambient> ambient_dict;
@@ -474,7 +477,10 @@ public class Configs{
         config_local_data = ConfigLocalData.getConfig();
         config_particle_instance = ConfigParticleInstance.getJObjectsConfigsListST("ParticleInstance");
         config_particle_config = ConfigParticleConfig.getJObjectsConfigsListST("ParticleConfig");
-        Configs.config_3dmodel.createMaterialDict();
+        config_furniture_type = ConfigFurnitureType.getJObjectsConfigsListST("FurnitureType");
+        config_furniture = ConfigFurniture.getJObjectsConfigsListST("Furniture");
+        config_pet = ConfigPet.getJObjectsConfigsListST("Pet");
+        config_3dmodel.createMaterialDict();
     }
 
     public static void loadConfigAll()
@@ -535,6 +541,9 @@ public class Configs{
         config_quiz = ConfigQuiz.getJObjectsConfigsListST("Quiz");
         config_particle_instance = ConfigParticleInstance.getJObjectsConfigsListST("ParticleInstance");
         config_particle_config = ConfigParticleConfig.getJObjectsConfigsListST("ParticleConfig");
+        config_furniture_type = ConfigFurnitureType.getJObjectsConfigsListST("FurnitureType");
+        config_furniture = ConfigFurniture.getJObjectsConfigsListST("Furniture");
+        config_pet = ConfigPet.getJObjectsConfigsListST("Pet");
 
         config_scene_env_override = SceneEnvOverrides.getJObjectsConfigsListST("SceneOverride");
 

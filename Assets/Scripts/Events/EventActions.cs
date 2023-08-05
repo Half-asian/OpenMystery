@@ -26,7 +26,8 @@ public static class EventActions
          "focusCamera", "panCamOnTrack", "hideCharacter", "showCharacter", "screenFadeTo", "fadeToBlack", "screenFadeFrom", "fadeFromBlack", "safeAdvanceAnimSequenceTo",
          "advanceAnimSequence", "moveCharacterWithSequence", "animateProp", "playPropAnimSequence", "replaceScenarioBGMusic", "equipAvatarComponent", "wearClothingType",
          "setQuidditchHelmetEquipped", "setForcedQuidditchPosition", "setOpponentHouse", "playSound", "awardReward", "setContentVar", "popupVC", "stopSequentialScriptById", 
-        "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack", "stopCameraAnimation", "forceScenarioSwitch", "playAttachedPropAnim"
+        "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack", "stopCameraAnimation", "forceScenarioSwitch", "playAttachedPropAnim",
+        "hideFlatStuff", "showFlatStuff"
     };
 
     public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
@@ -501,7 +502,12 @@ public static class EventActions
                 Scenario.Activate(action_params[0]);
                 Scenario.Load(action_params[0]);
                 break;
-
+            case "hideFlatStuff":
+                Dorm.hideFlatStuff();
+                break;
+            case "showFlatStuff":
+                Dorm.showFlatStuff();
+                break;
             default:
                 Debug.LogWarning("Unknown event type " + action_type);
                 break;

@@ -405,7 +405,8 @@ namespace ModelLoading {
 				return_model.jt_all_bind = pose_bones[0];
 			else
 				return_model.jt_all_bind = return_model.game_object.transform;
-			return return_model;
+			return_model.config = c3m;
+            return return_model;
 		}
 
 		public static void Initialize()
