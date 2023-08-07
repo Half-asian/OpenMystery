@@ -207,11 +207,11 @@ public class EventPlayer : MonoBehaviour
         //}
 
         //Some interactions are erroneously marked as sequential
-        //Probably function like blocking instead
+        //Probably just ignore these
 
         if (script_event.type == "Sequential" && script_event.sequenceIds == null)
         {
-            script_event.type = "Blocking";
+            script_event.type = "";
         }
 
         if (script_event.type == "Blocking")
