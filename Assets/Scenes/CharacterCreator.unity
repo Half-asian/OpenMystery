@@ -2211,6 +2211,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: CCDisplay, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 4246921567515961852, guid: 96feda49cddeb914f8e272a5c498787e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 401708264}
+    - target: {fileID: 4246921567515961852, guid: 96feda49cddeb914f8e272a5c498787e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: showGlassesGroup
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246921567515961852, guid: 96feda49cddeb914f8e272a5c498787e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CCDisplay, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 4289590358304289496, guid: 96feda49cddeb914f8e272a5c498787e, type: 3}
       propertyPath: m_Name
       value: CCDisplay

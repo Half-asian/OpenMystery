@@ -53,6 +53,7 @@ public class CustomizeAvatarGroup : MonoBehaviour
 
     public void renderComponents()
     {
+        Debug.Log(current_group_index);
         int i = current_group_index * 5 * 3;
         Debug.Log(components_list.Count);
         foreach (GameObject g in preview_panels)
@@ -150,16 +151,30 @@ public class CustomizeAvatarGroup : MonoBehaviour
         renderComponents();
     }
 
+    public void renderGlassesComponents()
+    {
+        customize_avatar._camera_preview_depth.transform.position = new Vector3(0, -9.193f, 0.17f);
+        customize_avatar._camera_preview.transform.position = new Vector3(0, -9.193f, 0.17f);
+        customize_avatar.avatar_components_preview.resetFromPlayerFile();
+        components_list = AvatarComponents.avatar_components_glasses;
+        current_group_index = 0;
+        renderComponents();
+    }
+
 
     public void nextPanel()
     {
         current_group_index++;
+        if (current_group_index * 15 > components_list.Count)
+            current_group_index--;
         renderComponents();
     }
 
     public void previousPanel()
     {
         current_group_index--;
+        if (current_group_index < 0)
+            current_group_index = 0;
         renderComponents();
     }
 

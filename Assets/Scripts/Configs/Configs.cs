@@ -226,6 +226,13 @@ public class Configs{
                     AvatarComponents.avatar_components_facepaint.Add(key);
             }
 
+            AvatarComponents.avatar_components_glasses = new List<string>();
+            foreach (string key in config_avatar_components.AvatarComponents.Keys)
+            {
+                if (config_avatar_components.AvatarComponents[key].category == "glasses")
+                    AvatarComponents.avatar_components_glasses.Add(key);
+            }
+
             AvatarComponents.avatar_components_eyes = new List<string>();
             if (Player.local_avatar_gender == "male") {
                 AvatarComponents.avatar_components_eyes.Add(config_avatar_components.AvatarComponents["eyesM1a"].componentId);

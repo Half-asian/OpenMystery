@@ -153,4 +153,12 @@ public class CCDisplay : MonoBehaviour
         previousPreviewButton.SetActive(true);
     }
 
+    public void showGlassesGroup()
+    {
+        hideGroups();
+        customizeAvatarGroup.renderGlassesComponents();
+        nextPreviewButton.SetActive(true);
+        previousPreviewButton.SetActive(true);
+    }
+
 }

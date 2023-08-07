@@ -19,6 +19,8 @@ namespace IndividualComponents
 
         public override Model replaceComponent()
         {
+            if (!avatar_components.customization_categories.ContainsKey("glasses"))
+                return null;
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["glasses"];
             string outfit_id = Configs.config_avatar_components.AvatarComponents[category.component_id].outfitId;
             if (Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles != null)

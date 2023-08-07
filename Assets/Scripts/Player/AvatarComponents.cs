@@ -30,6 +30,7 @@ public class AvatarComponents
     public static List<string> avatar_components_eyes;
     public static List<string> avatar_components_lips;
     public static List<string> avatar_components_facepaint;
+    public static List<string> avatar_components_glasses;
 
 
     public AvatarComponents(string filename)
