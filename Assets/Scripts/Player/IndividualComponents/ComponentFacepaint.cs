@@ -19,6 +19,8 @@ namespace IndividualComponents
 
         public override Model replaceComponent()
         {
+            if (!avatar_components.customization_categories.ContainsKey("facePaint"))
+                return null;
             PlayerFile.CustomizationCategory category = avatar_components.customization_categories["facePaint"];
             string outfit_id = Configs.config_avatar_components.AvatarComponents[category.component_id].outfitId;
             if (Configs.config_avatar_components.AvatarComponents[category.component_id].componentStyles != null)
@@ -44,30 +46,30 @@ namespace IndividualComponents
                 if (model == null || model.game_object == null)
                     continue;
                 var smr = model.game_object.transform.GetComponentInChildren<SkinnedMeshRenderer>();
-                    if (smr.material.shader.name != "Shader Graphs/skin")
-                        continue;
+                if (smr.material.shader.name != "Shader Graphs/skin")
+                    continue;
 
-                    if (outfit_id == null)
-                    {
-                        //smr.materials[0].SetVector("u_housePrimary", Vector3.zero);
-                        //smr.materials[0].SetVector("u_houseSecondary", Vector3.zero);
-                        smr.material.SetTexture("u_facePaintTexture", Resources.Load("whiteNoAlpha") as Texture2D);
-                        return null;
-                    }
+                if (outfit_id == null)
+                {
+                    //smr.materials[0].SetVector("u_housePrimary", Vector3.zero);
+                    //smr.materials[0].SetVector("u_houseSecondary", Vector3.zero);
+                    smr.material.SetTexture("u_facePaintTexture", Resources.Load("whiteNoAlpha") as Texture2D);
+                    continue;
+                }
 
-                    ConfigAvatarOutfitData._AvatarOutfitData.Material patch = Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].patchMaterials;
+                ConfigAvatarOutfitData._AvatarOutfitData.Material patch = Configs.config_avatar_outfit_data.AvatarOutfitData[outfit_id].patchMaterials;
 
 
-                    for (int i = 0; i < patch.stringIds.Length; i++)
-                    {
-                        smr.materials[0].SetTexture(patch.stringIds[i], TextureManager.loadTexture(patch.stringValueKeys[i]));
-                    }
+                for (int i = 0; i < patch.stringIds.Length; i++)
+                {
+                    smr.materials[0].SetTexture(patch.stringIds[i], TextureManager.loadTexture(patch.stringValueKeys[i]));
+                }
 
-                    for (int i = 0; i < patch.vec3Ids.Length; i++)
-                    {
-                        //if (mat.vec3Ids[i] != "u_housePrimary" && mat.vec3Ids[i] != "u_houseSecondary")
-                        smr.materials[0].SetColor(patch.vec3Ids[i], new Color(patch.vec3Values[i][0], patch.vec3Values[i][1], patch.vec3Values[i][2]).gamma);
-                    }
+                for (int i = 0; i < patch.vec3Ids.Length; i++)
+                {
+                    //if (mat.vec3Ids[i] != "u_housePrimary" && mat.vec3Ids[i] != "u_houseSecondary")
+                    smr.materials[0].SetColor(patch.vec3Ids[i], new Color(patch.vec3Values[i][0], patch.vec3Values[i][1], patch.vec3Values[i][2]).gamma);
+                }
             }
 
 
