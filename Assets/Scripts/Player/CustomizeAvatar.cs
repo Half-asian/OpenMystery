@@ -140,7 +140,9 @@ public class CustomizeAvatar : MonoBehaviour
 
         customizable_avatar_preview = CustomizableAvatarSpawner.spawnCustomizableAvatar(avatar_components_preview.actor_id, "CustomizableAvatarPreview");
         ConfigHPActorInfo._HPActorInfo reference_character = Configs.config_hp_actor_info.HPActorInfo[PlayerManager.current.character_id]; //We use this as a base to apply transforms to
-        customizable_avatar_preview.replaceCharacterIdle("", "c_Stu_DialogueIdle01");
+
+        customizable_avatar_preview.model.game_object.GetComponent<Animation>().AddClip(AnimationManager.loadAnimationClip("c_Stu_DialogueIdle01", reference_model, reference_character).anim_clip, "default");
+        customizable_avatar_preview.model.game_object.GetComponent<Animation>().Play("default");
 
         reference_model_preview = ModelManager.loadModel(reference_character.modelId);
         /*customizable_avatar_preview.animation_component["default"].time = 0.01f;
