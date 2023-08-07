@@ -456,10 +456,45 @@ public class Configs{
             //QuidditchS1
             //Remove check to see if player has completed part of Y2
             Configs.config_goal.Goals["QuidditchS1C1_P1"].predicate = "true";
+
+            Configs.config_goal.Goals["CustomDateTeashop"] = new ConfigGoal.Goal();
+            Configs.config_goal.Goals["CustomDateTeashop"].goal_id = "CustomDateTeashop";
+            Configs.config_goal.Goals["CustomDateTeashop"].required_steps = new string[] { "CustomDateTeashopObj" };
+            Configs.config_goal.Goals["CustomDateTeashop"].goal_name = "Date_TeaShop1_Repeatable_Master";
+            Configs.config_goal.Goals["CustomDateTeashop"].ready_text = "Date_TeaShop1_Repeatable_Master_unlock_desc";
+
+            Configs.config_objective.Objectives["CustomDateTeashopObj"] = new ConfigObjective.Objective();
+            Configs.config_objective.Objectives["CustomDateTeashopObj"].objective_id = "CustomDateTeashopObj";
+            Configs.config_objective.Objectives["CustomDateTeashopObj"].objectiveScenario = "TeaShopDate_master";
+
+            Configs.config_goal_chain.GoalChain["CustomDates"] = new ConfigGoalChain._GoalChain();
+            Configs.config_goal_chain.GoalChain["CustomDates"].goalIds = new List<List<string>> {
+                new List<string>() { "DateEncounterNUX_P1" },
+                new List<string>() { "DateEncounterNUX_P2" },
+                new List<string>() { "CustomDateTeashop" }
+            };
+            Configs.config_goal_chain.GoalChain["CustomDates"].name = "CustomDates";
+
+            Configs.config_goal.Goals["CustomDateTeashopAdult"] = new ConfigGoal.Goal();
+            Configs.config_goal.Goals["CustomDateTeashopAdult"].goal_id = "CustomDateTeashopAdult";
+            Configs.config_goal.Goals["CustomDateTeashopAdult"].required_steps = new string[] { "CustomDateTeashopAdultObj" };
+            Configs.config_goal.Goals["CustomDateTeashopAdult"].goal_name = "Social_ThreebroomSticks_Repeatable_Master";
+            Configs.config_goal.Goals["CustomDateTeashopAdult"].ready_text = "Social_ThreebroomSticks_Repeatable_Master_desc";
+
+            Configs.config_objective.Objectives["CustomDateTeashopAdultObj"] = new ConfigObjective.Objective();
+            Configs.config_objective.Objectives["CustomDateTeashopAdultObj"].objective_id = "CustomDateTeashopAdultObj";
+            Configs.config_objective.Objectives["CustomDateTeashopAdultObj"].objectiveScenario = "Social_Threebroomsticks_BY7Repeatable_Master";
+
+            Configs.config_goal_chain.GoalChain["CustomDatesAdult"] = new ConfigGoalChain._GoalChain();
+            Configs.config_goal_chain.GoalChain["CustomDatesAdult"].goalIds = new List<List<string>> {
+                new List<string>() { "CustomDateTeashopAdult" }
+            };
         }
 
         Configs.config_hp_actor_info.HPActorInfo["c_TonksMasquerade_skin"].modelId = "c_hair_Tonks_skin";
         Configs.config_hp_actor_info.HPActorInfo["c_TonksMasquerade_skin"].modelPatches = new string[] { "c_NymphadoraTonksFaceClavicle_skin", "c_NPC_wand_generic_skin", "c_Female_MasqueradeBallOutfit_outfit_skin", "c_StudentHandsWhite_skin" };
+
+
     }
 
     public static ReferenceTree reference_tree;
