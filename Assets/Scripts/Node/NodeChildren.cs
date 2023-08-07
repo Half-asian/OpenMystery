@@ -50,37 +50,13 @@ public partial class Node : MonoBehaviour
         Prop prop = prop_model.game_object.AddComponent<Prop>();
         prop.setup(prop_model);
 
-        /*if (alias != null)
-        {
-            child_nodes[alias] = prop;
-            prop.parent_node = this;
-        }
-        else
-        {
-            child_nodes[prop_model_id] = prop;
-            prop.parent_node = this;
-        }*/
+        string prop_id = alias != null ? alias : prop_model_id;
 
-        if (alias != null)
-        {
-            if (child_nodes.ContainsKey(alias))
-                Destroy(child_nodes[alias]);
+        if (child_nodes.ContainsKey(prop_id))
+            Destroy(child_nodes[prop_id]);
+        child_nodes[prop_id] = prop;
+        prop.parent_node = this;
 
-            //Debug.Log("Adding prop " + alias);
-            child_nodes[alias] = prop;
-            prop.parent_node = this;
-        }
-        else
-        {
-            if (child_nodes.ContainsKey(prop_model_id))
-                Destroy(child_nodes[prop_model_id]);
-            child_nodes[prop_model_id] = prop;
-            prop.parent_node = this;
-        }
-        //if (bone_to_attach.name == "jt_propCounterScale")
-        //{
-        //    bone_to_attach = Common.recursiveFindChild(gameObject.transform, "jt_all_bind");
-        //}
         prop.model.game_object.transform.parent = transform;
         if (target != null)
         {
@@ -132,6 +108,10 @@ public partial class Node : MonoBehaviour
         {
             Destroy(child_nodes[id]);
             child_nodes.Remove(id);
+        }
+        else
+        {
+            Debug.LogError("Couldn't find child node " + id);
         }
     }
 

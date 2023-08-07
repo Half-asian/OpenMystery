@@ -23,7 +23,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     public HPAnimation current_animation;
 
-    protected List<Node> local_props = new List<Node>();
+    protected Dictionary<string, Node> local_props = new Dictionary<string, Node>();
 
     public virtual void initAnimSequence(string _anim_sequence, bool _walk)
     {
@@ -189,13 +189,16 @@ public abstract partial class AnimationSequence : MonoBehaviour
         advanceAnimSequence();
     }
 
-    protected void destroyPropsMadeFromSequence()
+    public void destroyPropsMadeFromSequence()
     {
-        foreach (var prop in local_props)
+        foreach (var prop_name in local_props.Keys)
         {
-            if (prop != null)
-                base_node.removeChildNode(prop.name);
+            if (prop_name != null)
+            {
+                base_node.removeChildNode(prop_name);
+            }
         }
+        local_props.Clear();
     }
 
     protected static string getBroomSkinName(string actor_id)
