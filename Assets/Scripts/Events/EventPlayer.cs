@@ -211,7 +211,7 @@ public class EventPlayer : MonoBehaviour
 
         if (script_event.type == "Sequential" && script_event.sequenceIds == null)
         {
-            script_event.type = "";
+            script_event.type = "Regular";
         }
 
         if (script_event.type == "Blocking")
