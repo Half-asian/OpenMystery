@@ -231,6 +231,9 @@ public class DialogueManager : MonoBehaviour
             GameStart.event_manager.main_event_player.runImmediateEvents();
         }
 
+        if (dialogue_line.emoteResetEvents != null)
+            exit_stack.AddRange(dialogue_line.emoteResetEvents);
+
         if (dialogue_line.exitEvents != null)
             exit_stack.AddRange(dialogue_line.exitEvents);
 
@@ -252,9 +255,6 @@ public class DialogueManager : MonoBehaviour
 
     void dialogueLineStartActions(ConfigHPDialogueLine.HPDialogueLine dialogue_line)
     {
-        if (dialogue_line.emoteResetEvents != null)
-            GameStart.event_manager.main_event_player.addEvents(dialogue_line.emoteResetEvents);
-
         if (dialogue_line.emoteEvents != null)
             GameStart.event_manager.main_event_player.addEvents(dialogue_line.emoteEvents);
 
