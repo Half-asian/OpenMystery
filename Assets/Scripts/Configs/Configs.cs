@@ -478,12 +478,12 @@ public class Configs{
             Configs.config_goal.Goals["CustomDateTeashopAdult"] = new ConfigGoal.Goal();
             Configs.config_goal.Goals["CustomDateTeashopAdult"].goal_id = "CustomDateTeashopAdult";
             Configs.config_goal.Goals["CustomDateTeashopAdult"].required_steps = new string[] { "CustomDateTeashopAdultObj" };
-            Configs.config_goal.Goals["CustomDateTeashopAdult"].goal_name = "Social_ThreebroomSticks_Repeatable_Master";
-            Configs.config_goal.Goals["CustomDateTeashopAdult"].ready_text = "Social_ThreebroomSticks_Repeatable_Master_desc";
+            Configs.config_goal.Goals["CustomDateTeashopAdult"].goal_name = "Date_TeaShop_BY7_1_Repeatable_Master";
+            Configs.config_goal.Goals["CustomDateTeashopAdult"].ready_text = "Date_TeaShop1_Repeatable_Master_unlock_desc";
 
             Configs.config_objective.Objectives["CustomDateTeashopAdultObj"] = new ConfigObjective.Objective();
             Configs.config_objective.Objectives["CustomDateTeashopAdultObj"].objective_id = "CustomDateTeashopAdultObj";
-            Configs.config_objective.Objectives["CustomDateTeashopAdultObj"].objectiveScenario = "Social_Threebroomsticks_BY7Repeatable_Master";
+            Configs.config_objective.Objectives["CustomDateTeashopAdultObj"].objectiveScenario = "TeaShop_BY7_Date_master";
 
             Configs.config_goal_chain.GoalChain["CustomDatesAdult"] = new ConfigGoalChain._GoalChain();
             Configs.config_goal_chain.GoalChain["CustomDatesAdult"].goalIds = new List<List<string>> {
