@@ -159,7 +159,7 @@ public class DialogueManager : MonoBehaviour
                 if (override_line.companionId == EncounterDate.companion)
                 {
                     Debug.Log("Overriding dialogue " + dialogue_line.id + " with " + override_line.id);
-                    override_line.overrideLine(dialogue_line);
+                    dialogue_line = override_line.overrideLine(dialogue_line);
                 }
             }
         }

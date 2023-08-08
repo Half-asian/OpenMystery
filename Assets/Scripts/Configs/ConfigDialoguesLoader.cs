@@ -30,9 +30,36 @@ public class ConfigHPDialogueLine : Config<ConfigHPDialogueLine>
         public string[][] stateUpdates;
 
         public float CameraTransitionTime => cameraTransitionTime ?? 0.0f;
+
+        public HPDialogueLine copyLine()
+        {
+            HPDialogueLine copy = new HPDialogueLine();
+            copy.cameraShot = cameraShot;
+            copy.cameraTransitionTime = cameraTransitionTime;
+            copy.dialogue = dialogue;
+            copy.enterEvents = enterEvents;
+            copy.exitEvents = exitEvents;
+            copy.id = id;
+            copy.initialTurn = initialTurn; 
+            copy.barkPlaylistIds = barkPlaylistIds;
+            copy.barkPredicates = barkPredicates;
+            copy.dialogueChoiceIds = dialogueChoiceIds;
+            copy.nextTurnIds = nextTurnIds;
+            copy.nextTurnPredicates = nextTurnPredicates;
+            copy.emoteEvents = emoteEvents;
+            copy.emoteResetEvents = emoteResetEvents;
+            copy.speakerId = speakerId;
+            copy.token = token;
+            copy.lookAt = lookAt;
+            copy.headOnly = headOnly;
+            copy._headOnly = _headOnly;
+            copy.stateUpdates = stateUpdates;
+            return copy;
+        }
     }
 
     public Dictionary<string, HPDialogueLine> HPDialogueLines;
+
     HPDialogueLine combineDialogueLine(HPDialogueLine a, HPDialogueLine b)
     {
         a.cameraShot = b.cameraShot ?? a.cameraShot;
@@ -188,18 +215,21 @@ public class ConfigHPDialogueOverride : Config<ConfigHPDialogueOverride>        
         public string[] emoteEvents;
         public string[] emoteResetEvents;
 
-        public void overrideLine(ConfigHPDialogueLine.HPDialogueLine line)
+        public ConfigHPDialogueLine.HPDialogueLine overrideLine(ConfigHPDialogueLine.HPDialogueLine line)
         {
-            line.id = id;
-            line.barkPlaylistIds = barkPlaylistIds;
+            ConfigHPDialogueLine.HPDialogueLine copy = line.copyLine();
+
+            copy.id = id;
+            copy.barkPlaylistIds = barkPlaylistIds;
             if (nextTurnIds != null)
             {
-                line.nextTurnIds = nextTurnIds;
-                line.nextTurnPredicates = nextTurnPredicates;
+                copy.nextTurnIds = nextTurnIds;
+                copy.nextTurnPredicates = nextTurnPredicates;
             }
-            line.token = token;
-            line.emoteEvents = emoteEvents;
-            line.emoteResetEvents = emoteResetEvents;
+            copy.token = token;
+            copy.emoteEvents = emoteEvents;
+            copy.emoteResetEvents = emoteResetEvents;
+            return copy;
         }
     }
 
