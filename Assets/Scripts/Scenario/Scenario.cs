@@ -117,7 +117,7 @@ public class Scenario
     }
 
     //keya not used
-    public static int getContentVar(string keya, string keyb)
+    public static string getContentVar(string keya, string keyb)
     {
         string key = keyb;
         string content_vars_txt = Path.Combine(GlobalEngineVariables.player_folder, "content_vars.txt");
@@ -128,9 +128,9 @@ public class Scenario
             int next_line = text.IndexOf("\n", keya_index);
             string value = text.Substring(keya_index + keyb.Length + 1, next_line - key.Length - keya_index - 1);
             Debug.Log("Reading content var: " + key + " " + value);
-            return int.Parse(value);
+            return value;
         }
-        return 0;
+        return "";
     }
 
 

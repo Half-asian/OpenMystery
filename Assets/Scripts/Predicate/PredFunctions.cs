@@ -39,7 +39,7 @@ public partial class NewPredicate
         {"isMemoryActiveWithTag"                , new Func<SymbolConstantString, SymbolConstantBool>(isMemoryActiveWithTag) },
         {"isGreetingActiveWithScenarioTag"      , new Func<SymbolConstantString, SymbolConstantBool>(isGreetingActiveWithScenarioTag) },
         {"inScenarioForTlsqWithTag"             , new Func<SymbolConstantString, SymbolConstantBool>(inScenarioForTlsqWithTag) },
-        {"getContentVar"                        , new Func<SymbolConstantString, SymbolConstantString, SymbolConstantInteger>(getContentVar) },
+        {"getContentVar"                        , new Func<SymbolConstantString, SymbolConstantString, SymbolConstantString>(getContentVar) },
         {"placeOfHouse"                         , new Func<SymbolConstantString, SymbolConstantInteger>(placeOfHouse) },
         {"placeOfPlayer"                        , new Func<SymbolConstantInteger>(placeOfPlayer) },
         {"currentLocation"                      , new Func<SymbolConstantString>(currentLocation) },
@@ -230,11 +230,10 @@ public partial class NewPredicate
     {
         return new SymbolConstantBool(false);
     }
-    static SymbolConstantInteger getContentVar(SymbolConstantString a, SymbolConstantString b) //Content vars are like scenario variables from what I gather
+    static SymbolConstantString getContentVar(SymbolConstantString a, SymbolConstantString b) //Content vars are like scenario variables from what I gather
     {
-        int value = Scenario.getContentVar(a.value, b.value);
-        Debug.Log("GetContentVar: " + b.toString() + " " + value);
-        return new SymbolConstantInteger(value);
+        string value = Scenario.getContentVar(a.value, b.value);
+        return new SymbolConstantString(value);
     }
 
 
