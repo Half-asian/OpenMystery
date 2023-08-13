@@ -96,9 +96,6 @@ public partial class ActorController
             //QuidditchS1C10P3_hoochSlowLookOrion
         }
 
-        //There is a mystery param 4 as well
-        //TLSQS3HouseCupP9_PennyWatchBackgroundLeave is the only case it is not set to 1
-
         if (Actor.getActor(action_params[1]) != null)                      //Actor look at target actor
         {
             setLookAt(Actor.getActor(action_params[1]), speed);

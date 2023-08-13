@@ -9,15 +9,15 @@ public class Prop : Node
 {
     public static Dictionary<string, Prop> spawned_props = new Dictionary<string, Prop>();
     public string _name;
-    public string group;
+    public List<string> lookup_tags;
     public spawner spawned_by;
-    public void setup(string _name, Model _model, spawner _spawned_by, string _group)
+    public void setup(string _name, Model _model, spawner _spawned_by, string lookup_tag)
     {
         base.setup(_model);
         this._name = _name;
         model = _model;
         spawned_by = _spawned_by;
-        group = _group;
+        lookup_tags.Add(lookup_tag);
     }
 
     public enum spawner
@@ -247,15 +247,64 @@ public class Prop : Node
         }
     }
 
-    public static void playPropAnimationSequence(string prop, string animation_sequence)
+    public static void eventPlayPropAnimationSequence(string prop_id, string animation_sequence, int is_group)
     {
-        if (Prop.spawned_props.ContainsKey(prop))
+        if (is_group == 1)
         {
-            Prop.spawned_props[prop].playAnimSequence(animation_sequence);
+            foreach (var prop in spawned_props.Values)
+            {
+                if (prop.lookup_tags.Contains(prop_id))
+                {
+                    prop.playAnimSequence(animation_sequence);
+                }
+            }
         }
         else
         {
-            Debug.LogWarning("Couldn't find prop " + prop + " in spawned props");
+            if (spawned_props.ContainsKey(prop_id))
+            {
+                spawned_props[prop_id].playAnimSequence(animation_sequence);
+            }
         }
     }
+
+    public static void eventDespawnProp(string event_id, string[] action_params)
+    {
+        string prop_id = action_params[0];
+        int is_lookup_tag_mode = 0;
+        if (action_params.Length > 2)
+        {
+            int.TryParse(action_params[1], out is_lookup_tag_mode);
+        }
+        despawnProp(event_id, prop_id, is_lookup_tag_mode == 1);
+    }
+
+    private static void despawnProp(string event_id, string prop_id, bool is_lookup_tag_mode)
+    {
+        if (is_lookup_tag_mode)
+        {
+            List<string> props_to_destroy = new List<string>();
+            foreach (string p_key in Prop.spawned_props.Keys)
+            {
+                if (Prop.spawned_props[p_key].lookup_tags.Contains(prop_id))
+                {
+                    GameObject.Destroy(Prop.spawned_props[p_key].model.game_object);
+                    props_to_destroy.Add(p_key);
+                }
+            }
+            foreach (string p_key in props_to_destroy)
+            {
+                Prop.spawned_props.Remove(p_key);
+            }
+        }
+        else
+        {
+            if (Prop.spawned_props.ContainsKey(prop_id))
+            {
+                GameObject.Destroy(Prop.spawned_props[prop_id].model.game_object);
+                Prop.spawned_props.Remove(prop_id);
+            }
+        }
+    }
+
 }

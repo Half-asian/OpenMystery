@@ -18,6 +18,7 @@ public class ConfigScenario : Config<ConfigScenario>
             public string instanceId;
             public string charId;
             public string waypointId;
+            public string[] lookupTags;
         }
         public CharSpawn[] charSpawns;
         public List<string[]> randomSpawns;

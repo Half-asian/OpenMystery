@@ -258,7 +258,11 @@ public class Actor
         {
             foreach (ConfigScenario._Scenario.CharSpawn char_spawn in Scenario.current.scenario_config.charSpawns)
             {
-                spawnActor(char_spawn.charId, char_spawn.waypointId, char_spawn.instanceId);
+                var actor = spawnActor(char_spawn.charId, char_spawn.waypointId, char_spawn.instanceId);
+                if (char_spawn.lookupTags != null)
+                {
+                    actor.lookup_tags.AddRange(char_spawn.lookupTags);
+                }
             }
         }
 
@@ -366,6 +370,197 @@ public class Actor
                     }
                 }
             }
+        }
+    }
+
+    public static void eventReplaceCharacterIdle(string event_id, string[] action_params)
+    {
+        string actor_id = action_params[0];
+        string idle_animation_id = action_params[1];
+        int is_lookup_tag_mode = 0;
+        if (action_params.Length > 2)
+        {
+            int.TryParse(action_params[2], out is_lookup_tag_mode);
+        }
+        replaceCharacterIdle(event_id, actor_id, idle_animation_id, is_lookup_tag_mode == 1);
+    }
+
+    private static void replaceCharacterIdle(string event_id, string actor_id, string idle_animation_id, bool is_lookup_tag_mode)
+    {
+        if (is_lookup_tag_mode)
+        {
+            foreach(var actor in actor_controllers.Values)
+            {
+                if (actor.lookup_tags.Contains(actor_id))
+                {
+                    actor.replaceCharacterIdle(event_id, idle_animation_id);
+                }
+            }
+        }
+        else
+        {
+            getActor(actor_id)?.replaceCharacterIdle(event_id, idle_animation_id);
+        }
+    }
+
+    public static void eventSetCharacterIdle(string event_id, string[] action_params)
+    {
+        string actor_id = action_params[0];
+        int is_lookup_tag_mode = 0;
+        if (action_params.Length > 2)
+        {
+            int.TryParse(action_params[1], out is_lookup_tag_mode);
+        }
+        setCharacterIdle(event_id, actor_id, is_lookup_tag_mode == 1);
+    }
+
+    private static void setCharacterIdle(string event_id, string actor_id, bool is_lookup_tag_mode)
+    {
+        if (is_lookup_tag_mode)
+        {
+            foreach (var actor in actor_controllers.Values)
+            {
+                if (actor.lookup_tags.Contains(actor_id))
+                {
+                    actor.setCharacterIdle(event_id);
+                }
+            }
+        }
+        else
+        {
+            getActor(actor_id)?.setCharacterIdle(event_id);
+        }
+    }
+
+    public static void eventReplaceCharacterIdleStaggered(string event_id, string[] action_params)
+    {
+        string actor_id = action_params[0];
+        string idle_animation_id = action_params[1];
+        int is_lookup_tag_mode = 0;
+        if (action_params.Length > 2)
+        {
+            int.TryParse(action_params[2], out is_lookup_tag_mode);
+        }
+        replaceCharacterIdleStaggered(event_id, actor_id, idle_animation_id, is_lookup_tag_mode == 1);
+    }
+
+    private static void replaceCharacterIdleStaggered(string event_id, string actor_id, string idle_animation_id, bool is_lookup_tag_mode)
+    {
+        if (is_lookup_tag_mode)
+        {
+            foreach (var actor in actor_controllers.Values)
+            {
+                if (actor.lookup_tags.Contains(actor_id))
+                {
+                    actor.replaceCharacterIdleStaggered(event_id, idle_animation_id);
+                }
+            }
+        }
+        else
+        {
+            getActor(actor_id)?.replaceCharacterIdleStaggered(event_id, idle_animation_id);
+        }
+    }
+
+    //0: actor
+    //1: target actor to look at
+    //2: speed
+    //3: is group
+    public static void eventLookAt(string event_id, string[] action_params)
+    {
+        string actor_id = action_params[0];
+        int is_lookup_tag_mode = 0;
+        if (action_params.Length > 3)
+        {
+            int.TryParse(action_params[3], out is_lookup_tag_mode);
+        }
+        if (is_lookup_tag_mode == 0)
+            getActor(actor_id)?.queueLookAt(action_params);
+        else
+        {
+            foreach (var actor in actor_controllers.Values)
+            {
+                if (actor.lookup_tags.Contains(actor_id))
+                {
+                    actor.queueLookAt(action_params);
+                }
+            }
+        }
+    }
+
+    //0: actor
+    //1: target actor to look at
+    //2: speed
+    //3: is group
+    public static void eventTurnHeadAt(string event_id, string[] action_params)
+    {
+        string actor_id = action_params[0];
+        int is_lookup_tag_mode = 0;
+        if (action_params.Length > 3)
+        {
+            int.TryParse(action_params[3], out is_lookup_tag_mode);
+        }
+        if (is_lookup_tag_mode == 0)
+            getActor(actor_id)?.queueTurnHeadAt(action_params);
+        else
+        {
+            foreach (var actor in actor_controllers.Values)
+            {
+                if (actor.lookup_tags.Contains(actor_id))
+                {
+                    actor.queueTurnHeadAt(action_params);
+                }
+            }
+        }
+    }
+
+    //0: actor
+    //1: target actor to look at
+    //2: bone
+    //3: speed
+    public static void eventTurnHeadTowards(string event_id, string[] action_params)
+    {
+        string actor_id = action_params[0];
+        getActor(actor_id)?.queueTurnHeadTowards(action_params);
+    }
+
+    //0: actor
+    //1: target actor to look at
+    //2: bone
+    //3: speed
+    public static void eventTurnTowards(string event_id, string[] action_params)
+    {
+        string actor_id = action_params[0];
+        getActor(actor_id)?.queueTurnTowards(action_params);
+    }
+
+    public static void eventTeleportCharacter(string event_id, string[] action_params)
+    {
+        string actor_id = action_params[0];
+        string waypoint = action_params[1];
+        int is_lookup_tag_mode = 0;
+        if (action_params.Length > 2)
+        {
+            int.TryParse(action_params[2], out is_lookup_tag_mode);
+        }
+        teleportCharacter(event_id, actor_id, waypoint, is_lookup_tag_mode == 1);
+    }
+
+    private static void teleportCharacter(string event_id, string actor_id, string waypoint, bool is_lookup_tag_mode)
+    {
+        if (is_lookup_tag_mode)
+        {
+            foreach (var actor in actor_controllers.Values)
+            {
+                if (actor.lookup_tags.Contains(actor_id))
+                {
+                    actor.teleportCharacter(waypoint);
+                }
+            }
+        }
+        else
+        {
+            getActor(actor_id)?.teleportCharacter(waypoint);
         }
     }
 

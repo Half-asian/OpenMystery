@@ -27,8 +27,7 @@ public static class EventActions
          "advanceAnimSequence", "moveCharacterWithSequence", "animateProp", "playPropAnimSequence", "replaceScenarioBGMusic", "equipAvatarComponent", "wearClothingType",
          "setQuidditchHelmetEquipped", "setForcedQuidditchPosition", "setOpponentHouse", "playSound", "awardReward", "setContentVar", "popupVC", "stopSequentialScriptById", 
         "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack", "stopCameraAnimation", "forceScenarioSwitch", "playAttachedPropAnim",
-        "hideFlatStuff", "showFlatStuff"
-        , "doGestureRecognition"
+        "hideFlatStuff", "showFlatStuff", "doGestureRecognition", "addLookupTag"
     };
 
     public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
@@ -46,244 +45,116 @@ public static class EventActions
 
         switch (action_type)
         {
+            //Actor actions
+
+            //3 params, possibly 4
+            //3 implemented
             case "replaceCharacterIdle":
-                Actor.getActor(action_params[0])?.replaceCharacterIdle(event_id, action_params[1]);
+                Actor.eventReplaceCharacterIdle(event_id,action_params);
                 break;
 
+            //3 params
+            //3 implemented
             case "setCharacterIdle":
-                Actor.getActor(action_params[0])?.setCharacterIdle(event_id);
+                Actor.eventSetCharacterIdle(event_id, action_params);
                 break;
 
+            //2 params
+            //1 implemented
             case "resetCharacterIdle":
                 Actor.getActor(action_params[0])?.resetCharacterIdle(event_id);
                 break;
-
+            
+            //3 params
+            //2 implemented
+            //todo param[2] is anim sequence node to fast forward to
             case "replaceCharacterIdleSequence":
                 Actor.getActor(action_params[0])?.replaceCharacterIdleSequence(event_id, action_params[1]);
                 break;
 
+            //3 params
+            //2 implemented
             case "playCharacterAnimSequence":
                 Actor.getActor(action_params[0])?.playCharacterAnimSequence(event_id, action_params[1]);
                 break;
 
+            //3 params
+            //3 implemented
             case "animateCharacter":
                 Actor.getActor(action_params[0])?.animateCharacter(event_id, action_params[1],
                     action_params.Length > 2 ? int.Parse(action_params[2]) : 0
                     );
                 break;
 
+            //3 params
+            //3 implemented
             case "replaceCharacterIdleStaggered":
-                Actor.getActor(action_params[0])?.replaceCharacterIdleStaggered(event_id, action_params[1]);
+                Actor.eventReplaceCharacterIdleStaggered(event_id, action_params);
                 break;
 
+            //2 params
+            //3 implemented
             case "walkInCharacter": //Tp's character to closest connecting waypoint, then they walk to the destination
                 Actor.getActor(action_params[0])?.walkInCharacter(action_params[1]);
                 break;
 
+            //5 params
+            //3 implemented
             case "moveCharacter":
                 Actor.getActor(action_params[0])?.moveCharacter(
                     action_params.Length > 1 ? action_params[1] : null, 
                     action_params.Length > 2 ? action_params[2] : null, 
                     ActorController.ActorAnim.AnimType.Regular);
-                //action_params[3] int unknown
-
                 break;
 
+            //4 params
+            //4 implemented
             case "lookAt":
-                Actor.getActor(action_params[0])?.queueLookAt(action_params);
+                Actor.eventLookAt(event_id, action_params);
                 break;
-            case "turnHeadAt": //Don't move shoulders
-                Actor.getActor(action_params[0])?.queueTurnHeadAt(action_params);
+
+            //4 params
+            //4 implemented
+            case "turnHeadAt":
+                Actor.eventTurnHeadAt(event_id, action_params);
                 break;
+
+            //4 params
+            //4 implemented
             case "turnHeadTowards":
-                Actor.getActor(action_params[0])?.queueTurnHeadTowards(action_params);
+                Actor.eventTurnHeadTowards(event_id, action_params);
                 break;
+
+            //3 to 4 params (4 params only in unused events)
+            //4 implemented
             case "turnTowards":
-                Actor.getActor(action_params[0])?.queueTurnTowards(action_params);
+                Actor.eventTurnTowards(event_id, action_params);
                 break;
+
+            //4 params
+            //3 implemented
             case "teleportCharacter":
-                if (action_params.Length < 2) break;
-                Actor.getActor(action_params[0])?.teleportCharacter(action_params[1]);
+                Actor.eventTeleportCharacter(event_id, action_params);
                 break;
 
-            case "teleportProp":
-                if (!Scene.isValidWayPoint(action_params[1]))
-                {
-                    Debug.LogWarning("COULDN'T FIND WAYPOINT " + action_params[1] + " IN CURRENT SCENE!");
-                    break;
-                }
-                if (Prop.spawned_props.ContainsKey(action_params[0]))
-                {
-                    Scene.setGameObjectToWaypoint(Prop.spawned_props[action_params[0]].model.game_object, action_params[1]);
-                }
-                else
-                {
-                    Debug.LogWarning("COULDN'T FIND Prop " + action_params[0]);
-                }
-                break;
-
+            //3 params (4th possible)
+            //3 implemented
             case "spawnCharacter":
-
-                string hpactor_id   = action_params.Length >= 1 ? action_params[0] : null;
-                string waypoint_id  = action_params.Length >= 2 ? action_params[1] : null;
-                string instance_id  = action_params.Length >= 3 ? action_params[2] : hpactor_id;
+                string hpactor_id = action_params.Length >= 1 ? action_params[0] : null;
+                string waypoint_id = action_params.Length >= 2 ? action_params[1] : null;
+                string instance_id = action_params.Length >= 3 ? action_params[2] : hpactor_id;
 
                 Actor.spawnActor(hpactor_id, waypoint_id, instance_id);
                 break;
 
+            //1 param
+            //1 implemented
             case "despawnCharacter":
                 Actor.despawnCharacterInScene(action_params[0]);
                 break;
 
-            case "spawnProp":
-                //string model_id, string waypoint_id, string name_id, string group_id
-
-                if (action_params.Length == 3)
-                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[2], "");
-                else if (action_params.Length == 4)
-                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[2], action_params[3]);
-                else
-                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[0], "");
-                break;
-
-            case "removeProp": //Probably wrong
-            case "despawnProp":
-                //string despawn_id
-                //int mode
-                //mode will be 1 if first id is the group id. Otherwise, will be prop id.
-
-                if (action_params.Length == 2)
-                {
-                    if (action_params[1] != "1")
-                    {
-                        Debug.LogError("Unknown mode for despawnProp");
-                        break;
-                    }
-
-                    List<string> props_to_destroy = new List<string>();
-                    foreach (string p_key in Prop.spawned_props.Keys)
-                    {
-                        if (Prop.spawned_props[p_key].group == action_params[0])
-                        {
-                            GameObject.Destroy(Prop.spawned_props[p_key].model.game_object);
-                            props_to_destroy.Add(p_key);
-                        }
-                    }
-
-                    foreach (string p_key in props_to_destroy)
-                    {
-                        Prop.spawned_props.Remove(p_key);
-                    }
-                }
-
-                else if (action_params.Length == 1)
-                {
-                    if (Prop.spawned_props.ContainsKey(action_params[0]))
-                    {
-                        GameObject.Destroy(Prop.spawned_props[action_params[0]].model.game_object);
-                        Prop.spawned_props.Remove(action_params[0]);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("remove/despawn prop didn't find prop " + action_params[0]);
-                    }
-                }
-
-                else
-                {
-                    Debug.LogError("Unknown param length for despawnProp");
-                }
-
-                break;
-
-                //0: actor
-                //1: bone
-                //2: model id
-                //3: alias
-
-            case "attachProp": //used to attach something to a character
-                {
-                    var actor = Actor.getActor(action_params[0]);
-                    if (actor == null)
-                        break;
-
-                    if (action_params.Length < 4)
-                        actor.attachChildNode(action_params[2], action_params[2], action_params[1]);
-                    else
-                        actor.attachChildNode(action_params[2], action_params[3], action_params[1]);
-                    break;
-                }
-            case "detachProp":
-                {
-                    var actor = Actor.getActor(action_params[0]);
-                    if (actor == null)
-                        return;
-
-                    actor.removeChildNode(action_params[1]);
-                    break;
-                }
-            case "playAttachedPropAnim":
-                {
-                    var actor = Actor.getActor(action_params[0]);
-                    if (actor == null)
-                        return;
-                    actor.playPropAnim(action_params[1], action_params[2]);
-                    break;
-                }
-            case "hideEntity":
-                if (Prop.spawned_props.ContainsKey(action_params[0]))
-                {
-                    Prop.spawned_props[action_params[0]].model.game_object.SetActive(false);
-                }
-                else
-                {
-                    Debug.Log("remove/despawn prop didn't find prop " + action_params[0]);
-                }
-                break;
-            case "showEntity":
-                if (Prop.spawned_props.ContainsKey(action_params[0]))
-                {
-                    Prop.spawned_props[action_params[0]].model.game_object.SetActive(true);
-                }
-                else
-                {
-                    Debug.Log("remove/despawn prop didn't find prop " + action_params[0]);
-                }
-                break;
-
-
-            case "playCameraAnimation":
-
-                Debug.Log("Playing camera anim " + action_params[0]);
-                CameraManager.current.playCameraAnimation(action_params[0], true);
-                break;
-            case "stopCameraAnimation":
-                CameraManager.current.stopCameraAnimation(action_params[0]);
-                break;
-            case "playCinematicCameraAnimation":
-                if (action_params.Length > 1)
-                {
-                    string[] focus_cam_action_params = new string[] { action_params[1], "0" };
-                    CameraManager.current.focusCam(ref focus_cam_action_params);
-                }
-
-                Debug.Log("Playing cinematic camera anim " + action_params[0]);
-                CameraManager.current.playCameraAnimation(action_params[0], true);
-                break;
-
-            case "focusCamera": //action param 1 is probably time to transition camera (lerp)
-                if (event_player) event_player.last_camera = CameraManager.current.focusCam(ref action_params);
-                break;
-
-            case "panCamOnTrack":
-                if (!float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float target_pos))
-                    break;
-                if (!float.TryParse(action_params[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float duration))
-                    break;
-
-                CameraManager.current.panCamOnTrack(target_pos, duration);
-                break;
-
+            //1 param
+            //1 implemented
             case "hideCharacter":
                 if (Actor.getActor(action_params[0]) != null)
                 {
@@ -309,6 +180,9 @@ public static class EventActions
                     }
                 }
                 break;
+
+            //1 param
+            //1 implemented
             case "showCharacter":
                 if (Actor.getActor(action_params[0]) != null)
                 {
@@ -335,56 +209,8 @@ public static class EventActions
                 }
                 break;
 
-            case "screenFadeTo":
-                if (Scenario.block_screenfades == true)
-                {
-                    break;
-                }
-                float ffade_to_time = 1.0f;
-                if (action_params.Length >= 1)
-                    ffade_to_time = float.Parse(action_params[0], CultureInfo.InvariantCulture);
-                string color_string = action_params[1];
-                int r = int.Parse(color_string.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-                int g = int.Parse(color_string.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-                int b = int.Parse(color_string.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-                ScreenFade.fadeTo(ffade_to_time, new Color(r / 255.0f, g / 255.0f, b / 255.0f));
-                break;
-
-            case "fadeToBlack":
-                if (Scenario.block_screenfades == true)
-                {
-                    break;
-                }
-                float fade_to_time = 1.0f;
-                if (action_params.Length >= 1)
-                {
-                    bool success = float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float result);
-                    if (success == false)
-                        throw new System.Exception("fadeToBlack: Failed to parse " + action_params[0] + " as a float.");
-                    else
-                        fade_to_time = result;
-                }
-                ScreenFade.fadeTo(fade_to_time, Color.black);
-                break;
-
-            case "screenFadeFrom":
-            case "fadeFromBlack":
-                if (Scenario.block_screenfades == true)
-                {
-                    break;
-                }
-                float fade_from_time = 1.0f;
-                if (action_params.Length >= 1)
-                {
-                    bool success = float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float result);
-                    if (success == false)
-                        throw new System.Exception("fadeFromBlack: Failed to parse " + action_params[0] + " as a float.");
-                    else
-                        fade_from_time = result;
-                }
-                ScreenFade.fadeFrom(fade_from_time, Color.black);
-                break;
-
+            //3 params
+            //??? implemented
             case "safeAdvanceAnimSequenceTo": //This shit is used ONCE in the entire game
                 if (Actor.getActor(action_params[0]) != null)
                 {
@@ -406,6 +232,9 @@ public static class EventActions
 
                 break;
 
+            //2 params
+            //1 implemented
+            // param 2 is target anim sequence node
             case "advanceAnimSequence":
                 if (Actor.getActor(action_params[0]))
                 {
@@ -427,20 +256,254 @@ public static class EventActions
                 }
                 break;
 
+            //4 params
+            //3 implemented
             case "moveCharacterWithSequence":
                 Actor.getActor(action_params[0])?.moveCharacter(
                     action_params.Length > 1 ? action_params[1] : null,
-                    action_params.Length > 2 ? action_params[2] : null, 
+                    action_params.Length > 2 ? action_params[2] : null,
                     ActorController.ActorAnim.AnimType.Sequence);
                 break;
 
+            //PROP ACTIONS
+
+            //2 params (3rd possible)
+            //2 implemented
+            case "teleportProp":
+                if (!Scene.isValidWayPoint(action_params[1]))
+                {
+                    Debug.LogWarning("COULDN'T FIND WAYPOINT " + action_params[1] + " IN CURRENT SCENE!");
+                    break;
+                }
+                if (Prop.spawned_props.ContainsKey(action_params[0]))
+                {
+                    Scene.setGameObjectToWaypoint(Prop.spawned_props[action_params[0]].model.game_object, action_params[1]);
+                }
+                else
+                {
+                    Debug.LogWarning("COULDN'T FIND Prop " + action_params[0]);
+                }
+                break;
+
+            //4 params
+            //4 implemented
+
+            case "spawnProp":
+                //string model_id, string waypoint_id, string name_id, string lookuptag
+
+                if (action_params.Length == 3)
+                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[2], "");
+                else if (action_params.Length == 4)
+                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[2], action_params[3]);
+                else
+                    Prop.spawnPropFromEvent(action_params[0], action_params[1], action_params[0], "");
+                break;
+
+            //2 params
+            //2 implemented
+            case "removeProp":
+            case "despawnProp":
+                Prop.eventDespawnProp(event_id, action_params);
+                break;
+
+            //4 params
+            //4 implemented
+            case "attachProp": //used to attach something to a character
+                {
+                    var actor = Actor.getActor(action_params[0]);
+                    if (actor == null)
+                        break;
+
+                    if (action_params.Length < 4)
+                        actor.attachChildNode(action_params[2], action_params[2], action_params[1]);
+                    else
+                        actor.attachChildNode(action_params[2], action_params[3], action_params[1]);
+                    break;
+                }
+
+            //1 param
+            //1 implemented
+            case "detachProp":
+                {
+                    var actor = Actor.getActor(action_params[0]);
+                    if (actor == null)
+                        return;
+
+                    actor.removeChildNode(action_params[1]);
+                    break;
+                }
+
+            //3 params
+            //3 implemented
+            case "playAttachedPropAnim":
+                {
+                    var actor = Actor.getActor(action_params[0]);
+                    if (actor == null)
+                        return;
+                    actor.playPropAnim(action_params[1], action_params[2]);
+                    break;
+                }
+
+            //1 param
+            //1 implemented
+            case "hideEntity":
+                if (Prop.spawned_props.ContainsKey(action_params[0]))
+                {
+                    Prop.spawned_props[action_params[0]].model.game_object.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("remove/despawn prop didn't find prop " + action_params[0]);
+                }
+                break;
+
+            //1 param
+            //1 implemented
+            case "showEntity":
+                if (Prop.spawned_props.ContainsKey(action_params[0]))
+                {
+                    Prop.spawned_props[action_params[0]].model.game_object.SetActive(true);
+                }
+                else
+                {
+                    Debug.Log("remove/despawn prop didn't find prop " + action_params[0]);
+                }
+                break;
+
+            //3 params
+            //2 implemented
             case "animateProp":
                 Prop.animateProp(action_params[0], action_params[1]);
                 break;
+
+            //3 params
+            //3 implemented
             case "playPropAnimSequence":
-                Prop.playPropAnimationSequence(action_params[0], action_params[1]);
+                string prop_id = action_params[0];
+                string sequence_id = action_params[1];
+                int is_group = 0;
+                if (action_params.Length > 2)
+                    is_group = int.Parse(action_params[2]);
+
+                Prop.eventPlayPropAnimationSequence(prop_id, sequence_id, is_group);
                 break;
 
+            //CAMERA ACTIONS
+
+            //1 param
+            //1 implemented
+            case "playCameraAnimation":
+                CameraManager.current.playCameraAnimation(action_params[0], true);
+                break;
+
+            //1 param
+            //1 implemented
+            case "stopCameraAnimation":
+                CameraManager.current.stopCameraAnimation(action_params[0]);
+                break;
+
+            //2 params
+            //2 implemented
+            case "playCinematicCameraAnimation":
+                if (action_params.Length > 1)
+                {
+                    string[] focus_cam_action_params = new string[] { action_params[1], "0" };
+                    CameraManager.current.focusCam(ref focus_cam_action_params);
+                }
+
+                Debug.Log("Playing cinematic camera anim " + action_params[0]);
+                CameraManager.current.playCameraAnimation(action_params[0], true);
+                break;
+
+            //3 params
+            //2 implemented
+            case "focusCamera": //action param 1 is probably time to transition camera (lerp)
+                if (event_player) event_player.last_camera = CameraManager.current.focusCam(ref action_params);
+                break;
+
+            //2 params
+            //2 implemented
+            case "panCamOnTrack":
+                if (!float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float target_pos))
+                    break;
+                if (!float.TryParse(action_params[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float duration))
+                    break;
+
+                CameraManager.current.panCamOnTrack(target_pos, duration);
+                break;
+
+            //2 params
+            //2 implemented
+            case "screenFadeTo":
+                if (Scenario.block_screenfades == true)
+                {
+                    break;
+                }
+                float ffade_to_time = 1.0f;
+                if (action_params.Length >= 1)
+                    ffade_to_time = float.Parse(action_params[0], CultureInfo.InvariantCulture);
+                string color_string = action_params[1];
+                int r = int.Parse(color_string.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+                int g = int.Parse(color_string.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+                int b = int.Parse(color_string.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+                ScreenFade.fadeTo(ffade_to_time, new Color(r / 255.0f, g / 255.0f, b / 255.0f));
+                break;
+
+            //1 param
+            //1 implemented
+            case "fadeToBlack":
+                if (Scenario.block_screenfades == true)
+                {
+                    break;
+                }
+                float fade_to_time = 1.0f;
+                if (action_params.Length >= 1)
+                {
+                    bool success = float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float result);
+                    if (success == false)
+                        throw new System.Exception("fadeToBlack: Failed to parse " + action_params[0] + " as a float.");
+                    else
+                        fade_to_time = result;
+                }
+                ScreenFade.fadeTo(fade_to_time, Color.black);
+                break;
+
+            //1 param
+            //1 implemented
+            case "screenFadeFrom":
+            case "fadeFromBlack":
+                if (Scenario.block_screenfades == true)
+                {
+                    break;
+                }
+                float fade_from_time = 1.0f;
+                if (action_params.Length >= 1)
+                {
+                    bool success = float.TryParse(action_params[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float result);
+                    if (success == false)
+                        throw new System.Exception("fadeFromBlack: Failed to parse " + action_params[0] + " as a float.");
+                    else
+                        fade_from_time = result;
+                }
+                ScreenFade.fadeFrom(fade_from_time, Color.black);
+                break;
+
+            //2 param
+            //1 implemented
+            case "moveCamOnTrack":
+                CameraManager.current.moveCamOnTrack(action_params[0]);
+                break;
+
+            //2 params
+            //1 implemented
+            case "moveCamOnTrackCharacter":
+                CameraManager.current.moveCamOnTrackCharacter(action_params[0]);
+                break;
+
+            //OTHER
+
+            //1 param
+            //1 implemented
             case "replaceScenarioBGMusic":
                 if (Configs.playlist_dict.ContainsKey(action_params[0]))
                 {
@@ -448,40 +511,59 @@ public static class EventActions
                 }
                 break;
 
-
+            //1 param
+            //1 implemented
             case "equipAvatarComponent":
                 Actor.getActor("Avatar")?.avatar_components.equipAvatarComponent(action_params[0]);
                 break;
-
+                
+            //2 params
+            //2 implemented
             case "wearClothingType":
-                Debug.Log("wearClothingType " + action_params[0]);
                 if (action_params.Length < 2)
                     Scenario.changeClothes(action_params[0], null);
                 else
                     Scenario.changeClothes(action_params[0], action_params[1]);
                 break;
+
+            //1 param
+            //1 implemented
             case "setQuidditchHelmetEquipped":
                 Scenario.setQuidditchHelmet(action_params[0]);
                 break;
+
+            //1 param
+            //1 implemented
             case "setForcedQuidditchPosition":
                 Player.local_avatar_quidditch_position = action_params[0];
                 break;
+
+            //1 param
+            //1 implemented
             case "setOpponentHouse":
                 Player.local_avatar_opponent_house = action_params[0];
                 break;
 
+            //2 params
+            //1 implemented
             case "playSound":
                 Sound.playSound(action_params[0]);
                 break;
 
+            //1 param
+            //1 implemented
             case "awardReward":
                 Reward.getReward(action_params[0]);
                 break;
-
+            
+            //3 params
+            //3 implemented
             case "setContentVar":
                 Scenario.setContentVar(action_params);
                 break;
 
+            //1 param
+            //not really implemented
             case "popupVC":
                 if (action_params[0] == "YearEndViewController")
                 {
@@ -490,28 +572,55 @@ public static class EventActions
                     Graduation.Graduate();
                 }
                 break;
+
+            //1 param
+            //1 implemented
             case "stopSequentialScriptById":
                 GameStart.event_manager.stopSequentialScriptById(action_params[0]);
                 break;
-            case "moveCamOnTrack":
-                CameraManager.current.moveCamOnTrack(action_params[0]);
-                break;
-            case "moveCamOnTrackCharacter":
-                CameraManager.current.moveCamOnTrackCharacter(action_params[0]);
-                break;
+
+            //1 param
+            //1 implemented
             case "forceScenarioSwitch":
                 Scenario.Activate(action_params[0]);
                 Scenario.Load(action_params[0]);
                 break;
+
+
+            //1 param
+            //1 implemented
             case "hideFlatStuff":
                 Dorm.hideFlatStuff();
                 break;
+
+            //1 param
+            //1 implemented
             case "showFlatStuff":
                 Dorm.showFlatStuff();
                 break;
+
+            //1 param
+            //1 implemented
             case "doGestureRecognition":
                 GameStart.current.StartCoroutine(GestureRecognition());
                 break;
+
+            //variable length
+            case "addLookupTag":
+                string tag = action_params.Last();
+                for(int i = 0; i < action_params.Length; i++)
+                {
+                    if (Prop.spawned_props.ContainsKey(action_params[i]))
+                    {
+                        Prop.spawned_props[action_params[i]].lookup_tags.Add(tag);
+                    }
+                    if (Actor.getActor(action_params[i]))
+                    {
+                        Actor.getActor(action_params[i]).lookup_tags.Add(tag);
+                    }
+                }
+                break;
+
             default:
                 Debug.LogWarning("Unknown event type " + action_type);
                 break;

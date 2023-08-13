@@ -11,6 +11,8 @@ public partial class ActorController : Node
 
     public ActorState actor_state = ActorState.Idle;
 
+    public List<string> lookup_tags = new List<string>();
+
     private void LateUpdate()
     {
         ApplyHeadTurns();
