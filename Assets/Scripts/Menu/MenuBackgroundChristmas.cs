@@ -45,7 +45,7 @@ public class MenuBackgroundChristmas : MonoBehaviour, IMenuBackground
         {
             Model model = ModelManager.loadModel("p_MerulasMagicalBlindfold_skin");
             prop = model.game_object.AddComponent<Prop>();
-            prop.setup(name, model, Prop.spawner.Event, "");
+            prop.setup(name, model, Prop.spawner.Event, null);
             Prop.spawned_props[name] = prop;
         }
 

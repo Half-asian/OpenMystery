@@ -27,7 +27,7 @@ public static class EventActions
          "advanceAnimSequence", "moveCharacterWithSequence", "animateProp", "playPropAnimSequence", "replaceScenarioBGMusic", "equipAvatarComponent", "wearClothingType",
          "setQuidditchHelmetEquipped", "setForcedQuidditchPosition", "setOpponentHouse", "playSound", "awardReward", "setContentVar", "popupVC", "stopSequentialScriptById", 
         "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack", "stopCameraAnimation", "forceScenarioSwitch", "playAttachedPropAnim",
-        "hideFlatStuff", "showFlatStuff", "doGestureRecognition", "addLookupTag"
+        "hideFlatStuff", "showFlatStuff", "doGestureRecognition", "addLookupTag", "stopAnimatingProp"
     };
 
     public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
@@ -386,6 +386,12 @@ public static class EventActions
                     is_group = int.Parse(action_params[2]);
 
                 Prop.eventPlayPropAnimationSequence(prop_id, sequence_id, is_group);
+                break;
+
+            //1 param
+            //1 implemented
+            case "stopAnimatingProp":
+                Prop.stopAnimatingProp(action_params[0]);
                 break;
 
             //CAMERA ACTIONS

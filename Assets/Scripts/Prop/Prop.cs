@@ -17,7 +17,11 @@ public class Prop : Node
         this._name = _name;
         model = _model;
         spawned_by = _spawned_by;
-        lookup_tags.Add(lookup_tag);
+        lookup_tags = new List<string>();
+        if (lookup_tag != null)
+        {
+            lookup_tags.Add(lookup_tag);
+        }
     }
 
     public enum spawner
@@ -125,7 +129,7 @@ public class Prop : Node
         model.game_object.transform.SetParent(GameStart.current.props_holder);
         model.game_object.gameObject.name = prop_locator.name;
         Prop prop = model.game_object.AddComponent<Prop>();
-        prop.setup(prop_locator.name, model, Prop.spawner.Scene, "");
+        prop.setup(prop_locator.name, model, Prop.spawner.Scene, null);
         spawned_props[prop_locator.name] = prop;
 
         if (prop_locator.materials != null)
@@ -244,6 +248,14 @@ public class Prop : Node
         else
         {
             Debug.LogWarning("Couldn't find prop " + prop + " in spawned props");
+        }
+    }
+
+    public static void stopAnimatingProp(string prop)
+    {
+        if (spawned_props.ContainsKey(prop))
+        {
+            spawned_props[prop].animation_component.Stop();
         }
     }
 
