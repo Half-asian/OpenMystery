@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class Assignment
@@ -79,6 +80,14 @@ public class Assignment
         if (dialogue_id != assignment_config.finalizeDialogTrigger)
             return;
         DialogueManager.onDialogueFinishedEventSecondary -= onDialogueFinishedOutro;
+        string goals_complete_txt = Path.Combine(GlobalEngineVariables.player_folder, "goals_complete.txt");
+        if (!File.ReadAllText(goals_complete_txt).Contains("isAssignmentCompleted(\"" + assignment_config.id + "\")"))
+        {
+            StreamWriter writer = new StreamWriter(goals_complete_txt, true);
+            writer.WriteLine("isAssignmentCompleted(\"" + assignment_config.id + "\")");
+            writer.Close();
+        }
+
         GameStart.ui_manager.showExitMenuButton();
     }
     
