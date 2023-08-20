@@ -215,13 +215,6 @@ public class DialogueManager : MonoBehaviour
 
         setDialogueUIActive(false);
 
-        if (camera_params != null)
-        {
-            Debug.Log("Setting camera " + camera_params[0]);
-            CameraManager.current.focusCam(ref camera_params);
-            camera_params = null;
-        }
-
         if (dialogue_line.enterEvents != null)
         {
             Debug.Log("Adding enter events to stack from " + dialogue_line.id);
@@ -464,6 +457,13 @@ public class DialogueManager : MonoBehaviour
         {
             setDialogueLineChoices(current_dialogue_line);
             dialogue_status = DialogueStatus.WaitingPlayerOptionSelect;
+        }
+
+        if (camera_params != null)
+        {
+            Debug.Log("Setting camera " + camera_params[0]);
+            CameraManager.current.focusCam(ref camera_params);
+            camera_params = null;
         }
 
         setDialogueUIActive.Invoke(true);
