@@ -27,7 +27,7 @@ public static class EventActions
          "advanceAnimSequence", "moveCharacterWithSequence", "animateProp", "playPropAnimSequence", "replaceScenarioBGMusic", "equipAvatarComponent", "wearClothingType",
          "setQuidditchHelmetEquipped", "setForcedQuidditchPosition", "setOpponentHouse", "playSound", "awardReward", "setContentVar", "popupVC", "stopSequentialScriptById", 
         "turnHeadTowards", "moveCamOnTrackCharacter", "resetCharacterIdle", "turnTowards", "moveCamOnTrack", "stopCameraAnimation", "forceScenarioSwitch", "playAttachedPropAnim",
-        "hideFlatStuff", "showFlatStuff", "doGestureRecognition", "addLookupTag", "stopAnimatingProp"
+        "hideFlatStuff", "showFlatStuff", "doGestureRecognition", "addLookupTag", "stopAnimatingProp", "spawnPet"
     };
 
     public static void doEventAction(string event_id, string action_type, string[] action_params, EventPlayer event_player)
@@ -264,6 +264,12 @@ public static class EventActions
                     action_params.Length > 2 ? action_params[2] : null,
                     ActorController.ActorAnim.AnimType.Sequence);
                 break;
+
+            //3 params
+            //3 implemented
+            case "spawnPet":
+                Actor.spawnActor(Configs.config_pet.Pet[action_params[0]].modelId, action_params[1], action_params[2]);
+                break;                
 
             //PROP ACTIONS
 
