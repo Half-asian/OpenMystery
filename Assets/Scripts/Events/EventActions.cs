@@ -405,7 +405,10 @@ public static class EventActions
             //1 param
             //1 implemented
             case "stopCameraAnimation":
-                CameraManager.current.stopCameraAnimation(action_params[0]);
+                if (action_params.Length > 0)
+                    CameraManager.current.stopCameraAnimation(action_params[0]);
+                else
+                    CameraManager.current.stopCameraAnimation(null);
                 break;
 
             //2 params
