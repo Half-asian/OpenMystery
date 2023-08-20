@@ -68,6 +68,8 @@ public partial class NewPredicate
         {"isGoalActiveOrComplete"               , new Func<SymbolConstantString, SymbolConstantBool>(isGoalActiveOrComplete) },
         {"isCharacter"                          , new Func<SymbolConstantString, SymbolConstantString, SymbolConstantBool>(isCharacter) },
         {"isAssignmentCompleted"                , new Func<SymbolConstantString, SymbolConstantBool>(isAssignmentCompleted) },
+        {"collectedClubReward"                  , new Func<SymbolConstantString, SymbolConstantBool>(collectedClubReward) },
+        {"magizoologistLevel"                   , new Func<SymbolConstantInteger>(magizoologistLevel) },
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -416,5 +418,14 @@ public partial class NewPredicate
         if (File.ReadAllText(GlobalEngineVariables.player_folder + "\\goals_complete.txt").Contains("isAssignmentCompleted(\"" + assignment_id.value + "\")"))
             return new SymbolConstantBool(true);
         return new SymbolConstantBool(false);
+    }
+    static SymbolConstantBool collectedClubReward(SymbolConstantString reward_id)
+    {
+        return new SymbolConstantBool(true);
+    }
+
+    static SymbolConstantInteger magizoologistLevel()
+    {
+        return new SymbolConstantInteger(999);
     }
 }

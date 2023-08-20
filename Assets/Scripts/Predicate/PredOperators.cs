@@ -74,7 +74,7 @@ public partial class NewPredicate
                 SymbolConstantString i2 = (SymbolConstantString)v2;
                 if (!int.TryParse(i2.value, out int newint))
                 {
-                    throw new System.Exception("Invalid equals comparison between " + v1.GetType() + " and " + v2.GetType());
+                    return new SymbolConstantBool(false);
                 }
                 return new SymbolConstantBool(i1.value == newint);
             }
@@ -84,7 +84,7 @@ public partial class NewPredicate
                 SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
                 if (!int.TryParse(i1.value, out int newint))
                 {
-                    throw new System.Exception("Invalid equals comparison between " + v1.GetType() + " and " + v2.GetType());
+                    return new SymbolConstantBool(false);
                 }
                 return new SymbolConstantBool(newint == i2.value);
             }
@@ -157,7 +157,7 @@ public partial class NewPredicate
                 SymbolConstantString i2 = (SymbolConstantString)v2;
                 if (!int.TryParse(i2.value, out int newint))
                 {
-                    throw new System.Exception("Invalid not equals comparison between " + v1.GetType() + " and " + v2.GetType());
+                    return new SymbolConstantBool(true);
                 }
                 return new SymbolConstantBool(i1.value != newint);
             }
@@ -167,7 +167,7 @@ public partial class NewPredicate
                 SymbolConstantInteger i2 = (SymbolConstantInteger)v2;
                 if (!int.TryParse(i1.value, out int newint))
                 {
-                    throw new System.Exception("Invalid not equals comparison between " + v1.GetType() + " and " + v2.GetType());
+                    return new SymbolConstantBool(true);
                 }
                 return new SymbolConstantBool(newint != i2.value);
             }
