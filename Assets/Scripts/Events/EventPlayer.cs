@@ -398,7 +398,10 @@ public class EventPlayer : MonoBehaviour
     public void notifyScriptTrigger(string trigger) => processNotifyBlocks("AnimationScriptTriggerHit", trigger);
     public void notifyScreenFadeComplete() => processNotifyBlocks("ScreenFadeComplete", null);
 
-    public void notifyGestureRecognitionComplete() => processNotifyBlocks("modalClosed", "GestureCheckVC");
+    public void notifyGeneric(string a, string b)
+    {
+        processNotifyBlocks(a, b);
+    }
     private void removeBlock()
     {
         total_block = false;

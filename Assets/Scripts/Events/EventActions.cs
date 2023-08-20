@@ -571,14 +571,41 @@ public static class EventActions
                 Scenario.setContentVar(action_params);
                 break;
 
-            //1 param
-            //not really implemented
+            //x params
             case "popupVC":
-                if (action_params[0] == "YearEndViewController")
+
+                switch (action_params[0])
                 {
-                    GameStart.event_manager.main_event_player.total_block = true;
-                    GameStart.event_manager.main_event_player.addCustomBlocking(new List<string> { "graduation", "graduation" });
-                    Graduation.Graduate();
+                    case "YearEndViewController":
+                        GameStart.event_manager.main_event_player.total_block = true;
+                        GameStart.event_manager.main_event_player.addCustomBlocking(new List<string> { "graduation", "graduation" });
+                        Graduation.Graduate();
+                        break;
+                    case "YearEndRankingViewController":
+                        GameStart.current.StartCoroutine(SimulatePopupModal("yearEndRewardComplete", null));
+                        break;
+                    case "NameChooserVC":
+                        GameStart.current.StartCoroutine(SimulatePopupModal("nameInputComplete", null));
+                        break;
+                    case "HogwartsLetterVC":
+                        GameStart.current.StartCoroutine(SimulatePopupModal("letterClosed", null));
+                        break;
+                    case "YearStartViewController":
+                        GameStart.current.StartCoroutine(SimulatePopupModal("yearStartComplete", null));
+                        break;
+                    case "PreYearEndViewController":
+                        break;
+                    case "ExclusityModalVC":
+                        GameStart.current.StartCoroutine(SimulatePopupModal("exclusivityModalClosed", null));
+                        break;
+                    case "BreakUpDecisionVC":
+                        GameStart.current.StartCoroutine(SimulatePopupModal("breakUpModalClosed", null));
+                        break;
+                    case "OwlGradesVC":
+                        GameStart.current.StartCoroutine(SimulatePopupModal("owlGradesClosed", null));
+                        break;
+                    default:
+                        throw new System.Exception("Unknown popupVC param " + action_params[0]);
                 }
                 break;
 
@@ -611,7 +638,7 @@ public static class EventActions
             //1 param
             //1 implemented
             case "doGestureRecognition":
-                GameStart.current.StartCoroutine(GestureRecognition());
+                GameStart.current.StartCoroutine(SimulatePopupModal("modalClosed", "GestureCheckVC"));
                 break;
 
             //variable length
@@ -641,10 +668,12 @@ public static class EventActions
         doEventAction(event_name, Configs.config_script_events.ScriptEvents[event_name].action[event_index], action_params, event_player);
     }
 
-    public static IEnumerator GestureRecognition()
+    public static IEnumerator SimulatePopupModal(string a, string b)
     {
         yield return new WaitForSeconds(2);
-        GameStart.event_manager.notifyGestureRecognitionComplete();
+        GameStart.event_manager.notifyGeneric(a, b);
     }
+
+    
 
 }

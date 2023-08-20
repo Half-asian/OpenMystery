@@ -98,12 +98,12 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    public void notifyGestureRecognitionComplete()
+    public void notifyGeneric(string a, string b)
     {
-        main_event_player.notifyGestureRecognitionComplete();
+        main_event_player.notifyGeneric(a, b);
         foreach (EventPlayer sequential_event_player in sequential_event_players)
         {
-            sequential_event_player.notifyGestureRecognitionComplete();
+            sequential_event_player.notifyGeneric(a, b);
         }
     }
 
