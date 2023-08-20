@@ -184,7 +184,7 @@ public class CameraManager : MonoBehaviour
 
     public void stopCameraAnimation(string animation)
     {
-        if (anim_clip.name == animation)
+        if (animation == null || anim_clip.name == animation)
             setCameraState(CameraState.StateStatic);
     }
 
@@ -435,5 +435,6 @@ public class CameraManager : MonoBehaviour
         pan_cam_on_track_pct = target_pct;
         if (scene_cam_animation != null)
             scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, scene_cam_animation.anim_clip.length * pan_cam_on_track_pct);
+        setCameraState(CameraState.StateStatic);
     }
 }
