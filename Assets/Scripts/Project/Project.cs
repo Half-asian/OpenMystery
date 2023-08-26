@@ -29,7 +29,8 @@ public class Project
 
         if (config_project.repeatableOptions != null) //Some projects are just links to other projects of various time limits
         {
-            config_project = Configs.config_project.Project[config_project.repeatableOptions[0]];
+            //We want the longest one to get all the content
+            config_project = Configs.config_project.Project[config_project.repeatableOptions.Last()];
         }
 
         VariantManager.setVariant(config_project.variantTag);
