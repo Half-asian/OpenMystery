@@ -73,6 +73,9 @@ public abstract class Objective
             case "earnedAttributeXp":
                 new_objective = new ObjectiveEarnedAttributeXp(objective);
                 break;
+            case "creatureFed":
+                new_objective = new ObjectiveCreatureFed(objective);
+                break;
             case "earnParentProjectStars":
                 new_objective = new ObjectiveEarnParentProjectStars(objective);
                 break;

@@ -132,6 +132,8 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNeckwear.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionProject.cs" />
     <Compile Include="Assets\Scripts\Interaction\InteractionTypes\InteractionOptional.cs" />
+    <Compile Include="Assets\Scripts\Objectives\ObjectiveEarnedAttributeXp.cs" />
+    <Compile Include="Assets\Scripts\Objectives\ObjectiveCreatureFed.cs" />
     <Compile Include="Assets\Scripts\Particle\PUParticle.cs" />
     <Compile Include="Assets\Scripts\Game\PostProcess.cs" />
     <Compile Include="Assets\Scripts\Project\Project.cs" />
@@ -265,7 +267,6 @@
     <Compile Include="Assets\Scripts\Player\IndividualComponents\ComponentNose.cs" />
     <Compile Include="Assets\Scripts\3DModels\ModelLoading\ShadowDecider.cs" />
     <Compile Include="Assets\Scripts\Animation\AnimationTest.cs" />
-    <Compile Include="Assets\Scripts\Objectives\ObjectiveEarnedAttributeXp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
