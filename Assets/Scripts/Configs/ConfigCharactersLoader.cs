@@ -27,8 +27,8 @@ public class ConfigHPActorInfo : Config<ConfigHPActorInfo>
         public string[] linkedComponentColorOverrides;
         public string nameFirst;
         public string nameLast;
-        public float animationScale = 1.0f;
-        public float headAnimationScale = 1.0f;
+        public float? animationScale = null;
+        public float? headAnimationScale = null;
         public float tooltipHeight;
         public float portraitModelScale = 1.0f;
         public int startingYear;
