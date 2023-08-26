@@ -12,6 +12,16 @@ public class Assignment
     int active_objective_index = 0;
     public Objective active_objective;
 
+    public static void Initialize()
+    {
+        GameStart.onReturnToMenu += cleanup;
+    }
+
+    private static void cleanup()
+    {
+        active_assignments.Clear();
+    }
+
     public static void startAssignment(string assignment_id, int starting_index = 0)
     {
         if (!Configs.config_assignment.Assignment.ContainsKey(assignment_id))
@@ -87,7 +97,7 @@ public class Assignment
             writer.WriteLine("isAssignmentCompleted(\"" + assignment_config.id + "\")");
             writer.Close();
         }
-
+        active_assignments.Remove(this);
         GameStart.ui_manager.showExitMenuButton();
     }
     
