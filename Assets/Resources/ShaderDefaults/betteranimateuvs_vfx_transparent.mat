@@ -122,6 +122,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - u_colorTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - u_dustTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -156,6 +160,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - USE_FOG: 1
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -274,12 +279,21 @@ Material:
     - offsetX: 0
     - offsetY: 0
     - speed: 0
+    - u_flipFogOrder: 0
     - u_foamSpeed: 0
+    - u_heightFogDensity: 0
+    - u_heightFogEnd: 0
+    - u_heightFogStart: 0
+    - u_maxFog: 0
+    - u_maxFogDistance: 0
+    - u_minFogDistance: 0
     - u_mixer: 0
     - u_normalMapHeight: 0
     - u_reflectionAmount: 0
     - u_reflectionAngle: 0
     - u_speed: 0
+    - u_speedX: 0
+    - u_speedY: 0
     - u_transparency: 0
     - u_waveSpeed: 0
     m_Colors:
@@ -301,6 +315,8 @@ Material:
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
     - u_diffuseColor: {r: 0, g: 0, b: 0, a: 0}
     - u_dustColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_fogColor: {r: 0, g: 0, b: 0, a: 0}
+    - u_heightFogColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &613401650452732667
 MonoBehaviour:
