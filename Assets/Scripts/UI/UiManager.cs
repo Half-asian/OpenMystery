@@ -70,6 +70,12 @@ public class UiManager : MonoBehaviour
                 return;
             current_ob_scenario = current_assignment.active_objective.objective_config.objectiveScenario;
         }
+
+        if (Scenario.current == null || Scenario.current.scenario_config == null)
+        {
+            return;
+        }
+
         if (current_ob_scenario == null && current_goal.active_objective.objective_config.objectiveHubNpcs == null)
         {
             if (Scenario.current.scenario_config != null)
@@ -79,11 +85,6 @@ public class UiManager : MonoBehaviour
                     should_show_next = false;
                 }
 
-            return;
-        }
-
-        if (Scenario.current == null || Scenario.current.scenario_config == null)
-        {
             return;
         }
 
