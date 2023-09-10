@@ -84,7 +84,7 @@ public class ConfigActorMapping : Config<ConfigActorMapping>
         {
             foreach (ActorMap actor_map in Configs.config_actor_mapping.ActorMapping)
             {
-                if (actor_map.priority == priority && actor_map.mapId == actor)
+                if (actor_map.priority == priority && actor_map.mapId == actor_map_result)
                 {
                     if (Predicate.parsePredicate(actor_map.predicate))
                     {
