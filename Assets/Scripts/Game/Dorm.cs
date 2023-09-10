@@ -31,7 +31,7 @@ public class Dorm
             }
             Debug.Log("Spawning pet " + pet.modelId + " " + waypoint_id);
             Prop.spawnPropFromEvent(pet.modelId, waypoint_id, pet.id, null);
-            Prop.spawned_props[pet.id].playAnimSequence(pet.animSequence);
+            Prop.spawned_props[pet.id].playAnimSequence(pet.animSequence, null);
             Prop.spawned_props[pet.id].GetComponent<AnimationSequence>().advanceAnimSequence();
             flatStuff.Add(Prop.spawned_props[pet.id]);
 

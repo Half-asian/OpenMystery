@@ -316,7 +316,7 @@ public class EventPlayer : MonoBehaviour
                     {
                         actor.gameObject.AddComponent<ActorAnimSequence>();
                     }
-                    actor.gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(anim_sequences_to_add[i][1], false);
+                    actor.gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(anim_sequences_to_add[i][1], false, null);
                     anim_sequences_to_add.RemoveAt(i);
                 }
             }

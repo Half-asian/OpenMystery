@@ -42,13 +42,13 @@ public class Prop : Node
         queueAnimationOnComponent(prop_anim_clip);
     }
 
-    public void playAnimSequence(string sequence_name)
+    public void playAnimSequence(string sequence_name, string starting_node)
     {
         if (gameObject.GetComponent<PropAnimSequence>() == null)
         {
             gameObject.AddComponent<PropAnimSequence>();
         }
-        gameObject.GetComponent<PropAnimSequence>().initAnimSequence(sequence_name, false);
+        gameObject.GetComponent<PropAnimSequence>().initAnimSequence(sequence_name, false, starting_node);
     }
 
     protected override IEnumerator animationAlert(AnimationClip clip)
@@ -259,7 +259,7 @@ public class Prop : Node
         }
     }
 
-    public static void eventPlayPropAnimationSequence(string prop_id, string animation_sequence, int is_group)
+    public static void eventPlayPropAnimationSequence(string prop_id, string animation_sequence, int is_group, string starting_node)
     {
         if (is_group == 1)
         {
@@ -267,7 +267,7 @@ public class Prop : Node
             {
                 if (prop.lookup_tags.Contains(prop_id))
                 {
-                    prop.playAnimSequence(animation_sequence);
+                    prop.playAnimSequence(animation_sequence, starting_node);
                 }
             }
         }
@@ -275,7 +275,7 @@ public class Prop : Node
         {
             if (spawned_props.ContainsKey(prop_id))
             {
-                spawned_props[prop_id].playAnimSequence(animation_sequence);
+                spawned_props[prop_id].playAnimSequence(animation_sequence, starting_node);
             }
         }
     }

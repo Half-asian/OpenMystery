@@ -82,7 +82,7 @@ public class ModelInspector : MonoBehaviour
             }
             else
             {
-                prop.playAnimSequence(animation_input.text);
+                prop.playAnimSequence(animation_input.text, null);
             }
         }
         else //Actor

@@ -388,10 +388,18 @@ public static class EventActions
                 string prop_id = action_params[0];
                 string sequence_id = action_params[1];
                 int is_group = 0;
+                string starting_node = null;
                 if (action_params.Length > 2)
-                    is_group = int.Parse(action_params[2]);
+                {
+                    if (!int.TryParse(action_params[2], out is_group))
+                    {
+                        //starting_node = action_params[2];
+                        //this is used in assignment_dummySquadAttackDummy in assignment 2 y7c6
+                        //but it might be erroneous, as enabling this makes the animation out of sync
+                    }
+                }
 
-                Prop.eventPlayPropAnimationSequence(prop_id, sequence_id, is_group);
+                Prop.eventPlayPropAnimationSequence(prop_id, sequence_id, is_group, starting_node);
                 break;
 
             //1 param

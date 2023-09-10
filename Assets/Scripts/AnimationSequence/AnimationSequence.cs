@@ -25,7 +25,7 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
     protected Dictionary<string, Node> local_props = new Dictionary<string, Node>();
 
-    public virtual void initAnimSequence(string _anim_sequence, bool _walk)
+    public virtual void initAnimSequence(string _anim_sequence, bool _walk, string override_start_node)
     {
         base_node.onAnimationFinished += WaitForAnimation;
         walk = _walk;
@@ -50,8 +50,10 @@ public abstract partial class AnimationSequence : MonoBehaviour
 
         //Find index of starting node
 
+        string starting_node = override_start_node != null ? override_start_node : config_sequence.data.startEdge.destinationId;
+
         for (int i = 0; i < config_sequence.data.nodes.Length; i++)
-            if (config_sequence.data.nodes[i].nodeId == config_sequence.data.startEdge.destinationId)
+            if (config_sequence.data.nodes[i].nodeId == starting_node)
                 node_index = i;
 
         //Perform the entry actions

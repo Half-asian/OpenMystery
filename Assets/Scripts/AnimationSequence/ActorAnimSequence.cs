@@ -6,14 +6,14 @@ public class ActorAnimSequence : AnimationSequence
 {
     ActorController actor_controller;
 
-    public override void initAnimSequence(string _anim_sequence, bool _walk)
+    public override void initAnimSequence(string _anim_sequence, bool _walk, string starting_node)
     {
         actor_controller = GetComponent<ActorController>();
         base_node = actor_controller;
 
         //Debug.Log("ACTOR_ANIM_SEQUENCE: Activating animSequence " + _anim_sequence + " for actor " + actor_controller.name + " walk: " + _walk);
 
-        base.initAnimSequence(_anim_sequence, _walk);
+        base.initAnimSequence(_anim_sequence, _walk, starting_node);
     }
 
     protected override void finishSequence()

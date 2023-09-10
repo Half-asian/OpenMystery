@@ -58,7 +58,7 @@ public class Tappie
                 ActorController actor_controller = m.game_object.AddComponent<ActorController>();
                 actor_controller.setup(m);
                 ActorAnimSequence animseq_component = m.game_object.AddComponent<ActorAnimSequence>();
-                animseq_component.initAnimSequence(tappie.activeSequence, false);
+                animseq_component.initAnimSequence(tappie.activeSequence, false, null);
             }
 
             m.game_object.transform.parent = tappiego.transform;

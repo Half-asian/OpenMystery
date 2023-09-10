@@ -284,7 +284,7 @@ public class Actor
                 if (Configs.config_char_anim_sequence.CharAnimSequence.ContainsKey(spawn.validSequences[random_sequence]))
                 {
                     actor_controllers[spawn.spawnId].gameObject.AddComponent<ActorAnimSequence>();
-                    actor_controllers[spawn.spawnId].gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(spawn.validSequences[random_sequence], false);
+                    actor_controllers[spawn.spawnId].gameObject.GetComponent<ActorAnimSequence>().initAnimSequence(spawn.validSequences[random_sequence], false, null);
                 }
                 else
                 {

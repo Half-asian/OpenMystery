@@ -111,7 +111,7 @@ public partial class ActorController : Node
             DestroyImmediate(GetComponent<ActorAnimSequence>());
 
         var seq_component = gameObject.AddComponent<ActorAnimSequence>();
-        seq_component.initAnimSequence(actorAnim.id, false);
+        seq_component.initAnimSequence(actorAnim.id, false, null);
     }
 
     /*------ Public Functions -----*/
