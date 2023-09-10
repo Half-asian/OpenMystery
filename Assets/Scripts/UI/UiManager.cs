@@ -67,7 +67,10 @@ public class UiManager : MonoBehaviour
         else
         {
             if (current_assignment.active_objective == null)
+            {
+                should_show_next = false;
                 return;
+            }
             current_ob_scenario = current_assignment.active_objective.objective_config.objectiveScenario;
         }
 
