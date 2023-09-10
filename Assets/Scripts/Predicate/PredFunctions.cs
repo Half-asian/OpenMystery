@@ -70,6 +70,7 @@ public partial class NewPredicate
         {"isAssignmentCompleted"                , new Func<SymbolConstantString, SymbolConstantBool>(isAssignmentCompleted) },
         {"collectedClubReward"                  , new Func<SymbolConstantString, SymbolConstantBool>(collectedClubReward) },
         {"magizoologistLevel"                   , new Func<SymbolConstantInteger>(magizoologistLevel) },
+        {"currentServerTime"                    , new Func<SymbolConstantInteger>(currentServerTime) },
     };
     static SymbolConstantInteger multiplyStuff(SymbolConstantInteger i, SymbolConstantInteger i2)
     {
@@ -427,5 +428,10 @@ public partial class NewPredicate
     static SymbolConstantInteger magizoologistLevel()
     {
         return new SymbolConstantInteger(999);
+    }
+
+    static SymbolConstantInteger currentServerTime()
+    {
+        return new SymbolConstantInteger(long.MaxValue);
     }
 }
