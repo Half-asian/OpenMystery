@@ -23,12 +23,12 @@ public partial class NewPredicate
 
     class SymbolConstantInteger : Symbol, IConstant //Identified by first char being a number
     {
-        public int value;
+        public long value;
         public override int getPriority()
         {
             return 0;
         }
-        public SymbolConstantInteger(int _value)
+        public SymbolConstantInteger(long _value)
         {
             value = _value;
         }
@@ -115,7 +115,7 @@ public partial class NewPredicate
             {
                 throw new Exception("String.Find doesn't have nonplain search available");
             }
-            int index = base_string.value.IndexOf(pattern.value, start_index.value, StringComparison.Ordinal);
+            int index = base_string.value.IndexOf(pattern.value, (int)start_index.value, StringComparison.Ordinal);
             return new SymbolConstantInteger(index);
         }
     }
@@ -357,7 +357,7 @@ public partial class NewPredicate
             {
                 string s = char_buf.Trim();
                 s = s.Substring(0, s.Length - 1);
-                symbols.Add(new SymbolConstantInteger(int.Parse(s)));
+                symbols.Add(new SymbolConstantInteger(long.Parse(s)));
                 char_buf = "" + char_buf[char_buf.Length - 1];
                 char_buf = char_buf.TrimStart(); //dont return. Clean this shit up later
             }
@@ -366,7 +366,7 @@ public partial class NewPredicate
                 if (char_buf.Contains("."))
                     symbols.Add(new SymbolConstantFloat(float.Parse(char_buf.Trim(), CultureInfo.InvariantCulture)));
                 else
-                    symbols.Add(new SymbolConstantInteger(int.Parse(char_buf.Trim(), CultureInfo.InvariantCulture)));
+                    symbols.Add(new SymbolConstantInteger(long.Parse(char_buf.Trim(), CultureInfo.InvariantCulture)));
                 char_buf = "";
                 return;
             }
