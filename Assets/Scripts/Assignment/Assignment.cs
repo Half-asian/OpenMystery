@@ -71,6 +71,7 @@ public class Assignment
         if (active_objective_index >= assignment_config.objectives.Length)
         {
             Objective.onObjectiveCompleted -= onObjectiveComplete;
+            active_objective = null;
             startOutroScenario();
             return;
         }
