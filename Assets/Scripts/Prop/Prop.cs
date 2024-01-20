@@ -141,12 +141,15 @@ public class Prop : Node
                 {
                     continue;
                 }
-                UnityEngine.Material mat;
+                UnityEngine.Material mat = null;
                 var smr = child.GetComponent<SkinnedMeshRenderer>();
+                var mr = child.GetComponent<MeshRenderer>();
                 if (smr != null)
                     mat = smr.material;
+                else if (mr != null)
+                    mat = mr.material;
                 else
-                    mat = child.GetComponent<MeshRenderer>().material;
+                    return;
 
                 var material = prop_locator.material_dict[child.name];
 
