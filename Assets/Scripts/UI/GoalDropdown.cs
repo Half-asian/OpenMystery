@@ -48,7 +48,7 @@ namespace UI
                 var tlsq_name = Configs.config_local_data.LocalData[title_key].en_US;
                 for (int i = 0; i < goal_chain_ids.Length; i++)
                 {
-                    var dropdown_name = tlsq_name + " Chatper " + (i + 1).ToString();
+                    var dropdown_name = tlsq_name + " Chapter " + (i + 1).ToString();
                     options.Add(new Dropdown.OptionData(dropdown_name));
                     dropdown_name_to_goalchainid.Add(dropdown_name, goal_chain_ids[i]);
                 }
