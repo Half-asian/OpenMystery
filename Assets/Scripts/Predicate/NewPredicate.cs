@@ -527,10 +527,16 @@ public partial class NewPredicate
                             {
                                 string aliasId = sb.function_name.Substring(6);
                                 if (!Configs.predicate_alias_dict.ContainsKey(aliasId))
-                                    throw new Exception("Unknown predicate alias " + aliasId);
-                                Debug.Log("Predicate alias: " + Configs.predicate_alias_dict[aliasId].aliasedPredicate);
-                                Symbol result = new SymbolConstantBool(parsePredicate(Configs.predicate_alias_dict[aliasId].aliasedPredicate));
-                                base_symbol.children[i] = result;
+                                {
+                                    Debug.LogError("Unknown predicate alias " + aliasId);
+                                    base_symbol.children[i] = new SymbolConstantBool(false);
+                                }
+                                else
+                                {
+                                    Debug.Log("Predicate alias: " + Configs.predicate_alias_dict[aliasId].aliasedPredicate);
+                                    Symbol result = new SymbolConstantBool(parsePredicate(Configs.predicate_alias_dict[aliasId].aliasedPredicate));
+                                    base_symbol.children[i] = result;
+                                }
                             }
                             else if (sb.function_name.StartsWith(":"))
                             {
