@@ -196,8 +196,11 @@ public class Prop : Node
         if (prop_locator.animation != null)
         {
             HPAnimation animation = AnimationManager.loadAnimationClip(prop_locator.animation, model, null, null);
-            prop.animation_component.wrapMode = WrapMode.Loop;
-            prop.queueAnimationOnComponent(animation);
+            if (animation != null)
+            {
+                prop.animation_component.wrapMode = WrapMode.Loop;
+                prop.queueAnimationOnComponent(animation);
+            }
         }
     }
 
