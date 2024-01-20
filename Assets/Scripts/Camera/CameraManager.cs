@@ -318,7 +318,8 @@ public class CameraManager : MonoBehaviour
         {
             scene_cam_animation = AnimationManager.loadAnimationClip(
                 camera.animation, camera_model, null, null, null, is_camera: true);
-            scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, 0.0f);
+            if (scene_cam_animation != null)
+                scene_cam_animation.anim_clip.SampleAnimation(camera_holder_transform.gameObject, 0.0f);
         }
 
         //Game defined Field of View is often pretty bad. Usually looks better if its constant.
