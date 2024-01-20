@@ -34,7 +34,7 @@ public class DialogueManager : MonoBehaviour
     public string dialogue_choice_2_next_dialogue;
     public string dialogue_choice_3_next_dialogue;
 
-    public List<string> choices;
+    public List<string> choices = new List<string>();
     public ConfigHPDialogueLine.HPDialogueLine current_dialogue_line;
 
     public bool in_bubble;
@@ -59,8 +59,17 @@ public class DialogueManager : MonoBehaviour
     void cleanup()
     {
         in_dialogue = false;
+        in_bubble = false;
         dialogue_status = DialogueStatus.Finished;
-        setDialogueUIActive(false);
+        exit_stack.Clear();
+        next_choice_index = -1;
+        dialogue_choice_1_next_dialogue = "";
+        dialogue_choice_2_next_dialogue = "";
+        dialogue_choice_3_next_dialogue = "";
+        choices.Clear();
+        current_dialogue_line = null;
+        camera_params = null;
+        setDialogueUIActive.Invoke(false);
     }
 
     public void showBubbleDialogue(string speaker, string dialogue)
@@ -251,9 +260,6 @@ public class DialogueManager : MonoBehaviour
         if (dialogue_line.emoteEvents != null)
             GameStart.event_manager.main_event_player.addEvents(dialogue_line.emoteEvents);
 
-
-
-
         if (dialogue_line.barkPlaylistIds != null)
         {
             for (int i = 0; i < dialogue_line.barkPlaylistIds.Length; i++)
@@ -313,7 +319,7 @@ public class DialogueManager : MonoBehaviour
 
     void setDialogueLineChoices(ConfigHPDialogueLine.HPDialogueLine dialogue_line)
     {
-        choices = new List<string>();
+        choices.Clear();
         if (!Configs.config_dialogue_choices.DialogueChoice.ContainsKey(dialogue_line.dialogueChoiceIds[0]))
         {
             Debug.Log("Could not find choice " + dialogue_line.dialogueChoiceIds[0]);

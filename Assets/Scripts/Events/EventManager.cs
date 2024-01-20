@@ -31,8 +31,8 @@ public class EventManager : MonoBehaviour
 
     private void Awake()
     {
-        GameStart.onReturnToMenu += reset;
-        Scenario.onScenarioCallClear += reset;
+        GameStart.onReturnToMenu += cleanup;
+        Scenario.onScenarioCallClear += cleanup;
     }
 
     public void notifyCharacterAnimationComplete(string character, string animation)
@@ -247,9 +247,9 @@ public class EventManager : MonoBehaviour
 
 
 
-    public void reset()
+    public void cleanup()
     {
-        main_event_player.reset();
+        main_event_player.cleanup();
 
         foreach (EventPlayer sequential_event_player in sequential_event_players)
         {

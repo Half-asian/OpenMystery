@@ -34,7 +34,7 @@ public class EventPlayer : MonoBehaviour
 
         public int Count => message_key_set.Count;
 
-        public void clear()
+        public void Clear()
         {
             message_key_set.Clear();
         }
@@ -153,7 +153,18 @@ public class EventPlayer : MonoBehaviour
 
     public bool is_sequential_player;
 
-
+    public void cleanup()
+    {
+        awaiting_sequential_players.Clear();
+        Debug.Log("Clearing blocking message keys");
+        blocking_message_keys.Clear();
+        event_stack.Clear();
+        anim_sequences_to_add.Clear();
+        last_camera = null;
+        last_finished_animation = "";
+        block_duration = 0.0f;
+        total_block = false;
+    }
 
     public void addEvents(IEnumerable<string> events_ids)
     {
@@ -284,7 +295,7 @@ public class EventPlayer : MonoBehaviour
         if (block_duration <= 0.0f)
         {
             if (total_block == false)
-                blocking_message_keys.clear();
+                blocking_message_keys.Clear();
             block_duration = 0.0f;
         }
 
@@ -335,15 +346,6 @@ public class EventPlayer : MonoBehaviour
 
     }
 
-    public void reset()
-    {
-        event_stack.Clear();
-        total_block = false;
-        block_duration = 0.0f;
-        blocking_message_keys = new ActiveMessageKeys();
-        awaiting_sequential_players = new List<(ActiveMessageKeys, string, string[], float)>();
-    }
-
     public void addCustomBlocking(List<string> strings)
     {
         blocking_message_keys.add(strings);
@@ -351,7 +353,7 @@ public class EventPlayer : MonoBehaviour
 
     public void removeCustomBlockings()
     {
-        blocking_message_keys.clear();
+        blocking_message_keys.Clear();
         total_block = false;
     }
 

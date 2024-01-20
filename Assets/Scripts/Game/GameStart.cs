@@ -124,8 +124,6 @@ public class GameStart : MonoBehaviour
 
     public async void Start()
     {
-        onReturnToMenu = delegate { };
-
         Debug.Log("GameStart Start");
         Sound.current.playCustom("theblueghost.mp3");
 
