@@ -22,6 +22,8 @@ namespace UI
         [SerializeField]
         protected TMPro.TMP_Text warning_text;
 
+        Dictionary<string, string> dropdown_name_to_goalchainid = new Dictionary<string, string>();
+
         public void Awake()
         {
             _quest_box = GetComponent<IQuestBox>();
@@ -37,12 +39,27 @@ namespace UI
 
         public void setGoalChainDropdown()
         {
-
             List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-            foreach (string goal_chain in GlobalEngineVariables.goal_chains.Keys)
-            {
-                options.Add(new Dropdown.OptionData(goal_chain));
 
+            if (GlobalEngineVariables.launch_mode == "tlsq")
+            {
+                var goal_chain_ids = Configs.config_master_tlsq.MasterTLSQ[GlobalEngineVariables.getTLSQName()].goalChainIds;
+                var title_key = Configs.config_master_tlsq.MasterTLSQ[GlobalEngineVariables.getTLSQName()].title;
+                var tlsq_name = Configs.config_local_data.LocalData[title_key].en_US;
+                for (int i = 0; i < goal_chain_ids.Length; i++)
+                {
+                    var dropdown_name = tlsq_name + " Chatper " + (i + 1).ToString();
+                    options.Add(new Dropdown.OptionData(dropdown_name));
+                    dropdown_name_to_goalchainid.Add(dropdown_name, goal_chain_ids[i]);
+                }
+            }
+            else
+            {
+                foreach (string goal_chain in GlobalEngineVariables.goal_chains.Keys)
+                {
+                    options.Add(new Dropdown.OptionData(goal_chain));
+
+                }
             }
             _goal_chain_dropdown.AddOptions(options);
         }
@@ -90,6 +107,12 @@ namespace UI
 
         public string getCurrentGoalChainId()
         {
+            if (_goal_chain_dropdown.options[_goal_chain_dropdown.value].text == "Select Chapter")
+                return null;
+            if (GlobalEngineVariables.launch_mode == "tlsq")
+            {
+                return dropdown_name_to_goalchainid[_goal_chain_dropdown.options[_goal_chain_dropdown.value].text];
+            }
             string current_goal_chain = _goal_chain_dropdown.options[_goal_chain_dropdown.value].text;
             if (GlobalEngineVariables.goal_chains.ContainsKey(current_goal_chain))
             {

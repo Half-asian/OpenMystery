@@ -160,6 +160,8 @@ public class UiManager : MonoBehaviour
 
     public void showPopup(string goal_id)
     {
+        if (goal_id == null)
+            return;
         if (Configs.config_goal.Goals.TryGetValue(goal_id, out var goal))
         {
             _goal_popup.setPopup(goal);
@@ -235,8 +237,9 @@ public class UiManager : MonoBehaviour
 
     public void chapterSelectButtonClicked()
     {
-        if (GlobalEngineVariables.launch_mode == "tlsq")
-            tlsq_menu_gameobject.SetActive(!tlsq_menu_gameobject.activeSelf);
+        //always use this for now
+        //if (GlobalEngineVariables.launch_mode == "tlsq")
+        tlsq_menu_gameobject.SetActive(!tlsq_menu_gameobject.activeSelf);
         goal_popup_gameobject.SetActive(!goal_popup_gameobject.activeSelf);
         goal_dropdown_gameobject.SetActive(!goal_dropdown_gameobject.activeSelf);
     }

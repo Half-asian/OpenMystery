@@ -135,7 +135,8 @@ public class Configs{
     public static ConfigStation config_station;
     public static ConfigHPDialogueLine config_hp_dialogue_line;
     public static ConfigDialogueChoice config_dialogue_choices;
-    public static ConfigTimeLimitedSideQuest config_time_limited_side_quest;
+    //public static ConfigTimeLimitedSideQuest config_time_limited_side_quest;
+    public static ConfigMasterTLSQ config_master_tlsq;
     public static ConfigYears config_years;
     public static ConfigMatch config_match;
     public static ConfigPlayPhase config_play_phase;
@@ -565,7 +566,8 @@ public class Configs{
         config_project = ConfigProject.getJObjectsConfigsListST("Project");
         config_station = ConfigStation.getJObjectsConfigsListST("Station");
         config_years = ConfigYears.getJObjectsConfigsListST("Years");
-        config_time_limited_side_quest = ConfigTimeLimitedSideQuest.getJObjectsConfigsListST("TimeLimitedSideQuest");
+        //config_time_limited_side_quest = ConfigTimeLimitedSideQuest.getJObjectsConfigsListST("TimeLimitedSideQuest");
+        config_master_tlsq = ConfigMasterTLSQ.getJObjectsConfigsListST("MasterTLSQ");
         config_quidditch_team = ConfigQuidditchTeam.getJObjectsConfigsListST("QuidditchTeam");
         config_quidditch_broom_info = ConfigQuidditchBroomInfo.getJObjectsConfigsListST("QuidditchBroomInfo");
         config_match = ConfigMatch.getJObjectsConfigsListST("Match");
