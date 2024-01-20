@@ -12,6 +12,7 @@ public class GraphicsSettings : MonoBehaviour
 {
     private List<string> full_screen_mode_settings = new List<string> { "Windowed", "FullScreen Window", "Exclusive FullScreen" };
     private List<string> anti_aliasing_settings = new List<string> { "Off", "FXAA", "TAA", "SMAA" };
+    private List<string> vsync_settings = new List<string> { "Off", "On" };
     private List<string> bloom_settings = new List<string> { "Off", "On" };
     private List<string> ambient_occlusion_settings = new List<string> { "Off", "On" };
     private List<string> global_illumination_settings = new List<string> { "Off", "On" };
@@ -22,6 +23,7 @@ public class GraphicsSettings : MonoBehaviour
 
     const string bloom_playerprefs_id = "bloom";
     const string antialiasing_playerprefs_id = "antialiasing";
+    const string vsync_playerprefs_id = "vsync";
     const string ambientocclusion_playerprefs_id = "ambientocclusion";
     const string ssglobalillumination_playerprefs_id = "ssglobalillumination";
     const string fullscreenmode_playerprefs_id = "fullscreenmode";
@@ -74,6 +76,8 @@ public class GraphicsSettings : MonoBehaviour
     [SerializeField]
     Dropdown anti_aliasing_dropdown;
     [SerializeField]
+    Dropdown vsync_dropdown;
+    [SerializeField]
     Dropdown bloom_dropdown;
     [SerializeField]
     Dropdown ambient_occlusion_dropdown;
@@ -124,6 +128,7 @@ public class GraphicsSettings : MonoBehaviour
         initRenderScale();
         initOverrides();
         initGeneric(    antialiasing_playerprefs_id,            anti_aliasing_settings,         "SMAA",     anti_aliasing_dropdown,         setAntiAliasing);
+        initGeneric(    vsync_playerprefs_id,                   vsync_settings,                 "Off",      vsync_dropdown,                 setVsync);
         initGeneric(    bloom_playerprefs_id,                   bloom_settings,                 "Off",      bloom_dropdown,                 setBloom);
         initGeneric(    ambientocclusion_playerprefs_id,        ambient_occlusion_settings,     "Off",      ambient_occlusion_dropdown,     setAmbientOcclusion);
         initGeneric(    ssglobalillumination_playerprefs_id,    global_illumination_settings,   "Off",      global_illumination_dropdown,   setGlobalIllumination);
@@ -383,6 +388,22 @@ public class GraphicsSettings : MonoBehaviour
                 break;
         }
         PlayerPrefs.SetString(antialiasing_playerprefs_id, anti_aliasing_settings[index]);
+        PlayerPrefs.Save();
+    }
+
+    private void setVsync(int index)
+    {
+        Debug.Log("Setting vsync: " + vsync_settings[index]);
+        switch (vsync_settings[index])
+        {
+            case "Off":
+                QualitySettings.vSyncCount = 0;
+                break;
+            case "On":
+                QualitySettings.vSyncCount = 1;
+                break;
+        }
+        PlayerPrefs.SetString(vsync_playerprefs_id, vsync_settings[index]);
         PlayerPrefs.Save();
     }
 
